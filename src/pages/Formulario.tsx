@@ -22,8 +22,49 @@ const getSectionProgress = (currentSection: number, completedFields: number, tot
 const Formulario: React.FC = () => {
   const [currentSection, setCurrentSection] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [testWebhook, setTestWebhook] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Test webhook function for debugging
+  const testWebhookConnection = async () => {
+    setTestWebhook(true);
+    try {
+      console.log('🧪 === TESTANDO WEBHOOK ===');
+      const testData = { test: true, timestamp: Date.now() };
+      
+      const response = await fetch('https://n8n-webhook.isaai.online/webhook/sitesodonto', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(testData),
+      });
+      
+      console.log('✅ Teste webhook - Status:', response.status);
+      console.log('✅ Teste webhook - Headers:', Object.fromEntries(response.headers.entries()));
+      
+      const responseText = await response.text();
+      console.log('✅ Teste webhook - Resposta:', responseText);
+      
+      toast({
+        title: "Teste de conectividade",
+        description: `Webhook respondeu com status ${response.status}`,
+        variant: "default",
+      });
+      
+    } catch (error) {
+      console.error('❌ Erro no teste do webhook:', error);
+      toast({
+        title: "Erro de conectividade",
+        description: `Webhook inacessível: ${error.message}`,
+        variant: "destructive",
+      });
+    } finally {
+      setTestWebhook(false);
+    }
+  };
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -112,6 +153,8 @@ const Formulario: React.FC = () => {
   const onSubmit = async (data: FormData) => {
     console.log('🚀 === INICIANDO DEBUG DO FORMULÁRIO ===');
     console.log('📝 Dados brutos do formulário:', JSON.stringify(data, null, 2));
+    console.log('🌐 User Agent:', navigator.userAgent);
+    console.log('🔗 Current URL:', window.location.href);
     
     // Debug detalhado dos campos obrigatórios
     console.log('🔍 === VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS ===');
@@ -234,13 +277,33 @@ const Formulario: React.FC = () => {
         temDocumentosBase64: !!processedData.documentosBase64?.length,
       }, null, 2));
 
-      const response = await fetch('https://n8n-webhook.isaai.online/webhook/sitesodonto', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(processedData),
-      });
+      console.log('📡 === INICIANDO FETCH ===');
+      let response;
+      
+      try {
+        response = await fetch('https://n8n-webhook.isaai.online/webhook/sitesodonto', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(processedData),
+        });
+        console.log('✅ Fetch completado - Status:', response.status);
+      } catch (fetchError) {
+        console.error('❌ ERRO NO FETCH:', fetchError);
+        console.error('❌ Nome do erro:', fetchError.name);
+        console.error('❌ Mensagem do erro:', fetchError.message);
+        
+        if (fetchError.name === 'TypeError' && fetchError.message === 'Failed to fetch') {
+          console.error('❌ CORS ou conectividade - tentando URL alternativa');
+          
+          // Try with a different approach or show specific error
+          throw new Error('Erro de conectividade. Verifique sua conexão com a internet e tente novamente.');
+        }
+        
+        throw fetchError;
+      }
 
       console.log('📡 === RESPOSTA DO WEBHOOK ===');
       console.log('Status:', response.status);
@@ -458,13 +521,23 @@ const Formulario: React.FC = () => {
               {process.env.NODE_ENV === 'development' && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <h4 className="font-semibold text-blue-800 mb-2">🔍 Debug Info (apenas em desenvolvimento)</h4>
-                  <div className="text-xs text-blue-700 font-mono">
+                  <div className="text-xs text-blue-700 font-mono space-y-1">
                     <div>Campos com erro: {Object.keys(errors).join(', ') || 'Nenhum'}</div>
                     <div>Especialidades: {watchedFields.especialidades?.length || 0}</div>
                     <div>Serviços: {watchedFields.servicos?.length || 0}</div>
                     <div>Aceita Termos: {watchedFields.aceitaTermos ? 'Sim' : 'Não'}</div>
                     <div>Aceita Privacidade: {watchedFields.aceitaPrivacidade ? 'Sim' : 'Não'}</div>
                   </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={testWebhookConnection}
+                    disabled={testWebhook}
+                    className="mt-2"
+                  >
+                    {testWebhook ? 'Testando...' : '🧪 Testar Webhook'}
+                  </Button>
                 </div>
               )}
 
