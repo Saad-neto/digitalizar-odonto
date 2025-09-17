@@ -184,19 +184,31 @@ export const StyleSection: React.FC<StyleSectionProps> = ({ form }) => {
           <h3 className="font-semibold text-text-primary">Termos e Condições</h3>
           <div className="space-y-3">
             <div className="flex items-start space-x-2">
-              <Checkbox id="termos" required />
+              <Checkbox 
+                id="termos" 
+                checked={watch('aceitaTermos') || false}
+                onCheckedChange={(checked) => setValue('aceitaTermos', checked as boolean)}
+              />
               <Label htmlFor="termos" className="text-sm cursor-pointer">
                 Li e aceito os <a href="#" className="text-primary hover:underline">Termos de Serviço</a>
               </Label>
             </div>
             <div className="flex items-start space-x-2">
-              <Checkbox id="privacidade" required />
+              <Checkbox 
+                id="privacidade" 
+                checked={watch('aceitaPrivacidade') || false}
+                onCheckedChange={(checked) => setValue('aceitaPrivacidade', checked as boolean)}
+              />
               <Label htmlFor="privacidade" className="text-sm cursor-pointer">
                 Concordo com a <a href="#" className="text-primary hover:underline">Política de Privacidade</a>
               </Label>
             </div>
             <div className="flex items-start space-x-2">
-              <Checkbox id="whatsapp" />
+              <Checkbox 
+                id="whatsapp" 
+                checked={watch('aceitaWhatsapp') || false}
+                onCheckedChange={(checked) => setValue('aceitaWhatsapp', checked as boolean)}
+              />
               <Label htmlFor="whatsapp" className="text-sm cursor-pointer">
                 Aceito receber atualizações por WhatsApp
               </Label>

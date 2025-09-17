@@ -31,10 +31,14 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({ form }
   const logoValue = watch('logoOpcao');
   const fotosValue = watch('fotos');
   const enderecoValue = watch('enderecoOpcao');
+  const profissionaisValue = watch('profissionais') || [];
 
   const addProfessional = () => {
     if (professionals.length < 5) {
-      setProfessionals([...professionals, { nome: '', cro: '', descricao: '', experiencia: '', foto: [] }]);
+      const newProfessional = { nome: '', cro: '', descricao: '', experiencia: '', foto: [] };
+      const newProfessionals = [...professionals, newProfessional];
+      setProfessionals(newProfessionals);
+      setValue('profissionais', newProfessionals);
       setShowAddProfessional(true);
     }
   };
@@ -42,12 +46,14 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({ form }
   const removeProfessional = (index: number) => {
     const newProfessionals = professionals.filter((_, i) => i !== index);
     setProfessionals(newProfessionals);
+    setValue('profissionais', newProfessionals);
   };
 
   const updateProfessional = (index: number, field: keyof Professional, value: any) => {
     const newProfessionals = [...professionals];
     newProfessionals[index] = { ...newProfessionals[index], [field]: value };
     setProfessionals(newProfessionals);
+    setValue('profissionais', newProfessionals);
   };
 
   const phoneMask = (value: string) => {

@@ -9,6 +9,15 @@ export const formSchema = z.object({
   cro: z.string().min(5, 'CRO inválido'),
   tempoAtuacao: z.string().optional(),
   
+  // Profissionais adicionais
+  profissionais: z.array(z.object({
+    nome: z.string().min(2, 'Nome do profissional é obrigatório'),
+    cro: z.string().min(5, 'CRO é obrigatório'),
+    descricao: z.string().min(10, 'Descrição é obrigatória'),
+    experiencia: z.string().optional(),
+    foto: z.array(z.instanceof(File)).optional(),
+  })).optional(),
+  
   // Convênios
   convenios: z.enum(['sim', 'nao']),
   conveniosEspecificar: z.string().optional(),
@@ -50,6 +59,11 @@ export const formSchema = z.object({
   avaliacoesGoogle: z.enum(['sim', 'nao']),
   googleMeuNegocioAvaliacoes: z.string().optional(),
   mostrarAvaliacoesGoogle: z.enum(['sim', 'nao']),
+  
+  // Termos e condições
+  aceitaTermos: z.boolean().refine(val => val === true, 'Você deve aceitar os termos'),
+  aceitaPrivacidade: z.boolean().refine(val => val === true, 'Você deve aceitar a política de privacidade'),
+  aceitaWhatsapp: z.boolean().optional(),
 });
 
 export type FormData = z.infer<typeof formSchema>;
@@ -58,4 +72,5 @@ export interface ProcessedFormData extends FormData {
   logoArquivoBase64?: string[];
   fotosBase64?: string[];
   documentosBase64?: string[];
+  profissionaisFotosBase64?: { [key: number]: string[] };
 }

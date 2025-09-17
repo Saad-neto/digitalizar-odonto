@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FieldError } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { Rocket, ArrowRight, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
@@ -31,6 +31,7 @@ const Formulario: React.FC = () => {
       especialidades: [],
       servicos: [],
       redesSociais: {},
+      profissionais: [],
     },
   });
 
@@ -62,9 +63,42 @@ const Formulario: React.FC = () => {
   const convertFilesToBase64 = async (files: File[]): Promise<string[]> => {
     const promises = files.map(file => {
       return new Promise<string>((resolve, reject) => {
+        // Check file size (max 5MB per file)
+        if (file.size > 5 * 1024 * 1024) {
+          reject(new Error(`Arquivo ${file.name} é muito grande (máximo 5MB)`));
+          return;
+        }
+
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
+        reader.onload = () => {
+          const result = reader.result as string;
+          
+          // For images, try to compress them
+          if (file.type.startsWith('image/')) {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              
+              // Calculate new dimensions (max 1200px width)
+              const maxWidth = 1200;
+              const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+              canvas.width = img.width * ratio;
+              canvas.height = img.height * ratio;
+              
+              ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+              
+              // Compress to JPEG with 0.8 quality
+              const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+              resolve(compressedDataUrl);
+            };
+            img.onerror = () => resolve(result); // Fallback to original
+            img.src = result;
+          } else {
+            resolve(result);
+          }
+        };
+        reader.onerror = () => reject(new Error(`Erro ao ler arquivo ${file.name}`));
         reader.readAsDataURL(file);
       });
     });
@@ -72,28 +106,95 @@ const Formulario: React.FC = () => {
   };
 
   const onSubmit = async (data: FormData) => {
+    console.log('🚀 Iniciando envio do formulário...');
+    console.log('📝 Dados do formulário:', JSON.stringify(data, null, 2));
+    
     setIsLoading(true);
     
     try {
+      // Validar dados obrigatórios
+      if (!data.nomeCompleto || !data.email || !data.telefone) {
+        throw new Error('Campos obrigatórios não preenchidos');
+      }
+
+      console.log('✅ Validação básica passou');
+
       // Convert files to base64 for webhook transmission
       const processedData: ProcessedFormData = { ...data };
       
       if (data.logoArquivo?.length) {
-        processedData.logoArquivoBase64 = await convertFilesToBase64(data.logoArquivo);
+        console.log('🖼️ Convertendo logo para base64...');
+        try {
+          processedData.logoArquivoBase64 = await convertFilesToBase64(data.logoArquivo);
+          console.log('✅ Logo convertido com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao converter logo:', error);
+          throw new Error('Erro ao processar logo');
+        }
       }
       
       if (data.fotos?.length) {
-        processedData.fotosBase64 = await convertFilesToBase64(data.fotos);
+        console.log('📸 Convertendo fotos para base64...');
+        try {
+          processedData.fotosBase64 = await convertFilesToBase64(data.fotos);
+          console.log('✅ Fotos convertidas com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao converter fotos:', error);
+          throw new Error('Erro ao processar fotos');
+        }
       }
       
       if (data.documentos?.length) {
-        processedData.documentosBase64 = await convertFilesToBase64(data.documentos);
+        console.log('📄 Convertendo documentos para base64...');
+        try {
+          processedData.documentosBase64 = await convertFilesToBase64(data.documentos);
+          console.log('✅ Documentos convertidos com sucesso');
+        } catch (error) {
+          console.error('❌ Erro ao converter documentos:', error);
+          throw new Error('Erro ao processar documentos');
+        }
+      }
+
+      // Convert professional photos
+      if (data.profissionais?.length) {
+        console.log('👥 Convertendo fotos dos profissionais...');
+        processedData.profissionaisFotosBase64 = {};
+        
+        for (let i = 0; i < data.profissionais.length; i++) {
+          const profissional = data.profissionais[i];
+          if (profissional.foto?.length) {
+            try {
+              processedData.profissionaisFotosBase64[i] = await convertFilesToBase64(profissional.foto);
+              console.log(`✅ Foto do profissional ${i + 1} convertida`);
+            } catch (error) {
+              console.error(`❌ Erro ao converter foto do profissional ${i + 1}:`, error);
+            }
+          }
+        }
       }
 
       // Remove File objects from data as they can't be JSON stringified
       delete processedData.logoArquivo;
       delete processedData.fotos;
       delete processedData.documentos;
+
+      // Remove File objects from professionals
+      if (processedData.profissionais) {
+        processedData.profissionais = processedData.profissionais.map(prof => {
+          const { foto, ...rest } = prof;
+          return rest;
+        });
+      }
+
+      const payloadSize = JSON.stringify(processedData).length;
+      console.log(`📦 Tamanho da payload: ${(payloadSize / 1024 / 1024).toFixed(2)} MB`);
+
+      if (payloadSize > 10 * 1024 * 1024) { // 10MB limit
+        throw new Error('Dados muito grandes. Reduza o número de imagens.');
+      }
+
+      console.log('🌐 Enviando dados para webhook...');
+      console.log('📍 URL:', 'https://n8n-webhook.isaai.online/webhook/sitesodonto');
 
       const response = await fetch('https://n8n-webhook.isaai.online/webhook/sitesodonto', {
         method: 'POST',
@@ -103,15 +204,34 @@ const Formulario: React.FC = () => {
         body: JSON.stringify(processedData),
       });
 
+      console.log('📡 Status da resposta:', response.status);
+      console.log('📡 Headers da resposta:', Object.fromEntries(response.headers.entries()));
+
       if (!response.ok) {
-        throw new Error('Erro ao enviar formulário');
+        const errorText = await response.text();
+        console.error('❌ Erro na resposta:', errorText);
+        throw new Error(`Erro do servidor: ${response.status} - ${errorText}`);
       }
 
+      const responseData = await response.text();
+      console.log('✅ Resposta do webhook:', responseData);
+
+      console.log('🎉 Formulário enviado com sucesso!');
       navigate('/obrigado');
     } catch (error) {
+      console.error('💥 Erro completo:', error);
+      
+      let errorMessage = 'Erro inesperado ao enviar formulário';
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+
       toast({
         title: "Erro ao enviar formulário",
-        description: "Tente novamente ou entre em contato pelo WhatsApp.",
+        description: errorMessage + ". Tente novamente ou entre em contato pelo WhatsApp.",
         variant: "destructive",
       });
     } finally {
@@ -245,6 +365,22 @@ const Formulario: React.FC = () => {
                   </Button>
                 )}
               </div>
+
+              {/* Show validation errors */}
+              {Object.keys(errors).length > 0 && currentSection === TOTAL_SECTIONS && (
+                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+                  <h4 className="font-semibold text-destructive mb-2">Corrija os seguintes erros:</h4>
+                  <ul className="text-sm text-destructive space-y-1">
+                     {Object.entries(errors).map(([field, error]) => {
+                       let message = `Erro no campo ${field}`;
+                       if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
+                         message = error.message;
+                       }
+                       return <li key={field}>• {message}</li>;
+                     })}
+                  </ul>
+                </div>
+              )}
 
               {/* Final Section Message */}
               {currentSection === TOTAL_SECTIONS && (
