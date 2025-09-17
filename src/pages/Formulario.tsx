@@ -32,7 +32,11 @@ const Formulario: React.FC = () => {
       servicos: [],
       redesSociais: {},
       profissionais: [],
+      aceitaTermos: false,
+      aceitaPrivacidade: false,
+      aceitaWhatsapp: false,
     },
+    mode: 'onChange', // Validate on change for better UX
   });
 
   const { handleSubmit, watch, formState: { errors } } = form;
@@ -106,18 +110,39 @@ const Formulario: React.FC = () => {
   };
 
   const onSubmit = async (data: FormData) => {
-    console.log('🚀 Iniciando envio do formulário...');
-    console.log('📝 Dados do formulário:', JSON.stringify(data, null, 2));
+    console.log('🚀 === INICIANDO DEBUG DO FORMULÁRIO ===');
+    console.log('📝 Dados brutos do formulário:', JSON.stringify(data, null, 2));
+    
+    // Debug detalhado dos campos obrigatórios
+    console.log('🔍 === VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS ===');
+    console.log('Nome completo:', data.nomeCompleto);
+    console.log('Email:', data.email);
+    console.log('Telefone:', data.telefone);
+    console.log('Especialidades:', data.especialidades);
+    console.log('Serviços:', data.servicos);
+    console.log('Aceita Termos:', data.aceitaTermos);
+    console.log('Aceita Privacidade:', data.aceitaPrivacidade);
     
     setIsLoading(true);
     
     try {
-      // Validar dados obrigatórios
-      if (!data.nomeCompleto || !data.email || !data.telefone) {
-        throw new Error('Campos obrigatórios não preenchidos');
+      // Validação manual detalhada antes do envio
+      const missingFields = [];
+      
+      if (!data.nomeCompleto?.trim()) missingFields.push('Nome completo');
+      if (!data.email?.trim()) missingFields.push('E-mail');
+      if (!data.telefone?.trim()) missingFields.push('Telefone');
+      if (!data.especialidades?.length) missingFields.push('Especialidades');
+      if (!data.servicos?.length) missingFields.push('Serviços');
+      if (!data.aceitaTermos) missingFields.push('Aceitar termos');
+      if (!data.aceitaPrivacidade) missingFields.push('Aceitar privacidade');
+      
+      if (missingFields.length > 0) {
+        console.error('❌ Campos obrigatórios faltando:', missingFields);
+        throw new Error(`Campos obrigatórios não preenchidos: ${missingFields.join(', ')}`);
       }
 
-      console.log('✅ Validação básica passou');
+      console.log('✅ Validação manual passou - todos os campos obrigatórios preenchidos');
 
       // Convert files to base64 for webhook transmission
       const processedData: ProcessedFormData = { ...data };
@@ -193,8 +218,21 @@ const Formulario: React.FC = () => {
         throw new Error('Dados muito grandes. Reduza o número de imagens.');
       }
 
-      console.log('🌐 Enviando dados para webhook...');
+      console.log('🌐 === PREPARANDO ENVIO PARA WEBHOOK ===');
       console.log('📍 URL:', 'https://n8n-webhook.isaai.online/webhook/sitesodonto');
+      console.log('📦 Dados processados para envio:', JSON.stringify({
+        nomeCompleto: processedData.nomeCompleto,
+        email: processedData.email,
+        telefone: processedData.telefone,
+        especialidades: processedData.especialidades,
+        servicos: processedData.servicos,
+        aceitaTermos: processedData.aceitaTermos,
+        aceitaPrivacidade: processedData.aceitaPrivacidade,
+        // Log apenas a estrutura dos arquivos, não o conteúdo
+        temLogoBase64: !!processedData.logoArquivoBase64?.length,
+        temFotosBase64: !!processedData.fotosBase64?.length,
+        temDocumentosBase64: !!processedData.documentosBase64?.length,
+      }, null, 2));
 
       const response = await fetch('https://n8n-webhook.isaai.online/webhook/sitesodonto', {
         method: 'POST',
@@ -204,35 +242,64 @@ const Formulario: React.FC = () => {
         body: JSON.stringify(processedData),
       });
 
-      console.log('📡 Status da resposta:', response.status);
-      console.log('📡 Headers da resposta:', Object.fromEntries(response.headers.entries()));
+      console.log('📡 === RESPOSTA DO WEBHOOK ===');
+      console.log('Status:', response.status);
+      console.log('Headers:', Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Erro na resposta:', errorText);
-        throw new Error(`Erro do servidor: ${response.status} - ${errorText}`);
+        console.error('❌ Erro na resposta do webhook:', errorText);
+        console.error('❌ Status completo:', response.status, response.statusText);
+        throw new Error(`Erro do servidor: ${response.status} - ${errorText || response.statusText}`);
       }
 
       const responseData = await response.text();
-      console.log('✅ Resposta do webhook:', responseData);
+      console.log('✅ Resposta do webhook (sucesso):', responseData);
 
-      console.log('🎉 Formulário enviado com sucesso!');
+      console.log('🎉 === FORMULÁRIO ENVIADO COM SUCESSO ===');
+      
+      toast({
+        title: "Sucesso!",
+        description: "Seu briefing foi enviado com sucesso. Redirecionando...",
+        variant: "default",
+      });
+      
       navigate('/obrigado');
     } catch (error) {
-      console.error('💥 Erro completo:', error);
+      console.error('💥 === ERRO NO ENVIO DO FORMULÁRIO ===');
+      console.error('Erro completo:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'Sem stack trace');
       
       let errorMessage = 'Erro inesperado ao enviar formulário';
       
       if (error instanceof Error) {
         errorMessage = error.message;
+        console.error('Mensagem do erro:', errorMessage);
       } else if (typeof error === 'string') {
         errorMessage = error;
+        console.error('Erro como string:', errorMessage);
       }
+
+      // Log do estado atual do formulário para debug
+      console.error('Estado atual do formulário:', {
+        currentSection,
+        formErrors: Object.keys(errors),
+        formData: {
+          nomeCompleto: data.nomeCompleto,
+          email: data.email,
+          telefone: data.telefone,
+          especialidades: data.especialidades?.length || 0,
+          servicos: data.servicos?.length || 0,
+          aceitaTermos: data.aceitaTermos,
+          aceitaPrivacidade: data.aceitaPrivacidade,
+        }
+      });
 
       toast({
         title: "Erro ao enviar formulário",
-        description: errorMessage + ". Tente novamente ou entre em contato pelo WhatsApp.",
+        description: errorMessage + ". Verifique os campos obrigatórios e tente novamente.",
         variant: "destructive",
+        duration: 8000, // Maior duração para dar tempo de ler
       });
     } finally {
       setIsLoading(false);
@@ -369,7 +436,7 @@ const Formulario: React.FC = () => {
               {/* Show validation errors */}
               {Object.keys(errors).length > 0 && currentSection === TOTAL_SECTIONS && (
                 <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-                  <h4 className="font-semibold text-destructive mb-2">Corrija os seguintes erros:</h4>
+                  <h4 className="font-semibold text-destructive mb-2">❌ Corrija os seguintes erros antes de enviar:</h4>
                   <ul className="text-sm text-destructive space-y-1">
                      {Object.entries(errors).map(([field, error]) => {
                        let message = `Erro no campo ${field}`;
@@ -379,6 +446,25 @@ const Formulario: React.FC = () => {
                        return <li key={field}>• {message}</li>;
                      })}
                   </ul>
+                  <div className="mt-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                    <p className="text-sm text-yellow-800">
+                      💡 <strong>Dica:</strong> Volte às seções anteriores para preencher os campos obrigatórios em vermelho.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Debug info in development */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-blue-800 mb-2">🔍 Debug Info (apenas em desenvolvimento)</h4>
+                  <div className="text-xs text-blue-700 font-mono">
+                    <div>Campos com erro: {Object.keys(errors).join(', ') || 'Nenhum'}</div>
+                    <div>Especialidades: {watchedFields.especialidades?.length || 0}</div>
+                    <div>Serviços: {watchedFields.servicos?.length || 0}</div>
+                    <div>Aceita Termos: {watchedFields.aceitaTermos ? 'Sim' : 'Não'}</div>
+                    <div>Aceita Privacidade: {watchedFields.aceitaPrivacidade ? 'Sim' : 'Não'}</div>
+                  </div>
                 </div>
               )}
 
