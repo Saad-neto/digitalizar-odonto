@@ -263,18 +263,90 @@ const Briefing: React.FC = () => {
 
       console.log('🌐 === PREPARANDO ENVIO PARA WEBHOOK ===');
       console.log('📍 URL:', 'https://n8n-webhook.isaai.online/webhook/form_odonto');
-      console.log('📦 Dados processados para envio:', JSON.stringify({
-        nomeCompleto: processedData.nomeCompleto,
+      
+      // Estrutura simplificada para N8N baseada no schema real
+      const webhookPayload = {
+        // Dados pessoais
+        nome_completo: processedData.nomeCompleto,
         email: processedData.email,
         telefone: processedData.telefone,
-        especialidades: processedData.especialidades,
-        servicos: processedData.servicos,
-        aceitaTermos: processedData.aceitaTermos,
-        aceitaPrivacidade: processedData.aceitaPrivacidade,
-        // Log apenas a estrutura dos arquivos, não o conteúdo
-        temLogoBase64: !!processedData.logoArquivoBase64?.length,
-        temFotosBase64: !!processedData.fotosBase64?.length,
-        temDocumentosBase64: !!processedData.documentosBase64?.length,
+        telefone_clinica: processedData.telefoneClinica,
+        
+        // Dados profissionais
+        nome_clinica: processedData.nomeClinica || '',
+        cro: processedData.cro || '',
+        tempo_atuacao: processedData.tempoAtuacao || '',
+        trajetoria: processedData.trajetoria || '',
+        
+        // Endereço
+        endereco_opcao: processedData.enderecoOpcao || '',
+        google_meu_negocio: processedData.googleMeuNegocio || '',
+        cep: processedData.cep || '',
+        numero: processedData.numero || '',
+        complemento: processedData.complemento || '',
+        
+        // Especialidades e serviços
+        especialidades: processedData.especialidades?.join(', ') || '',
+        especialidade_outra: processedData.especialidadeOutra || '',
+        servicos: processedData.servicos?.join(', ') || '',
+        servico_outro: processedData.servicoOutro || '',
+        conteudo_especifico: processedData.conteudoEspecifico || '',
+        
+        // Convênios
+        convenios: processedData.convenios || '',
+        convenios_especificar: processedData.conveniosEspecificar || '',
+        
+        // Preferências de design
+        estilo: processedData.estilo || '',
+        
+        // Redes sociais
+        redes_sociais: processedData.redesSociais || {},
+        facebook_url: processedData.facebookUrl || '',
+        instagram_url: processedData.instagramUrl || '',
+        youtube_url: processedData.youtubeUrl || '',
+        linkedin_url: processedData.linkedinUrl || '',
+        tiktok_url: processedData.tiktokUrl || '',
+        
+        // Google Reviews
+        avaliacoes_google: processedData.avaliacoesGoogle || '',
+        google_meu_negocio_avaliacoes: processedData.googleMeuNegocioAvaliacoes || '',
+        mostrar_avaliacoes_google: processedData.mostrarAvaliacoesGoogle || '',
+        
+        // Profissionais
+        profissionais: processedData.profissionais?.map(p => ({
+          nome: p.nome,
+          cro: p.cro,
+          descricao: p.descricao,
+          experiencia: p.experiencia
+        })) || [],
+        
+        // Logo
+        logo_opcao: processedData.logoOpcao || '',
+        tem_fotos: processedData.temFotos || '',
+        
+        // Consentimentos
+        aceita_termos: processedData.aceitaTermos,
+        aceita_privacidade: processedData.aceitaPrivacidade,
+        aceita_whatsapp: processedData.aceitaWhatsapp || false,
+        
+        // Arquivos (base64)
+        logo_base64: processedData.logoArquivoBase64?.[0] || null,
+        fotos_base64: processedData.fotosBase64 || [],
+        documentos_base64: processedData.documentosBase64 || [],
+        profissionais_fotos_base64: processedData.profissionaisFotosBase64 || {},
+        
+        // Metadata
+        timestamp: new Date().toISOString(),
+        user_agent: navigator.userAgent,
+        source: 'briefing_odonto'
+      };
+      
+      console.log('📦 Payload estruturado para N8N:', JSON.stringify({
+        ...webhookPayload,
+        logo_base64: webhookPayload.logo_base64 ? '[BASE64_DATA]' : null,
+        fotos_base64: webhookPayload.fotos_base64?.length ? `[${webhookPayload.fotos_base64.length} files]` : [],
+        documentos_base64: webhookPayload.documentos_base64?.length ? `[${webhookPayload.documentos_base64.length} files]` : [],
+        profissionais_fotos_base64: Object.keys(webhookPayload.profissionais_fotos_base64).length ? '[PROFESSIONAL_PHOTOS]' : {}
       }, null, 2));
 
       console.log('📡 === INICIANDO FETCH ===');
@@ -286,8 +358,9 @@ const Briefing: React.FC = () => {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
+            'User-Agent': navigator.userAgent,
           },
-          body: JSON.stringify(processedData),
+          body: JSON.stringify(webhookPayload),
         });
         console.log('✅ Fetch completado - Status:', response.status);
       } catch (fetchError) {
