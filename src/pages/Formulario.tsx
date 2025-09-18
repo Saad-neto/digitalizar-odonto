@@ -33,7 +33,7 @@ const Formulario: React.FC = () => {
       console.log('🧪 === TESTANDO WEBHOOK ===');
       const testData = { test: true, timestamp: Date.now() };
       
-      const response = await fetch('https://n8n-webhook.isaai.online/webhook/sitesodonto', {
+      const response = await fetch('https://n8n-webhook.isaai.online/webhook/form_odonto', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -262,7 +262,7 @@ const Formulario: React.FC = () => {
       }
 
       console.log('🌐 === PREPARANDO ENVIO PARA WEBHOOK ===');
-      console.log('📍 URL:', 'https://n8n-webhook.isaai.online/webhook/sitesodonto');
+      console.log('📍 URL:', 'https://n8n-webhook.isaai.online/webhook/form_odonto');
       console.log('📦 Dados processados para envio:', JSON.stringify({
         nomeCompleto: processedData.nomeCompleto,
         email: processedData.email,
@@ -281,7 +281,7 @@ const Formulario: React.FC = () => {
       let response;
       
       try {
-        response = await fetch('https://n8n-webhook.isaai.online/webhook/sitesodonto', {
+        response = await fetch('https://n8n-webhook.isaai.online/webhook/form_odonto', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
