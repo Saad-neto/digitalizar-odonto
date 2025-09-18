@@ -168,7 +168,7 @@ const GuaranteesSection: React.FC = () => {
         {/* CTA */}
         <div className="text-center mt-16">
           <Link 
-            to="/briefing"
+            to="/formulario"
             className="btn-hero text-xl px-12 py-5"
           >
             Investir Sem Riscos Agora!

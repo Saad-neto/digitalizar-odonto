@@ -52,7 +52,7 @@ const HeroSection: React.FC = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
               <Link 
-                to="/briefing"
+                to="/formulario"
                 className="btn-hero text-lg px-8 py-4"
               >
                 🚀 QUERO MEU SITE EM 24H - R$ 497

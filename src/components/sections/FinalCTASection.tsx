@@ -79,7 +79,7 @@ const FinalCTASection: React.FC = () => {
         {/* Main CTA Buttons */}
         <div className="space-y-6 mb-12">
           <Link 
-            to="/briefing"
+            to="/formulario"
             className="bg-success hover:bg-success-dark text-white text-2xl font-bold px-12 py-6 rounded-xl shadow-cta hover:shadow-hover transition-all duration-300 hover:scale-105 w-full md:w-auto inline-flex"
           >
             <div className="flex items-center justify-center gap-3">
@@ -103,7 +103,7 @@ const FinalCTASection: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              to="/briefing"
+              to="/formulario"
               className="btn-hero flex items-center gap-2"
             >
               <MessageCircle size={20} />

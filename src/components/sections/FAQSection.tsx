@@ -108,7 +108,7 @@ const FAQSection: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              to="/briefing"
+              to="/formulario"
               className="btn-hero flex items-center justify-center gap-2"
             >
               🚀 QUERO MEU SITE EM 24 HORAS
