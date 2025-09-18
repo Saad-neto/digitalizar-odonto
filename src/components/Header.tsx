@@ -83,14 +83,14 @@ const Header: React.FC = () => {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <Link 
-              to="/formulario"
+              to="/briefing"
               className="btn-secondary flex items-center gap-2"
             >
               <MessageCircle size={18} />
               Quero meu site
             </Link>
             <Link 
-              to="/formulario"
+              to="/briefing"
               className="btn-hero"
             >
               Fazer Briefing
@@ -142,14 +142,14 @@ const Header: React.FC = () => {
               </button>
               <div className="px-4 py-2 space-y-2">
                 <Link 
-                  to="/formulario"
+                  to="/briefing"
                   className="btn-secondary flex items-center gap-2 w-full"
                 >
                   <MessageCircle size={18} />
                   Quero meu site
                 </Link>
                 <Link 
-                  to="/formulario"
+                  to="/briefing"
                   className="btn-hero w-full"
                 >
                   Fazer Briefing

@@ -19,7 +19,7 @@ const getSectionProgress = (currentSection: number, completedFields: number, tot
   return Math.min(baseProgress + sectionProgress, 100);
 };
 
-const Formulario: React.FC = () => {
+const Briefing: React.FC = () => {
   const [currentSection, setCurrentSection] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [testWebhook, setTestWebhook] = useState(false);
@@ -151,8 +151,8 @@ const Formulario: React.FC = () => {
   };
 
   const onSubmit = async (data: FormData) => {
-    console.log('🚀 === INICIANDO DEBUG DO FORMULÁRIO ===');
-    console.log('📝 Dados brutos do formulário:', JSON.stringify(data, null, 2));
+    console.log('🚀 === INICIANDO DEBUG DO BRIEFING ===');
+    console.log('📝 Dados brutos do briefing:', JSON.stringify(data, null, 2));
     console.log('🌐 User Agent:', navigator.userAgent);
     console.log('🔗 Current URL:', window.location.href);
     
@@ -319,7 +319,7 @@ const Formulario: React.FC = () => {
       const responseData = await response.text();
       console.log('✅ Resposta do webhook (sucesso):', responseData);
 
-      console.log('🎉 === FORMULÁRIO ENVIADO COM SUCESSO ===');
+      console.log('🎉 === BRIEFING ENVIADO COM SUCESSO ===');
       
       toast({
         title: "Sucesso!",
@@ -329,11 +329,11 @@ const Formulario: React.FC = () => {
       
       navigate('/obrigado');
     } catch (error) {
-      console.error('💥 === ERRO NO ENVIO DO FORMULÁRIO ===');
+      console.error('💥 === ERRO NO ENVIO DO BRIEFING ===');
       console.error('Erro completo:', error);
       console.error('Stack trace:', error instanceof Error ? error.stack : 'Sem stack trace');
       
-      let errorMessage = 'Erro inesperado ao enviar formulário';
+      let errorMessage = 'Erro inesperado ao enviar briefing';
       
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -344,7 +344,7 @@ const Formulario: React.FC = () => {
       }
 
       // Log do estado atual do formulário para debug
-      console.error('Estado atual do formulário:', {
+      console.error('Estado atual do briefing:', {
         currentSection,
         formErrors: Object.keys(errors),
         formData: {
@@ -359,7 +359,7 @@ const Formulario: React.FC = () => {
       });
 
       toast({
-        title: "Erro ao enviar formulário",
+        title: "Erro ao enviar briefing",
         description: errorMessage + ". Verifique os campos obrigatórios e tente novamente.",
         variant: "destructive",
         duration: 8000, // Maior duração para dar tempo de ler
@@ -389,7 +389,7 @@ const Formulario: React.FC = () => {
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-success-bg text-success-dark text-sm font-medium mb-6">
             <Clock className="w-4 h-4" />
-            Continuação do form inicial
+            Briefing Profissional
           </div>
           
           <h1 className="text-h1 font-extrabold text-primary mb-6">
@@ -450,7 +450,7 @@ const Formulario: React.FC = () => {
                         ? 'bg-primary text-primary-foreground'
                         : section < currentSection
                         ? 'bg-success text-success-foreground'
-                        : 'bg-gray-200 text-text-light'
+                        : 'bg-muted text-muted-foreground'
                     }`}
                   >
                     {section}
@@ -458,11 +458,11 @@ const Formulario: React.FC = () => {
                 ))}
               </div>
 
-              {/* Current Section */}
+              {/* Current Section Content */}
               {renderSection()}
 
               {/* Navigation Buttons */}
-              <div className="flex items-center justify-between pt-8">
+              <div className="flex items-center justify-between pt-8 border-t">
                 <Button
                   type="button"
                   variant="outline"
@@ -474,6 +474,10 @@ const Formulario: React.FC = () => {
                   Anterior
                 </Button>
 
+                <div className="flex items-center gap-2 text-sm text-text-secondary">
+                  <span>{currentSection} de {TOTAL_SECTIONS}</span>
+                </div>
+
                 {currentSection < TOTAL_SECTIONS ? (
                   <Button
                     type="button"
@@ -484,71 +488,84 @@ const Formulario: React.FC = () => {
                     <ChevronRight className="w-4 h-4" />
                   </Button>
                 ) : (
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     disabled={isLoading}
-                    className="btn-hero flex items-center gap-2"
+                    className="flex items-center gap-2 bg-success hover:bg-success-dark"
                   >
-                    <Rocket className="w-5 h-5" />
-                    {isLoading ? 'Enviando...' : '🚀 FINALIZAR BRIEFING E COMEÇAR MEU SITE'}
-                    <ArrowRight className="w-5 h-5" />
+                    {isLoading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <Rocket className="w-4 h-4" />
+                        Enviar Briefing
+                      </>
+                    )}
                   </Button>
                 )}
               </div>
 
-              {/* Show validation errors */}
-              {Object.keys(errors).length > 0 && currentSection === TOTAL_SECTIONS && (
+              {/* Error Display */}
+              {Object.keys(errors).length > 0 && (
                 <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-                  <h4 className="font-semibold text-destructive mb-2">❌ Corrija os seguintes erros antes de enviar:</h4>
-                  <ul className="text-sm text-destructive space-y-1">
-                     {Object.entries(errors).map(([field, error]) => {
-                       let message = `Erro no campo ${field}`;
-                       if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
-                         message = error.message;
-                       }
-                       return <li key={field}>• {message}</li>;
-                     })}
+                  <h3 className="font-medium text-destructive mb-2">
+                    Corrija os seguintes erros:
+                  </h3>
+                  <ul className="space-y-1 text-sm text-destructive">
+                    {Object.entries(errors).map(([field, error]) => (
+                      <li key={field}>
+                        • {(error as FieldError)?.message || `Erro no campo ${field}`}
+                      </li>
+                    ))}
                   </ul>
-                  <div className="mt-3 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
-                    <p className="text-sm text-yellow-800">
-                      💡 <strong>Dica:</strong> Volte às seções anteriores para preencher os campos obrigatórios em vermelho.
-                    </p>
-                  </div>
                 </div>
               )}
 
-              {/* Debug info in development */}
+              {/* Development Debug Info */}
               {process.env.NODE_ENV === 'development' && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-800 mb-2">🔍 Debug Info (apenas em desenvolvimento)</h4>
-                  <div className="text-xs text-blue-700 font-mono space-y-1">
-                    <div>Campos com erro: {Object.keys(errors).join(', ') || 'Nenhum'}</div>
-                    <div>Especialidades: {watchedFields.especialidades?.length || 0}</div>
-                    <div>Serviços: {watchedFields.servicos?.length || 0}</div>
-                    <div>Aceita Termos: {watchedFields.aceitaTermos ? 'Sim' : 'Não'}</div>
-                    <div>Aceita Privacidade: {watchedFields.aceitaPrivacidade ? 'Sim' : 'Não'}</div>
-                  </div>
+                <div className="bg-muted p-4 rounded-lg">
+                  <h3 className="font-medium mb-2">Debug Info (Dev Only)</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Seção atual: {currentSection}, Progresso: {Math.round(progress)}%
+                  </p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Campos preenchidos: {filledFields}/{totalFields}
+                  </p>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={testWebhookConnection}
                     disabled={testWebhook}
-                    className="mt-2"
                   >
-                    {testWebhook ? 'Testando...' : '🧪 Testar Webhook'}
+                    {testWebhook ? 'Testando...' : 'Testar Webhook'}
                   </Button>
                 </div>
               )}
-
-              {/* Final Section Message */}
-              {currentSection === TOTAL_SECTIONS && (
-                <div className="text-center space-y-2 bg-gradient-to-r from-success-bg to-primary-ultra-light p-6 rounded-lg">
-                  <h3 className="font-bold text-text-primary">⏰ Entrega garantida em 24h</h3>
-                  <p className="text-text-secondary">💰 Você só paga quando estiver aprovado</p>
-                </div>
-              )}
             </form>
+
+            {/* Final Section Message */}
+            {currentSection === TOTAL_SECTIONS && (
+              <div className="mt-8 p-6 bg-success-bg border border-success rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 bg-success rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <ArrowRight className="w-3 h-3 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-success-dark mb-2">
+                      Quase pronto! 🎉
+                    </h3>
+                    <p className="text-success-dark/80 text-sm leading-relaxed">
+                      Após enviar seu briefing, você receberá seu site profissional em até 24 horas. 
+                      O pagamento será processado somente após a entrega e sua aprovação total do projeto.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -556,4 +573,4 @@ const Formulario: React.FC = () => {
   );
 };
 
-export default Formulario;
+export default Briefing;
