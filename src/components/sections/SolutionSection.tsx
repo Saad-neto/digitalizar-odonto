@@ -179,7 +179,7 @@ const SolutionSection: React.FC = () => {
         {/* CTA Section */}
         <div className="text-center mt-16">
           <Link 
-            to="/formulario"
+            to="/briefing"
             className="btn-hero text-xl px-12 py-5"
           >
             Quero Meu Site em 24h Também!

@@ -229,7 +229,7 @@ const OffersSection: React.FC = () => {
           {/* CTA Buttons */}
           <div className="text-center space-y-4">
             <Link 
-              to="/formulario"
+              to="/briefing"
               className="btn-hero text-xl px-12 py-5 w-full md:w-auto"
             >
               🚀 SIM! QUERO MEU SITE EM 24H
