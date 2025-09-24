@@ -485,26 +485,57 @@ const BriefingOdonto = () => {
     };
     
     try {
+      console.log('Iniciando envio do formulário...');
+      console.log('Dados a serem enviados:', finalData);
+      
       // Enviar para o webhook do n8n
       const webhookUrl = 'https://n8n.isaai.online/webhook/odonto_form';
+      console.log('URL do webhook:', webhookUrl);
       
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify(finalData)
+        body: JSON.stringify(finalData),
+        mode: 'cors'
       });
 
+      console.log('Status da resposta:', response.status);
+      console.log('Headers da resposta:', response.headers);
+      
       if (response.ok) {
+        const responseData = await response.text();
+        console.log('Resposta do servidor:', responseData);
         console.log('Formulário enviado com sucesso para o n8n');
         alert('Formulário enviado com sucesso! Dados processados pelo sistema.');
       } else {
-        throw new Error('Erro na resposta do servidor');
+        const errorText = await response.text();
+        console.error('Erro HTTP:', response.status, response.statusText);
+        console.error('Conteúdo da resposta de erro:', errorText);
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
     } catch (error) {
-      console.error('Erro ao enviar formulário:', error);
-      alert('Erro ao enviar formulário. Por favor, tente novamente.');
+      console.error('Erro detalhado ao enviar formulário:', error);
+      
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        console.error('Erro de rede/CORS detectado');
+        alert('Erro de conexão. Verifique se o servidor está acessível e as configurações de CORS estão corretas.');
+      } else if (error.message.includes('Failed to fetch')) {
+        console.error('Falha na requisição - possível problema de CORS');
+        alert('Erro ao conectar com o servidor. Verifique as configurações de CORS no n8n.');
+      } else {
+        console.error('Erro genérico:', error.message);
+        alert(`Erro ao enviar formulário: ${error.message}. Por favor, tente novamente.`);
+      }
+      
+      // Salvar dados localmente como fallback
+      console.log('Salvando dados localmente como backup:', finalData);
+      localStorage.setItem('briefing_backup', JSON.stringify({
+        data: finalData,
+        timestamp: new Date().toISOString()
+      }));
     }
   };
 
