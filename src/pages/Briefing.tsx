@@ -532,7 +532,8 @@ const BriefingOdonto = () => {
         
         // Redirecionar para página de obrigado
         console.log('Redirecionando para página de obrigado...');
-        navigate('/obrigado');
+        // Use window.location.replace as fallback for production
+        window.location.replace('/obrigado');
       } else {
         const errorText = await response.text();
         console.error('Erro HTTP:', response.status, response.statusText);
