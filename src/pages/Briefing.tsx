@@ -1439,7 +1439,7 @@ const BriefingOdonto = () => {
                       onChange={(e) => updateFormData('avaliacoes_google', e.target.value)}
                       className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
                     />
-                    <span className="ml-3 font-medium text-purple-800">❌ Não, prefiro depoimentos personalizados</span>
+                    <span className="ml-3 font-medium text-purple-800">❌ Não vamos usar depoimentos</span>
                   </label>
                 </div>
                 <p className="text-sm text-purple-600 mt-2">As avaliações do Google podem ser sincronizadas automaticamente com o site</p>
@@ -1536,13 +1536,23 @@ const BriefingOdonto = () => {
                     <span className="ml-3 font-medium text-purple-800">Sim, temos manual da marca</span>
                   </label>
                   {formData.manual_marca === 'sim' && (
-                    <textarea
-                      placeholder="Descreva as diretrizes da marca (cores, fontes, estilo visual, etc.)"
-                      value={formData.manual_marca_texto || ''}
-                      onChange={(e) => updateFormData('manual_marca_texto', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8 resize-none"
-                      rows={3}
-                    />
+                    <>
+                      <textarea
+                        placeholder="Descreva as diretrizes da marca (cores, fontes, estilo visual, etc.)"
+                        value={formData.manual_marca_texto || ''}
+                        onChange={(e) => updateFormData('manual_marca_texto', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8 resize-none"
+                        rows={3}
+                      />
+                      <div className="ml-8 mt-3">
+                        <FileUploadField
+                          fieldName="manual_marca_arquivos"
+                          accept=".pdf,.doc,.docx"
+                          multiple={true}
+                          label="Envie o manual da marca/identidade visual"
+                        />
+                      </div>
+                    </>
                   )}
                   <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
                     <input
@@ -1733,13 +1743,23 @@ const BriefingOdonto = () => {
                     <span className="ml-3 font-medium text-purple-800">Sim, temos textos prontos</span>
                   </label>
                   {formData.textos_existentes === 'sim' && (
-                    <textarea
-                      placeholder="Cole aqui os textos que já têm prontos para o site..."
-                      value={formData.textos_texto || ''}
-                      onChange={(e) => updateFormData('textos_texto', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8 resize-none"
-                      rows={5}
-                    />
+                    <>
+                      <textarea
+                        placeholder="Cole aqui os textos que já têm prontos para o site..."
+                        value={formData.textos_texto || ''}
+                        onChange={(e) => updateFormData('textos_texto', e.target.value)}
+                        className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8 resize-none"
+                        rows={5}
+                      />
+                      <div className="ml-8 mt-3">
+                        <FileUploadField
+                          fieldName="textos_prontos_arquivos"
+                          accept=".pdf,.doc,.docx,.txt"
+                          multiple={true}
+                          label="Envie os textos prontos para o site"
+                        />
+                      </div>
+                    </>
                   )}
                   <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
                     <input
@@ -1775,7 +1795,7 @@ const BriefingOdonto = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-4">
-            OdontoForm
+            Briefing Odonto
           </h1>
           <p className="text-purple-600/80 text-lg">Formulário Completo para Desenvolvimento do Site</p>
         </div>
