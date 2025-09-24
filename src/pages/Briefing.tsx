@@ -242,6 +242,72 @@ const BriefingOdonto = () => {
           newErrors.especialidades = 'Selecione pelo menos uma especialidade';
         }
         break;
+        
+      case 3: // Serviços/Tratamentos
+        if (!formData.servicos_procurados) {
+          newErrors.servicos_procurados = 'Informe os serviços mais procurados';
+        }
+        if (!formData.convenios) {
+          newErrors.convenios = 'Informe se aceita convênios';
+        }
+        if (!formData.emergencia_24h) {
+          newErrors.emergencia_24h = 'Informe sobre atendimento 24h';
+        }
+        break;
+        
+      case 4: // Tecnologia/Diferenciais
+        if (!formData.equipamentos || formData.equipamentos.length === 0) {
+          newErrors.equipamentos = 'Selecione pelo menos um equipamento/tecnologia';
+        }
+        if (!formData.sedacao_consciente) {
+          newErrors.sedacao_consciente = 'Informe sobre sedação consciente';
+        }
+        break;
+        
+      case 5: // Localização/Contato
+        if (!formData.cep) {
+          newErrors.cep = 'CEP é obrigatório';
+        }
+        if (!formData.rua) {
+          newErrors.rua = 'Endereço é obrigatório';
+        }
+        if (!formData.cidade) {
+          newErrors.cidade = 'Cidade é obrigatória';
+        }
+        if (!formData.estacionamento) {
+          newErrors.estacionamento = 'Informe sobre estacionamento';
+        }
+        if (!formData.redes_sociais || formData.redes_sociais.length === 0) {
+          newErrors.redes_sociais = 'Selecione pelo menos uma rede social';
+        }
+        break;
+        
+      case 6: // Depoimentos/Cases
+        if (!formData.depoimentos_estrategia) {
+          newErrors.depoimentos_estrategia = 'Selecione uma estratégia para depoimentos';
+        }
+        break;
+        
+      case 7: // Identidade Visual/Design
+        if (!formData.logotipo_existente) {
+          newErrors.logotipo_existente = 'Informe sobre logotipo existente';
+        }
+        if (!formData.manual_marca) {
+          newErrors.manual_marca = 'Informe sobre manual da marca';
+        }
+        if (!formData.fotos_consultorio) {
+          newErrors.fotos_consultorio = 'Informe sobre fotos do consultório';
+        }
+        if (!formData.estilo_fonte) {
+          newErrors.estilo_fonte = 'Selecione um estilo de fonte';
+        }
+        if (!formData.tom_linguagem) {
+          newErrors.tom_linguagem = 'Selecione um tom de linguagem';
+        }
+        if (!formData.textos_existentes) {
+          newErrors.textos_existentes = 'Informe sobre textos existentes';
+        }
+        break;
     }
     
     setErrors(newErrors);
@@ -654,6 +720,785 @@ const BriefingOdonto = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 3: // Serviços/Tratamentos
+        return (
+          <div className="space-y-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
+                Serviços/Tratamentos
+              </h2>
+              <p className="text-purple-600/70 text-lg">Informações sobre os serviços oferecidos</p>
+            </div>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Quais os 3 serviços/tratamentos mais procurados pelos pacientes? *
+                </label>
+                <textarea
+                  placeholder="1. Limpeza e profilaxia&#10;2. Clareamento dental&#10;3. Restaurações em resina"
+                  value={formData.servicos_procurados || ''}
+                  onChange={(e) => updateFormData('servicos_procurados', e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none ${
+                    errors.servicos_procurados ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                  }`}
+                  rows={4}
+                />
+                {errors.servicos_procurados && <p className="text-red-500 text-sm mt-2 font-medium">{errors.servicos_procurados}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Aceita convênios? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="convenios"
+                      value="sim"
+                      checked={formData.convenios === 'sim'}
+                      onChange={(e) => updateFormData('convenios', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, aceito convênios</span>
+                  </label>
+                  {formData.convenios === 'sim' && (
+                    <input
+                      type="text"
+                      placeholder="Unimed, Bradesco Dental, SulAmérica, etc."
+                      value={formData.convenios_lista || ''}
+                      onChange={(e) => updateFormData('convenios_lista', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8"
+                    />
+                  )}
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="convenios"
+                      value="nao"
+                      checked={formData.convenios === 'nao'}
+                      onChange={(e) => updateFormData('convenios', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não, apenas particular</span>
+                  </label>
+                </div>
+                {errors.convenios && <p className="text-red-500 text-sm mt-2 font-medium">{errors.convenios}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Tem atendimento de emergência 24h? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="emergencia_24h"
+                      value="sim"
+                      checked={formData.emergencia_24h === 'sim'}
+                      onChange={(e) => updateFormData('emergencia_24h', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, 24 horas</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="emergencia_24h"
+                      value="nao"
+                      checked={formData.emergencia_24h === 'nao'}
+                      onChange={(e) => updateFormData('emergencia_24h', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não, apenas horário comercial</span>
+                  </label>
+                </div>
+                {errors.emergencia_24h && <p className="text-red-500 text-sm mt-2 font-medium">{errors.emergencia_24h}</p>}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 4: // Tecnologia/Diferenciais
+        return (
+          <div className="space-y-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
+                Tecnologia/Diferenciais
+              </h2>
+              <p className="text-purple-600/70 text-lg">Equipamentos e tecnologias do consultório</p>
+            </div>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Quais equipamentos/tecnologias disponíveis? *
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    '🦴 Tomografia computadorizada',
+                    '📱 Radiografia digital',
+                    '💉 Anestesia computadorizada',
+                    '⚡ Laser odontológico',
+                    '🔬 Microscópio odontológico',
+                    '💻 Planejamento digital (CAD/CAM)',
+                    '🎯 Scanner intraoral',
+                    '📷 Câmera intraoral',
+                    '🦷 Implantes guiados por cirurgia',
+                    '⭐ Sedação com óxido nitroso',
+                    '🏥 Equipamentos de última geração',
+                    '🔧 Tecnologia de ponta'
+                  ].map((equip) => (
+                    <label key={equip} className="flex items-center p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                      <input
+                        type="checkbox"
+                        checked={(formData.equipamentos || []).includes(equip)}
+                        onChange={(e) => {
+                          const equipamentos = formData.equipamentos || [];
+                          if (e.target.checked) {
+                            updateFormData('equipamentos', [...equipamentos, equip]);
+                          } else {
+                            updateFormData('equipamentos', equipamentos.filter((item: string) => item !== equip));
+                          }
+                        }}
+                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2"
+                      />
+                      <span className="ml-3 text-sm font-medium text-purple-800">{equip}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.equipamentos && <p className="text-red-500 text-sm mt-2 font-medium">{errors.equipamentos}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Oferece sedação consciente? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="sedacao_consciente"
+                      value="sim"
+                      checked={formData.sedacao_consciente === 'sim'}
+                      onChange={(e) => updateFormData('sedacao_consciente', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, oferecemos sedação</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="sedacao_consciente"
+                      value="nao"
+                      checked={formData.sedacao_consciente === 'nao'}
+                      onChange={(e) => updateFormData('sedacao_consciente', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não oferecemos</span>
+                  </label>
+                </div>
+                {errors.sedacao_consciente && <p className="text-red-500 text-sm mt-2 font-medium">{errors.sedacao_consciente}</p>}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 5: // Localização/Contato
+        return (
+          <div className="space-y-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
+                Localização/Contato
+              </h2>
+              <p className="text-purple-600/70 text-lg">Endereço e informações de contato</p>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-purple-800 mb-3">
+                    CEP *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="00000-000"
+                      value={formData.cep || ''}
+                      onChange={(e) => {
+                        const formatted = formatCEP(e.target.value);
+                        updateFormData('cep', formatted);
+                        if (formatted.length === 9) {
+                          buscarEnderecoPorCEP(formatted);
+                        }
+                      }}
+                      maxLength={9}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                        errors.cep ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                      }`}
+                    />
+                    {loadingCep && (
+                      <div className="absolute right-3 top-3">
+                        <AlertCircle className="w-5 h-5 text-purple-500 animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                  {errors.cep && <p className="text-red-500 text-sm mt-2 font-medium">{errors.cep}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-purple-800 mb-3">
+                    Número
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="123"
+                    value={formData.numero || ''}
+                    onChange={(e) => updateFormData('numero', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Rua/Endereço *
+                </label>
+                <input
+                  type="text"
+                  placeholder="Rua das Flores"
+                  value={formData.rua || ''}
+                  onChange={(e) => updateFormData('rua', e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                    errors.rua ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                  }`}
+                />
+                {errors.rua && <p className="text-red-500 text-sm mt-2 font-medium">{errors.rua}</p>}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-purple-800 mb-3">
+                    Bairro
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Centro"
+                    value={formData.bairro || ''}
+                    onChange={(e) => updateFormData('bairro', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-purple-800 mb-3">
+                    Cidade *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="São Paulo"
+                    value={formData.cidade || ''}
+                    onChange={(e) => updateFormData('cidade', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                      errors.cidade ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                    }`}
+                  />
+                  {errors.cidade && <p className="text-red-500 text-sm mt-2 font-medium">{errors.cidade}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-purple-800 mb-3">
+                    UF
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="SP"
+                    value={formData.uf || ''}
+                    onChange={(e) => updateFormData('uf', e.target.value.toUpperCase())}
+                    maxLength={2}
+                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Tem estacionamento? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="estacionamento"
+                      value="sim"
+                      checked={formData.estacionamento === 'sim'}
+                      onChange={(e) => updateFormData('estacionamento', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, temos estacionamento</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="estacionamento"
+                      value="nao"
+                      checked={formData.estacionamento === 'nao'}
+                      onChange={(e) => updateFormData('estacionamento', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não temos estacionamento</span>
+                  </label>
+                </div>
+                {errors.estacionamento && <p className="text-red-500 text-sm mt-2 font-medium">{errors.estacionamento}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Redes sociais ativas *
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    '📘 Facebook',
+                    '📸 Instagram',
+                    '🎬 YouTube',
+                    '💼 LinkedIn',
+                    '🎵 TikTok'
+                  ].map((rede) => (
+                    <label key={rede} className="flex items-center p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                      <input
+                        type="checkbox"
+                        checked={(formData.redes_sociais || []).includes(rede)}
+                        onChange={(e) => {
+                          const redes = formData.redes_sociais || [];
+                          if (e.target.checked) {
+                            updateFormData('redes_sociais', [...redes, rede]);
+                          } else {
+                            updateFormData('redes_sociais', redes.filter((item: string) => item !== rede));
+                          }
+                        }}
+                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2"
+                      />
+                      <span className="ml-3 text-sm font-medium text-purple-800">{rede}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.redes_sociais && <p className="text-red-500 text-sm mt-2 font-medium">{errors.redes_sociais}</p>}
+              </div>
+
+              {(formData.redes_sociais || []).includes('📘 Facebook') && (
+                <input
+                  type="url"
+                  placeholder="Link do Facebook"
+                  value={formData.link_facebook || ''}
+                  onChange={(e) => updateFormData('link_facebook', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                />
+              )}
+
+              {(formData.redes_sociais || []).includes('📸 Instagram') && (
+                <input
+                  type="url"
+                  placeholder="Link do Instagram"
+                  value={formData.link_instagram || ''}
+                  onChange={(e) => updateFormData('link_instagram', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                />
+              )}
+
+              {(formData.redes_sociais || []).includes('🎬 YouTube') && (
+                <input
+                  type="url"
+                  placeholder="Link do YouTube"
+                  value={formData.link_youtube || ''}
+                  onChange={(e) => updateFormData('link_youtube', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                />
+              )}
+
+              {(formData.redes_sociais || []).includes('💼 LinkedIn') && (
+                <input
+                  type="url"
+                  placeholder="Link do LinkedIn"
+                  value={formData.link_linkedin || ''}
+                  onChange={(e) => updateFormData('link_linkedin', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                />
+              )}
+
+              {(formData.redes_sociais || []).includes('🎵 TikTok') && (
+                <input
+                  type="url"
+                  placeholder="Link do TikTok"
+                  value={formData.link_tiktok || ''}
+                  onChange={(e) => updateFormData('link_tiktok', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                />
+              )}
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Link do Google Maps (opcional)
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://maps.google.com/..."
+                  value={formData.link_google_maps || ''}
+                  onChange={(e) => updateFormData('link_google_maps', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                />
+              </div>
+            </div>
+          </div>
+        );
+
+      case 6: // Depoimentos/Cases
+        return (
+          <div className="space-y-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
+                Depoimentos/Cases
+              </h2>
+              <p className="text-purple-600/70 text-lg">Estratégia para depoimentos e cases de sucesso</p>
+            </div>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Qual estratégia para depoimentos? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="depoimentos_estrategia"
+                      value="tenho"
+                      checked={formData.depoimentos_estrategia === 'tenho'}
+                      onChange={(e) => updateFormData('depoimentos_estrategia', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Tenho depoimentos específicos para usar</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="depoimentos_estrategia"
+                      value="criem"
+                      checked={formData.depoimentos_estrategia === 'criem'}
+                      onChange={(e) => updateFormData('depoimentos_estrategia', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Criem depoimentos baseados na nossa realidade</span>
+                  </label>
+                </div>
+                {errors.depoimentos_estrategia && <p className="text-red-500 text-sm mt-2 font-medium">{errors.depoimentos_estrategia}</p>}
+              </div>
+
+              {formData.depoimentos_estrategia === 'tenho' && (
+                <div>
+                  <label className="block text-sm font-semibold text-purple-800 mb-3">
+                    Cole aqui os depoimentos específicos
+                  </label>
+                  <textarea
+                    placeholder="Cole aqui os depoimentos reais dos seus pacientes..."
+                    value={formData.depoimentos_texto || ''}
+                    onChange={(e) => updateFormData('depoimentos_texto', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+                    rows={5}
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Link das avaliações do Google (opcional)
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://www.google.com/search?q=..."
+                  value={formData.link_google_avaliacoes || ''}
+                  onChange={(e) => updateFormData('link_google_avaliacoes', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                />
+              </div>
+            </div>
+          </div>
+        );
+
+      case 7: // Identidade Visual/Design
+        return (
+          <div className="space-y-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
+                Identidade Visual/Design
+              </h2>
+              <p className="text-purple-600/70 text-lg">Definições visuais e de marca do consultório</p>
+            </div>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Já tem logotipo? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="logotipo_existente"
+                      value="sim"
+                      checked={formData.logotipo_existente === 'sim'}
+                      onChange={(e) => updateFormData('logotipo_existente', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, já tenho logotipo</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="logotipo_existente"
+                      value="nao"
+                      checked={formData.logotipo_existente === 'nao'}
+                      onChange={(e) => updateFormData('logotipo_existente', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não, preciso de um logotipo</span>
+                  </label>
+                </div>
+                {errors.logotipo_existente && <p className="text-red-500 text-sm mt-2 font-medium">{errors.logotipo_existente}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Tem manual da marca/identidade visual? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="manual_marca"
+                      value="sim"
+                      checked={formData.manual_marca === 'sim'}
+                      onChange={(e) => updateFormData('manual_marca', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, temos manual da marca</span>
+                  </label>
+                  {formData.manual_marca === 'sim' && (
+                    <textarea
+                      placeholder="Descreva as diretrizes da marca (cores, fontes, estilo visual, etc.)"
+                      value={formData.manual_marca_texto || ''}
+                      onChange={(e) => updateFormData('manual_marca_texto', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8 resize-none"
+                      rows={3}
+                    />
+                  )}
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="manual_marca"
+                      value="nao"
+                      checked={formData.manual_marca === 'nao'}
+                      onChange={(e) => updateFormData('manual_marca', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não, criem baseado no nosso perfil</span>
+                  </label>
+                </div>
+                {errors.manual_marca && <p className="text-red-500 text-sm mt-2 font-medium">{errors.manual_marca}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Têm fotos profissionais do consultório? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="fotos_consultorio"
+                      value="sim"
+                      checked={formData.fotos_consultorio === 'sim'}
+                      onChange={(e) => updateFormData('fotos_consultorio', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, temos fotos profissionais</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="fotos_consultorio"
+                      value="nao"
+                      checked={formData.fotos_consultorio === 'nao'}
+                      onChange={(e) => updateFormData('fotos_consultorio', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não, usem fotos de banco de imagens</span>
+                  </label>
+                </div>
+                {errors.fotos_consultorio && <p className="text-red-500 text-sm mt-2 font-medium">{errors.fotos_consultorio}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Estilo de fonte preferido *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="estilo_fonte"
+                      value="elegante"
+                      checked={formData.estilo_fonte === 'elegante'}
+                      onChange={(e) => updateFormData('estilo_fonte', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Elegante/Sofisticado</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="estilo_fonte"
+                      value="moderno"
+                      checked={formData.estilo_fonte === 'moderno'}
+                      onChange={(e) => updateFormData('estilo_fonte', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Moderno/Limpo</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="estilo_fonte"
+                      value="acolhedor"
+                      checked={formData.estilo_fonte === 'acolhedor'}
+                      onChange={(e) => updateFormData('estilo_fonte', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Acolhedor/Humanizado</span>
+                  </label>
+                </div>
+                {errors.estilo_fonte && <p className="text-red-500 text-sm mt-2 font-medium">{errors.estilo_fonte}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Percepções desejadas sobre o consultório
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    '💎 Luxuoso/Premium',
+                    '🤝 Confiável/Seguro',
+                    '🚀 Inovador/Moderno',
+                    '❤️ Acolhedor/Humanizado',
+                    '⚡ Rápido/Eficiente',
+                    '🎓 Especializado/Expert'
+                  ].map((percepcao) => (
+                    <label key={percepcao} className="flex items-center p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                      <input
+                        type="checkbox"
+                        checked={(formData.percepcao || []).includes(percepcao)}
+                        onChange={(e) => {
+                          const percepcoes = formData.percepcao || [];
+                          if (e.target.checked) {
+                            updateFormData('percepcao', [...percepcoes, percepcao]);
+                          } else {
+                            updateFormData('percepcao', percepcoes.filter((item: string) => item !== percepcao));
+                          }
+                        }}
+                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2"
+                      />
+                      <span className="ml-3 text-sm font-medium text-purple-800">{percepcao}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Tom de linguagem *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="tom_linguagem"
+                      value="formal"
+                      checked={formData.tom_linguagem === 'formal'}
+                      onChange={(e) => updateFormData('tom_linguagem', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Formal/Técnico</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="tom_linguagem"
+                      value="acessivel"
+                      checked={formData.tom_linguagem === 'acessivel'}
+                      onChange={(e) => updateFormData('tom_linguagem', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Acessível/Didático</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="tom_linguagem"
+                      value="amigavel"
+                      checked={formData.tom_linguagem === 'amigavel'}
+                      onChange={(e) => updateFormData('tom_linguagem', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Amigável/Próximo</span>
+                  </label>
+                </div>
+                {errors.tom_linguagem && <p className="text-red-500 text-sm mt-2 font-medium">{errors.tom_linguagem}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Já têm textos prontos para o site? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="textos_existentes"
+                      value="sim"
+                      checked={formData.textos_existentes === 'sim'}
+                      onChange={(e) => updateFormData('textos_existentes', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, temos textos prontos</span>
+                  </label>
+                  {formData.textos_existentes === 'sim' && (
+                    <textarea
+                      placeholder="Cole aqui os textos que já têm prontos para o site..."
+                      value={formData.textos_texto || ''}
+                      onChange={(e) => updateFormData('textos_texto', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8 resize-none"
+                      rows={5}
+                    />
+                  )}
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="textos_existentes"
+                      value="nao"
+                      checked={formData.textos_existentes === 'nao'}
+                      onChange={(e) => updateFormData('textos_existentes', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não, criem os textos baseados nas informações</span>
+                  </label>
+                </div>
+                {errors.textos_existentes && <p className="text-red-500 text-sm mt-2 font-medium">{errors.textos_existentes}</p>}
               </div>
             </div>
           </div>
