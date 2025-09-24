@@ -532,8 +532,23 @@ const BriefingOdonto = () => {
         
         // Redirecionar para página de obrigado
         console.log('Redirecionando para página de obrigado...');
-        // Use window.location.replace as fallback for production
-        window.location.replace('/obrigado');
+        
+        // Try React Router navigation first
+        try {
+          navigate('/obrigado');
+          
+          // Fallback: If navigation doesn't work in 2 seconds, force redirect
+          setTimeout(() => {
+            if (window.location.pathname !== '/obrigado') {
+              console.log('React Router navigation failed, using window.location.href as fallback');
+              window.location.href = '/obrigado';
+            }
+          }, 2000);
+        } catch (error) {
+          console.error('Navigation error:', error);
+          // Immediate fallback if navigate throws an error
+          window.location.href = '/obrigado';
+        }
       } else {
         const errorText = await response.text();
         console.error('Erro HTTP:', response.status, response.statusText);
