@@ -65,27 +65,6 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Trust Badges */}
-          <div>
-            <h4 className="text-xl font-bold mb-6">Confiança</h4>
-            
-            <div className="space-y-4">
-              <div className="bg-white/10 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-success-light mb-1">500+</div>
-                <p className="text-white/80 text-sm">Sites entregues desde 2019</p>
-              </div>
-              
-              <div className="bg-white/10 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-success-light mb-1">4.9/5</div>
-                <p className="text-white/80 text-sm">Avaliação média (127 reviews)</p>
-              </div>
-              
-              <div className="bg-white/10 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-success-light mb-1">0</div>
-                <p className="text-white/80 text-sm">Reclamações no Reclame Aqui</p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Security Badges */}
