@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -14,6 +15,7 @@ interface UploadedFile {
 }
 
 const BriefingOdonto = () => {
+  const navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState(0);
   const [formData, setFormData] = useState<FormData>({});
   const [errors, setErrors] = useState<{[key: string]: string}>({});
@@ -266,6 +268,8 @@ const BriefingOdonto = () => {
   const validateSection = () => {
     const newErrors: {[key: string]: string} = {};
     
+    console.log(`Validando seção ${currentSection}: ${sections[currentSection]?.title}`);
+    
     switch(currentSection) {
       case 0: // Informações Pessoais
         if (!formData.nome || formData.nome.length < 3) {
@@ -292,6 +296,15 @@ const BriefingOdonto = () => {
         }
         if (!formData.especialidades || formData.especialidades.length === 0) {
           newErrors.especialidades = 'Selecione pelo menos uma especialidade';
+        }
+        break;
+        
+      case 2: // Sobre Nós/Equipe (opcional)
+        // Esta seção é opcional, mas se o usuário preencheu número de dentistas,
+        // podemos validar se ao menos o primeiro profissional tem nome
+        if (formData.numero_dentistas && parseInt(formData.numero_dentistas) > 0) {
+          // Validation is optional since this section is marked as not required
+          console.log('Seção 2 (Equipe): Validação passada - seção opcional');
         }
         break;
         
@@ -392,7 +405,9 @@ const BriefingOdonto = () => {
     }
     
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const isValid = Object.keys(newErrors).length === 0;
+    console.log(`Validação seção ${currentSection}: ${isValid ? 'PASSOU' : 'FALHOU'}`, newErrors);
+    return isValid;
   };
 
   const nextSection = () => {
@@ -408,7 +423,12 @@ const BriefingOdonto = () => {
   };
 
   const submitForm = async () => {
-    if (!validateSection()) return;
+    console.log('Tentativa de envio do formulário - validando seção final...');
+    if (!validateSection()) {
+      console.log('Validação falhou - formulário não será enviado');
+      return;
+    }
+    console.log('Validação passou - prosseguindo com envio...');
 
     const finalData = {
       timestamp: new Date().toISOString(),
@@ -511,7 +531,8 @@ const BriefingOdonto = () => {
         console.log('Formulário enviado com sucesso para o n8n');
         
         // Redirecionar para página de obrigado
-        window.location.href = '/obrigado';
+        console.log('Redirecionando para página de obrigado...');
+        navigate('/obrigado');
       } else {
         const errorText = await response.text();
         console.error('Erro HTTP:', response.status, response.statusText);
@@ -780,7 +801,7 @@ const BriefingOdonto = () => {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Quantos dentistas trabalham no consultório? *
+                  Quantos dentistas trabalham no consultório? (opcional)
                 </label>
                 <input
                   type="number"
