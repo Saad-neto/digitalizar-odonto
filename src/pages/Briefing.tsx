@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Upload, Check, MapPin, Phone } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Upload, Check, MapPin, Phone, 
+         User, Heart, Smile, Sparkles, Shield, Stethoscope, Baby, Clock, Scissors, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface FormData {
@@ -501,6 +502,82 @@ const BriefingOdonto = () => {
     );
   };
 
+  const SpecialtiesCheckboxGroup = ({ name, label, required = false, formData, updateFormData, errors }: {
+    name: string;
+    label: string;
+    required?: boolean;
+    formData: any;
+    updateFormData: any;
+    errors: any;
+  }) => {
+    const currentValues = formData[name] || [];
+    
+    const handleChange = (value, checked) => {
+      if (checked) {
+        updateFormData(name, [...currentValues, value]);
+      } else {
+        updateFormData(name, currentValues.filter(v => v !== value));
+      }
+    };
+
+    const specialties = [
+      { value: 'clinica_geral', label: 'Clínica Geral', icon: User, color: 'purple' },
+      { value: 'ortodontia', label: 'Ortodontia', icon: Smile, color: 'orange' },
+      { value: 'implantodontia', label: 'Implantodontia', icon: Shield, color: 'purple' },
+      { value: 'estetica', label: 'Odontologia Estética', icon: Sparkles, color: 'orange' },
+      { value: 'harmonizacao', label: 'Harmonização Facial', icon: Star, color: 'purple' },
+      { value: 'endodontia', label: 'Endodontia', icon: Heart, color: 'orange' },
+      { value: 'odontopediatria', label: 'Odontopediatria', icon: Baby, color: 'yellow' },
+      { value: 'periodontia', label: 'Periodontia', icon: Stethoscope, color: 'purple' },
+      { value: 'cirurgia', label: 'Cirurgia Bucomaxilofacial', icon: Scissors, color: 'blue' },
+      { value: 'multiplas', label: 'Múltiplas especialidades', icon: Star, color: 'purple' }
+    ];
+
+    const getColorClasses = (color: string) => {
+      const colorMap = {
+        purple: 'bg-purple-100 text-purple-600 border-purple-200',
+        orange: 'bg-orange-100 text-orange-600 border-orange-200',
+        yellow: 'bg-yellow-100 text-yellow-600 border-yellow-200',
+        blue: 'bg-blue-100 text-blue-600 border-blue-200'
+      };
+      return colorMap[color] || colorMap.purple;
+    };
+
+    return (
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-4">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          {specialties.map((specialty) => {
+            const IconComponent = specialty.icon;
+            return (
+              <label key={specialty.value} className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all hover:shadow-md ${
+                currentValues.includes(specialty.value) 
+                  ? `${getColorClasses(specialty.color)} border-opacity-100` 
+                  : 'bg-white border-gray-200 hover:border-gray-300'
+              }`}>
+                <input
+                  type="checkbox"
+                  checked={currentValues.includes(specialty.value)}
+                  onChange={(e) => handleChange(specialty.value, e.target.checked)}
+                  className="sr-only"
+                />
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
+                  currentValues.includes(specialty.value) ? getColorClasses(specialty.color) : 'bg-gray-100'
+                }`}>
+                  <IconComponent className="w-4 h-4" />
+                </div>
+                <span className="text-sm font-medium text-gray-700">{specialty.label}</span>
+              </label>
+            );
+          })}
+        </div>
+        {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]}</p>}
+      </div>
+    );
+  };
+
   // Página de confirmação
   if (currentSection === sections.length) {
     return (
@@ -584,29 +661,32 @@ const BriefingOdonto = () => {
       case 1: // Homepage/Cabeçalho
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Homepage/Cabeçalho</h2>
+            <div>
+              <h2 className="text-3xl font-bold text-purple-800 mb-2">OdontoForm</h2>
+              <p className="text-gray-500 text-sm mb-8">Informações sobre seu consultório</p>
+            </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nome do Consultório <span className="text-red-500">*</span>
+                Qual o nome do consultório? <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={formData.nome_consultorio || ''}
                 onChange={(e) => updateFormData('nome_consultorio', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Nome do seu consultório"
+                placeholder="Clínica Odontológica Dr. Carlos Eduardo"
               />
               {errors.nome_consultorio && <p className="text-red-500 text-sm mt-1">{errors.nome_consultorio}</p>}
             </div>
 
             <RadioGroup
               name="tem_slogan"
-              label="Vocês têm um slogan?"
+              label="Tem slogan ou frase de posicionamento?"
               required
               options={[
                 { value: 'sim', label: 'Sim, temos um slogan' },
-                { value: 'nao', label: 'Não temos slogan' }
+                { value: 'nao', label: 'Não, confio na expertise de vocês' }
               ]}
             />
 
@@ -625,38 +705,14 @@ const BriefingOdonto = () => {
               </div>
             )}
 
-            <CheckboxGroup
+            <SpecialtiesCheckboxGroup
               name="especialidades"
-              label="Quais especialidades odontológicas vocês oferecem?"
+              label="Quais as principais especialidades que querem destacar?"
               required
-              options={[
-                { value: 'clinica_geral', label: 'Clínica Geral' },
-                { value: 'ortodontia', label: 'Ortodontia' },
-                { value: 'implantodontia', label: 'Implantodontia' },
-                { value: 'endodontia', label: 'Endodontia (Canal)' },
-                { value: 'periodontia', label: 'Periodontia (Gengiva)' },
-                { value: 'protese', label: 'Prótese Dentária' },
-                { value: 'odontopediatria', label: 'Odontopediatria' },
-                { value: 'cirurgia', label: 'Cirurgia Oral' },
-                { value: 'estetica', label: 'Odontologia Estética' },
-                { value: 'outras', label: 'Outras' }
-              ]}
+              formData={formData}
+              updateFormData={updateFormData}
+              errors={errors}
             />
-
-            {formData.especialidades && formData.especialidades.includes('outras') && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Especifique outras especialidades:
-                </label>
-                <textarea
-                  value={formData.outras_especialidades || ''}
-                  onChange={(e) => updateFormData('outras_especialidades', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows={3}
-                  placeholder="Liste outras especialidades..."
-                />
-              </div>
-            )}
           </div>
         );
 
@@ -1259,7 +1315,7 @@ const BriefingOdonto = () => {
         <div className="max-w-4xl mx-auto px-6 py-5">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
-              Briefing Odonto
+              OdontoForm
             </h1>
             <span className="text-sm font-medium text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
               {currentSection + 1} de {sections.length}
