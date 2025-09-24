@@ -20,7 +20,7 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "E depois do primeiro ano de hospedagem?",
-      answer: "Apenas R$ 29,90/mês ou R$ 299/ano. Bem abaixo do mercado e com suporte técnico incluído. Sem taxas ocultas, surpresas ou aumentos abusivos. Você sempre pode migrar seu site se desejar, fornecemos todos os arquivos."
+      answer: "Apenas R$ 29,90/mês ou R$ 299/ano. Bem abaixo do mercado e com suporte técnico incluído. Sem taxas ocultas, surpresas ou aumentos abusivos."
     },
     {
       question: "Funciona para qualquer especialidade odontológica?",
@@ -28,7 +28,7 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "Posso fazer alterações depois?",
-      answer: "Claro! Ensinamos você a fazer alterações básicas (textos, imagens, horários) através de um treinamento incluído. Para mudanças complexas de design ou estrutura, cobramos apenas R$ 97 por alteração (muito abaixo do mercado)."
+      answer: "Claro! Cobramos apenas R$ 97,00 por solicitação de alterações. Isso significa que em uma única solicitação você pode pedir quantas mudanças quiser - textos, imagens, horários, o que precisar ajustar. É uma taxa fixa super justa que permite você fazer todas as alterações necessárias de uma vez só!"
     },
     {
       question: "Como é o processo de pagamento?",
