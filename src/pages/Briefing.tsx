@@ -333,7 +333,7 @@ const BriefingOdonto = () => {
     };
     
     try {
-      const response = await fetch('https://n8n-webhook.isaai.online/webhook/form_odonto', {
+      const response = await fetch('https://n8n-webhook.isaai.online/webhook/odonto_form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
