@@ -96,36 +96,6 @@ const FAQSection: React.FC = () => {
           ))}
         </div>
 
-        {/* Still Have Questions */}
-        <div className="mt-16 text-center bg-white rounded-2xl shadow-lg p-8">
-          <h3 className="text-2xl font-bold text-text-primary mb-4">
-            Ainda tem dúvidas?
-          </h3>
-          
-          <p className="text-text-secondary mb-6">
-            Nossa equipe está pronta para esclarecer qualquer questão específica sobre seu caso.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              to="/briefing"
-              className="btn-hero flex items-center justify-center gap-2"
-            >
-              🚀 QUERO MEU SITE EM 24 HORAS
-            </Link>
-            
-            <a 
-              href="tel:+5518931751052"
-              className="btn-secondary flex items-center justify-center gap-2"
-            >
-              📞 Ligar Agora
-            </a>
-          </div>
-
-          <p className="text-text-light text-sm mt-4">
-            🕐 Atendimento: Segunda a Sexta, 8h às 18h
-          </p>
-        </div>
       </div>
     </section>
   );

@@ -97,31 +97,6 @@ const FinalCTASection: React.FC = () => {
           </p>
         </div>
 
-        {/* Alternative CTA */}
-        <div className="bg-white/10 rounded-xl p-6 mb-12">
-          <h4 className="text-xl font-bold mb-4">Prefere falar antes de decidir?</h4>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              to="/briefing"
-              className="btn-hero flex items-center gap-2"
-            >
-              <MessageCircle size={20} />
-              🚀 QUERO MEU SITE EM 24 HORAS
-            </Link>
-            
-            <a 
-              href="tel:+5518931751052"
-              className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors border border-white/30"
-            >
-              📞 (18) 3175-1052
-            </a>
-          </div>
-          
-          <p className="text-white/70 text-sm mt-4">
-            🕐 Atendimento: 8h às 18h, Segunda a Sexta
-          </p>
-        </div>
 
         {/* Final Urgency */}
         <div className="bg-red-alert/20 border border-red-alert/40 rounded-xl p-6">

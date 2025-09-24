@@ -2,7 +2,6 @@ import React from 'react';
 import { Zap, Target, DollarSign, Smartphone, RefreshCw, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Counter from '../ui/counter';
-import Timer from '../ui/timer';
 
 const SolutionSection: React.FC = () => {
   const benefits = [
@@ -85,26 +84,6 @@ const SolutionSection: React.FC = () => {
             </h3>
             
             <div className="space-y-6">
-              <div className="bg-text-primary text-white rounded-lg p-6 text-center">
-                <p className="text-lg font-semibold mb-2">Próximo site será entregue em:</p>
-                <Timer 
-                  initialHours={18}
-                  initialMinutes={45}
-                  initialSeconds={22}
-                  className="text-3xl"
-                />
-              </div>
-
-              <div className="card-premium bg-success-bg border-success/20">
-                <div className="text-center">
-                  <p className="text-lg font-semibold text-success-dark mb-2">
-                    Site #<Counter targetNumber={847} /> sendo finalizado agora
-                  </p>
-                  <p className="text-text-secondary">
-                    Para Dr. Carlos - Implantodontista - Campinas/SP
-                  </p>
-                </div>
-              </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">

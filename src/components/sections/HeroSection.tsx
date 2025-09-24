@@ -1,7 +1,6 @@
 import React from 'react';
-import { Clock, Users, Award, CheckCircle } from 'lucide-react';
+import { Clock, Users, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Timer from '../ui/timer';
 import Counter from '../ui/counter';
 import mockupImage from '../../assets/dental-website-mockup.jpg';
 
@@ -79,21 +78,6 @@ const HeroSection: React.FC = () => {
                 className="w-full h-auto rounded-lg shadow-lg"
               />
               
-              <div className="mt-6 text-center">
-                <div className="flex items-center justify-center gap-2 text-white/90 mb-2">
-                  <Award size={20} className="text-success-light" />
-                  <span className="font-semibold">Próximo site será entregue em:</span>
-                </div>
-                <Timer 
-                  initialHours={18}
-                  initialMinutes={45}
-                  initialSeconds={22}
-                  className="text-2xl"
-                />
-                <p className="text-white/70 text-sm mt-2">
-                  Site #847 sendo finalizado agora
-                </p>
-              </div>
             </div>
 
           </div>

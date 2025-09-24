@@ -178,38 +178,6 @@ const TestimonialsSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Social Proof Timeline */}
-        <div className="bg-text-primary text-white rounded-2xl p-8">
-          <h3 className="text-2xl font-bold text-center mb-8">
-            📱 Atividade em Tempo Real
-          </h3>
-          
-          <div className="space-y-4 max-w-2xl mx-auto">
-            <div className="flex items-center gap-3 bg-white/10 rounded-lg p-4">
-              <div className="w-3 h-3 bg-success-light rounded-full animate-pulse"></div>
-              <span className="text-success-light font-medium">Há 3 minutos:</span>
-              <span>Site #845 aprovado - Dr. João (Campinas/SP)</span>
-            </div>
-            
-            <div className="flex items-center gap-3 bg-white/10 rounded-lg p-4">
-              <div className="w-3 h-3 bg-orange-warning rounded-full animate-pulse"></div>
-              <span className="text-orange-warning font-medium">Em desenvolvimento:</span>
-              <span>Site #846 - Dra. Maria (Salvador/BA)</span>
-            </div>
-            
-            <div className="flex items-center gap-3 bg-white/10 rounded-lg p-4">
-              <div className="w-3 h-3 bg-yellow-highlight rounded-full animate-pulse"></div>
-              <span className="text-yellow-highlight font-medium">Aguardando briefing:</span>
-              <span>Site #847 - Dr. Pedro (Fortaleza/CE)</span>
-            </div>
-          </div>
-
-          <div className="text-center mt-8">
-            <p className="text-white/80">
-              🎯 Seja o próximo dentista a transformar sua prática digital
-            </p>
-          </div>
-        </div>
 
         {/* CTA */}
         <div className="text-center mt-16">
