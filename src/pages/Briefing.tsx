@@ -509,7 +509,9 @@ const BriefingOdonto = () => {
         const responseData = await response.text();
         console.log('Resposta do servidor:', responseData);
         console.log('Formulário enviado com sucesso para o n8n');
-        alert('Formulário enviado com sucesso! Dados processados pelo sistema.');
+        
+        // Redirecionar para página de obrigado
+        window.location.href = '/obrigado';
       } else {
         const errorText = await response.text();
         console.error('Erro HTTP:', response.status, response.statusText);
