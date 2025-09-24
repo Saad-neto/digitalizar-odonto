@@ -40,7 +40,7 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "E se eu não gostar do resultado?",
-      answer: "Você tem 7 dias para avaliar e solicitar o reembolso completo se não estiver satisfeito. Além disso, incluímos até 3 revisões durante a construção do site. Nossa taxa de aprovação é de 98,7%."
+      answer: "Você tem 7 dias para avaliar e solicitar o reembolso completo se não estiver satisfeito. Além disso, incluímos até 3 revisões durante o processo de construção do site. Nossa taxa de aprovação é de 98,7%."
     },
     {
       question: "Qual a diferença entre vocês e outras empresas?",
