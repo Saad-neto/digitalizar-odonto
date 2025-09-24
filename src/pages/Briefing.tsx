@@ -329,27 +329,29 @@ const BriefingOdonto = () => {
           newErrors.estacionamento = 'Informe sobre estacionamento';
         }
         if (!formData.redes_sociais || formData.redes_sociais.length === 0) {
-          newErrors.redes_sociais = 'Selecione pelo menos uma rede social';
+          newErrors.redes_sociais = 'Selecione pelo menos uma rede social ou "Não uso redes sociais"';
         }
         
-        // Validate social media URLs if provided
-        if (formData.redes_sociais?.includes('Facebook') && formData.link_facebook && !validateSocialMediaURL(formData.link_facebook, 'facebook')) {
+        // Validate social media URLs if provided (but not for "Não uso redes sociais")
+        const redesSemNaoUso = (formData.redes_sociais || []).filter((rede: string) => rede !== '❌ Não uso redes sociais');
+        if (redesSemNaoUso.includes('📘 Facebook') && formData.link_facebook && !validateSocialMediaURL(formData.link_facebook, 'facebook')) {
           newErrors.link_facebook = 'URL do Facebook inválida';
         }
-        if (formData.redes_sociais?.includes('Instagram') && formData.link_instagram && !validateSocialMediaURL(formData.link_instagram, 'instagram')) {
+        if (redesSemNaoUso.includes('📸 Instagram') && formData.link_instagram && !validateSocialMediaURL(formData.link_instagram, 'instagram')) {
           newErrors.link_instagram = 'URL do Instagram inválida';
         }
-        if (formData.redes_sociais?.includes('YouTube') && formData.link_youtube && !validateSocialMediaURL(formData.link_youtube, 'youtube')) {
+        if (redesSemNaoUso.includes('🎬 YouTube') && formData.link_youtube && !validateSocialMediaURL(formData.link_youtube, 'youtube')) {
           newErrors.link_youtube = 'URL do YouTube inválida';
         }
-        if (formData.redes_sociais?.includes('LinkedIn') && formData.link_linkedin && !validateSocialMediaURL(formData.link_linkedin, 'linkedin')) {
+        if (redesSemNaoUso.includes('💼 LinkedIn') && formData.link_linkedin && !validateSocialMediaURL(formData.link_linkedin, 'linkedin')) {
           newErrors.link_linkedin = 'URL do LinkedIn inválida';
         }
-        if (formData.redes_sociais?.includes('TikTok') && formData.link_tiktok && !validateSocialMediaURL(formData.link_tiktok, 'tiktok')) {
+        if (redesSemNaoUso.includes('🎵 TikTok') && formData.link_tiktok && !validateSocialMediaURL(formData.link_tiktok, 'tiktok')) {
           newErrors.link_tiktok = 'URL do TikTok inválida';
         }
         
-        if (formData.link_google_maps && !validateURL(formData.link_google_maps)) {
+        // Validate Google Maps link only if they chose to show location
+        if (formData.incorporarMapa === 'sim_mostrar' && formData.link_google_maps && !validateURL(formData.link_google_maps)) {
           newErrors.link_google_maps = 'URL do Google Maps inválida';
         }
         break;
@@ -1144,7 +1146,8 @@ const BriefingOdonto = () => {
                     '📸 Instagram',
                     '🎬 YouTube',
                     '💼 LinkedIn',
-                    '🎵 TikTok'
+                    '🎵 TikTok',
+                    '❌ Não uso redes sociais'
                   ].map((rede) => (
                     <label key={rede} className="flex items-center p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
                       <input
@@ -1153,7 +1156,14 @@ const BriefingOdonto = () => {
                         onChange={(e) => {
                           const redes = formData.redes_sociais || [];
                           if (e.target.checked) {
-                            updateFormData('redes_sociais', [...redes, rede]);
+                            if (rede === '❌ Não uso redes sociais') {
+                              // Se selecionar "Não uso redes sociais", desmarcar todas as outras
+                              updateFormData('redes_sociais', [rede]);
+                            } else {
+                              // Se selecionar qualquer rede social, remover "Não uso redes sociais"
+                              const filtered = redes.filter(r => r !== '❌ Não uso redes sociais');
+                              updateFormData('redes_sociais', [...filtered, rede]);
+                            }
                           } else {
                             updateFormData('redes_sociais', redes.filter((item: string) => item !== rede));
                           }
@@ -1167,7 +1177,7 @@ const BriefingOdonto = () => {
                 {errors.redes_sociais && <p className="text-red-500 text-sm mt-2 font-medium">{errors.redes_sociais}</p>}
               </div>
 
-              {(formData.redes_sociais || []).includes('📘 Facebook') && (
+              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('📘 Facebook') && (
                 <div>
                   <input
                     type="url"
@@ -1182,7 +1192,7 @@ const BriefingOdonto = () => {
                 </div>
               )}
 
-              {(formData.redes_sociais || []).includes('📸 Instagram') && (
+              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('📸 Instagram') && (
                 <div>
                   <input
                     type="url"
@@ -1197,7 +1207,7 @@ const BriefingOdonto = () => {
                 </div>
               )}
 
-              {(formData.redes_sociais || []).includes('🎬 YouTube') && (
+              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('🎬 YouTube') && (
                 <div>
                   <input
                     type="url"
@@ -1212,7 +1222,7 @@ const BriefingOdonto = () => {
                 </div>
               )}
 
-              {(formData.redes_sociais || []).includes('💼 LinkedIn') && (
+              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('💼 LinkedIn') && (
                 <div>
                   <input
                     type="url"
@@ -1227,7 +1237,7 @@ const BriefingOdonto = () => {
                 </div>
               )}
 
-              {(formData.redes_sociais || []).includes('🎵 TikTok') && (
+              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('🎵 TikTok') && (
                 <div>
                   <input
                     type="url"
@@ -1244,19 +1254,93 @@ const BriefingOdonto = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Link do Google Maps (opcional)
+                  Você tem Google Meu Negócio?
                 </label>
-                <input
-                  type="url"
-                  placeholder="https://maps.google.com/..."
-                  value={formData.link_google_maps || ''}
-                  onChange={(e) => updateFormData('link_google_maps', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                    errors.link_google_maps ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                  }`}
-                />
-                {errors.link_google_maps && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_google_maps}</p>}
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="googleMeuNegocio"
+                      value="sim_tenho"
+                      checked={formData.googleMeuNegocio === 'sim_tenho'}
+                      onChange={(e) => updateFormData('googleMeuNegocio', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, já temos</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="googleMeuNegocio"
+                      value="nao_preciso_criar"
+                      checked={formData.googleMeuNegocio === 'nao_preciso_criar'}
+                      onChange={(e) => updateFormData('googleMeuNegocio', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não, precisamos criar (R$ 300)</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="googleMeuNegocio"
+                      value="nao_interesse"
+                      checked={formData.googleMeuNegocio === 'nao_interesse'}
+                      onChange={(e) => updateFormData('googleMeuNegocio', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não tenho interesse</span>
+                  </label>
+                </div>
               </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Deseja incorporar o mapa no site?
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="incorporarMapa"
+                      value="sim_mostrar"
+                      checked={formData.incorporarMapa === 'sim_mostrar'}
+                      onChange={(e) => updateFormData('incorporarMapa', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Sim, quero mostrar a localização</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="incorporarMapa"
+                      value="nao_apenas_texto"
+                      checked={formData.incorporarMapa === 'nao_apenas_texto'}
+                      onChange={(e) => updateFormData('incorporarMapa', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Não, apenas o endereço por texto</span>
+                  </label>
+                </div>
+              </div>
+
+              {formData.incorporarMapa === 'sim_mostrar' && (
+                <div>
+                  <label className="block text-sm font-semibold text-purple-800 mb-3">
+                    Link do Google Maps
+                  </label>
+                  <p className="text-sm text-purple-600 mb-2">Cole o link do Google Maps do seu consultório para incorporar no site</p>
+                  <input
+                    type="url"
+                    placeholder="https://maps.google.com/..."
+                    value={formData.link_google_maps || ''}
+                    onChange={(e) => updateFormData('link_google_maps', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                      errors.link_google_maps ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                    }`}
+                  />
+                  {errors.link_google_maps && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_google_maps}</p>}
+                </div>
+              )}
             </div>
           </div>
         );
