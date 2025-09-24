@@ -1,4 +1,14 @@
+# Enable rewrite engine and disable MultiViews
 Options -MultiViews
 RewriteEngine On
+
+# Handle Angular and React requests properly
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/.*\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$ [NC]
 RewriteRule ^ index.html [QR,L]
+
+# Set proper MIME type for JS modules
+<FilesMatch "\.(js|mjs)$">
+    Header set Content-Type "application/javascript"
+</FilesMatch>

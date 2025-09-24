@@ -1,3 +1,6 @@
-/* /index.html 200
-/obrigado /index.html 200
+# Specific routes first
 /briefing /index.html 200
+/obrigado /index.html 200
+
+# Catch-all rule for SPA (must be last)
+/* /index.html 200
