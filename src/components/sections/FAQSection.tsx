@@ -16,11 +16,11 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "O site vai aparecer no Google?",
-      answer: "Sim! Fazemos otimização básica para SEO local incluída no pacote. Seu site será encontrado quando pacientes procurarem 'dentista + sua cidade'. Para alcançar as primeiras posições mais rapidamente, oferecemos nosso plano de SEO premium como serviço adicional."
+      answer: "Sim! Fazemos otimização básica para SEO local incluída no pacote. Seu site será encontrado quando pacientes procurarem 'dentista + sua cidade'."
     },
     {
       question: "E depois do primeiro ano de hospedagem?",
-      answer: "Apenas R$ 29,90/mês ou R$ 299/ano. Bem abaixo do mercado e com suporte técnico incluído. Sem taxas ocultas, surpresas ou aumentos abusivos. Você sempre pode migrar seu site se desejar, fornecemos todos os arquivos."
+      answer: "Apenas R$ 29,90/mês ou R$ 299/ano. Bem abaixo do mercado e com suporte técnico incluído. Sem taxas ocultas, surpresas ou aumentos abusivos."
     },
     {
       question: "Funciona para qualquer especialidade odontológica?",
@@ -28,11 +28,11 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "Posso fazer alterações depois?",
-      answer: "Claro! Ensinamos você a fazer alterações básicas (textos, imagens, horários) através de um treinamento incluído. Para mudanças complexas de design ou estrutura, cobramos apenas R$ 97 por alteração (muito abaixo do mercado)."
+      answer: "Claro! Cobramos apenas R$ 97,00 por solicitação de alterações. Isso significa que em uma única solicitação você pode pedir quantas mudanças quiser - textos, imagens, horários, o que precisar ajustar. É uma taxa fixa super justa que permite você fazer todas as alterações necessárias de uma vez só!"
     },
     {
       question: "Como é o processo de pagamento?",
-      answer: "Aceitamos Pix, cartão de crédito ou débito. Pode parcelar em até 12x sem juros no cartão. O pagamento é 100% seguro através do Mercado Pago e PagSeguro. Emitimos nota fiscal para todos os pedidos."
+      answer: "Aceitamos Pix, cartão de crédito ou débito. Pode parcelar em até 12x no cartão. O pagamento é 100% seguro!"
     },
     {
       question: "Vocês atendem qualquer cidade do Brasil?",
@@ -40,11 +40,11 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "E se eu não gostar do resultado?",
-      answer: "Você tem 30 dias para avaliar e solicitar o reembolso completo se não estiver satisfeito. Além disso, incluímos até 3 revisões no pacote. Nossa taxa de aprovação é de 98,7%, mas sua satisfação é garantida."
+      answer: "Você tem 7 dias para avaliar e solicitar o reembolso completo se não estiver satisfeito. Além disso, incluímos até 3 revisões duarante a construção so site. Nossa taxa de aprovação é de 98,7%."
     },
     {
       question: "Qual a diferença entre vocês e outras empresas?",
-      answer: "Somos 100% especializados em dentistas há 5 anos, conhecemos profundamente o setor. Entregamos em 24h (outros levam 30-60 dias), oferecemos múltiplas garantias e assumimos todo o risco. Nossos preços são justos comparado às agências tradicionais."
+      answer: "Somos 100% especializados em dentistas, conhecemos profundamente o setor. Entregamos em 24h (outros levam 30-60 dias), oferecemos múltiplas garantias e assumimos todo o risco. Nossos preços são justos comparado às agências tradicionais."
     }
   ];
 
@@ -122,9 +122,6 @@ const FAQSection: React.FC = () => {
             </a>
           </div>
 
-          <p className="text-text-light text-sm mt-4">
-            🕐 Atendimento: Segunda a Sexta, 8h às 18h
-          </p>
         </div>
       </div>
     </section>

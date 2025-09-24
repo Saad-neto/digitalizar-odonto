@@ -123,21 +123,6 @@ const FinalCTASection: React.FC = () => {
           </p>
         </div>
 
-        {/* Final Urgency */}
-        <div className="bg-red-alert/20 border border-red-alert/40 rounded-xl p-6">
-          <h4 className="text-2xl font-bold text-red-light mb-4">
-            ⚠️ Reforço de Urgência
-          </h4>
-          
-          <p className="text-xl text-white/90 mb-4">
-            "Restam apenas <strong className="text-red-light">2 vagas</strong> para entrega hoje. 
-            Amanhã você pode ter que aguardar disponibilidade."
-          </p>
-          
-          <p className="text-white/80">
-            Enquanto você pensa, seus concorrentes podem estar captando os pacientes que deveriam ser seus.
-          </p>
-        </div>
 
         {/* Social Proof */}
         <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-white/70">

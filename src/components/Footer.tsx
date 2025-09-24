@@ -46,13 +46,6 @@ const Footer: React.FC = () => {
             <h4 className="text-xl font-bold mb-6">Contato</h4>
             
             <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <Phone size={20} className="text-success-light mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="font-semibold">(18) 3175-1052</p>
-                  <p className="text-white/70 text-sm">Ligação direta</p>
-                </div>
-              </div>
               
               <div className="flex items-start gap-3">
                 <Mail size={20} className="text-success-light mt-0.5 flex-shrink-0" />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Gift, CreditCard, Smartphone } from 'lucide-react';
+import { X, Check, Gift, CreditCard, Smartphone, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Timer from '../ui/timer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
@@ -49,7 +49,7 @@ const OffersSection: React.FC = () => {
   const bonuses = [
     { icon: Gift, title: "Logo profissional (se não tiver)", value: "GRÁTIS" },
     { icon: Smartphone, title: "Banco de imagens premium", value: "GRÁTIS" },
-    { icon: Check, title: "Treinamento para atualizar o site", value: "GRÁTIS" }
+    { icon: Search, title: "Otimização básica para SEO", value: "GRÁTIS" }
   ];
 
   const totalValue = included.reduce((sum, item) => {

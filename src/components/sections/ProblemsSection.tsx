@@ -79,14 +79,6 @@ const ProblemsSection: React.FC = () => {
           ))}
         </div>
 
-        {/* Impact Statement */}
-        <div 
-          <p className="text-xl text-text-primary font-semibold italic">
-            "Enquanto você não tem um site profissional, seus concorrentes estão atraindo 
-            <span className="text-red-alert font-bold"> OS SEUS pacientes </span>
-            24 horas por dia."
-          </p>
-        </div>
 
         {/* Statistics */}
         <div className="mt-12 grid md:grid-cols-3 gap-8 text-center">
