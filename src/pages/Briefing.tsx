@@ -1499,12 +1499,23 @@ const BriefingOdonto = () => {
                     <input
                       type="radio"
                       name="logotipo_existente"
-                      value="nao"
-                      checked={formData.logotipo_existente === 'nao'}
+                      value="basico"
+                      checked={formData.logotipo_existente === 'basico'}
                       onChange={(e) => updateFormData('logotipo_existente', e.target.value)}
                       className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
                     />
-                    <span className="ml-3 font-medium text-purple-800">Não, preciso de um logotipo</span>
+                    <span className="ml-3 font-medium text-purple-800">Logotipo básico personalizado (incluído no pacote)</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="logotipo_existente"
+                      value="completa"
+                      checked={formData.logotipo_existente === 'completa'}
+                      onChange={(e) => updateFormData('logotipo_existente', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">Identidade visual completa + manual de marca (+ R$ 400)</span>
                   </label>
                 </div>
                 {errors.logotipo_existente && <p className="text-red-500 text-sm mt-2 font-medium">{errors.logotipo_existente}</p>}
