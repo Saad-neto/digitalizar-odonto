@@ -1574,7 +1574,7 @@ const BriefingOdonto = () => {
                       onChange={(e) => updateFormData('manual_marca', e.target.value)}
                       className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
                     />
-                    <span className="ml-3 font-medium text-purple-800">Não, criem baseado no nosso perfil</span>
+                    <span className="ml-3 font-medium text-purple-800">Não</span>
                   </label>
                 </div>
                 {errors.manual_marca && <p className="text-red-500 text-sm mt-2 font-medium">{errors.manual_marca}</p>}
