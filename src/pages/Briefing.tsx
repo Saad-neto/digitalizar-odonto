@@ -332,23 +332,56 @@ const BriefingOdonto = () => {
       arquivos_enviados: uploadedFiles
     };
     
+    console.log('🚀 Enviando dados para webhook:', {
+      url: 'https://n8n-webhook.isaai.online/webhook/odonto_form',
+      dataKeys: Object.keys(finalData),
+      timestamp: finalData.timestamp
+    });
+
     try {
       const response = await fetch('https://n8n-webhook.isaai.online/webhook/odonto_form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify(finalData)
       });
       
+      console.log('📡 Resposta do webhook:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
       if (response.ok) {
+        const responseData = await response.text();
+        console.log('✅ Formulário enviado com sucesso:', responseData);
         setCurrentSection(sections.length); // Ir para página de sucesso
       } else {
-        alert('Erro ao enviar formulário. Tente novamente.');
+        const errorText = await response.text();
+        console.error('❌ Erro HTTP do servidor:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        
+        if (response.status === 404) {
+          alert('Erro: Webhook não encontrado. Verifique a configuração do N8N.');
+        } else if (response.status >= 500) {
+          alert('Erro interno do servidor. Tente novamente em alguns minutos.');
+        } else {
+          alert(`Erro ao enviar formulário (${response.status}): ${response.statusText}`);
+        }
       }
     } catch (error) {
-      console.error('Erro ao enviar:', error);
-      alert('Erro ao enviar formulário. Verifique sua conexão e tente novamente.');
+      console.error('❌ Erro de rede ou CORS:', error);
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        alert('Erro de conexão: Verifique sua internet ou entre em contato com o suporte.\n\nDetalhes: ' + error.message);
+      } else {
+        alert('Erro ao enviar formulário: ' + error.message);
+      }
     }
   };
 
