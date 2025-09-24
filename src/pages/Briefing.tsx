@@ -130,6 +130,38 @@ const BriefingOdonto = () => {
     return true;
   };
 
+  const validateURL = (url: string) => {
+    if (!url || url.trim() === '') return true; // Optional field
+    try {
+      const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
+      return ['http:', 'https:'].includes(urlObj.protocol);
+    } catch {
+      return false;
+    }
+  };
+
+  const validateSocialMediaURL = (url: string, platform: string) => {
+    if (!url || url.trim() === '') return true; // Optional field
+    if (!validateURL(url)) return false;
+    
+    const cleanUrl = url.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '');
+    
+    switch (platform) {
+      case 'facebook':
+        return cleanUrl.includes('facebook.com/') || cleanUrl.includes('fb.com/');
+      case 'instagram':
+        return cleanUrl.includes('instagram.com/');
+      case 'youtube':
+        return cleanUrl.includes('youtube.com/') || cleanUrl.includes('youtu.be/');
+      case 'linkedin':
+        return cleanUrl.includes('linkedin.com/');
+      case 'tiktok':
+        return cleanUrl.includes('tiktok.com/');
+      default:
+        return true;
+    }
+  };
+
   const updateFormData = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -171,6 +203,25 @@ const BriefingOdonto = () => {
         case 'especialidades':
         case 'redes_sociais':
           isValid = value && Array.isArray(value) && value.length > 0;
+          break;
+        case 'link_facebook':
+          isValid = validateSocialMediaURL(value, 'facebook');
+          break;
+        case 'link_instagram':
+          isValid = validateSocialMediaURL(value, 'instagram');
+          break;
+        case 'link_youtube':
+          isValid = validateSocialMediaURL(value, 'youtube');
+          break;
+        case 'link_linkedin':
+          isValid = validateSocialMediaURL(value, 'linkedin');
+          break;
+        case 'link_tiktok':
+          isValid = validateSocialMediaURL(value, 'tiktok');
+          break;
+        case 'link_google_maps':
+        case 'link_google_avaliacoes':
+          isValid = validateURL(value);
           break;
       }
       
@@ -280,11 +331,35 @@ const BriefingOdonto = () => {
         if (!formData.redes_sociais || formData.redes_sociais.length === 0) {
           newErrors.redes_sociais = 'Selecione pelo menos uma rede social';
         }
+        
+        // Validate social media URLs if provided
+        if (formData.redes_sociais?.includes('Facebook') && formData.link_facebook && !validateSocialMediaURL(formData.link_facebook, 'facebook')) {
+          newErrors.link_facebook = 'URL do Facebook inválida';
+        }
+        if (formData.redes_sociais?.includes('Instagram') && formData.link_instagram && !validateSocialMediaURL(formData.link_instagram, 'instagram')) {
+          newErrors.link_instagram = 'URL do Instagram inválida';
+        }
+        if (formData.redes_sociais?.includes('YouTube') && formData.link_youtube && !validateSocialMediaURL(formData.link_youtube, 'youtube')) {
+          newErrors.link_youtube = 'URL do YouTube inválida';
+        }
+        if (formData.redes_sociais?.includes('LinkedIn') && formData.link_linkedin && !validateSocialMediaURL(formData.link_linkedin, 'linkedin')) {
+          newErrors.link_linkedin = 'URL do LinkedIn inválida';
+        }
+        if (formData.redes_sociais?.includes('TikTok') && formData.link_tiktok && !validateSocialMediaURL(formData.link_tiktok, 'tiktok')) {
+          newErrors.link_tiktok = 'URL do TikTok inválida';
+        }
+        
+        if (formData.link_google_maps && !validateURL(formData.link_google_maps)) {
+          newErrors.link_google_maps = 'URL do Google Maps inválida';
+        }
         break;
         
       case 6: // Depoimentos/Cases
         if (!formData.depoimentos_estrategia) {
           newErrors.depoimentos_estrategia = 'Selecione uma estratégia para depoimentos';
+        }
+        if (formData.link_google_avaliacoes && !validateURL(formData.link_google_avaliacoes)) {
+          newErrors.link_google_avaliacoes = 'URL das avaliações do Google inválida';
         }
         break;
         
@@ -1093,53 +1168,78 @@ const BriefingOdonto = () => {
               </div>
 
               {(formData.redes_sociais || []).includes('📘 Facebook') && (
-                <input
-                  type="url"
-                  placeholder="Link do Facebook"
-                  value={formData.link_facebook || ''}
-                  onChange={(e) => updateFormData('link_facebook', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                />
+                <div>
+                  <input
+                    type="url"
+                    placeholder="Link do Facebook"
+                    value={formData.link_facebook || ''}
+                    onChange={(e) => updateFormData('link_facebook', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                      errors.link_facebook ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                    }`}
+                  />
+                  {errors.link_facebook && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_facebook}</p>}
+                </div>
               )}
 
               {(formData.redes_sociais || []).includes('📸 Instagram') && (
-                <input
-                  type="url"
-                  placeholder="Link do Instagram"
-                  value={formData.link_instagram || ''}
-                  onChange={(e) => updateFormData('link_instagram', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                />
+                <div>
+                  <input
+                    type="url"
+                    placeholder="Link do Instagram"
+                    value={formData.link_instagram || ''}
+                    onChange={(e) => updateFormData('link_instagram', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                      errors.link_instagram ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                    }`}
+                  />
+                  {errors.link_instagram && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_instagram}</p>}
+                </div>
               )}
 
               {(formData.redes_sociais || []).includes('🎬 YouTube') && (
-                <input
-                  type="url"
-                  placeholder="Link do YouTube"
-                  value={formData.link_youtube || ''}
-                  onChange={(e) => updateFormData('link_youtube', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                />
+                <div>
+                  <input
+                    type="url"
+                    placeholder="Link do YouTube"
+                    value={formData.link_youtube || ''}
+                    onChange={(e) => updateFormData('link_youtube', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                      errors.link_youtube ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                    }`}
+                  />
+                  {errors.link_youtube && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_youtube}</p>}
+                </div>
               )}
 
               {(formData.redes_sociais || []).includes('💼 LinkedIn') && (
-                <input
-                  type="url"
-                  placeholder="Link do LinkedIn"
-                  value={formData.link_linkedin || ''}
-                  onChange={(e) => updateFormData('link_linkedin', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                />
+                <div>
+                  <input
+                    type="url"
+                    placeholder="Link do LinkedIn"
+                    value={formData.link_linkedin || ''}
+                    onChange={(e) => updateFormData('link_linkedin', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                      errors.link_linkedin ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                    }`}
+                  />
+                  {errors.link_linkedin && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_linkedin}</p>}
+                </div>
               )}
 
               {(formData.redes_sociais || []).includes('🎵 TikTok') && (
-                <input
-                  type="url"
-                  placeholder="Link do TikTok"
-                  value={formData.link_tiktok || ''}
-                  onChange={(e) => updateFormData('link_tiktok', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                />
+                <div>
+                  <input
+                    type="url"
+                    placeholder="Link do TikTok"
+                    value={formData.link_tiktok || ''}
+                    onChange={(e) => updateFormData('link_tiktok', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                      errors.link_tiktok ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                    }`}
+                  />
+                  {errors.link_tiktok && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_tiktok}</p>}
+                </div>
               )}
 
               <div>
@@ -1151,8 +1251,11 @@ const BriefingOdonto = () => {
                   placeholder="https://maps.google.com/..."
                   value={formData.link_google_maps || ''}
                   onChange={(e) => updateFormData('link_google_maps', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                    errors.link_google_maps ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                  }`}
                 />
+                {errors.link_google_maps && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_google_maps}</p>}
               </div>
             </div>
           </div>
@@ -1215,18 +1318,21 @@ const BriefingOdonto = () => {
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Link das avaliações do Google (opcional)
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://www.google.com/search?q=..."
-                  value={formData.link_google_avaliacoes || ''}
-                  onChange={(e) => updateFormData('link_google_avaliacoes', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-semibold text-purple-800 mb-3">
+                    Link das avaliações do Google (opcional)
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://www.google.com/search?q=..."
+                    value={formData.link_google_avaliacoes || ''}
+                    onChange={(e) => updateFormData('link_google_avaliacoes', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
+                      errors.link_google_avaliacoes ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                    }`}
+                  />
+                  {errors.link_google_avaliacoes && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_google_avaliacoes}</p>}
+                </div>
             </div>
           </div>
         );
@@ -1272,6 +1378,15 @@ const BriefingOdonto = () => {
                 </div>
                 {errors.logotipo_existente && <p className="text-red-500 text-sm mt-2 font-medium">{errors.logotipo_existente}</p>}
               </div>
+
+              {formData.logotipo_existente === 'sim' && (
+                <FileUploadField
+                  fieldName="logotipo_upload"
+                  accept="image/*"
+                  multiple={false}
+                  label="Upload do Logotipo"
+                />
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
@@ -1343,6 +1458,15 @@ const BriefingOdonto = () => {
                 </div>
                 {errors.fotos_consultorio && <p className="text-red-500 text-sm mt-2 font-medium">{errors.fotos_consultorio}</p>}
               </div>
+
+              {formData.fotos_consultorio === 'sim' && (
+                <FileUploadField
+                  fieldName="fotos_consultorio_upload"
+                  accept="image/*"
+                  multiple={true}
+                  label="Upload das Fotos do Consultório"
+                />
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
