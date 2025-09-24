@@ -191,7 +191,8 @@ const BriefingOdonto = () => {
         case 'estacionamento':
         case 'google_meu_negocio':
         case 'mapa_google':
-        case 'depoimentos_estrategia':
+        case 'tem_depoimentos':
+        case 'avaliacoes_google':
         case 'logotipo_existente':
         case 'manual_marca':
         case 'fotos_consultorio':
@@ -357,10 +358,13 @@ const BriefingOdonto = () => {
         break;
         
       case 6: // Depoimentos/Cases
-        if (!formData.depoimentos_estrategia) {
-          newErrors.depoimentos_estrategia = 'Selecione uma estratégia para depoimentos';
+        if (!formData.tem_depoimentos) {
+          newErrors.tem_depoimentos = 'Informe se tem depoimentos de pacientes';
         }
-        if (formData.link_google_avaliacoes && !validateURL(formData.link_google_avaliacoes)) {
+        if (!formData.avaliacoes_google) {
+          newErrors.avaliacoes_google = 'Selecione uma opção para avaliações do Google';
+        }
+        if (formData.avaliacoes_google === 'sim_google' && formData.link_google_avaliacoes && !validateURL(formData.link_google_avaliacoes)) {
           newErrors.link_google_avaliacoes = 'URL das avaliações do Google inválida';
         }
         break;
@@ -1358,65 +1362,108 @@ const BriefingOdonto = () => {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Qual estratégia para depoimentos? *
+                  Tem depoimentos de pacientes satisfeitos? *
                 </label>
                 <div className="space-y-3">
                   <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
                     <input
                       type="radio"
-                      name="depoimentos_estrategia"
-                      value="tenho"
-                      checked={formData.depoimentos_estrategia === 'tenho'}
-                      onChange={(e) => updateFormData('depoimentos_estrategia', e.target.value)}
+                      name="tem_depoimentos"
+                      value="sim_temos"
+                      checked={formData.tem_depoimentos === 'sim_temos'}
+                      onChange={(e) => updateFormData('tem_depoimentos', e.target.value)}
                       className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
                     />
-                    <span className="ml-3 font-medium text-purple-800">Tenho depoimentos específicos para usar</span>
+                    <span className="ml-3 font-medium text-purple-800">Sim, temos vários</span>
                   </label>
                   <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
                     <input
                       type="radio"
-                      name="depoimentos_estrategia"
-                      value="criem"
-                      checked={formData.depoimentos_estrategia === 'criem'}
-                      onChange={(e) => updateFormData('depoimentos_estrategia', e.target.value)}
+                      name="tem_depoimentos"
+                      value="nao_temos"
+                      checked={formData.tem_depoimentos === 'nao_temos'}
+                      onChange={(e) => updateFormData('tem_depoimentos', e.target.value)}
                       className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
                     />
-                    <span className="ml-3 font-medium text-purple-800">Criem depoimentos baseados na nossa realidade</span>
+                    <span className="ml-3 font-medium text-purple-800">Não temos ainda</span>
                   </label>
                 </div>
-                {errors.depoimentos_estrategia && <p className="text-red-500 text-sm mt-2 font-medium">{errors.depoimentos_estrategia}</p>}
+                {errors.tem_depoimentos && <p className="text-red-500 text-sm mt-2 font-medium">{errors.tem_depoimentos}</p>}
               </div>
 
-              {formData.depoimentos_estrategia === 'tenho' && (
-                <div>
-                  <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    Cole aqui os depoimentos específicos
-                  </label>
-                  <textarea
-                    placeholder="Cole aqui os depoimentos reais dos seus pacientes..."
-                    value={formData.depoimentos_texto || ''}
-                    onChange={(e) => updateFormData('depoimentos_texto', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
-                    rows={5}
-                  />
-                </div>
+              {formData.tem_depoimentos === 'sim_temos' && (
+                <>
+                  <div>
+                    <textarea
+                      placeholder="Cole aqui alguns depoimentos..."
+                      value={formData.depoimentos_texto || ''}
+                      onChange={(e) => updateFormData('depoimentos_texto', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
+                      rows={5}
+                    />
+                  </div>
+
+                  <div>
+                    <FileUploadField
+                      fieldName="arquivos_depoimentos"
+                      accept=".pdf,.jpg,.png,.mp4,.mov"
+                      multiple={true}
+                      label="Ou envie arquivos de depoimentos"
+                    />
+                  </div>
+                </>
               )}
 
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Você gostaria de utilizar as avaliações do Google no seu site? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="avaliacoes_google"
+                      value="sim_google"
+                      checked={formData.avaliacoes_google === 'sim_google'}
+                      onChange={(e) => updateFormData('avaliacoes_google', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">✅ Sim, quero mostrar minhas avaliações do Google</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <input
+                      type="radio"
+                      name="avaliacoes_google"
+                      value="nao_personalizados"
+                      checked={formData.avaliacoes_google === 'nao_personalizados'}
+                      onChange={(e) => updateFormData('avaliacoes_google', e.target.value)}
+                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
+                    />
+                    <span className="ml-3 font-medium text-purple-800">❌ Não, prefiro depoimentos personalizados</span>
+                  </label>
+                </div>
+                <p className="text-sm text-purple-600 mt-2">As avaliações do Google podem ser sincronizadas automaticamente com o site</p>
+                {errors.avaliacoes_google && <p className="text-red-500 text-sm mt-2 font-medium">{errors.avaliacoes_google}</p>}
+              </div>
+
+              {formData.avaliacoes_google === 'sim_google' && (
                 <div>
                   <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    Link das avaliações do Google (opcional)
+                    ⭐ Link do Google Meu Negócio (para avaliações)
                   </label>
                   <input
                     type="url"
-                    placeholder="https://www.google.com/search?q=..."
+                    placeholder="https://g.co/kgs/..."
                     value={formData.link_google_avaliacoes || ''}
                     onChange={(e) => updateFormData('link_google_avaliacoes', e.target.value)}
                     className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
                       errors.link_google_avaliacoes ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
                     }`}
                   />
+                  <p className="text-sm text-purple-600 mt-2">Cole o link do seu perfil no Google Meu Negócio para conseguir as avaliações</p>
                   {errors.link_google_avaliacoes && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_google_avaliacoes}</p>}
                 </div>
+              )}
             </div>
           </div>
         );
