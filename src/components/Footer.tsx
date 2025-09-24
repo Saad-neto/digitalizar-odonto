@@ -58,8 +58,8 @@ const Footer: React.FC = () => {
               <div className="flex items-start gap-3">
                 <Clock size={20} className="text-success-light mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold">Segunda a Sexta</p>
-                  <p className="text-white/70 text-sm">8h às 18h</p>
+                  <p className="font-semibold">24h</p>
+                  <p className="text-white/70 text-sm">Atendimento online</p>
                 </div>
               </div>
             </div>
