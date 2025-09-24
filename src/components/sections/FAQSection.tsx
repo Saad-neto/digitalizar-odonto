@@ -16,7 +16,7 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "O site vai aparecer no Google?",
-      answer: "Sim! Fazemos otimização básica para SEO local incluída no pacote. Seu site será encontrado quando pacientes procurarem 'dentista + sua cidade'. Para alcançar as primeiras posições mais rapidamente, oferecemos nosso plano de SEO premium como serviço adicional."
+      answer: "Sim! Fazemos otimização básica para SEO local incluída no pacote. Seu site será encontrado quando pacientes procurarem 'dentista + sua cidade'."
     },
     {
       question: "E depois do primeiro ano de hospedagem?",
