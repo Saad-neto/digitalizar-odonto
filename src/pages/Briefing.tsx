@@ -484,8 +484,28 @@ const BriefingOdonto = () => {
       arquivos_enviados: uploadedFiles
     };
     
-    console.log('Formulário preenchido:', finalData);
-    alert('Formulário enviado com sucesso! Dados salvos no console.');
+    try {
+      // Enviar para o webhook do n8n
+      const webhookUrl = 'https://n8n.isaai.online/webhook/odonto_form';
+      
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(finalData)
+      });
+
+      if (response.ok) {
+        console.log('Formulário enviado com sucesso para o n8n');
+        alert('Formulário enviado com sucesso! Dados processados pelo sistema.');
+      } else {
+        throw new Error('Erro na resposta do servidor');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar formulário:', error);
+      alert('Erro ao enviar formulário. Por favor, tente novamente.');
+    }
   };
 
   const FileUploadField = ({ fieldName, accept, multiple = false, label }: {
