@@ -49,7 +49,7 @@ const OffersSection: React.FC = () => {
   const bonuses = [
     { icon: Gift, title: "Logo profissional (se não tiver)", value: "GRÁTIS" },
     { icon: Smartphone, title: "Banco de imagens premium", value: "GRÁTIS" },
-    { icon: Check, title: "Treinamento para atualizar o site", value: "GRÁTIS" }
+    { icon: Check, title: "Otimização básica para SEO", value: "GRÁTIS" }
   ];
 
   const totalValue = included.reduce((sum, item) => {
