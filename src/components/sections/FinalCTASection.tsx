@@ -54,7 +54,7 @@ const FinalCTASection: React.FC = () => {
               <div className="mb-6">
                 <div className="text-lg text-white/70 line-through mb-2">DE R$ 997</div>
                 <div className="text-5xl font-bold text-success-light mb-2">R$ 497</div>
-                <div className="text-white/90">Ou 12x de R$ 49,70 sem juros</div>
+                <div className="text-white/90">Ou 12x de R$ 49,70</div>
               </div>
 
               <div className="bg-text-primary rounded-lg p-4 mb-6">

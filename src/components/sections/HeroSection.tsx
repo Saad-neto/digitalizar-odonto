@@ -65,7 +65,7 @@ const HeroSection: React.FC = () => {
             </div>
 
             <p className="text-white/70 text-sm">
-              💳 Ou 12x de R$ 49,70 sem juros
+              💳 Ou 12x de R$ 49,70
             </p>
           </div>
 
