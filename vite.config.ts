@@ -17,10 +17,26 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false,
+    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks: undefined,
+        // Ensure consistent file names for better caching
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       },
     },
+    // Copy .htaccess to dist directory during build
+    copyPublicDir: true,
+  },
+  // Ensure SPA routing works in preview mode
+  preview: {
+    port: 4173,
+    host: true,
+    open: true,
   },
 }));
