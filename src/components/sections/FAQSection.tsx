@@ -32,7 +32,7 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "Como é o processo de pagamento?",
-      answer: "Aceitamos Pix, cartão de crédito ou débito. Pode parcelar em até 12x sem juros no cartão. O pagamento é 100% seguro através do Mercado Pago e PagSeguro. Emitimos nota fiscal para todos os pedidos."
+      answer: "Aceitamos Pix, cartão de crédito ou débito. Pode parcelar em até 12x no cartão. O pagamento é 100% seguro!"
     },
     {
       question: "Vocês atendem qualquer cidade do Brasil?",
@@ -40,11 +40,11 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "E se eu não gostar do resultado?",
-      answer: "Você tem 30 dias para avaliar e solicitar o reembolso completo se não estiver satisfeito. Além disso, incluímos até 3 revisões no pacote. Nossa taxa de aprovação é de 98,7%, mas sua satisfação é garantida."
+      answer: "Você tem 7 dias para avaliar e solicitar o reembolso completo se não estiver satisfeito. Além disso, incluímos até 3 revisões durante a construção do site. Nossa taxa de aprovação é de 98,7%."
     },
     {
       question: "Qual a diferença entre vocês e outras empresas?",
-      answer: "Somos 100% especializados em dentistas há 5 anos, conhecemos profundamente o setor. Entregamos em 24h (outros levam 30-60 dias), oferecemos múltiplas garantias e assumimos todo o risco. Nossos preços são justos comparado às agências tradicionais."
+      answer: "Somos 100% especializados em dentistas, conhecemos profundamente o setor. Entregamos em 24h (outros levam 30-60 dias), oferecemos múltiplas garantias e assumimos todo o risco. Nossos preços são justos comparado às agências tradicionais."
     }
   ];
 
