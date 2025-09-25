@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { compressImage, getPayloadSize, formatFileSize } from '@/utils/imageCompression';
 
 interface FormData {
   [key: string]: any;
@@ -238,31 +239,67 @@ const BriefingOdonto = () => {
     }
   };
 
-  const handleFileUpload = (fieldName: string, files: FileList | null) => {
+  const handleFileUpload = async (fieldName: string, files: FileList | null) => {
     if (!files) return;
     
     const fileArray = Array.from(files);
     const processedFiles: UploadedFile[] = [];
 
-    fileArray.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        processedFiles.push({
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          data: e.target?.result as string
-        });
-        
-        if (processedFiles.length === fileArray.length) {
-          setUploadedFiles(prev => ({
-            ...prev,
-            [fieldName]: processedFiles
-          }));
+    try {
+      for (const file of fileArray) {
+        // Check file size limit (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert(`Arquivo ${file.name} é muito grande. Máximo permitido: 5MB`);
+          continue;
         }
-      };
-      reader.readAsDataURL(file);
-    });
+
+        if (file.type.startsWith('image/')) {
+          // Compress images
+          console.log(`Comprimindo imagem: ${file.name} (${formatFileSize(file.size)})`);
+          
+          const compressedDataUrl = await compressImage(file, {
+            maxWidth: 800,
+            maxHeight: 600,
+            quality: 0.8,
+            maxSizeMB: 1
+          });
+
+          const compressedSize = (compressedDataUrl.length * 0.75);
+          console.log(`Imagem comprimida: ${formatFileSize(compressedSize)}`);
+
+          processedFiles.push({
+            name: file.name,
+            type: file.type,
+            size: compressedSize,
+            data: compressedDataUrl
+          });
+        } else {
+          // For non-image files, use as is
+          const reader = new FileReader();
+          await new Promise<void>((resolve) => {
+            reader.onload = (e) => {
+              processedFiles.push({
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                data: e.target?.result as string
+              });
+              resolve();
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      }
+
+      setUploadedFiles(prev => ({
+        ...prev,
+        [fieldName]: processedFiles
+      }));
+
+    } catch (error) {
+      console.error('Erro ao processar arquivos:', error);
+      alert('Erro ao processar arquivos. Tente novamente.');
+    }
   };
 
   const validateSection = () => {
@@ -506,6 +543,22 @@ const BriefingOdonto = () => {
     
     try {
       console.log('Iniciando envio do formulário...');
+      
+      // Check payload size before sending
+      const payloadSize = getPayloadSize(finalData);
+      const payloadSizeMB = payloadSize / (1024 * 1024);
+      
+      console.log(`Tamanho do payload: ${formatFileSize(payloadSize)} (${payloadSizeMB.toFixed(2)} MB)`);
+      
+      // Warn if payload is large (>10MB)
+      if (payloadSizeMB > 10) {
+        const confirmSend = confirm(
+          `O formulário está muito grande (${formatFileSize(payloadSize)}). ` +
+          'Isso pode causar erro no envio. Deseja continuar mesmo assim?'
+        );
+        if (!confirmSend) return;
+      }
+      
       console.log('Dados a serem enviados:', finalData);
       
       // Enviar para o webhook do n8n
@@ -553,6 +606,14 @@ const BriefingOdonto = () => {
         const errorText = await response.text();
         console.error('Erro HTTP:', response.status, response.statusText);
         console.error('Conteúdo da resposta de erro:', errorText);
+        
+        // Handle specific errors
+        if (response.status === 413) {
+          throw new Error('Formulário muito grande. Reduza o tamanho das imagens e tente novamente.');
+        } else if (response.status === 500) {
+          throw new Error('Erro interno do servidor. Verifique se há muitas imagens ou arquivos grandes.');
+        }
+        
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
     } catch (error) {
@@ -564,6 +625,12 @@ const BriefingOdonto = () => {
       } else if (error.message.includes('Failed to fetch')) {
         console.error('Falha na requisição - possível problema de CORS');
         alert('Erro ao conectar com o servidor. Verifique as configurações de CORS no n8n.');
+      } else if (error.message.includes('muito grande') || error.message.includes('Payload')) {
+        console.error('Erro de payload muito grande');
+        alert('Formulário muito grande para envio. Tente reduzir o número ou tamanho das imagens.');
+      } else if (error.message.includes('servidor') || error.message.includes('500')) {
+        console.error('Erro do servidor - possivelmente payload muito grande');
+        alert('Erro do servidor. Provavelmente há muitas imagens ou arquivos grandes. Tente reduzir o tamanho dos arquivos.');
       } else {
         console.error('Erro genérico:', error.message);
         alert(`Erro ao enviar formulário: ${error.message}. Por favor, tente novamente.`);
