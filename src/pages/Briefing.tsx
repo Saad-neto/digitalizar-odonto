@@ -767,7 +767,7 @@ const BriefingOdonto = () => {
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Quais as principais especialidades que querem destacar? *
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     '🦷 Clínica Geral',
                     '📐 Ortodontia', 
@@ -780,7 +780,7 @@ const BriefingOdonto = () => {
                     '⚕️ Cirurgia Bucomaxilofacial',
                     '🏥 Múltiplas especialidades'
                   ].map((esp) => (
-                    <label key={esp} className="flex items-center p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    <label key={esp} className="flex items-start p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
                       <input
                         type="checkbox"
                         checked={(formData.especialidades || []).includes(esp)}
@@ -792,9 +792,9 @@ const BriefingOdonto = () => {
                             updateFormData('especialidades', especialidades.filter((item: string) => item !== esp));
                           }
                         }}
-                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2"
+                        className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2 mt-0.5 flex-shrink-0"
                       />
-                      <span className="ml-3 text-sm font-medium text-purple-800">{esp}</span>
+                      <span className="ml-2 sm:ml-3 text-xs sm:text-sm font-medium text-purple-800 mobile-text-wrap leading-tight">{esp}</span>
                     </label>
                   ))}
                 </div>
@@ -808,10 +808,10 @@ const BriefingOdonto = () => {
         return (
           <div className="space-y-8">
             <div className="text-center mb-8 sm:mb-10">
-              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2 sm:mb-3 mobile-text-wrap">
+              <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2 sm:mb-3 mobile-text-wrap leading-tight">
                 Sobre Nós/Equipe
               </h2>
-              <p className="text-purple-600/70 text-base sm:text-lg mobile-text-wrap">Informações sobre os profissionais do consultório</p>
+              <p className="text-purple-600/70 text-sm sm:text-base mobile-text-wrap">Informações sobre os profissionais do consultório</p>
             </div>
             
             <div className="space-y-6">
@@ -1923,10 +1923,10 @@ const BriefingOdonto = () => {
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2 sm:mb-4 px-4">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2 sm:mb-4 px-4 mobile-text-wrap leading-tight">
             Briefing Odonto
           </h1>
-          <p className="text-purple-600/80 text-sm sm:text-base md:text-lg px-4">Formulário Completo para Desenvolvimento do Site</p>
+          <p className="text-purple-600/80 text-sm sm:text-base md:text-lg px-4 mobile-text-wrap">Formulário Completo para Desenvolvimento do Site</p>
         </div>
 
         {/* Progress Bar */}
@@ -1956,7 +1956,7 @@ const BriefingOdonto = () => {
               <p className="text-purple-600 font-medium text-sm sm:text-base">
                 <span className="block sm:inline">{currentSection + 1} de {sections.length}</span>
                 <span className="hidden sm:inline"> - </span>
-                <span className="block sm:inline text-xs sm:text-sm mt-1 sm:mt-0">{sections[currentSection].title}</span>
+                <span className="block sm:inline text-xs sm:text-sm mt-1 sm:mt-0 mobile-text-wrap">{sections[currentSection].title}</span>
               </p>
             </div>
             

@@ -363,5 +363,29 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+    line-height: 1.3;
+  }
+  
+  /* Better card padding on mobile */
+  .mobile-card-padding {
+    padding: 0.75rem;
+  }
+  
+  /* Ensure checkboxes and icons don't overflow */
+  .mobile-checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .mobile-checkbox-container input {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+  
+  .mobile-checkbox-text {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
   }
 }
