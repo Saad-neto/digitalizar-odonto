@@ -807,11 +807,11 @@ const BriefingOdonto = () => {
       case 2: // Equipe
         return (
           <div className="space-y-8">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
+            <div className="text-center mb-8 sm:mb-10">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2 sm:mb-3 mobile-text-wrap">
                 Sobre Nós/Equipe
               </h2>
-              <p className="text-purple-600/70 text-lg">Informações sobre os profissionais do consultório</p>
+              <p className="text-purple-600/70 text-base sm:text-lg mobile-text-wrap">Informações sobre os profissionais do consultório</p>
             </div>
             
             <div className="space-y-6">
@@ -819,19 +819,47 @@ const BriefingOdonto = () => {
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Quantos dentistas trabalham no consultório? (opcional)
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  placeholder="1"
-                  value={formData.numero_dentistas || '1'}
-                  onChange={(e) => updateFormData('numero_dentistas', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                />
+                <div className="flex items-center gap-4 bg-white/80 backdrop-blur-sm rounded-xl border-2 border-purple-200 p-4">
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const current = parseInt(formData.numero_dentistas) || 1;
+                      if (current > 1) updateFormData('numero_dentistas', (current - 1).toString());
+                    }}
+                    disabled={parseInt(formData.numero_dentistas) <= 1}
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0 border-purple-300 text-purple-600 hover:bg-purple-50 disabled:opacity-50"
+                  >
+                    -
+                  </Button>
+                  
+                  <div className="flex-1 text-center">
+                    <span className="text-lg font-semibold text-purple-800">
+                      {parseInt(formData.numero_dentistas) || 1} profissional{parseInt(formData.numero_dentistas) > 1 ? 'is' : ''}
+                    </span>
+                  </div>
+                  
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const current = parseInt(formData.numero_dentistas) || 1;
+                      if (current < 10) updateFormData('numero_dentistas', (current + 1).toString());
+                    }}
+                    disabled={parseInt(formData.numero_dentistas) >= 10}
+                    variant="outline"
+                    size="sm"
+                    className="w-8 h-8 p-0 border-purple-300 text-purple-600 hover:bg-purple-50 disabled:opacity-50"
+                  >
+                    +
+                  </Button>
+                </div>
+                <p className="text-xs text-purple-600/70 mt-2">Use os botões + e - para ajustar o número de profissionais (máx. 10)</p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {Array.from({ length: parseInt(formData.numero_dentistas) || 1 }, (_, index) => (
-                  <div key={index} className="border-2 border-purple-200 rounded-2xl p-6 bg-gradient-to-r from-purple-50/50 to-white/50 backdrop-blur-sm">
+                  <div key={index} className="border-2 border-purple-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-gradient-to-r from-purple-50/50 to-white/50 backdrop-blur-sm">
                     <h3 className="font-bold text-purple-800 mb-6 text-lg">Profissional {index + 1}</h3>
                     <div className="space-y-4">
                       <div>
@@ -1892,24 +1920,24 @@ const BriefingOdonto = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2 sm:mb-4 px-4">
             Briefing Odonto
           </h1>
-          <p className="text-purple-600/80 text-lg">Formulário Completo para Desenvolvimento do Site</p>
+          <p className="text-purple-600/80 text-sm sm:text-base md:text-lg px-4">Formulário Completo para Desenvolvimento do Site</p>
         </div>
 
         {/* Progress Bar */}
-        <div className="max-w-4xl mx-auto mb-8">
+        <div className="max-w-4xl mx-auto mb-6 sm:mb-8 px-4">
           <div className="bg-white/60 rounded-full p-1 shadow-lg">
             <div 
-              className="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-500 ease-out"
+              className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 sm:h-3 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progressPercentage}%` }}
             />
           </div>
-          <div className="flex justify-between mt-3 text-sm text-purple-600">
+          <div className="flex justify-between mt-2 sm:mt-3 text-xs sm:text-sm text-purple-600">
             <span>Progresso</span>
             <span>{Math.round(progressPercentage)}% completo</span>
           </div>
@@ -1917,45 +1945,51 @@ const BriefingOdonto = () => {
 
         {/* Form Container */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-purple-100">
+          <div className="bg-white/70 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 border border-purple-100">
             {renderSection()}
           </div>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center mt-8">
-            <Button
-              onClick={prevSection}
-              disabled={currentSection === 0}
-              variant="outline"
-              className="flex items-center gap-2 px-6 py-3 border-2 border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Anterior
-            </Button>
-
+          <div className="mt-8 space-y-4">
+            {/* Progress info - Mobile optimized */}
             <div className="text-center">
-              <p className="text-purple-600 font-medium">
-                {currentSection + 1} de {sections.length} - {sections[currentSection].title}
+              <p className="text-purple-600 font-medium text-sm sm:text-base">
+                <span className="block sm:inline">{currentSection + 1} de {sections.length}</span>
+                <span className="hidden sm:inline"> - </span>
+                <span className="block sm:inline text-xs sm:text-sm mt-1 sm:mt-0">{sections[currentSection].title}</span>
               </p>
             </div>
+            
+            {/* Navigation buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:justify-between sm:items-center">
+              <Button
+                onClick={prevSection}
+                disabled={currentSection === 0}
+                variant="outline"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-3 border-2 border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Anterior
+              </Button>
 
-            {currentSection === sections.length - 1 ? (
-              <Button
-                onClick={submitForm}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
-              >
-                <Check className="w-4 h-4" />
-                Finalizar
-              </Button>
-            ) : (
-              <Button
-                onClick={nextSection}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
-              >
-                Próximo
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            )}
+              {currentSection === sections.length - 1 ? (
+                <Button
+                  onClick={submitForm}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-sm sm:text-base"
+                >
+                  <Check className="w-4 h-4" />
+                  Finalizar
+                </Button>
+              ) : (
+                <Button
+                  onClick={nextSection}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-sm sm:text-base"
+                >
+                  Próximo
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>

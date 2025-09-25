@@ -342,3 +342,26 @@
     box-shadow: 0 8px 32px hsla(0, 0%, 0%, 0.1);
   }
 }
+
+/* Mobile form optimizations for briefing page */
+@media (max-width: 640px) {
+  .form-input-mobile {
+    @apply text-base; /* Prevents zoom on iOS */
+    min-height: 44px; /* Touch-friendly minimum height */
+  }
+  
+  .form-section-title {
+    @apply text-xl leading-tight;
+  }
+  
+  .form-section-subtitle {
+    @apply text-sm leading-relaxed;
+  }
+  
+  /* Ensure proper text wrapping in cards */
+  .mobile-text-wrap {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+}
