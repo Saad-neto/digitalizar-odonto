@@ -6,8 +6,9 @@ interface Env {
   URL?: string;
 }
 
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+// Cloudflare Pages Function formato
+export async function onRequest(context: { request: Request; env: Env }): Promise<Response> {
+  const { request, env } = context;
     // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -134,5 +135,4 @@ export default {
         }
       );
     }
-  },
-};
+}

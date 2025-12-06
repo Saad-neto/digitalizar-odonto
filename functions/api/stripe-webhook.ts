@@ -8,8 +8,9 @@ interface Env {
   VITE_SUPABASE_ANON_KEY: string;
 }
 
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+// Cloudflare Pages Function formato
+export async function onRequest(context: { request: Request; env: Env }): Promise<Response> {
+  const { request, env } = context;
     // Webhook só aceita POST
     if (request.method !== 'POST') {
       return new Response(
@@ -102,8 +103,7 @@ export default {
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
-  },
-};
+}
 
 // Handler: Checkout completado
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session, supabase: any) {
