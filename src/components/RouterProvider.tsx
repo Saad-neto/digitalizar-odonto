@@ -2,6 +2,7 @@ import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Index from "../pages/Index";
 import Briefing from "../pages/Briefing";
+import Payment from "../pages/Payment";
 import ThankYou from "../pages/ThankYou";
 import NotFound from "../pages/NotFound";
 import { getRouterType } from "../utils/router";
@@ -30,6 +31,7 @@ const RouterProvider = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/briefing" element={<Briefing />} />
+      <Route path="/pagamento" element={<Payment />} />
       <Route path="/obrigado" element={<ThankYou />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { compressImage, getPayloadSize, formatFileSize } from '@/utils/imageCompression';
+import { createLead } from '@/lib/supabase';
 
 interface FormData {
   [key: string]: any;
@@ -540,108 +541,94 @@ const BriefingOdonto = () => {
       },
       arquivos_enviados: uploadedFiles
     };
-    
+
     try {
       console.log('Iniciando envio do formulário...');
-      
+
       // Check payload size before sending
       const payloadSize = getPayloadSize(finalData);
       const payloadSizeMB = payloadSize / (1024 * 1024);
-      
+
       console.log(`Tamanho do payload: ${formatFileSize(payloadSize)} (${payloadSizeMB.toFixed(2)} MB)`);
-      
-      // Warn if payload is large (>10MB)
-      if (payloadSizeMB > 10) {
-        const confirmSend = confirm(
-          `O formulário está muito grande (${formatFileSize(payloadSize)}). ` +
-          'Isso pode causar erro no envio. Deseja continuar mesmo assim?'
-        );
-        if (!confirmSend) return;
-      }
-      
-      console.log('Dados a serem enviados:', finalData);
-      
-      // Enviar para o webhook do n8n
-      const webhookUrl = 'https://n8n.isaai.online/webhook/odonto_form';
-      console.log('URL do webhook:', webhookUrl);
-      
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(finalData),
-        mode: 'cors'
+
+      // PASSO 1: Salvar no Supabase
+      console.log('💾 Salvando lead no Supabase...');
+      const lead = await createLead({
+        nome: formData.nome,
+        email: formData.email,
+        whatsapp: formData.whatsapp,
+        briefing_data: finalData,
       });
 
-      console.log('Status da resposta:', response.status);
-      console.log('Headers da resposta:', response.headers);
-      
-      if (response.ok) {
-        const responseData = await response.text();
-        console.log('Resposta do servidor:', responseData);
-        console.log('Formulário enviado com sucesso para o n8n');
-        
-        // Redirecionar para página de obrigado
-        console.log('Redirecionando para página de obrigado...');
-        
-        // Try React Router navigation first
+      console.log('✅ Lead criado no Supabase com ID:', lead.id);
+
+      // PASSO 2 (Opcional): Enviar backup para n8n
+      const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
+      if (webhookUrl) {
+        console.log('📤 Enviando backup para n8n...');
         try {
-          navigate('/obrigado');
-          
-          // Fallback: If navigation doesn't work in 2 seconds, force redirect
-          setTimeout(() => {
-            if (window.location.pathname !== '/obrigado') {
-              console.log('React Router navigation failed, using window.location.href as fallback');
-              window.location.href = '/obrigado';
-            }
-          }, 2000);
-        } catch (error) {
-          console.error('Navigation error:', error);
-          // Immediate fallback if navigate throws an error
-          window.location.href = '/obrigado';
+          await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+              ...finalData,
+              supabase_lead_id: lead.id,
+            }),
+            mode: 'cors'
+          });
+          console.log('✅ Backup enviado para n8n com sucesso');
+        } catch (n8nError) {
+          console.warn('⚠️ Falha ao enviar para n8n (não crítico):', n8nError);
+          // Não falhamos se o n8n der erro - o importante é ter salvo no Supabase
         }
-      } else {
-        const errorText = await response.text();
-        console.error('Erro HTTP:', response.status, response.statusText);
-        console.error('Conteúdo da resposta de erro:', errorText);
-        
-        // Handle specific errors
-        if (response.status === 413) {
-          throw new Error('Formulário muito grande. Reduza o tamanho das imagens e tente novamente.');
-        } else if (response.status === 500) {
-          throw new Error('Erro interno do servidor. Verifique se há muitas imagens ou arquivos grandes.');
-        }
-        
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
-    } catch (error) {
-      console.error('Erro detalhado ao enviar formulário:', error);
-      
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        console.error('Erro de rede/CORS detectado');
-        alert('Erro de conexão. Verifique se o servidor está acessível e as configurações de CORS estão corretas.');
-      } else if (error.message.includes('Failed to fetch')) {
-        console.error('Falha na requisição - possível problema de CORS');
-        alert('Erro ao conectar com o servidor. Verifique as configurações de CORS no n8n.');
-      } else if (error.message.includes('muito grande') || error.message.includes('Payload')) {
-        console.error('Erro de payload muito grande');
-        alert('Formulário muito grande para envio. Tente reduzir o número ou tamanho das imagens.');
-      } else if (error.message.includes('servidor') || error.message.includes('500')) {
-        console.error('Erro do servidor - possivelmente payload muito grande');
-        alert('Erro do servidor. Provavelmente há muitas imagens ou arquivos grandes. Tente reduzir o tamanho dos arquivos.');
-      } else {
-        console.error('Erro genérico:', error.message);
-        alert(`Erro ao enviar formulário: ${error.message}. Por favor, tente novamente.`);
+
+      // PASSO 3: Redirecionar para página de pagamento
+      console.log('🚀 Redirecionando para página de pagamento...');
+
+      try {
+        navigate(`/pagamento?leadId=${lead.id}`);
+
+        // Fallback: If navigation doesn't work in 2 seconds, force redirect
+        setTimeout(() => {
+          if (!window.location.pathname.includes('/pagamento')) {
+            console.log('React Router navigation failed, using window.location.href as fallback');
+            window.location.href = `/pagamento?leadId=${lead.id}`;
+          }
+        }, 2000);
+      } catch (error) {
+        console.error('Navigation error:', error);
+        // Immediate fallback if navigate throws an error
+        window.location.href = `/pagamento?leadId=${lead.id}`;
       }
-      
+
+    } catch (error: any) {
+      console.error('❌ Erro detalhado ao enviar formulário:', error);
+
       // Salvar dados localmente como fallback
-      console.log('Salvando dados localmente como backup:', finalData);
+      console.log('💾 Salvando dados localmente como backup...');
       localStorage.setItem('briefing_backup', JSON.stringify({
         data: finalData,
         timestamp: new Date().toISOString()
       }));
+
+      // Mensagem de erro para o usuário
+      let errorMessage = 'Erro ao processar o formulário. ';
+
+      if (error.message?.includes('leads')) {
+        errorMessage += 'Erro ao salvar no banco de dados. Verifique sua conexão.';
+      } else if (error.message?.includes('Failed to fetch') || error.name === 'TypeError') {
+        errorMessage += 'Erro de conexão. Verifique sua internet.';
+      } else {
+        errorMessage += `Detalhes: ${error.message || 'Erro desconhecido'}`;
+      }
+
+      errorMessage += '\n\nSeus dados foram salvos localmente. Entre em contato conosco pelo WhatsApp.';
+
+      alert(errorMessage);
     }
   };
 
