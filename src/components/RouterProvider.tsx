@@ -41,7 +41,7 @@ const RouterProvider = () => {
     return <HashRouter>{routes}</HashRouter>;
   }
 
-  return <BrowserRouter>{routes}</BrowserRouter>;
+  return <BrowserRouter basename="/digitalizar-odonto">{routes}</BrowserRouter>;
 };
 
 export default RouterProvider;
