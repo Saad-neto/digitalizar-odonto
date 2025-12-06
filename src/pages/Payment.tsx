@@ -79,8 +79,8 @@ const Payment = () => {
     setLoading(true);
 
     try {
-      // Criar sessão de checkout no Stripe via Netlify Function
-      const response = await fetch('/.netlify/functions/create-checkout-session', {
+      // Criar sessão de checkout no Stripe via Cloudflare Worker
+      const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
