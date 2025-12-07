@@ -24,89 +24,17 @@ const BriefingOdonto = () => {
   const [uploadedFiles, setUploadedFiles] = useState<{[key: string]: UploadedFile[]}>({});
   const [loadingCep, setLoadingCep] = useState(false);
 
-  const formatCEP = (value: string) => {
-    const numbers = value.replace(/\D/g, '');
-    if (numbers.length <= 8) {
-      return numbers.replace(/(\d{5})(\d{3})/, '$1-$2');
-    }
-    return value;
-  };
-
-  const buscarEnderecoPorCEP = async (cep: string) => {
-    const cepNumbers = cep.replace(/\D/g, '');
-    
-    if (cepNumbers.length !== 8) return;
-    
-    setLoadingCep(true);
-    
-    try {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors.cep;
-        return newErrors;
-      });
-
-      const response = await fetch(`https://viacep.com.br/ws/${cepNumbers}/json/`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        
-        if (!data.erro) {
-          updateFormData('rua', data.logradouro || '');
-          updateFormData('bairro', data.bairro || '');
-          updateFormData('cidade', data.localidade || '');
-          updateFormData('uf', data.uf || '');
-          console.log('CEP encontrado via API:', data);
-          return;
-        } else {
-          setErrors(prev => ({ ...prev, cep: 'CEP não encontrado na base dos Correios' }));
-          return;
-        }
-      }
-
-      throw new Error('API indisponível');
-      
-    } catch (error) {
-      console.error('Erro ao buscar CEP:', error);
-      
-      const cepsConhecidos: {[key: string]: any} = {
-        '01310100': { logradouro: 'Avenida Paulista', bairro: 'Bela Vista', localidade: 'São Paulo', uf: 'SP' },
-        '20040020': { logradouro: 'Rua da Assembleia', bairro: 'Centro', localidade: 'Rio de Janeiro', uf: 'RJ' },
-        '30112000': { logradouro: 'Rua da Bahia', bairro: 'Centro', localidade: 'Belo Horizonte', uf: 'MG' }
-      };
-
-      const enderecoConhecido = cepsConhecidos[cepNumbers];
-      if (enderecoConhecido) {
-        updateFormData('rua', enderecoConhecido.logradouro);
-        updateFormData('bairro', enderecoConhecido.bairro);
-        updateFormData('cidade', enderecoConhecido.localidade);
-        updateFormData('uf', enderecoConhecido.uf);
-        console.log('Usando dados verificados para CEP:', cepNumbers);
-      } else {
-        setErrors(prev => ({ 
-          ...prev, 
-          cep: 'API de CEP temporariamente indisponível. Por favor, preencha o endereço manualmente.' 
-        }));
-      }
-      
-    } finally {
-      setLoadingCep(false);
-    }
-  };
-
   const sections = [
-    { id: 'pessoais', title: 'Informações Pessoais', required: true },
-    { id: 'cabecalho', title: 'Homepage/Cabeçalho', required: true },
-    { id: 'equipe', title: 'Sobre Nós/Equipe', required: false },
-    { id: 'servicos', title: 'Serviços/Tratamentos', required: true },
-    { id: 'tecnologia', title: 'Tecnologia/Diferenciais', required: true },
-    { id: 'localizacao', title: 'Localização/Contato', required: true },
-    { id: 'depoimentos', title: 'Depoimentos/Cases', required: true },
-    { id: 'identidade', title: 'Identidade Visual/Design', required: true }
+    { id: 'informacoes-essenciais', title: 'Informações Essenciais', subtitle: 'Vamos começar! Informações Básicas', required: true },
+    { id: 'profissionais', title: 'Sobre o(s) Profissional(is)', subtitle: 'Vamos apresentar você (ou sua equipe) no site', required: true },
+    { id: 'servicos-diferenciais', title: 'Serviços e Diferenciais', subtitle: 'O que você oferece e o que te torna único', required: true },
+    { id: 'localizacao-contato', title: 'Localização e Contato', subtitle: 'Onde você está?', required: true },
+    { id: 'materiais-revisao', title: 'Materiais e Revisão Final', subtitle: 'Quase lá! Materiais e Revisão', required: true }
   ];
 
   const progressPercentage = ((currentSection + 1) / sections.length) * 100;
 
+  // Funções de formatação
   const formatWhatsApp = (value: string) => {
     const numbers = value.replace(/\D/g, '');
     if (numbers.length <= 11) {
@@ -115,6 +43,23 @@ const BriefingOdonto = () => {
     return value;
   };
 
+  const formatCEP = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 8) {
+      return numbers.replace(/(\d{5})(\d{3})/, '$1-$2');
+    }
+    return value;
+  };
+
+  const formatTelefone = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 10) {
+      return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    }
+    return value;
+  };
+
+  // Funções de validação
   const validateWhatsApp = (whatsapp: string) => {
     const numbers = whatsapp.replace(/\D/g, '');
     if (numbers.length !== 11) return false;
@@ -135,7 +80,7 @@ const BriefingOdonto = () => {
   };
 
   const validateURL = (url: string) => {
-    if (!url || url.trim() === '') return true; // Optional field
+    if (!url || url.trim() === '') return true;
     try {
       const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
       return ['http:', 'https:'].includes(urlObj.protocol);
@@ -144,25 +89,48 @@ const BriefingOdonto = () => {
     }
   };
 
-  const validateSocialMediaURL = (url: string, platform: string) => {
-    if (!url || url.trim() === '') return true; // Optional field
-    if (!validateURL(url)) return false;
-    
-    const cleanUrl = url.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '');
-    
-    switch (platform) {
-      case 'facebook':
-        return cleanUrl.includes('facebook.com/') || cleanUrl.includes('fb.com/');
-      case 'instagram':
-        return cleanUrl.includes('instagram.com/');
-      case 'youtube':
-        return cleanUrl.includes('youtube.com/') || cleanUrl.includes('youtu.be/');
-      case 'linkedin':
-        return cleanUrl.includes('linkedin.com/');
-      case 'tiktok':
-        return cleanUrl.includes('tiktok.com/');
-      default:
-        return true;
+  const buscarEnderecoPorCEP = async (cep: string) => {
+    const cepNumbers = cep.replace(/\D/g, '');
+
+    if (cepNumbers.length !== 8) return;
+
+    setLoadingCep(true);
+
+    try {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.cep;
+        return newErrors;
+      });
+
+      const response = await fetch(`https://viacep.com.br/ws/${cepNumbers}/json/`);
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (!data.erro) {
+          updateFormData('rua', data.logradouro || '');
+          updateFormData('bairro', data.bairro || '');
+          updateFormData('cidade', data.localidade || '');
+          updateFormData('uf', data.uf || '');
+          return;
+        } else {
+          setErrors(prev => ({ ...prev, cep: 'CEP não encontrado' }));
+          return;
+        }
+      }
+
+      throw new Error('API indisponível');
+
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error);
+      setErrors(prev => ({
+        ...prev,
+        cep: 'API de CEP temporariamente indisponível. Por favor, preencha o endereço manualmente.'
+      }));
+
+    } finally {
+      setLoadingCep(false);
     }
   };
 
@@ -171,1880 +139,1692 @@ const BriefingOdonto = () => {
       ...prev,
       [field]: value
     }));
-    
+
     if (errors[field]) {
-      let isValid = false;
-      
-      switch(field) {
-        case 'nome':
-          isValid = value && value.length >= 3;
-          break;
-        case 'whatsapp':
-          isValid = value && validateWhatsApp(value);
-          break;
-        case 'email':
-          isValid = value && validateEmail(value);
-          break;
-        case 'nome_consultorio':
-          isValid = value && value.length >= 3;
-          break;
-        case 'tem_slogan':
-        case 'convenios':
-        case 'emergencia_24h':
-        case 'sedacao_consciente':
-        case 'estacionamento':
-        case 'google_meu_negocio':
-        case 'mapa_google':
-        case 'tem_depoimentos':
-        case 'avaliacoes_google':
-        case 'logotipo_existente':
-        case 'manual_marca':
-        case 'fotos_consultorio':
-        case 'estilo_fonte':
-        case 'tom_linguagem':
-        case 'textos_existentes':
-          isValid = value && value.trim().length > 0;
-          break;
-        case 'especialidades':
-        case 'redes_sociais':
-          isValid = value && Array.isArray(value) && value.length > 0;
-          break;
-        case 'link_facebook':
-          isValid = validateSocialMediaURL(value, 'facebook');
-          break;
-        case 'link_instagram':
-          isValid = validateSocialMediaURL(value, 'instagram');
-          break;
-        case 'link_youtube':
-          isValid = validateSocialMediaURL(value, 'youtube');
-          break;
-        case 'link_linkedin':
-          isValid = validateSocialMediaURL(value, 'linkedin');
-          break;
-        case 'link_tiktok':
-          isValid = validateSocialMediaURL(value, 'tiktok');
-          break;
-        case 'link_google_maps':
-        case 'link_google_avaliacoes':
-          isValid = validateURL(value);
-          break;
-      }
-      
-      if (isValid) {
-        setErrors(prev => {
-          const newErrors = { ...prev };
-          delete newErrors[field];
-          return newErrors;
-        });
-      }
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
     }
   };
 
   const handleFileUpload = async (fieldName: string, files: FileList | null) => {
     if (!files) return;
-    
-    const fileArray = Array.from(files);
-    const processedFiles: UploadedFile[] = [];
 
-    try {
-      for (const file of fileArray) {
-        // Check file size limit (5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          alert(`Arquivo ${file.name} é muito grande. Máximo permitido: 5MB`);
-          continue;
-        }
+    const fileArray: UploadedFile[] = [];
 
-        if (file.type.startsWith('image/')) {
-          // Compress images
-          console.log(`Comprimindo imagem: ${file.name} (${formatFileSize(file.size)})`);
-          
-          const compressedDataUrl = await compressImage(file, {
-            maxWidth: 800,
-            maxHeight: 600,
-            quality: 0.8,
-            maxSizeMB: 1
-          });
-
-          const compressedSize = (compressedDataUrl.length * 0.75);
-          console.log(`Imagem comprimida: ${formatFileSize(compressedSize)}`);
-
-          processedFiles.push({
-            name: file.name,
-            type: file.type,
-            size: compressedSize,
-            data: compressedDataUrl
-          });
-        } else {
-          // For non-image files, use as is
-          const reader = new FileReader();
-          await new Promise<void>((resolve) => {
-            reader.onload = (e) => {
-              processedFiles.push({
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                data: e.target?.result as string
-              });
-              resolve();
-            };
-            reader.readAsDataURL(file);
-          });
-        }
-      }
-
-      setUploadedFiles(prev => ({
-        ...prev,
-        [fieldName]: processedFiles
-      }));
-
-    } catch (error) {
-      console.error('Erro ao processar arquivos:', error);
-      alert('Erro ao processar arquivos. Tente novamente.');
-    }
-  };
-
-  const validateSection = () => {
-    const newErrors: {[key: string]: string} = {};
-    
-    console.log(`Validando seção ${currentSection}: ${sections[currentSection]?.title}`);
-    
-    switch(currentSection) {
-      case 0: // Informações Pessoais
-        if (!formData.nome || formData.nome.length < 3) {
-          newErrors.nome = 'Nome deve ter pelo menos 3 caracteres';
-        }
-        if (!formData.whatsapp) {
-          newErrors.whatsapp = 'WhatsApp é obrigatório';
-        } else if (!validateWhatsApp(formData.whatsapp)) {
-          newErrors.whatsapp = 'WhatsApp deve ter formato válido (11) 99999-9999';
-        }
-        if (!formData.email) {
-          newErrors.email = 'Email é obrigatório';
-        } else if (!validateEmail(formData.email)) {
-          newErrors.email = 'Email deve ter formato válido';
-        }
-        break;
-        
-      case 1: // Homepage/Cabeçalho
-        if (!formData.nome_consultorio || formData.nome_consultorio.length < 3) {
-          newErrors.nome_consultorio = 'Nome do consultório é obrigatório';
-        }
-        if (!formData.tem_slogan) {
-          newErrors.tem_slogan = 'Informe se tem slogan ou não';
-        }
-        if (!formData.especialidades || formData.especialidades.length === 0) {
-          newErrors.especialidades = 'Selecione pelo menos uma especialidade';
-        }
-        break;
-        
-      case 2: // Sobre Nós/Equipe (opcional)
-        // Esta seção é opcional, mas se o usuário preencheu número de dentistas,
-        // podemos validar se ao menos o primeiro profissional tem nome
-        if (formData.numero_dentistas && parseInt(formData.numero_dentistas) > 0) {
-          // Validation is optional since this section is marked as not required
-          console.log('Seção 2 (Equipe): Validação passada - seção opcional');
-        }
-        break;
-        
-      case 3: // Serviços/Tratamentos
-        if (!formData.servicos_procurados) {
-          newErrors.servicos_procurados = 'Informe os serviços mais procurados';
-        }
-        if (!formData.convenios) {
-          newErrors.convenios = 'Informe se aceita convênios';
-        }
-        if (!formData.emergencia_24h) {
-          newErrors.emergencia_24h = 'Informe sobre atendimento 24h';
-        }
-        break;
-        
-      case 4: // Tecnologia/Diferenciais
-        if (!formData.equipamentos || formData.equipamentos.length === 0) {
-          newErrors.equipamentos = 'Selecione pelo menos um equipamento/tecnologia';
-        }
-        if (!formData.sedacao_consciente) {
-          newErrors.sedacao_consciente = 'Informe sobre sedação consciente';
-        }
-        break;
-        
-      case 5: // Localização/Contato
-        if (!formData.cep) {
-          newErrors.cep = 'CEP é obrigatório';
-        }
-        if (!formData.rua) {
-          newErrors.rua = 'Endereço é obrigatório';
-        }
-        if (!formData.cidade) {
-          newErrors.cidade = 'Cidade é obrigatória';
-        }
-        if (!formData.estacionamento) {
-          newErrors.estacionamento = 'Informe sobre estacionamento';
-        }
-        if (!formData.redes_sociais || formData.redes_sociais.length === 0) {
-          newErrors.redes_sociais = 'Selecione pelo menos uma rede social ou "Não uso redes sociais"';
-        }
-        
-        // Validate social media URLs if provided (but not for "Não uso redes sociais")
-        const redesSemNaoUso = (formData.redes_sociais || []).filter((rede: string) => rede !== '❌ Não uso redes sociais');
-        if (redesSemNaoUso.includes('📘 Facebook') && formData.link_facebook && !validateSocialMediaURL(formData.link_facebook, 'facebook')) {
-          newErrors.link_facebook = 'URL do Facebook inválida';
-        }
-        if (redesSemNaoUso.includes('📸 Instagram') && formData.link_instagram && !validateSocialMediaURL(formData.link_instagram, 'instagram')) {
-          newErrors.link_instagram = 'URL do Instagram inválida';
-        }
-        if (redesSemNaoUso.includes('🎬 YouTube') && formData.link_youtube && !validateSocialMediaURL(formData.link_youtube, 'youtube')) {
-          newErrors.link_youtube = 'URL do YouTube inválida';
-        }
-        if (redesSemNaoUso.includes('💼 LinkedIn') && formData.link_linkedin && !validateSocialMediaURL(formData.link_linkedin, 'linkedin')) {
-          newErrors.link_linkedin = 'URL do LinkedIn inválida';
-        }
-        if (redesSemNaoUso.includes('🎵 TikTok') && formData.link_tiktok && !validateSocialMediaURL(formData.link_tiktok, 'tiktok')) {
-          newErrors.link_tiktok = 'URL do TikTok inválida';
-        }
-        
-        // Validate Google Maps link only if they chose to show location
-        if (formData.incorporarMapa === 'sim_mostrar' && formData.link_google_maps && !validateURL(formData.link_google_maps)) {
-          newErrors.link_google_maps = 'URL do Google Maps inválida';
-        }
-        break;
-        
-      case 6: // Depoimentos/Cases
-        if (!formData.tem_depoimentos) {
-          newErrors.tem_depoimentos = 'Informe se tem depoimentos de pacientes';
-        }
-        if (!formData.avaliacoes_google) {
-          newErrors.avaliacoes_google = 'Selecione uma opção para avaliações do Google';
-        }
-        if (formData.avaliacoes_google === 'sim_google' && formData.link_google_avaliacoes && !validateURL(formData.link_google_avaliacoes)) {
-          newErrors.link_google_avaliacoes = 'URL das avaliações do Google inválida';
-        }
-        break;
-        
-      case 7: // Identidade Visual/Design
-        if (!formData.logotipo_existente) {
-          newErrors.logotipo_existente = 'Informe sobre logotipo existente';
-        }
-        if (!formData.manual_marca) {
-          newErrors.manual_marca = 'Informe sobre manual da marca';
-        }
-        if (!formData.fotos_consultorio) {
-          newErrors.fotos_consultorio = 'Informe sobre fotos do consultório';
-        }
-        if (!formData.estilo_fonte) {
-          newErrors.estilo_fonte = 'Selecione um estilo de fonte';
-        }
-        if (!formData.tom_linguagem) {
-          newErrors.tom_linguagem = 'Selecione um tom de linguagem';
-        }
-        if (!formData.textos_existentes) {
-          newErrors.textos_existentes = 'Informe sobre textos existentes';
-        }
-        break;
-    }
-    
-    setErrors(newErrors);
-    const isValid = Object.keys(newErrors).length === 0;
-    console.log(`Validação seção ${currentSection}: ${isValid ? 'PASSOU' : 'FALHOU'}`, newErrors);
-    return isValid;
-  };
-
-  const nextSection = () => {
-    if (validateSection() && currentSection < sections.length - 1) {
-      setCurrentSection(currentSection + 1);
-    }
-  };
-
-  const prevSection = () => {
-    if (currentSection > 0) {
-      setCurrentSection(currentSection - 1);
-    }
-  };
-
-  const submitForm = async () => {
-    console.log('Tentativa de envio do formulário - validando seção final...');
-    if (!validateSection()) {
-      console.log('Validação falhou - formulário não será enviado');
-      return;
-    }
-    console.log('Validação passou - prosseguindo com envio...');
-
-    const finalData = {
-      timestamp: new Date().toISOString(),
-      form_id: `briefing_odonto_${Date.now()}`,
-      dados_pessoais: {
-        nome: formData.nome,
-        whatsapp: formData.whatsapp,
-        email: formData.email
-      },
-      homepage_cabecalho: {
-        nome_consultorio: formData.nome_consultorio,
-        tem_slogan: formData.tem_slogan,
-        slogan_texto: formData.slogan_texto,
-        especialidades: formData.especialidades || [],
-        outras_especialidades: formData.outras_especialidades
-      },
-      equipe: {
-        numero_dentistas: formData.numero_dentistas,
-        profissionais: Array.from({ length: parseInt(formData.numero_dentistas) || 1 }, (_, i) => ({
-          nome: formData[`prof${i + 1}_nome`],
-          especialidade: formData[`prof${i + 1}_especialidade`],
-          experiencia: formData[`prof${i + 1}_experiencia`],
-          descricao: formData[`prof${i + 1}_descricao`],
-          foto: uploadedFiles[`prof${i + 1}_foto`]?.[0]
-        }))
-      },
-      servicos: {
-        servicos_procurados: formData.servicos_procurados,
-        convenios: formData.convenios,
-        convenios_lista: formData.convenios_lista,
-        emergencia_24h: formData.emergencia_24h
-      },
-      tecnologia: {
-        equipamentos: formData.equipamentos || [],
-        sedacao_consciente: formData.sedacao_consciente
-      },
-      localizacao: {
-        cep: formData.cep,
-        rua: formData.rua,
-        numero: formData.numero,
-        bairro: formData.bairro,
-        cidade: formData.cidade,
-        uf: formData.uf,
-        estacionamento: formData.estacionamento,
-        redes_sociais: formData.redes_sociais || [],
-        links_redes: {
-          facebook: formData.link_facebook,
-          instagram: formData.link_instagram,
-          youtube: formData.link_youtube,
-          linkedin: formData.link_linkedin,
-          tiktok: formData.link_tiktok
-        },
-        google_meu_negocio: formData.google_meu_negocio,
-        mapa_google: formData.mapa_google,
-        link_google_maps: formData.link_google_maps
-      },
-      depoimentos: {
-        estrategia: formData.depoimentos_estrategia,
-        texto: formData.depoimentos_texto,
-        link_google_avaliacoes: formData.link_google_avaliacoes
-      },
-      identidade_visual: {
-        logotipo_existente: formData.logotipo_existente,
-        manual_marca: formData.manual_marca,
-        manual_marca_texto: formData.manual_marca_texto,
-        fotos_consultorio: formData.fotos_consultorio,
-        estilo_fonte: formData.estilo_fonte,
-        percepcao: formData.percepcao || [],
-        tom_linguagem: formData.tom_linguagem,
-        textos_existentes: formData.textos_existentes,
-        textos_texto: formData.textos_texto
-      },
-      arquivos_enviados: uploadedFiles
-    };
-
-    try {
-      console.log('Iniciando envio do formulário...');
-
-      // Check payload size before sending
-      const payloadSize = getPayloadSize(finalData);
-      const payloadSizeMB = payloadSize / (1024 * 1024);
-
-      console.log(`Tamanho do payload: ${formatFileSize(payloadSize)} (${payloadSizeMB.toFixed(2)} MB)`);
-
-      // PASSO 1: Salvar no Supabase
-      console.log('💾 Salvando lead no Supabase...');
-      const lead = await createLead({
-        nome: formData.nome,
-        email: formData.email,
-        whatsapp: formData.whatsapp,
-        briefing_data: finalData,
-      });
-
-      console.log('✅ Lead criado no Supabase com ID:', lead.id);
-
-      // PASSO 2 (Opcional): Enviar backup para n8n
-      const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
-      if (webhookUrl) {
-        console.log('📤 Enviando backup para n8n...');
-        try {
-          await fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-              ...finalData,
-              supabase_lead_id: lead.id,
-            }),
-            mode: 'cors'
-          });
-          console.log('✅ Backup enviado para n8n com sucesso');
-        } catch (n8nError) {
-          console.warn('⚠️ Falha ao enviar para n8n (não crítico):', n8nError);
-          // Não falhamos se o n8n der erro - o importante é ter salvo no Supabase
-        }
-      }
-
-      // PASSO 3: Redirecionar para página de pagamento
-      console.log('🚀 Redirecionando para página de pagamento...');
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
 
       try {
-        navigate(`/pagamento?leadId=${lead.id}`);
+        const compressedDataUrl = await compressImage(file);
 
-        // Fallback: If navigation doesn't work in 2 seconds, force redirect
-        setTimeout(() => {
-          if (!window.location.pathname.includes('/pagamento')) {
-            console.log('React Router navigation failed, using window.location.href as fallback');
-            window.location.href = `/pagamento?leadId=${lead.id}`;
-          }
-        }, 2000);
+        fileArray.push({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          data: compressedDataUrl
+        });
       } catch (error) {
-        console.error('Navigation error:', error);
-        // Immediate fallback if navigate throws an error
-        window.location.href = `/pagamento?leadId=${lead.id}`;
+        console.error('Erro ao processar arquivo:', error);
       }
+    }
 
-    } catch (error: any) {
-      console.error('❌ Erro detalhado ao enviar formulário:', error);
+    setUploadedFiles(prev => ({
+      ...prev,
+      [fieldName]: fileArray
+    }));
 
-      // Salvar dados localmente como fallback
-      console.log('💾 Salvando dados localmente como backup...');
-      localStorage.setItem('briefing_backup', JSON.stringify({
-        data: finalData,
-        timestamp: new Date().toISOString()
-      }));
+    updateFormData(fieldName, fileArray);
+  };
 
-      // Mensagem de erro para o usuário
-      let errorMessage = 'Erro ao processar o formulário. ';
+  const validateCurrentSection = (): boolean => {
+    const newErrors: {[key: string]: string} = {};
 
-      if (error.message?.includes('leads')) {
-        errorMessage += 'Erro ao salvar no banco de dados. Verifique sua conexão.';
-      } else if (error.message?.includes('Failed to fetch') || error.name === 'TypeError') {
-        errorMessage += 'Erro de conexão. Verifique sua internet.';
-      } else {
-        errorMessage += `Detalhes: ${error.message || 'Erro desconhecido'}`;
+    switch(currentSection) {
+      case 0: // Informações Essenciais
+        if (!formData.tipo_negocio) newErrors.tipo_negocio = 'Selecione o tipo de negócio';
+        if (!formData.nome_consultorio || formData.nome_consultorio.length < 3) {
+          newErrors.nome_consultorio = 'Nome do consultório é obrigatório (mín. 3 caracteres)';
+        }
+        if (!formData.nome || formData.nome.length < 3) {
+          newErrors.nome = 'Seu nome é obrigatório (mín. 3 caracteres)';
+        }
+        if (!formData.whatsapp || !validateWhatsApp(formData.whatsapp)) {
+          newErrors.whatsapp = 'WhatsApp inválido (deve ter 11 dígitos)';
+        }
+        if (!formData.email || !validateEmail(formData.email)) {
+          newErrors.email = 'E-mail inválido';
+        }
+        if (!formData.slogan_opcao) newErrors.slogan_opcao = 'Escolha uma opção de slogan';
+        if (formData.slogan_opcao === 'custom' && !formData.slogan_custom) {
+          newErrors.slogan_custom = 'Digite seu slogan personalizado';
+        }
+        if (!formData.ano_inicio || formData.ano_inicio < 1970 || formData.ano_inicio > 2025) {
+          newErrors.ano_inicio = 'Ano inválido';
+        }
+        break;
+
+      case 1: // Profissionais
+        // Validação condicional baseada no tipo de negócio
+        if (formData.tipo_negocio === 'individual' || formData.tipo_negocio === 'parceria') {
+          if (!formData.profissional1_nome) newErrors.profissional1_nome = 'Nome completo é obrigatório';
+          if (!formData.profissional1_apresentacao) newErrors.profissional1_apresentacao = 'Como quer ser apresentado é obrigatório';
+          if (!formData.profissional1_cro) newErrors.profissional1_cro = 'CRO é obrigatório';
+          if (!formData.profissional1_uf) newErrors.profissional1_uf = 'UF é obrigatório';
+          if (!formData.profissional1_especialidade) newErrors.profissional1_especialidade = 'Especialidade é obrigatória';
+          if (!formData.profissional1_formacao) newErrors.profissional1_formacao = 'Formação é obrigatória';
+        }
+        if (formData.tipo_negocio === 'parceria') {
+          if (!formData.profissional2_nome) newErrors.profissional2_nome = 'Nome do 2º profissional é obrigatório';
+          if (!formData.profissional2_apresentacao) newErrors.profissional2_apresentacao = 'Apresentação do 2º profissional é obrigatória';
+          if (!formData.profissional2_cro) newErrors.profissional2_cro = 'CRO do 2º profissional é obrigatório';
+          if (!formData.profissional2_uf) newErrors.profissional2_uf = 'UF do 2º profissional é obrigatória';
+          if (!formData.profissional2_especialidade) newErrors.profissional2_especialidade = 'Especialidade do 2º profissional é obrigatória';
+          if (!formData.profissional2_formacao) newErrors.profissional2_formacao = 'Formação do 2º profissional é obrigatória';
+        }
+        if (formData.tipo_negocio === 'clinica') {
+          if (!formData.diretor_nome) newErrors.diretor_nome = 'Nome do diretor técnico é obrigatório';
+          if (!formData.diretor_cro) newErrors.diretor_cro = 'CRO do diretor é obrigatório';
+          if (!formData.diretor_uf) newErrors.diretor_uf = 'UF do diretor é obrigatória';
+          if (!formData.num_profissionais) newErrors.num_profissionais = 'Número de profissionais é obrigatório';
+        }
+        break;
+
+      case 2: // Serviços e Diferenciais
+        if (!formData.servico_1) newErrors.servico_1 = 'O 1º serviço é obrigatório';
+        if (!formData.servico_2) newErrors.servico_2 = 'O 2º serviço é obrigatório';
+        if (!formData.servico_3) newErrors.servico_3 = 'O 3º serviço é obrigatório';
+        if (!formData.aceita_convenios) newErrors.aceita_convenios = 'Informe se aceita convênios';
+        if (formData.aceita_convenios === 'sim' && !formData.lista_convenios) {
+          newErrors.lista_convenios = 'Liste os convênios aceitos';
+        }
+        if (!formData.atende_emergencia) newErrors.atende_emergencia = 'Informe sobre atendimento de emergência';
+        if (!formData.tecnologias || formData.tecnologias.length === 0) {
+          newErrors.tecnologias = 'Selecione pelo menos uma tecnologia';
+        }
+        if (!formData.oferece_sedacao) newErrors.oferece_sedacao = 'Informe se oferece sedação';
+        break;
+
+      case 3: // Localização e Contato
+        if (!formData.cep) newErrors.cep = 'CEP é obrigatório';
+        if (!formData.rua) newErrors.rua = 'Rua é obrigatória';
+        if (!formData.numero) newErrors.numero = 'Número é obrigatório';
+        if (!formData.bairro) newErrors.bairro = 'Bairro é obrigatório';
+        if (!formData.cidade) newErrors.cidade = 'Cidade é obrigatória';
+        if (!formData.estado) newErrors.estado = 'Estado é obrigatório';
+        if (!formData.tem_estacionamento) newErrors.tem_estacionamento = 'Informe sobre estacionamento';
+        if (!formData.horarios_atendimento || formData.horarios_atendimento.length === 0) {
+          newErrors.horarios_atendimento = 'Selecione pelo menos um horário de atendimento';
+        }
+        if (!formData.exibir_mapa) newErrors.exibir_mapa = 'Informe se quer exibir o mapa';
+        if (!formData.tem_redes_sociais) newErrors.tem_redes_sociais = 'Informe se tem redes sociais';
+        break;
+
+      case 4: // Depoimentos/Cases e Revisão Final
+        if (!formData.tem_depoimentos) newErrors.tem_depoimentos = 'Informe se tem depoimentos';
+        if (formData.link_google_maps && !formData.usar_avaliacoes_google) {
+          newErrors.usar_avaliacoes_google = 'Informe se quer usar avaliações do Google';
+        }
+        if (formData.tem_google_negocio === 'sim' && !formData.link_google_maps) {
+          newErrors.link_google_maps = 'Link do Google Maps é obrigatório';
+        }
+        break;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateCurrentSection()) {
+      if (currentSection < sections.length - 1) {
+        setCurrentSection(prev => prev + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-
-      errorMessage += '\n\nSeus dados foram salvos localmente. Entre em contato conosco pelo WhatsApp.';
-
-      alert(errorMessage);
     }
   };
 
-  const FileUploadField = ({ fieldName, accept, multiple = false, label }: {
-    fieldName: string;
-    accept: string;
-    multiple?: boolean;
-    label: string;
-  }) => {
-    const hasFiles = uploadedFiles[fieldName] && uploadedFiles[fieldName].length > 0;
-    
-    return (
-      <div className="mb-4">
-        <label className="block text-sm font-semibold text-purple-800 mb-3">{label}</label>
-        <div 
-          className={`border-2 border-dashed rounded-xl p-4 text-center transition-colors cursor-pointer ${
-            hasFiles 
-              ? 'border-green-300 bg-green-50/80' 
-              : 'border-purple-200 hover:border-purple-400 bg-white/50'
-          }`}
-          onClick={() => document.getElementById(fieldName)?.click()}
-        >
-          <Upload className={`mx-auto h-8 w-8 mb-2 ${hasFiles ? 'text-green-500' : 'text-purple-400'}`} />
-          {hasFiles ? (
-            <div>
-              <p className="text-sm text-green-600 font-medium">
-                {uploadedFiles[fieldName].length} arquivo(s) selecionado(s)
-              </p>
-              <p className="text-xs text-green-500 mt-1">
-                {uploadedFiles[fieldName].map(f => f.name).join(', ')}
-              </p>
-            </div>
-          ) : (
-            <div>
-              <p className="text-sm text-purple-600">Clique aqui para selecionar arquivos</p>
-              <p className="text-xs text-purple-500 mt-1">Formatos aceitos: {accept}</p>
-            </div>
-          )}
-          <input
-            id={fieldName}
-            type="file"
-            accept={accept}
-            multiple={multiple}
-            onChange={(e) => handleFileUpload(fieldName, e.target.files)}
-            className="hidden"
-          />
-        </div>
-      </div>
-    );
+  const handlePrevious = () => {
+    if (currentSection > 0) {
+      setCurrentSection(prev => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!validateCurrentSection()) return;
+
+    try {
+      // Aqui você salvaria no Supabase
+      console.log('Dados do formulário:', formData);
+      console.log('Arquivos:', uploadedFiles);
+
+      // await createLead(formData);
+
+      alert('Briefing enviado com sucesso! Você receberá o site em até 24 horas.');
+      navigate('/obrigado');
+    } catch (error) {
+      console.error('Erro ao enviar:', error);
+      alert('Erro ao enviar o briefing. Tente novamente.');
+    }
   };
 
   const renderSection = () => {
     switch(currentSection) {
-      case 0: // Informações Pessoais
+      case 0: // PÁGINA 1: Informações Essenciais
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
-                Informações Pessoais
+                {sections[0].title}
               </h2>
-              <p className="text-purple-600/70 text-lg">Vamos começar com suas informações básicas</p>
+              <p className="text-purple-600/70 text-lg">{sections[0].subtitle}</p>
             </div>
-            
+
             <div className="space-y-6">
+              {/* Tipo de Negócio */}
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Como você gostaria de ser chamado? *
+                  Qual o tipo do seu negócio odontológico? *
+                </label>
+                <div className="space-y-3">
+                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                    <input
+                      type="radio"
+                      name="tipo_negocio"
+                      value="individual"
+                      checked={formData.tipo_negocio === 'individual'}
+                      onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
+                      className="w-4 h-4 text-purple-600"
+                    />
+                    <span className="ml-3 text-gray-700">Consultório individual - trabalho sozinho(a)</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                    <input
+                      type="radio"
+                      name="tipo_negocio"
+                      value="parceria"
+                      checked={formData.tipo_negocio === 'parceria'}
+                      onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
+                      className="w-4 h-4 text-purple-600"
+                    />
+                    <span className="ml-3 text-gray-700">Consultório em parceria - somos 2 dentistas dividindo o espaço</span>
+                  </label>
+                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                    <input
+                      type="radio"
+                      name="tipo_negocio"
+                      value="clinica"
+                      checked={formData.tipo_negocio === 'clinica'}
+                      onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
+                      className="w-4 h-4 text-purple-600"
+                    />
+                    <span className="ml-3 text-gray-700">Clínica odontológica - equipe com 3 ou mais profissionais</span>
+                  </label>
+                </div>
+                {errors.tipo_negocio && <p className="text-red-500 text-sm mt-2">{errors.tipo_negocio}</p>}
+                <p className="text-purple-600/60 text-xs mt-2">Isso nos ajuda a personalizar o conteúdo do seu site</p>
+              </div>
+
+              {/* Nome do Consultório */}
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Qual o nome do seu consultório ou clínica? *
                 </label>
                 <input
                   type="text"
-                  placeholder="Dr. Carlos Eduardo"
-                  value={formData.nome || ''}
-                  onChange={(e) => updateFormData('nome', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                    errors.nome ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                  placeholder="Ex: Clínica Odontológica Dr. Carlos Silva"
+                  value={formData.nome_consultorio || ''}
+                  onChange={(e) => updateFormData('nome_consultorio', e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.nome_consultorio ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
-                {errors.nome && <p className="text-red-500 text-sm mt-2 font-medium">{errors.nome}</p>}
+                {errors.nome_consultorio && <p className="text-red-500 text-sm mt-2">{errors.nome_consultorio}</p>}
               </div>
 
+              {/* Seu Nome */}
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  WhatsApp para contato *
+                  Como você se chama? *
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: Dr. Carlos Eduardo Silva"
+                  value={formData.nome || ''}
+                  onChange={(e) => updateFormData('nome', e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                  }`}
+                />
+                {errors.nome && <p className="text-red-500 text-sm mt-2">{errors.nome}</p>}
+                <p className="text-purple-600/60 text-xs mt-2">Nome completo para nossa comunicação durante o projeto</p>
+              </div>
+
+              {/* WhatsApp */}
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Qual seu WhatsApp para agendamentos? *
                 </label>
                 <input
                   type="tel"
-                  placeholder="(11) 99123-9999"
+                  placeholder="(11) 99999-9999"
                   value={formData.whatsapp || ''}
                   onChange={(e) => {
                     const formatted = formatWhatsApp(e.target.value);
                     updateFormData('whatsapp', formatted);
                   }}
                   maxLength={15}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                    errors.whatsapp ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.whatsapp ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
-                {errors.whatsapp && <p className="text-red-500 text-sm mt-2 font-medium">{errors.whatsapp}</p>}
-                <p className="text-purple-600/60 text-xs mt-2">Usaremos para tirar dúvidas sobre o projeto</p>
+                {errors.whatsapp && <p className="text-red-500 text-sm mt-2">{errors.whatsapp}</p>}
+                <p className="text-purple-600/60 text-xs mt-2">Este número aparecerá no site para os pacientes agendarem consultas</p>
               </div>
 
+              {/* E-mail */}
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Seu melhor e-mail *
                 </label>
                 <input
                   type="email"
-                  placeholder="carlos.eduardo@clinica.com.br"
+                  placeholder="contato@clinica.com.br"
                   value={formData.email || ''}
                   onChange={(e) => updateFormData('email', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                    errors.email ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.email ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
-                {errors.email && <p className="text-red-500 text-sm mt-2 font-medium">{errors.email}</p>}
-                <p className="text-purple-600/60 text-xs mt-2">Para enviarmos atualizações do projeto</p>
+                {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
+                <p className="text-purple-600/60 text-xs mt-2">Enviaremos o site pronto neste e-mail em até 24 horas</p>
               </div>
-            </div>
-          </div>
-        );
 
-      case 1: // Homepage/Cabeçalho
-        return (
-          <div className="space-y-8">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
-                Homepage/Cabeçalho
-              </h2>
-              <p className="text-purple-600/70 text-lg">Informações sobre seu consultório</p>
-            </div>
-            
-            <div className="space-y-6">
+              {/* Slogan */}
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Qual o nome do consultório? *
+                  Escolha a frase principal do seu site: *
+                </label>
+                <div className="space-y-2">
+                  {[
+                    { value: 'anos_experiencia', label: 'Cuidando do seu sorriso há [X] anos', desc: 'Personalização: mostrará seus anos de experiência' },
+                    { value: 'sorriso_perfeito', label: 'Seu sorriso perfeito começa aqui', desc: '' },
+                    { value: 'confianca', label: 'Sorria com confiança e segurança', desc: '' },
+                    { value: 'humanizado', label: 'Odontologia de qualidade com atendimento humanizado', desc: '' },
+                    { value: 'tecnologia', label: 'Tecnologia avançada para cuidar do seu sorriso', desc: '' },
+                    { value: 'sem_dor', label: 'Tratamento odontológico sem dor', desc: '' },
+                  ].map((opcao) => (
+                    <label key={opcao.value} className="flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                      <input
+                        type="radio"
+                        name="slogan_opcao"
+                        value={opcao.value}
+                        checked={formData.slogan_opcao === opcao.value}
+                        onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
+                        className="w-4 h-4 text-purple-600 mt-1"
+                      />
+                      <div className="ml-3">
+                        <div className="text-gray-700">{opcao.label}</div>
+                        {opcao.desc && <div className="text-xs text-purple-600/60 mt-1">{opcao.desc}</div>}
+                      </div>
+                    </label>
+                  ))}
+                  <label className="flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                    <input
+                      type="radio"
+                      name="slogan_opcao"
+                      value="custom"
+                      checked={formData.slogan_opcao === 'custom'}
+                      onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
+                      className="w-4 h-4 text-purple-600 mt-1"
+                    />
+                    <div className="ml-3 flex-1">
+                      <div className="text-gray-700">Tenho meu próprio slogan:</div>
+                      {formData.slogan_opcao === 'custom' && (
+                        <input
+                          type="text"
+                          placeholder="Digite seu slogan personalizado"
+                          value={formData.slogan_custom || ''}
+                          onChange={(e) => updateFormData('slogan_custom', e.target.value)}
+                          className="w-full mt-2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                        />
+                      )}
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                    <input
+                      type="radio"
+                      name="slogan_opcao"
+                      value="confiamos"
+                      checked={formData.slogan_opcao === 'confiamos'}
+                      onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
+                      className="w-4 h-4 text-purple-600"
+                    />
+                    <span className="ml-3 text-gray-700">Escolham vocês com base no meu perfil</span>
+                  </label>
+                </div>
+                {errors.slogan_opcao && <p className="text-red-500 text-sm mt-2">{errors.slogan_opcao}</p>}
+                {errors.slogan_custom && <p className="text-red-500 text-sm mt-2">{errors.slogan_custom}</p>}
+              </div>
+
+              {/* Ano de Início */}
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Desde que ano você atua na odontologia? *
                 </label>
                 <input
-                  type="text"
-                  placeholder="Clínica Odontológica Dr. Carlos Eduardo"
-                  value={formData.nome_consultorio || ''}
-                  onChange={(e) => updateFormData('nome_consultorio', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                    errors.nome_consultorio ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                  type="number"
+                  placeholder="Ex: 2010"
+                  min="1970"
+                  max="2025"
+                  value={formData.ano_inicio || ''}
+                  onChange={(e) => updateFormData('ano_inicio', parseInt(e.target.value))}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.ano_inicio ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
-                {errors.nome_consultorio && <p className="text-red-500 text-sm mt-2 font-medium">{errors.nome_consultorio}</p>}
+                {errors.ano_inicio && <p className="text-red-500 text-sm mt-2">{errors.ano_inicio}</p>}
+                <p className="text-purple-600/60 text-xs mt-2">Usaremos para calcular os anos de experiência e mostrar no site</p>
               </div>
 
+              {/* Número de Pacientes (Opcional) */}
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Tem slogan ou frase de posicionamento? *
+                  Aproximadamente quantos pacientes você já atendeu?
                 </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="tem_slogan"
-                      value="sim"
-                      checked={formData.tem_slogan === 'sim'}
-                      onChange={(e) => updateFormData('tem_slogan', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim</span>
-                  </label>
-                  {formData.tem_slogan === 'sim' && (
-                    <input
-                      type="text"
-                      placeholder="Cuidando do seu sorriso com excelência"
-                      value={formData.slogan_texto || ''}
-                      onChange={(e) => updateFormData('slogan_texto', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8"
-                    />
-                  )}
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="tem_slogan"
-                      value="nao"
-                      checked={formData.tem_slogan === 'nao'}
-                      onChange={(e) => updateFormData('tem_slogan', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não, confio na expertise de vocês</span>
-                  </label>
-                </div>
-                {errors.tem_slogan && <p className="text-red-500 text-sm mt-2 font-medium">{errors.tem_slogan}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Quais as principais especialidades que querem destacar? *
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
                   {[
-                    '🦷 Clínica Geral',
-                    '📐 Ortodontia', 
-                    '🦴 Implantodontia',
-                    '✨ Odontologia Estética',
-                    '💉 Harmonização Facial',
-                    '🔧 Endodontia',
-                    '👶 Odontopediatria',
-                    '🦷 Periodontia',
-                    '⚕️ Cirurgia Bucomaxilofacial',
-                    '🏥 Múltiplas especialidades'
-                  ].map((esp) => (
-                    <label key={esp} className="flex items-start p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
+                    { value: 'menos_500', label: 'Menos de 500' },
+                    { value: '500_2000', label: 'Entre 500 e 2.000' },
+                    { value: '2000_5000', label: 'Entre 2.000 e 5.000' },
+                    { value: 'mais_5000', label: 'Mais de 5.000' },
+                    { value: 'nao_informar', label: 'Não sei / Prefiro não informar' },
+                  ].map((opcao) => (
+                    <label key={opcao.value} className="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                       <input
-                        type="checkbox"
-                        checked={(formData.especialidades || []).includes(esp)}
-                        onChange={(e) => {
-                          const especialidades = formData.especialidades || [];
-                          if (e.target.checked) {
-                            updateFormData('especialidades', [...especialidades, esp]);
-                          } else {
-                            updateFormData('especialidades', especialidades.filter((item: string) => item !== esp));
-                          }
-                        }}
-                        className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2 mt-0.5 flex-shrink-0"
+                        type="radio"
+                        name="num_pacientes"
+                        value={opcao.value}
+                        checked={formData.num_pacientes === opcao.value}
+                        onChange={(e) => updateFormData('num_pacientes', e.target.value)}
+                        className="w-4 h-4 text-purple-600"
                       />
-                      <span className="ml-2 sm:ml-3 text-xs sm:text-sm font-medium text-purple-800 mobile-text-wrap leading-tight">{esp}</span>
+                      <span className="ml-3 text-gray-700">{opcao.label}</span>
                     </label>
                   ))}
                 </div>
-                {errors.especialidades && <p className="text-red-500 text-sm mt-2 font-medium">{errors.especialidades}</p>}
+                <p className="text-purple-600/60 text-xs mt-2">Não precisa ser exato. Usaremos para mostrar sua experiência no site (ex: '+5.000 pacientes atendidos')</p>
               </div>
-            </div>
-          </div>
-        );
 
-      case 2: // Equipe
-        return (
-          <div className="space-y-8">
-            <div className="text-center mb-8 sm:mb-10">
-              <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2 sm:mb-3 mobile-text-wrap leading-tight">
-                Sobre Nós/Equipe
-              </h2>
-              <p className="text-purple-600/70 text-sm sm:text-base mobile-text-wrap">Informações sobre os profissionais do consultório</p>
-            </div>
-            
-            <div className="space-y-6">
+              {/* Google Meu Negócio */}
               <div>
                 <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Quantos dentistas trabalham no consultório? (opcional)
+                  Tem Google Meu Negócio?
                 </label>
-                <div className="flex items-center gap-4 bg-white/80 backdrop-blur-sm rounded-xl border-2 border-purple-200 p-4">
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      const current = parseInt(formData.numero_dentistas) || 1;
-                      if (current > 1) updateFormData('numero_dentistas', (current - 1).toString());
-                    }}
-                    disabled={parseInt(formData.numero_dentistas) <= 1}
-                    variant="outline"
-                    size="sm"
-                    className="w-8 h-8 p-0 border-purple-300 text-purple-600 hover:bg-purple-50 disabled:opacity-50"
-                  >
-                    -
-                  </Button>
-                  
-                  <div className="flex-1 text-center">
-                    <span className="text-lg font-semibold text-purple-800">
-                      {parseInt(formData.numero_dentistas) || 1} profissional{parseInt(formData.numero_dentistas) > 1 ? 'is' : ''}
-                    </span>
-                  </div>
-                  
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      const current = parseInt(formData.numero_dentistas) || 1;
-                      if (current < 10) updateFormData('numero_dentistas', (current + 1).toString());
-                    }}
-                    disabled={parseInt(formData.numero_dentistas) >= 10}
-                    variant="outline"
-                    size="sm"
-                    className="w-8 h-8 p-0 border-purple-300 text-purple-600 hover:bg-purple-50 disabled:opacity-50"
-                  >
-                    +
-                  </Button>
-                </div>
-                <p className="text-xs text-purple-600/70 mt-2">Use os botões + e - para ajustar o número de profissionais (máx. 10)</p>
-              </div>
-
-              <div className="space-y-4 sm:space-y-6">
-                {Array.from({ length: parseInt(formData.numero_dentistas) || 1 }, (_, index) => (
-                  <div key={index} className="border-2 border-purple-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-gradient-to-r from-purple-50/50 to-white/50 backdrop-blur-sm">
-                    <h3 className="font-bold text-purple-800 mb-6 text-lg">Profissional {index + 1}</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-semibold text-purple-800 mb-2">
-                          Nome do profissional
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Dr. João Silva - Especialista"
-                          value={formData[`prof${index + 1}_nome`] || ''}
-                          onChange={(e) => updateFormData(`prof${index + 1}_nome`, e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-purple-800 mb-2">
-                          Especialidade principal
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Implantodontia"
-                          value={formData[`prof${index + 1}_especialidade`] || ''}
-                          onChange={(e) => updateFormData(`prof${index + 1}_especialidade`, e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-purple-800 mb-2">
-                          Experiência
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="15 anos de experiência"
-                          value={formData[`prof${index + 1}_experiencia`] || ''}
-                          onChange={(e) => updateFormData(`prof${index + 1}_experiencia`, e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-purple-800 mb-2">
-                          Breve descrição do profissional
-                        </label>
-                        <textarea
-                          placeholder="Especialista em implantes com 15 anos de experiência. Formado pela USP, pós-graduado em Implantodontia..."
-                          value={formData[`prof${index + 1}_descricao`] || ''}
-                          onChange={(e) => updateFormData(`prof${index + 1}_descricao`, e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
-                          rows={3}
-                        />
-                        <p className="text-purple-600/60 text-xs mt-2">Descreva formação, experiência e especialidades</p>
-                      </div>
-                      <FileUploadField
-                        fieldName={`prof${index + 1}_foto`}
-                        accept=".jpg,.jpeg,.png,.webp"
-                        label="Foto profissional"
-                      />
+                <div className="space-y-3">
+                  <label className="flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                    <input
+                      type="radio"
+                      name="tem_google_negocio"
+                      value="sim"
+                      checked={formData.tem_google_negocio === 'sim'}
+                      onChange={(e) => updateFormData('tem_google_negocio', e.target.value)}
+                      className="w-4 h-4 text-purple-600 mt-1"
+                    />
+                    <div className="ml-3 flex-1">
+                      <div className="text-gray-700">Sim, tenho</div>
+                      {formData.tem_google_negocio === 'sim' && (
+                        <div className="mt-3 space-y-3">
+                          <input
+                            type="text"
+                            placeholder="Cole o link do Google Meu Negócio"
+                            value={formData.link_google_negocio || ''}
+                            onChange={(e) => updateFormData('link_google_negocio', e.target.value)}
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                          />
+                          <p className="text-xs text-purple-600/60">💡 Como encontrar? Busque sua clínica no Google Maps, clique em "Compartilhar" e copie o link</p>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  </label>
+                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                    <input
+                      type="radio"
+                      name="tem_google_negocio"
+                      value="nao"
+                      checked={formData.tem_google_negocio === 'nao'}
+                      onChange={(e) => updateFormData('tem_google_negocio', e.target.value)}
+                      className="w-4 h-4 text-purple-600"
+                    />
+                    <span className="ml-3 text-gray-700">Não tenho</span>
+                  </label>
+                </div>
+                <p className="text-purple-600/60 text-xs mt-2">Se tiver Google Meu Negócio com avaliações, mostraremos no seu site para aumentar a credibilidade</p>
               </div>
             </div>
           </div>
         );
 
-      case 3: // Serviços/Tratamentos
+      case 1: // PÁGINA 2: Profissionais (Condicional)
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
-                Serviços/Tratamentos
+                {sections[1].title}
               </h2>
-              <p className="text-purple-600/70 text-lg">Informações sobre os serviços oferecidos</p>
+              <p className="text-purple-600/70 text-lg">{sections[1].subtitle}</p>
             </div>
-            
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Quais os 3 serviços/tratamentos mais procurados pelos pacientes? *
-                </label>
-                <textarea
-                  placeholder="1. Limpeza e profilaxia&#10;2. Clareamento dental&#10;3. Restaurações em resina"
-                  value={formData.servicos_procurados || ''}
-                  onChange={(e) => updateFormData('servicos_procurados', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none ${
-                    errors.servicos_procurados ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                  }`}
-                  rows={4}
-                />
-                {errors.servicos_procurados && <p className="text-red-500 text-sm mt-2 font-medium">{errors.servicos_procurados}</p>}
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Aceita convênios? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="convenios"
-                      value="sim"
-                      checked={formData.convenios === 'sim'}
-                      onChange={(e) => updateFormData('convenios', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, aceito convênios</span>
-                  </label>
-                  {formData.convenios === 'sim' && (
-                    <input
-                      type="text"
-                      placeholder="Unimed, Bradesco Dental, SulAmérica, etc."
-                      value={formData.convenios_lista || ''}
-                      onChange={(e) => updateFormData('convenios_lista', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8"
-                    />
+            <div className="space-y-8">
+              {/* Mensagem informativa baseada no tipo */}
+              {formData.tipo_negocio === 'parceria' && (
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4">
+                  <p className="text-purple-800 text-sm">
+                    Você informou que são <strong>2 dentistas em parceria</strong>. Vamos coletar os dados de cada profissional para mostrar no site.
+                  </p>
+                </div>
+              )}
+              {formData.tipo_negocio === 'clinica' && (
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4">
+                  <p className="text-purple-800 text-sm">
+                    Sua clínica tem uma <strong>equipe de profissionais</strong>. Vamos coletar os dados do diretor técnico e decidir quais profissionais destacar no site.
+                  </p>
+                </div>
+              )}
+
+              {/* CONSULTÓRIO INDIVIDUAL OU PARCERIA - PROFISSIONAL 1 */}
+              {(formData.tipo_negocio === 'individual' || formData.tipo_negocio === 'parceria') && (
+                <div className="space-y-6">
+                  {formData.tipo_negocio === 'parceria' && (
+                    <div className="border-t-4 border-purple-400 pt-6">
+                      <h3 className="text-xl font-bold text-purple-800 mb-4">Profissional 1</h3>
+                    </div>
                   )}
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="convenios"
-                      value="nao"
-                      checked={formData.convenios === 'nao'}
-                      onChange={(e) => updateFormData('convenios', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não, apenas particular</span>
-                  </label>
-                </div>
-                {errors.convenios && <p className="text-red-500 text-sm mt-2 font-medium">{errors.convenios}</p>}
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Tem atendimento de emergência 24h? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="emergencia_24h"
-                      value="sim"
-                      checked={formData.emergencia_24h === 'sim'}
-                      onChange={(e) => updateFormData('emergencia_24h', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, 24 horas</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="emergencia_24h"
-                      value="nao"
-                      checked={formData.emergencia_24h === 'nao'}
-                      onChange={(e) => updateFormData('emergencia_24h', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não, apenas horário comercial</span>
-                  </label>
-                </div>
-                {errors.emergencia_24h && <p className="text-red-500 text-sm mt-2 font-medium">{errors.emergencia_24h}</p>}
-              </div>
-            </div>
-          </div>
-        );
-
-      case 4: // Tecnologia/Diferenciais
-        return (
-          <div className="space-y-8">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
-                Tecnologia/Diferenciais
-              </h2>
-              <p className="text-purple-600/70 text-lg">Equipamentos e tecnologias do consultório</p>
-            </div>
-            
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Quais equipamentos/tecnologias disponíveis? *
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    '🦴 Tomografia computadorizada',
-                    '📱 Radiografia digital',
-                    '💉 Anestesia computadorizada',
-                    '⚡ Laser odontológico',
-                    '🔬 Microscópio odontológico',
-                    '💻 Planejamento digital (CAD/CAM)',
-                    '🎯 Scanner intraoral',
-                    '📷 Câmera intraoral',
-                    '🦷 Implantes guiados por cirurgia',
-                    '⭐ Sedação com óxido nitroso',
-                    '🏥 Equipamentos de última geração',
-                    '🔧 Tecnologia de ponta'
-                  ].map((equip) => (
-                    <label key={equip} className="flex items-center p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                      <input
-                        type="checkbox"
-                        checked={(formData.equipamentos || []).includes(equip)}
-                        onChange={(e) => {
-                          const equipamentos = formData.equipamentos || [];
-                          if (e.target.checked) {
-                            updateFormData('equipamentos', [...equipamentos, equip]);
-                          } else {
-                            updateFormData('equipamentos', equipamentos.filter((item: string) => item !== equip));
-                          }
-                        }}
-                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2"
-                      />
-                      <span className="ml-3 text-sm font-medium text-purple-800">{equip}</span>
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Qual seu nome completo? *
                     </label>
-                  ))}
-                </div>
-                {errors.equipamentos && <p className="text-red-500 text-sm mt-2 font-medium">{errors.equipamentos}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Oferece sedação consciente? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="sedacao_consciente"
-                      value="sim"
-                      checked={formData.sedacao_consciente === 'sim'}
-                      onChange={(e) => updateFormData('sedacao_consciente', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, oferecemos sedação</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="sedacao_consciente"
-                      value="nao"
-                      checked={formData.sedacao_consciente === 'nao'}
-                      onChange={(e) => updateFormData('sedacao_consciente', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não oferecemos</span>
-                  </label>
-                </div>
-                {errors.sedacao_consciente && <p className="text-red-500 text-sm mt-2 font-medium">{errors.sedacao_consciente}</p>}
-              </div>
-            </div>
-          </div>
-        );
-
-      case 5: // Localização/Contato
-        return (
-          <div className="space-y-8">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
-                Localização/Contato
-              </h2>
-              <p className="text-purple-600/70 text-lg">Endereço e informações de contato</p>
-            </div>
-            
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    CEP *
-                  </label>
-                  <div className="relative">
                     <input
                       type="text"
-                      placeholder="00000-000"
-                      value={formData.cep || ''}
-                      onChange={(e) => {
-                        const formatted = formatCEP(e.target.value);
-                        updateFormData('cep', formatted);
-                        if (formatted.length === 9) {
-                          buscarEnderecoPorCEP(formatted);
-                        }
-                      }}
-                      maxLength={9}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                        errors.cep ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
+                      placeholder="Carlos Eduardo Silva"
+                      value={formData.profissional1_nome || ''}
+                      onChange={(e) => updateFormData('profissional1_nome', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional1_nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     />
-                    {loadingCep && (
-                      <div className="absolute right-3 top-3">
-                        <AlertCircle className="w-5 h-5 text-purple-500 animate-spin" />
-                      </div>
-                    )}
+                    {errors.profissional1_nome && <p className="text-red-500 text-sm mt-2">{errors.profissional1_nome}</p>}
                   </div>
-                  {errors.cep && <p className="text-red-500 text-sm mt-2 font-medium">{errors.cep}</p>}
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Como gostaria de ser apresentado no site? *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Dr. Carlos Eduardo  OU  Dra. Ana Silva"
+                      value={formData.profissional1_apresentacao || ''}
+                      onChange={(e) => updateFormData('profissional1_apresentacao', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional1_apresentacao ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                      }`}
+                    />
+                    {errors.profissional1_apresentacao && <p className="text-red-500 text-sm mt-2">{errors.profissional1_apresentacao}</p>}
+                    <p className="text-purple-600/60 text-xs mt-2">Este nome aparecerá em destaque na seção 'Sobre' do site</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
+                        CRO *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="12345"
+                        value={formData.profissional1_cro || ''}
+                        onChange={(e) => updateFormData('profissional1_cro', e.target.value)}
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.profissional1_cro ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                        }`}
+                      />
+                      {errors.profissional1_cro && <p className="text-red-500 text-sm mt-2">{errors.profissional1_cro}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
+                        UF *
+                      </label>
+                      <select
+                        value={formData.profissional1_uf || ''}
+                        onChange={(e) => updateFormData('profissional1_uf', e.target.value)}
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.profissional1_uf ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                        }`}
+                      >
+                        <option value="">Selecione</option>
+                        {['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'].map(uf => (
+                          <option key={uf} value={uf}>{uf}</option>
+                        ))}
+                      </select>
+                      {errors.profissional1_uf && <p className="text-red-500 text-sm mt-2">{errors.profissional1_uf}</p>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Qual sua principal especialidade? *
+                    </label>
+                    <select
+                      value={formData.profissional1_especialidade || ''}
+                      onChange={(e) => updateFormData('profissional1_especialidade', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional1_especialidade ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                      }`}
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="clinica_geral">Clínica Geral</option>
+                      <option value="implantodontia">Implantodontia</option>
+                      <option value="ortodontia">Ortodontia</option>
+                      <option value="endodontia">Endodontia (Canal)</option>
+                      <option value="periodontia">Periodontia (Gengiva)</option>
+                      <option value="odontopediatria">Odontopediatria</option>
+                      <option value="protese">Prótese Dentária</option>
+                      <option value="bucomaxilo">Cirurgia Bucomaxilofacial</option>
+                      <option value="estetica">Odontologia Estética</option>
+                      <option value="harmonizacao">Harmonização Orofacial</option>
+                      <option value="outras">Outras</option>
+                    </select>
+                    {errors.profissional1_especialidade && <p className="text-red-500 text-sm mt-2">{errors.profissional1_especialidade}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Resumo da sua formação *
+                    </label>
+                    <textarea
+                      placeholder="Ex: Graduado pela USP (2010), Especialista em Implantodontia pela APCD (2015)"
+                      value={formData.profissional1_formacao || ''}
+                      onChange={(e) => updateFormData('profissional1_formacao', e.target.value)}
+                      maxLength={200}
+                      rows={3}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional1_formacao ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                      }`}
+                    />
+                    {errors.profissional1_formacao && <p className="text-red-500 text-sm mt-2">{errors.profissional1_formacao}</p>}
+                    <p className="text-purple-600/60 text-xs mt-2">Graduação + principal especialização. Seja breve. (máx. 200 caracteres)</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Breve apresentação pessoal (opcional)
+                    </label>
+                    <textarea
+                      placeholder="Ex: Com mais de 15 anos de experiência, dedico-me a oferecer tratamentos odontológicos de excelência..."
+                      value={formData.profissional1_bio || ''}
+                      onChange={(e) => updateFormData('profissional1_bio', e.target.value)}
+                      maxLength={400}
+                      rows={4}
+                      className="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all border-purple-200 focus:border-purple-400"
+                    />
+                    <p className="text-purple-600/60 text-xs mt-2">Opcional, mas recomendado. Conte um pouco sobre você e sua missão. (máx. 400 caracteres)</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Sua foto profissional *
+                    </label>
+                    <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 text-center hover:border-purple-400 transition-all">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload('profissional1_foto', e.target.files)}
+                        className="hidden"
+                        id="profissional1_foto"
+                      />
+                      <label htmlFor="profissional1_foto" className="cursor-pointer">
+                        <Upload className="w-8 h-8 mx-auto mb-2 text-purple-400" />
+                        <p className="text-purple-800 font-medium">Clique para fazer upload</p>
+                        <p className="text-purple-600/60 text-xs mt-1">JPG ou PNG (máx. 5MB)</p>
+                      </label>
+                      {uploadedFiles.profissional1_foto && uploadedFiles.profissional1_foto.length > 0 && (
+                        <div className="mt-3 text-sm text-green-600">
+                          ✓ {uploadedFiles.profissional1_foto[0].name}
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-2 text-xs text-purple-600/70 space-y-1">
+                      <p>✅ Foto de boa qualidade (não use selfie)</p>
+                      <p>✅ Fundo neutro ou do consultório</p>
+                      <p>✅ Roupa profissional (jaleco de preferência)</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PARCERIA - PROFISSIONAL 2 */}
+              {formData.tipo_negocio === 'parceria' && (
+                <div className="space-y-6 border-t-4 border-purple-400 pt-8">
+                  <h3 className="text-xl font-bold text-purple-800 mb-4">Profissional 2</h3>
+
+                  {/* Campos idênticos ao Profissional 1, mas com profissional2_* */}
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Nome completo do 2º profissional *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ana Paula Santos"
+                      value={formData.profissional2_nome || ''}
+                      onChange={(e) => updateFormData('profissional2_nome', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional2_nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                      }`}
+                    />
+                    {errors.profissional2_nome && <p className="text-red-500 text-sm mt-2">{errors.profissional2_nome}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Como gostaria de ser apresentado(a) no site? *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Dra. Ana Paula"
+                      value={formData.profissional2_apresentacao || ''}
+                      onChange={(e) => updateFormData('profissional2_apresentacao', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional2_apresentacao ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                      }`}
+                    />
+                    {errors.profissional2_apresentacao && <p className="text-red-500 text-sm mt-2">{errors.profissional2_apresentacao}</p>}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
+                        CRO *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="54321"
+                        value={formData.profissional2_cro || ''}
+                        onChange={(e) => updateFormData('profissional2_cro', e.target.value)}
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.profissional2_cro ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                        }`}
+                      />
+                      {errors.profissional2_cro && <p className="text-red-500 text-sm mt-2">{errors.profissional2_cro}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
+                        UF *
+                      </label>
+                      <select
+                        value={formData.profissional2_uf || ''}
+                        onChange={(e) => updateFormData('profissional2_uf', e.target.value)}
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.profissional2_uf ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                        }`}
+                      >
+                        <option value="">Selecione</option>
+                        {['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'].map(uf => (
+                          <option key={uf} value={uf}>{uf}</option>
+                        ))}
+                      </select>
+                      {errors.profissional2_uf && <p className="text-red-500 text-sm mt-2">{errors.profissional2_uf}</p>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Especialidade principal *
+                    </label>
+                    <select
+                      value={formData.profissional2_especialidade || ''}
+                      onChange={(e) => updateFormData('profissional2_especialidade', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional2_especialidade ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                      }`}
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="clinica_geral">Clínica Geral</option>
+                      <option value="implantodontia">Implantodontia</option>
+                      <option value="ortodontia">Ortodontia</option>
+                      <option value="endodontia">Endodontia (Canal)</option>
+                      <option value="periodontia">Periodontia (Gengiva)</option>
+                      <option value="odontopediatria">Odontopediatria</option>
+                      <option value="protese">Prótese Dentária</option>
+                      <option value="bucomaxilo">Cirurgia Bucomaxilofacial</option>
+                      <option value="estetica">Odontologia Estética</option>
+                      <option value="harmonizacao">Harmonização Orofacial</option>
+                      <option value="outras">Outras</option>
+                    </select>
+                    {errors.profissional2_especialidade && <p className="text-red-500 text-sm mt-2">{errors.profissional2_especialidade}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Resumo da formação *
+                    </label>
+                    <textarea
+                      placeholder="Ex: Graduada pela UFRJ (2012), Especialista em Ortodontia..."
+                      value={formData.profissional2_formacao || ''}
+                      onChange={(e) => updateFormData('profissional2_formacao', e.target.value)}
+                      maxLength={200}
+                      rows={3}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional2_formacao ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                      }`}
+                    />
+                    {errors.profissional2_formacao && <p className="text-red-500 text-sm mt-2">{errors.profissional2_formacao}</p>}
+                    <p className="text-purple-600/60 text-xs mt-2">máx. 200 caracteres</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
+                      Foto profissional *
+                    </label>
+                    <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 text-center hover:border-purple-400 transition-all">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload('profissional2_foto', e.target.files)}
+                        className="hidden"
+                        id="profissional2_foto"
+                      />
+                      <label htmlFor="profissional2_foto" className="cursor-pointer">
+                        <Upload className="w-8 h-8 mx-auto mb-2 text-purple-400" />
+                        <p className="text-purple-800 font-medium">Clique para fazer upload</p>
+                        <p className="text-purple-600/60 text-xs mt-1">JPG ou PNG (máx. 5MB)</p>
+                      </label>
+                      {uploadedFiles.profissional2_foto && uploadedFiles.profissional2_foto.length > 0 && (
+                        <div className="mt-3 text-sm text-green-600">
+                          ✓ {uploadedFiles.profissional2_foto[0].name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* CLÍNICA - DIRETOR TÉCNICO + OPÇÃO DE DESTACAR */}
+              {formData.tipo_negocio === 'clinica' && (
+                <div className="space-y-8">
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-purple-800">Diretor Técnico (Obrigatório por lei)</h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-purple-800 mb-3">
+                          Nome completo *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Dr. Roberto Silva"
+                          value={formData.diretor_nome || ''}
+                          onChange={(e) => updateFormData('diretor_nome', e.target.value)}
+                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                            errors.diretor_nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                          }`}
+                        />
+                        {errors.diretor_nome && <p className="text-red-500 text-sm mt-2">{errors.diretor_nome}</p>}
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-purple-800 mb-3">
+                            CRO *
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="12345"
+                            value={formData.diretor_cro || ''}
+                            onChange={(e) => updateFormData('diretor_cro', e.target.value)}
+                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                              errors.diretor_cro ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                            }`}
+                          />
+                          {errors.diretor_cro && <p className="text-red-500 text-sm mt-2">{errors.diretor_cro}</p>}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-purple-800 mb-3">
+                            UF *
+                          </label>
+                          <select
+                            value={formData.diretor_uf || ''}
+                            onChange={(e) => updateFormData('diretor_uf', e.target.value)}
+                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                              errors.diretor_uf ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                            }`}
+                          >
+                            <option value="">UF</option>
+                            {['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'].map(uf => (
+                              <option key={uf} value={uf}>{uf}</option>
+                            ))}
+                          </select>
+                          {errors.diretor_uf && <p className="text-red-500 text-sm mt-2">{errors.diretor_uf}</p>}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
+                        Quantos profissionais trabalham na clínica? *
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="Ex: 8"
+                        min="3"
+                        value={formData.num_profissionais || ''}
+                        onChange={(e) => updateFormData('num_profissionais', parseInt(e.target.value))}
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.num_profissionais ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                        }`}
+                      />
+                      {errors.num_profissionais && <p className="text-red-500 text-sm mt-2">{errors.num_profissionais}</p>}
+                      <p className="text-purple-600/60 text-xs mt-2">Mostraremos no site: 'Equipe com X especialistas'</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <label className="block text-sm font-semibold text-purple-800">
+                      Deseja destacar alguns profissionais no site?
+                    </label>
+                    <div className="space-y-3">
+                      <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                        <input
+                          type="radio"
+                          name="destacar_profissionais"
+                          value="nao"
+                          checked={formData.destacar_profissionais === 'nao'}
+                          onChange={(e) => updateFormData('destacar_profissionais', e.target.value)}
+                          className="w-4 h-4 text-purple-600"
+                        />
+                        <span className="ml-3 text-gray-700">Não, apenas mencionar que temos equipe especializada</span>
+                      </label>
+                      <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
+                        <input
+                          type="radio"
+                          name="destacar_profissionais"
+                          value="sim"
+                          checked={formData.destacar_profissionais === 'sim'}
+                          onChange={(e) => updateFormData('destacar_profissionais', e.target.value)}
+                          className="w-4 h-4 text-purple-600"
+                        />
+                        <span className="ml-3 text-gray-700">Sim, quero destacar profissionais específicos</span>
+                      </label>
+                    </div>
+                    <p className="text-purple-600/60 text-xs">Destacar profissionais principais aumenta a confiança. Recomendamos mostrar pelo menos 2-3.</p>
+                  </div>
+
+                  {formData.destacar_profissionais === 'sim' && (
+                    <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6">
+                      <p className="text-purple-800 text-sm mb-2">
+                        <strong>Funcionalidade em desenvolvimento:</strong> Por enquanto, você poderá enviar as informações dos profissionais por e-mail após o envio do briefing.
+                      </p>
+                      <p className="text-purple-600/70 text-xs">
+                        Precisaremos: nome, CRO, especialidade, mini bio e foto de cada profissional que deseja destacar.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case 2: // PÁGINA 3: Serviços/Tratamentos + Tecnologia/Diferenciais
+        return (
+          <div className="space-y-8">
+            {/* Serviços Oferecidos */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Quais os 3 serviços/tratamentos mais procurados pelos pacientes? *
+              </label>
+              <p className="text-sm text-purple-600/70 mb-4">
+                Exemplos: Limpeza e profilaxia, Implante e prótese, Restaurações em resina, Ortodontia (aparelho), Clareamento dental, Bichectomia, etc.
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-purple-700 mb-2 text-sm">1. Primeiro serviço *</label>
+                  <input
+                    type="text"
+                    value={formData.servico_1 || ''}
+                    onChange={(e) => setFormData({...formData, servico_1: e.target.value})}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                      errors.servico_1 ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                    placeholder="Ex: Limpeza e profilaxia dental"
+                  />
+                  {errors.servico_1 && <p className="text-red-500 text-sm mt-1">{errors.servico_1}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    Número
-                  </label>
+                  <label className="block text-purple-700 mb-2 text-sm">2. Segundo serviço *</label>
                   <input
                     type="text"
-                    placeholder="123"
-                    value={formData.numero || ''}
-                    onChange={(e) => updateFormData('numero', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                    value={formData.servico_2 || ''}
+                    onChange={(e) => setFormData({...formData, servico_2: e.target.value})}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                      errors.servico_2 ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                    placeholder="Ex: Restaurações em resina"
                   />
+                  {errors.servico_2 && <p className="text-red-500 text-sm mt-1">{errors.servico_2}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-purple-700 mb-2 text-sm">3. Terceiro serviço *</label>
+                  <input
+                    type="text"
+                    value={formData.servico_3 || ''}
+                    onChange={(e) => setFormData({...formData, servico_3: e.target.value})}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                      errors.servico_3 ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                    placeholder="Ex: Implantes dentários"
+                  />
+                  {errors.servico_3 && <p className="text-red-500 text-sm mt-1">{errors.servico_3}</p>}
                 </div>
               </div>
+            </div>
 
+            {/* Aceita Convênios */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Aceita convênios? *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="aceita_convenios"
+                    value="sim"
+                    checked={formData.aceita_convenios === 'sim'}
+                    onChange={(e) => setFormData({...formData, aceita_convenios: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div>
+                    <div className="font-semibold text-purple-800">✅ Sim, aceito convênios</div>
+                    <div className="text-sm text-purple-600/70">(Unimed, Bradesco Dental, SulAmérica, etc.)</div>
+                  </div>
+                </label>
+
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="aceita_convenios"
+                    value="nao"
+                    checked={formData.aceita_convenios === 'nao'}
+                    onChange={(e) => setFormData({...formData, aceita_convenios: e.target.value, lista_convenios: ''})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div>
+                    <div className="font-semibold text-purple-800">❌ Não, apenas particular</div>
+                  </div>
+                </label>
+              </div>
+              {errors.aceita_convenios && <p className="text-red-500 text-sm mt-2">{errors.aceita_convenios}</p>}
+            </div>
+
+            {/* Lista de Convênios (condicional) */}
+            {formData.aceita_convenios === 'sim' && (
               <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Rua/Endereço *
+                <label className="block text-purple-800 font-semibold mb-2">
+                  Quais convênios você aceita? *
+                </label>
+                <p className="text-sm text-purple-600/70 mb-3">
+                  Liste os convênios separados por vírgula (ex: Unimed, Bradesco Dental, SulAmérica)
+                </p>
+                <textarea
+                  value={formData.lista_convenios || ''}
+                  onChange={(e) => setFormData({...formData, lista_convenios: e.target.value})}
+                  rows={3}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                    errors.lista_convenios ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                  placeholder="Ex: Unimed, Bradesco Dental, SulAmérica, Amil, Porto Seguro"
+                />
+                {errors.lista_convenios && <p className="text-red-500 text-sm mt-1">{errors.lista_convenios}</p>}
+              </div>
+            )}
+
+            {/* Atendimento de Emergência */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Tem atendimento de emergência, fora? *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="atende_emergencia"
+                    value="sim_24h"
+                    checked={formData.atende_emergencia === 'sim_24h'}
+                    onChange={(e) => setFormData({...formData, atende_emergencia: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">Sim, 24 horas</div>
+                </label>
+
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="atende_emergencia"
+                    value="nao_horario"
+                    checked={formData.atende_emergencia === 'nao_horario'}
+                    onChange={(e) => setFormData({...formData, atende_emergencia: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">Não, apenas horário comercial</div>
+                </label>
+              </div>
+              {errors.atende_emergencia && <p className="text-red-500 text-sm mt-2">{errors.atende_emergencia}</p>}
+            </div>
+
+            {/* Equipamentos/Tecnologia */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Quais equipamentos/tecnologias disponíveis? *
+              </label>
+              <p className="text-sm text-purple-600/70 mb-4">
+                Marque todos que se aplicam:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                  { value: 'tomografia', label: 'Tomografia computadorizada' },
+                  { value: 'anestesia', label: 'Anestesia computadorizada' },
+                  { value: 'microscopia', label: 'Microscopia odontológica' },
+                  { value: 'scanner', label: 'Scanner intraoral' },
+                  { value: 'radiografia', label: 'Radiografia digital' },
+                  { value: 'laser', label: 'Laser odontológico' },
+                  { value: 'implante', label: 'Implante com cóleo clínico' },
+                  { value: 'camera', label: 'Câmera intraoral' },
+                  { value: 'impressao', label: 'Impressora guarda em Google' },
+                  { value: 'sedacao', label: 'Sedação com óxido nitroso' },
+                  { value: 'piezocirurgia', label: 'Piezocirurgia' },
+                  { value: 'tecnologia_ponta', label: 'Tecnologia de ponta' }
+                ].map((tech) => (
+                  <label key={tech.value} className="flex items-center p-3 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                    <input
+                      type="checkbox"
+                      checked={formData.tecnologias?.includes(tech.value) || false}
+                      onChange={(e) => {
+                        const current = formData.tecnologias || [];
+                        if (e.target.checked) {
+                          setFormData({...formData, tecnologias: [...current, tech.value]});
+                        } else {
+                          setFormData({...formData, tecnologias: current.filter(t => t !== tech.value)});
+                        }
+                      }}
+                      className="mr-3 accent-purple-600 w-5 h-5"
+                    />
+                    <span className="text-purple-800">{tech.label}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.tecnologias && <p className="text-red-500 text-sm mt-2">{errors.tecnologias}</p>}
+            </div>
+
+            {/* Oferece Sessão? */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Oferece sedação consciente? *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="oferece_sedacao"
+                    value="sim"
+                    checked={formData.oferece_sedacao === 'sim'}
+                    onChange={(e) => setFormData({...formData, oferece_sedacao: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">Sim, oferecemos sedação</div>
+                </label>
+
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="oferece_sedacao"
+                    value="nao"
+                    checked={formData.oferece_sedacao === 'nao'}
+                    onChange={(e) => setFormData({...formData, oferece_sedacao: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">Não oferecemos</div>
+                </label>
+              </div>
+              {errors.oferece_sedacao && <p className="text-red-500 text-sm mt-2">{errors.oferece_sedacao}</p>}
+            </div>
+          </div>
+        );
+
+      case 3: // PÁGINA 4: Localização/Contato
+        return (
+          <div className="space-y-8">
+            {/* CEP */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2">
+                CEP *
+              </label>
+              <input
+                type="text"
+                value={formData.cep || ''}
+                onChange={handleCepChange}
+                maxLength={9}
+                className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                  errors.cep ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                placeholder="00000-000"
+              />
+              {errors.cep && <p className="text-red-500 text-sm mt-1">{errors.cep}</p>}
+            </div>
+
+            {/* Rua/Logradouro */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2">
+                Rua/Logradouro *
+              </label>
+              <input
+                type="text"
+                value={formData.rua || ''}
+                onChange={(e) => setFormData({...formData, rua: e.target.value})}
+                className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                  errors.rua ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                placeholder="Rua das Flores"
+              />
+              {errors.rua && <p className="text-red-500 text-sm mt-1">{errors.rua}</p>}
+            </div>
+
+            {/* Número e Bairro (2 colunas) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-purple-800 font-semibold mb-2">
+                  Número *
                 </label>
                 <input
                   type="text"
-                  placeholder="Rua das Flores"
-                  value={formData.rua || ''}
-                  onChange={(e) => updateFormData('rua', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                    errors.rua ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                  }`}
+                  value={formData.numero || ''}
+                  onChange={(e) => setFormData({...formData, numero: e.target.value})}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                    errors.numero ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                  placeholder="123"
                 />
-                {errors.rua && <p className="text-red-500 text-sm mt-2 font-medium">{errors.rua}</p>}
+                {errors.numero && <p className="text-red-500 text-sm mt-1">{errors.numero}</p>}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    Bairro
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Centro"
-                    value={formData.bairro || ''}
-                    onChange={(e) => updateFormData('bairro', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    Cidade *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="São Paulo"
-                    value={formData.cidade || ''}
-                    onChange={(e) => updateFormData('cidade', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                      errors.cidade ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                    }`}
-                  />
-                  {errors.cidade && <p className="text-red-500 text-sm mt-2 font-medium">{errors.cidade}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    UF
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="SP"
-                    value={formData.uf || ''}
-                    onChange={(e) => updateFormData('uf', e.target.value.toUpperCase())}
-                    maxLength={2}
-                    className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Tem estacionamento? *
+              <div className="md:col-span-2">
+                <label className="block text-purple-800 font-semibold mb-2">
+                  Bairro *
                 </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="estacionamento"
-                      value="sim"
-                      checked={formData.estacionamento === 'sim'}
-                      onChange={(e) => updateFormData('estacionamento', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, temos estacionamento</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="estacionamento"
-                      value="nao"
-                      checked={formData.estacionamento === 'nao'}
-                      onChange={(e) => updateFormData('estacionamento', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não temos estacionamento</span>
-                  </label>
-                </div>
-                {errors.estacionamento && <p className="text-red-500 text-sm mt-2 font-medium">{errors.estacionamento}</p>}
+                <input
+                  type="text"
+                  value={formData.bairro || ''}
+                  onChange={(e) => setFormData({...formData, bairro: e.target.value})}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                    errors.bairro ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                  placeholder="Centro"
+                />
+                {errors.bairro && <p className="text-red-500 text-sm mt-1">{errors.bairro}</p>}
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Redes sociais ativas *
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    '📘 Facebook',
-                    '📸 Instagram',
-                    '🎬 YouTube',
-                    '💼 LinkedIn',
-                    '🎵 TikTok',
-                    '❌ Não uso redes sociais'
-                  ].map((rede) => (
-                    <label key={rede} className="flex items-center p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                      <input
-                        type="checkbox"
-                        checked={(formData.redes_sociais || []).includes(rede)}
-                        onChange={(e) => {
-                          const redes = formData.redes_sociais || [];
-                          if (e.target.checked) {
-                            if (rede === '❌ Não uso redes sociais') {
-                              // Se selecionar "Não uso redes sociais", desmarcar todas as outras
-                              updateFormData('redes_sociais', [rede]);
-                            } else {
-                              // Se selecionar qualquer rede social, remover "Não uso redes sociais"
-                              const filtered = redes.filter(r => r !== '❌ Não uso redes sociais');
-                              updateFormData('redes_sociais', [...filtered, rede]);
-                            }
-                          } else {
-                            updateFormData('redes_sociais', redes.filter((item: string) => item !== rede));
-                          }
-                        }}
-                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2"
-                      />
-                      <span className="ml-3 text-sm font-medium text-purple-800">{rede}</span>
-                    </label>
-                  ))}
-                </div>
-                {errors.redes_sociais && <p className="text-red-500 text-sm mt-2 font-medium">{errors.redes_sociais}</p>}
-              </div>
-
-              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('📘 Facebook') && (
-                <div>
-                  <input
-                    type="url"
-                    placeholder="Link do Facebook"
-                    value={formData.link_facebook || ''}
-                    onChange={(e) => updateFormData('link_facebook', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                      errors.link_facebook ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                    }`}
-                  />
-                  {errors.link_facebook && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_facebook}</p>}
-                </div>
-              )}
-
-              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('📸 Instagram') && (
-                <div>
-                  <input
-                    type="url"
-                    placeholder="Link do Instagram"
-                    value={formData.link_instagram || ''}
-                    onChange={(e) => updateFormData('link_instagram', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                      errors.link_instagram ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                    }`}
-                  />
-                  {errors.link_instagram && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_instagram}</p>}
-                </div>
-              )}
-
-              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('🎬 YouTube') && (
-                <div>
-                  <input
-                    type="url"
-                    placeholder="Link do YouTube"
-                    value={formData.link_youtube || ''}
-                    onChange={(e) => updateFormData('link_youtube', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                      errors.link_youtube ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                    }`}
-                  />
-                  {errors.link_youtube && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_youtube}</p>}
-                </div>
-              )}
-
-              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('💼 LinkedIn') && (
-                <div>
-                  <input
-                    type="url"
-                    placeholder="Link do LinkedIn"
-                    value={formData.link_linkedin || ''}
-                    onChange={(e) => updateFormData('link_linkedin', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                      errors.link_linkedin ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                    }`}
-                  />
-                  {errors.link_linkedin && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_linkedin}</p>}
-                </div>
-              )}
-
-              {(formData.redes_sociais || []).filter(rede => rede !== '❌ Não uso redes sociais').includes('🎵 TikTok') && (
-                <div>
-                  <input
-                    type="url"
-                    placeholder="Link do TikTok"
-                    value={formData.link_tiktok || ''}
-                    onChange={(e) => updateFormData('link_tiktok', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                      errors.link_tiktok ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                    }`}
-                  />
-                  {errors.link_tiktok && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_tiktok}</p>}
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Você tem Google Meu Negócio?
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="googleMeuNegocio"
-                      value="sim_tenho"
-                      checked={formData.googleMeuNegocio === 'sim_tenho'}
-                      onChange={(e) => updateFormData('googleMeuNegocio', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, já temos</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="googleMeuNegocio"
-                      value="nao_preciso_criar"
-                      checked={formData.googleMeuNegocio === 'nao_preciso_criar'}
-                      onChange={(e) => updateFormData('googleMeuNegocio', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não, precisamos criar (R$ 300)</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="googleMeuNegocio"
-                      value="nao_interesse"
-                      checked={formData.googleMeuNegocio === 'nao_interesse'}
-                      onChange={(e) => updateFormData('googleMeuNegocio', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não tenho interesse</span>
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Deseja incorporar o mapa no site?
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="incorporarMapa"
-                      value="sim_mostrar"
-                      checked={formData.incorporarMapa === 'sim_mostrar'}
-                      onChange={(e) => updateFormData('incorporarMapa', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, quero mostrar a localização</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="incorporarMapa"
-                      value="nao_apenas_texto"
-                      checked={formData.incorporarMapa === 'nao_apenas_texto'}
-                      onChange={(e) => updateFormData('incorporarMapa', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não, apenas o endereço por texto</span>
-                  </label>
-                </div>
-              </div>
-
-              {formData.incorporarMapa === 'sim_mostrar' && (
-                <div>
-                  <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    Link do Google Maps
-                  </label>
-                  <p className="text-sm text-purple-600 mb-2">Cole o link do Google Maps do seu consultório para incorporar no site</p>
-                  <input
-                    type="url"
-                    placeholder="https://maps.google.com/..."
-                    value={formData.link_google_maps || ''}
-                    onChange={(e) => updateFormData('link_google_maps', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                      errors.link_google_maps ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                    }`}
-                  />
-                  {errors.link_google_maps && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_google_maps}</p>}
-                </div>
-              )}
             </div>
+
+            {/* Cidade e UF (2 colunas) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-purple-800 font-semibold mb-2">
+                  Cidade *
+                </label>
+                <input
+                  type="text"
+                  value={formData.cidade || ''}
+                  onChange={(e) => setFormData({...formData, cidade: e.target.value})}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                    errors.cidade ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                  placeholder="São Paulo"
+                />
+                {errors.cidade && <p className="text-red-500 text-sm mt-1">{errors.cidade}</p>}
+              </div>
+
+              <div>
+                <label className="block text-purple-800 font-semibold mb-2">
+                  UF *
+                </label>
+                <input
+                  type="text"
+                  value={formData.estado || ''}
+                  onChange={(e) => setFormData({...formData, estado: e.target.value.toUpperCase()})}
+                  maxLength={2}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                    errors.estado ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                  placeholder="SP"
+                />
+                {errors.estado && <p className="text-red-500 text-sm mt-1">{errors.estado}</p>}
+              </div>
+            </div>
+
+            {/* Complemento (opcional) */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2">
+                Complemento (opcional)
+              </label>
+              <input
+                type="text"
+                value={formData.complemento || ''}
+                onChange={(e) => setFormData({...formData, complemento: e.target.value})}
+                className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                placeholder="Sala 12, 2º andar"
+              />
+            </div>
+
+            {/* Tem estacionamento? */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Tem estacionamento? *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="tem_estacionamento"
+                    value="sim_gratuito"
+                    checked={formData.tem_estacionamento === 'sim_gratuito'}
+                    onChange={(e) => setFormData({...formData, tem_estacionamento: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">✅ Sim, temos estacionamento</div>
+                </label>
+
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="tem_estacionamento"
+                    value="nao_conveniado"
+                    checked={formData.tem_estacionamento === 'nao_conveniado'}
+                    onChange={(e) => setFormData({...formData, tem_estacionamento: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">❌ Não temos estacionamento</div>
+                </label>
+              </div>
+              {errors.tem_estacionamento && <p className="text-red-500 text-sm mt-2">{errors.tem_estacionamento}</p>}
+            </div>
+
+            {/* Horários de Atendimento */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Quais horários de atendimento? *
+              </label>
+              <p className="text-sm text-purple-600/70 mb-4">
+                Marque todos os horários que você atende:
+              </p>
+              <div className="space-y-3">
+                {[
+                  { value: 'manha', label: '☀️ Manhã' },
+                  { value: 'tarde', label: '🌤️ Tarde' },
+                  { value: 'noite', label: '🌙 Noite' },
+                  { value: 'sabado', label: '📅 Sábado' },
+                  { value: 'domingo', label: '🗓️ Domingo e feriados' }
+                ].map((horario) => (
+                  <label key={horario.value} className="flex items-center p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                    <input
+                      type="checkbox"
+                      checked={formData.horarios_atendimento?.includes(horario.value) || false}
+                      onChange={(e) => {
+                        const current = formData.horarios_atendimento || [];
+                        if (e.target.checked) {
+                          setFormData({...formData, horarios_atendimento: [...current, horario.value]});
+                        } else {
+                          setFormData({...formData, horarios_atendimento: current.filter(h => h !== horario.value)});
+                        }
+                      }}
+                      className="mr-3 accent-purple-600 w-5 h-5"
+                    />
+                    <span className="font-semibold text-purple-800">{horario.label}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.horarios_atendimento && <p className="text-red-500 text-sm mt-2">{errors.horarios_atendimento}</p>}
+            </div>
+
+            {/* Quer exibir o mapa do Google Maps? */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Quer exibir o mapa do Google no site? *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="exibir_mapa"
+                    value="sim"
+                    checked={formData.exibir_mapa === 'sim'}
+                    onChange={(e) => setFormData({...formData, exibir_mapa: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">✅ Sim, quero mostrar minha localização no mapa</div>
+                </label>
+
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="exibir_mapa"
+                    value="nao"
+                    checked={formData.exibir_mapa === 'nao'}
+                    onChange={(e) => setFormData({...formData, exibir_mapa: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">❌ Não, apenas o endereço de texto</div>
+                </label>
+              </div>
+              {errors.exibir_mapa && <p className="text-red-500 text-sm mt-2">{errors.exibir_mapa}</p>}
+            </div>
+
+            {/* Tem redes sociais ativas? */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Tem redes sociais ativas? *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="tem_redes_sociais"
+                    value="sim"
+                    checked={formData.tem_redes_sociais === 'sim'}
+                    onChange={(e) => setFormData({...formData, tem_redes_sociais: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">✅ Sim, tenho Instagram e/ou Facebook</div>
+                </label>
+
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="tem_redes_sociais"
+                    value="nao"
+                    checked={formData.tem_redes_sociais === 'nao'}
+                    onChange={(e) => setFormData({...formData, tem_redes_sociais: e.target.value, instagram: '', facebook: ''})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">❌ Não tenho redes sociais</div>
+                </label>
+              </div>
+              {errors.tem_redes_sociais && <p className="text-red-500 text-sm mt-2">{errors.tem_redes_sociais}</p>}
+            </div>
+
+            {/* Links das Redes Sociais (condicional) */}
+            {formData.tem_redes_sociais === 'sim' && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-purple-800 font-semibold mb-2">
+                    Instagram (opcional)
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.instagram || ''}
+                    onChange={(e) => setFormData({...formData, instagram: e.target.value})}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                    placeholder="https://instagram.com/seu_usuario"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-purple-800 font-semibold mb-2">
+                    Facebook (opcional)
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.facebook || ''}
+                    onChange={(e) => setFormData({...formData, facebook: e.target.value})}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                    placeholder="https://facebook.com/sua_pagina"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-purple-800 font-semibold mb-2">
+                    LinkedIn (opcional)
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.linkedin || ''}
+                    onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                    placeholder="https://linkedin.com/in/seu_perfil"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-purple-800 font-semibold mb-2">
+                    Outras redes (opcional)
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.outras_redes || ''}
+                    onChange={(e) => setFormData({...formData, outras_redes: e.target.value})}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+            )}
           </div>
         );
 
-      case 6: // Depoimentos/Cases
+      case 4: // PÁGINA 5: Depoimentos/Cases + Link do Google Maps
         return (
           <div className="space-y-8">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
-                Depoimentos/Cases
-              </h2>
-              <p className="text-purple-600/70 text-lg">Estratégia para depoimentos e cases de sucesso</p>
-            </div>
-            
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Tem depoimentos de pacientes satisfeitos? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="tem_depoimentos"
-                      value="sim_temos"
-                      checked={formData.tem_depoimentos === 'sim_temos'}
-                      onChange={(e) => updateFormData('tem_depoimentos', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, temos vários</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="tem_depoimentos"
-                      value="nao_temos"
-                      checked={formData.tem_depoimentos === 'nao_temos'}
-                      onChange={(e) => updateFormData('tem_depoimentos', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não temos ainda</span>
-                  </label>
-                </div>
-                {errors.tem_depoimentos && <p className="text-red-500 text-sm mt-2 font-medium">{errors.tem_depoimentos}</p>}
-              </div>
-
-              {formData.tem_depoimentos === 'sim_temos' && (
-                <>
-                  <div>
-                    <textarea
-                      placeholder="Cole aqui alguns depoimentos..."
-                      value={formData.depoimentos_texto || ''}
-                      onChange={(e) => updateFormData('depoimentos_texto', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none"
-                      rows={5}
-                    />
-                  </div>
-
-                  <div>
-                    <FileUploadField
-                      fieldName="arquivos_depoimentos"
-                      accept=".pdf,.jpg,.png,.mp4,.mov"
-                      multiple={true}
-                      label="Ou envie arquivos de depoimentos"
-                    />
-                  </div>
-                </>
-              )}
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Você gostaria de utilizar as avaliações do Google no seu site? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="avaliacoes_google"
-                      value="sim_google"
-                      checked={formData.avaliacoes_google === 'sim_google'}
-                      onChange={(e) => updateFormData('avaliacoes_google', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">✅ Sim, quero mostrar minhas avaliações do Google</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="avaliacoes_google"
-                      value="nao_personalizados"
-                      checked={formData.avaliacoes_google === 'nao_personalizados'}
-                      onChange={(e) => updateFormData('avaliacoes_google', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">❌ Não vamos usar depoimentos</span>
-                  </label>
-                </div>
-                <p className="text-sm text-purple-600 mt-2">As avaliações do Google podem ser sincronizadas automaticamente com o site</p>
-                {errors.avaliacoes_google && <p className="text-red-500 text-sm mt-2 font-medium">{errors.avaliacoes_google}</p>}
-              </div>
-
-              {formData.avaliacoes_google === 'sim_google' && (
-                <div>
-                  <label className="block text-sm font-semibold text-purple-800 mb-3">
-                    ⭐ Link do Google Meu Negócio (para avaliações)
-                  </label>
+            {/* Tem depoimentos de pacientes satisfeitos? */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                Tem depoimentos de pacientes satisfeitos? *
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
-                    type="url"
-                    placeholder="https://g.co/kgs/..."
-                    value={formData.link_google_avaliacoes || ''}
-                    onChange={(e) => updateFormData('link_google_avaliacoes', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all duration-200 bg-white/80 backdrop-blur-sm ${
-                      errors.link_google_avaliacoes ? 'border-red-400 focus:border-red-500' : 'border-purple-200 focus:border-purple-400'
-                    }`}
+                    type="radio"
+                    name="tem_depoimentos"
+                    value="sim"
+                    checked={formData.tem_depoimentos === 'sim'}
+                    onChange={(e) => setFormData({...formData, tem_depoimentos: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <p className="text-sm text-purple-600 mt-2">Cole o link do seu perfil no Google Meu Negócio para conseguir as avaliações</p>
-                  {errors.link_google_avaliacoes && <p className="text-red-500 text-sm mt-2 font-medium">{errors.link_google_avaliacoes}</p>}
-                </div>
-              )}
+                  <div className="font-semibold text-purple-800">✅ Sim, tenho vários</div>
+                </label>
+
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="tem_depoimentos"
+                    value="nao"
+                    checked={formData.tem_depoimentos === 'nao'}
+                    onChange={(e) => setFormData({...formData, tem_depoimentos: e.target.value})}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div className="font-semibold text-purple-800">❌ Não tenho ainda</div>
+                </label>
+              </div>
+              {errors.tem_depoimentos && <p className="text-red-500 text-sm mt-2">{errors.tem_depoimentos}</p>}
             </div>
-          </div>
-        );
 
-      case 7: // Identidade Visual/Design
-        return (
-          <div className="space-y-8">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
-                Identidade Visual/Design
-              </h2>
-              <p className="text-purple-600/70 text-lg">Definições visuais e de marca do consultório</p>
+            {/* Você gostaria de utilizar as avaliações do Google no site? */}
+            {formData.link_google_maps && (
+              <div>
+                <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                  Você gostaria de utilizar as avaliações do Google no site? *
+                </label>
+                <p className="text-sm text-purple-600/70 mb-4">
+                  As avaliações do Google podem ser exibidas automaticamente com o link do seu negócio.
+                </p>
+                <div className="space-y-3">
+                  <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                    <input
+                      type="radio"
+                      name="usar_avaliacoes_google"
+                      value="sim"
+                      checked={formData.usar_avaliacoes_google === 'sim'}
+                      onChange={(e) => setFormData({...formData, usar_avaliacoes_google: e.target.value})}
+                      className="mt-1 mr-3 accent-purple-600"
+                    />
+                    <div className="font-semibold text-purple-800">✅ Sim, quero mostrar minhas avaliações do Google</div>
+                  </label>
+
+                  <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                    <input
+                      type="radio"
+                      name="usar_avaliacoes_google"
+                      value="nao"
+                      checked={formData.usar_avaliacoes_google === 'nao'}
+                      onChange={(e) => setFormData({...formData, usar_avaliacoes_google: e.target.value})}
+                      className="mt-1 mr-3 accent-purple-600"
+                    />
+                    <div className="font-semibold text-purple-800">❌ Não quero exibir as avaliações do Google</div>
+                  </label>
+                </div>
+                {errors.usar_avaliacoes_google && <p className="text-red-500 text-sm mt-2">{errors.usar_avaliacoes_google}</p>}
+              </div>
+            )}
+
+            {/* Link do Google Maps (se tiver Google Meu Negócio) */}
+            {formData.tem_google_negocio === 'sim' && (
+              <div>
+                <label className="block text-purple-800 font-semibold mb-2">
+                  Link do Google Maps *
+                </label>
+                <p className="text-sm text-purple-600/70 mb-3">
+                  Cole o link do seu Google Maps. Para encontrar: acesse google.com/maps, pesquise seu consultório e copie o link.
+                </p>
+                <input
+                  type="url"
+                  value={formData.link_google_maps || ''}
+                  onChange={(e) => setFormData({...formData, link_google_maps: e.target.value})}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                    errors.link_google_maps ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                  placeholder="https://maps.google.com/..."
+                />
+                {errors.link_google_maps && <p className="text-red-500 text-sm mt-1">{errors.link_google_maps}</p>}
+              </div>
+            )}
+
+            {/* Observações Finais */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
+                Observações finais ou algo que não perguntamos?
+              </label>
+              <p className="text-sm text-purple-600/70 mb-3">
+                Use este espaço para nos contar qualquer informação adicional que você acha importante para o site.
+              </p>
+              <textarea
+                value={formData.observacoes_finais || ''}
+                onChange={(e) => setFormData({...formData, observacoes_finais: e.target.value})}
+                rows={5}
+                className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                placeholder="Ex: Tenho um diferencial específico, atendo um público especial, quero destacar algo em especial..."
+              />
             </div>
-            
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Já tem logotipo? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="logotipo_existente"
-                      value="sim"
-                      checked={formData.logotipo_existente === 'sim'}
-                      onChange={(e) => updateFormData('logotipo_existente', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, já tenho logotipo</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="logotipo_existente"
-                      value="basico"
-                      checked={formData.logotipo_existente === 'basico'}
-                      onChange={(e) => updateFormData('logotipo_existente', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Logotipo básico personalizado (incluído no pacote)</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="logotipo_existente"
-                      value="completa"
-                      checked={formData.logotipo_existente === 'completa'}
-                      onChange={(e) => updateFormData('logotipo_existente', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Identidade visual completa + manual de marca (+ R$ 400)</span>
-                  </label>
+
+            {/* Mensagem de Conclusão */}
+            <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl p-6 border-2 border-purple-300">
+              <div className="flex items-start">
+                <div className="text-3xl mr-4">🎉</div>
+                <div>
+                  <h3 className="text-xl font-bold text-purple-800 mb-2">
+                    Quase lá! Revise suas informações
+                  </h3>
+                  <p className="text-purple-700">
+                    Você está na última etapa. Revise todas as informações preenchidas antes de enviar.
+                    Use o botão "Anterior" para voltar e corrigir algo se necessário.
+                  </p>
                 </div>
-                {errors.logotipo_existente && <p className="text-red-500 text-sm mt-2 font-medium">{errors.logotipo_existente}</p>}
-              </div>
-
-              {formData.logotipo_existente === 'sim' && (
-                <FileUploadField
-                  fieldName="logotipo_upload"
-                  accept="image/*"
-                  multiple={false}
-                  label="Upload do Logotipo"
-                />
-              )}
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Tem manual da marca/identidade visual? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="manual_marca"
-                      value="sim"
-                      checked={formData.manual_marca === 'sim'}
-                      onChange={(e) => updateFormData('manual_marca', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, temos manual da marca</span>
-                  </label>
-                  {formData.manual_marca === 'sim' && (
-                    <>
-                      <textarea
-                        placeholder="Descreva as diretrizes da marca (cores, fontes, estilo visual, etc.)"
-                        value={formData.manual_marca_texto || ''}
-                        onChange={(e) => updateFormData('manual_marca_texto', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8 resize-none"
-                        rows={3}
-                      />
-                      <div className="ml-8 mt-3">
-                        <FileUploadField
-                          fieldName="manual_marca_arquivos"
-                          accept=".pdf,.doc,.docx"
-                          multiple={true}
-                          label="Envie o manual da marca/identidade visual"
-                        />
-                      </div>
-                    </>
-                  )}
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="manual_marca"
-                      value="nao"
-                      checked={formData.manual_marca === 'nao'}
-                      onChange={(e) => updateFormData('manual_marca', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não</span>
-                  </label>
-                </div>
-                {errors.manual_marca && <p className="text-red-500 text-sm mt-2 font-medium">{errors.manual_marca}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Têm fotos profissionais do consultório? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="fotos_consultorio"
-                      value="sim"
-                      checked={formData.fotos_consultorio === 'sim'}
-                      onChange={(e) => updateFormData('fotos_consultorio', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, temos fotos profissionais</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="fotos_consultorio"
-                      value="nao"
-                      checked={formData.fotos_consultorio === 'nao'}
-                      onChange={(e) => updateFormData('fotos_consultorio', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não, usem fotos de banco de imagens</span>
-                  </label>
-                </div>
-                {errors.fotos_consultorio && <p className="text-red-500 text-sm mt-2 font-medium">{errors.fotos_consultorio}</p>}
-              </div>
-
-              {formData.fotos_consultorio === 'sim' && (
-                <FileUploadField
-                  fieldName="fotos_consultorio_upload"
-                  accept="image/*"
-                  multiple={true}
-                  label="Upload das Fotos do Consultório"
-                />
-              )}
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Estilo de fonte preferido *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="estilo_fonte"
-                      value="elegante"
-                      checked={formData.estilo_fonte === 'elegante'}
-                      onChange={(e) => updateFormData('estilo_fonte', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Elegante/Sofisticado</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="estilo_fonte"
-                      value="moderno"
-                      checked={formData.estilo_fonte === 'moderno'}
-                      onChange={(e) => updateFormData('estilo_fonte', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Moderno/Limpo</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="estilo_fonte"
-                      value="acolhedor"
-                      checked={formData.estilo_fonte === 'acolhedor'}
-                      onChange={(e) => updateFormData('estilo_fonte', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Acolhedor/Humanizado</span>
-                  </label>
-                </div>
-                {errors.estilo_fonte && <p className="text-red-500 text-sm mt-2 font-medium">{errors.estilo_fonte}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Percepções desejadas sobre o consultório
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    '💎 Luxuoso/Premium',
-                    '🤝 Confiável/Seguro',
-                    '🚀 Inovador/Moderno',
-                    '❤️ Acolhedor/Humanizado',
-                    '⚡ Rápido/Eficiente',
-                    '🎓 Especializado/Expert'
-                  ].map((percepcao) => (
-                    <label key={percepcao} className="flex items-center p-3 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                      <input
-                        type="checkbox"
-                        checked={(formData.percepcao || []).includes(percepcao)}
-                        onChange={(e) => {
-                          const percepcoes = formData.percepcao || [];
-                          if (e.target.checked) {
-                            updateFormData('percepcao', [...percepcoes, percepcao]);
-                          } else {
-                            updateFormData('percepcao', percepcoes.filter((item: string) => item !== percepcao));
-                          }
-                        }}
-                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 focus:ring-2"
-                      />
-                      <span className="ml-3 text-sm font-medium text-purple-800">{percepcao}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Tom de linguagem *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="tom_linguagem"
-                      value="formal"
-                      checked={formData.tom_linguagem === 'formal'}
-                      onChange={(e) => updateFormData('tom_linguagem', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Formal/Técnico</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="tom_linguagem"
-                      value="acessivel"
-                      checked={formData.tom_linguagem === 'acessivel'}
-                      onChange={(e) => updateFormData('tom_linguagem', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Acessível/Didático</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="tom_linguagem"
-                      value="amigavel"
-                      checked={formData.tom_linguagem === 'amigavel'}
-                      onChange={(e) => updateFormData('tom_linguagem', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Amigável/Próximo</span>
-                  </label>
-                </div>
-                {errors.tom_linguagem && <p className="text-red-500 text-sm mt-2 font-medium">{errors.tom_linguagem}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-purple-800 mb-3">
-                  Já têm textos prontos para o site? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="textos_existentes"
-                      value="sim"
-                      checked={formData.textos_existentes === 'sim'}
-                      onChange={(e) => updateFormData('textos_existentes', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Sim, temos textos prontos</span>
-                  </label>
-                  {formData.textos_existentes === 'sim' && (
-                    <>
-                      <textarea
-                        placeholder="Cole aqui os textos que já têm prontos para o site..."
-                        value={formData.textos_texto || ''}
-                        onChange={(e) => updateFormData('textos_texto', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all duration-200 bg-white/80 backdrop-blur-sm ml-8 resize-none"
-                        rows={5}
-                      />
-                      <div className="ml-8 mt-3">
-                        <FileUploadField
-                          fieldName="textos_prontos_arquivos"
-                          accept=".pdf,.doc,.docx,.txt"
-                          multiple={true}
-                          label="Envie os textos prontos para o site"
-                        />
-                      </div>
-                    </>
-                  )}
-                  <label className="flex items-center p-4 border-2 border-purple-200 rounded-xl hover:border-purple-300 transition-all duration-200 cursor-pointer bg-white/50 hover:bg-white/80">
-                    <input
-                      type="radio"
-                      name="textos_existentes"
-                      value="nao"
-                      checked={formData.textos_existentes === 'nao'}
-                      onChange={(e) => updateFormData('textos_existentes', e.target.value)}
-                      className="w-5 h-5 text-purple-600 focus:ring-purple-500 focus:ring-2"
-                    />
-                    <span className="ml-3 font-medium text-purple-800">Não, criem os textos baseados nas informações</span>
-                  </label>
-                </div>
-                {errors.textos_existentes && <p className="text-red-500 text-sm mt-2 font-medium">{errors.textos_existentes}</p>}
               </div>
             </div>
           </div>
         );
 
       default:
-        return (
-          <div className="text-center py-20">
-            <h2 className="text-2xl font-bold text-purple-800 mb-4">Seção em desenvolvimento</h2>
-            <p className="text-purple-600">Esta seção será implementada em breve.</p>
-          </div>
-        );
+        return <div className="text-center text-purple-600">Página em desenvolvimento...</div>;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100">
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50/30 py-12 px-4">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2 sm:mb-4 px-4 mobile-text-wrap leading-tight">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-4">
             Briefing Odonto
           </h1>
-          <p className="text-purple-600/80 text-sm sm:text-base md:text-lg px-4 mobile-text-wrap">Formulário Completo para Desenvolvimento do Site</p>
+          <p className="text-purple-600/70 text-lg">
+            Formulário Completo para Desenvolvimento do Site
+          </p>
         </div>
 
         {/* Progress Bar */}
-        <div className="max-w-4xl mx-auto mb-6 sm:mb-8 px-4">
-          <div className="bg-white/60 rounded-full p-1 shadow-lg">
-            <div 
-              className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 sm:h-3 rounded-full transition-all duration-500 ease-out"
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm font-semibold text-purple-800">Progresso</span>
+            <span className="text-sm font-semibold text-purple-600">{Math.round(progressPercentage)}% completo</span>
+          </div>
+          <div className="w-full h-3 bg-purple-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-purple-500 to-purple-600 transition-all duration-500 ease-out"
               style={{ width: `${progressPercentage}%` }}
             />
           </div>
-          <div className="flex justify-between mt-2 sm:mt-3 text-xs sm:text-sm text-purple-600">
-            <span>Progresso</span>
-            <span>{Math.round(progressPercentage)}% completo</span>
+          <div className="mt-2 text-center">
+            <span className="text-purple-600/80 text-sm font-medium">
+              {currentSection + 1} de {sections.length} - {sections[currentSection].title}
+            </span>
           </div>
         </div>
 
-        {/* Form Container */}
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 border border-purple-100">
-            {renderSection()}
-          </div>
+        {/* Form Section */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 md:p-12 mb-8">
+          {renderSection()}
+        </div>
 
-          {/* Navigation */}
-          <div className="mt-8 space-y-4">
-            {/* Progress info - Mobile optimized */}
-            <div className="text-center">
-              <p className="text-purple-600 font-medium text-sm sm:text-base">
-                <span className="block sm:inline">{currentSection + 1} de {sections.length}</span>
-                <span className="hidden sm:inline"> - </span>
-                <span className="block sm:inline text-xs sm:text-sm mt-1 sm:mt-0 mobile-text-wrap">{sections[currentSection].title}</span>
-              </p>
-            </div>
-            
-            {/* Navigation buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:justify-between sm:items-center">
-              <Button
-                onClick={prevSection}
-                disabled={currentSection === 0}
-                variant="outline"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-3 border-2 border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Anterior
-              </Button>
+        {/* Navigation Buttons */}
+        <div className="flex justify-between items-center gap-4">
+          <Button
+            onClick={handlePrevious}
+            disabled={currentSection === 0}
+            variant="outline"
+            className="flex items-center gap-2 px-6 py-3"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Anterior
+          </Button>
 
-              {currentSection === sections.length - 1 ? (
-                <Button
-                  onClick={submitForm}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-sm sm:text-base"
-                >
-                  <Check className="w-4 h-4" />
-                  Finalizar
-                </Button>
-              ) : (
-                <Button
-                  onClick={nextSection}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-sm sm:text-base"
-                >
-                  Próximo
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
-          </div>
+          {currentSection < sections.length - 1 ? (
+            <Button
+              onClick={handleNext}
+              className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700"
+            >
+              Próximo
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSubmit}
+              className="flex items-center gap-2 px-8 py-3 bg-green-600 hover:bg-green-700"
+            >
+              <Check className="w-4 h-4" />
+              Enviar Briefing
+            </Button>
+          )}
         </div>
       </div>
     </div>
