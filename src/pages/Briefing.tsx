@@ -288,12 +288,14 @@ const BriefingOdonto = () => {
         break;
 
       case 4: // Depoimentos/Cases e Revisão Final
-        if (!formData.tem_depoimentos) newErrors.tem_depoimentos = 'Informe se tem depoimentos';
-        if (formData.link_google_maps && !formData.usar_avaliacoes_google) {
-          newErrors.usar_avaliacoes_google = 'Informe se quer usar avaliações do Google';
+        if (!formData.estrategia_depoimentos) {
+          newErrors.estrategia_depoimentos = 'Escolha como quer mostrar depoimentos';
         }
-        if (formData.tem_google_negocio === 'sim' && !formData.link_google_maps) {
+        if (formData.estrategia_depoimentos === 'google' && !formData.link_google_maps) {
           newErrors.link_google_maps = 'Link do Google Maps é obrigatório';
+        }
+        if (formData.estrategia_depoimentos === 'texto' && !formData.depoimentos_texto) {
+          newErrors.depoimentos_texto = 'Cole pelo menos 2 depoimentos';
         }
         break;
     }
@@ -1746,85 +1748,84 @@ const BriefingOdonto = () => {
       case 4: // PÁGINA 5: Depoimentos/Cases + Link do Google Maps
         return (
           <div className="space-y-8">
-            {/* Tem depoimentos de pacientes satisfeitos? */}
+            {/* Como você quer mostrar depoimentos no site? */}
             <div>
               <label className="block text-purple-800 font-semibold mb-4 text-lg">
-                Tem depoimentos de pacientes satisfeitos? *
+                Como você quer mostrar depoimentos no site? *
               </label>
+              <p className="text-sm text-purple-600/70 mb-4">
+                Depoimentos são essenciais para gerar confiança. Escolha a melhor opção para você:
+              </p>
               <div className="space-y-3">
                 <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
-                    name="tem_depoimentos"
-                    value="sim"
-                    checked={formData.tem_depoimentos === 'sim'}
-                    onChange={(e) => setFormData({...formData, tem_depoimentos: e.target.value})}
+                    name="estrategia_depoimentos"
+                    value="google"
+                    checked={formData.estrategia_depoimentos === 'google'}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      estrategia_depoimentos: e.target.value,
+                      depoimentos_texto: '' // Limpar campo de texto se mudar
+                    })}
                     className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-purple-800">✅ Sim, tenho vários</div>
+                  <div>
+                    <div className="font-semibold text-purple-800">⭐ Usar minhas avaliações do Google (automático)</div>
+                    <div className="text-sm text-purple-600/70 mt-1">Exibiremos suas avaliações do Google Meu Negócio no site</div>
+                  </div>
                 </label>
 
                 <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
-                    name="tem_depoimentos"
-                    value="nao"
-                    checked={formData.tem_depoimentos === 'nao'}
-                    onChange={(e) => setFormData({...formData, tem_depoimentos: e.target.value})}
+                    name="estrategia_depoimentos"
+                    value="texto"
+                    checked={formData.estrategia_depoimentos === 'texto'}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      estrategia_depoimentos: e.target.value,
+                      link_google_maps: '' // Limpar link se mudar
+                    })}
                     className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-purple-800">❌ Não tenho ainda</div>
+                  <div>
+                    <div className="font-semibold text-purple-800">💬 Vou enviar depoimentos que já tenho</div>
+                    <div className="text-sm text-purple-600/70 mt-1">Depoimentos salvos de WhatsApp, mensagens ou outros canais</div>
+                  </div>
+                </label>
+
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                  <input
+                    type="radio"
+                    name="estrategia_depoimentos"
+                    value="nao"
+                    checked={formData.estrategia_depoimentos === 'nao'}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      estrategia_depoimentos: e.target.value,
+                      link_google_maps: '',
+                      depoimentos_texto: ''
+                    })}
+                    className="mt-1 mr-3 accent-purple-600"
+                  />
+                  <div>
+                    <div className="font-semibold text-purple-800">⏭️ Não quero seção de depoimentos por enquanto</div>
+                    <div className="text-sm text-purple-600/70 mt-1">Podemos adicionar depois se necessário</div>
+                  </div>
                 </label>
               </div>
-              {errors.tem_depoimentos && <p className="text-red-500 text-sm mt-2">{errors.tem_depoimentos}</p>}
+              {errors.estrategia_depoimentos && <p className="text-red-500 text-sm mt-2">{errors.estrategia_depoimentos}</p>}
             </div>
 
-            {/* Você gostaria de utilizar as avaliações do Google no site? */}
-            {formData.link_google_maps && (
-              <div>
-                <label className="block text-purple-800 font-semibold mb-4 text-lg">
-                  Você gostaria de utilizar as avaliações do Google no site? *
-                </label>
-                <p className="text-sm text-purple-600/70 mb-4">
-                  As avaliações do Google podem ser exibidas automaticamente com o link do seu negócio.
-                </p>
-                <div className="space-y-3">
-                  <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
-                    <input
-                      type="radio"
-                      name="usar_avaliacoes_google"
-                      value="sim"
-                      checked={formData.usar_avaliacoes_google === 'sim'}
-                      onChange={(e) => setFormData({...formData, usar_avaliacoes_google: e.target.value})}
-                      className="mt-1 mr-3 accent-purple-600"
-                    />
-                    <div className="font-semibold text-purple-800">✅ Sim, quero mostrar minhas avaliações do Google</div>
-                  </label>
-
-                  <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
-                    <input
-                      type="radio"
-                      name="usar_avaliacoes_google"
-                      value="nao"
-                      checked={formData.usar_avaliacoes_google === 'nao'}
-                      onChange={(e) => setFormData({...formData, usar_avaliacoes_google: e.target.value})}
-                      className="mt-1 mr-3 accent-purple-600"
-                    />
-                    <div className="font-semibold text-purple-800">❌ Não quero exibir as avaliações do Google</div>
-                  </label>
-                </div>
-                {errors.usar_avaliacoes_google && <p className="text-red-500 text-sm mt-2">{errors.usar_avaliacoes_google}</p>}
-              </div>
-            )}
-
-            {/* Link do Google Maps (se tiver Google Meu Negócio) */}
-            {formData.tem_google_negocio === 'sim' && (
+            {/* Link do Google Maps (se escolheu Google) */}
+            {formData.estrategia_depoimentos === 'google' && (
               <div>
                 <label className="block text-purple-800 font-semibold mb-2">
                   Link do Google Maps *
                 </label>
                 <p className="text-sm text-purple-600/70 mb-3">
-                  Cole o link do seu Google Maps. Para encontrar: acesse google.com/maps, pesquise seu consultório e copie o link.
+                  Cole o link do seu Google Meu Negócio. Para encontrar: acesse google.com/maps, pesquise seu consultório e copie o link da barra de endereços.
                 </p>
                 <input
                   type="url"
@@ -1836,6 +1837,40 @@ const BriefingOdonto = () => {
                   placeholder="https://maps.google.com/..."
                 />
                 {errors.link_google_maps && <p className="text-red-500 text-sm mt-1">{errors.link_google_maps}</p>}
+
+                <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                  <p className="text-sm text-purple-700">
+                    ℹ️ <strong>Dica:</strong> Suas avaliações do Google aparecerão automaticamente no site com estrelas e comentários dos pacientes.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Depoimentos em Texto (se escolheu texto) */}
+            {formData.estrategia_depoimentos === 'texto' && (
+              <div>
+                <label className="block text-purple-800 font-semibold mb-2">
+                  Cole aqui 2-3 depoimentos *
+                </label>
+                <p className="text-sm text-purple-600/70 mb-3">
+                  Cole depoimentos reais de pacientes. Um por linha. Inclua o nome do paciente se possível.
+                </p>
+                <textarea
+                  value={formData.depoimentos_texto || ''}
+                  onChange={(e) => setFormData({...formData, depoimentos_texto: e.target.value})}
+                  rows={8}
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                    errors.depoimentos_texto ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                  placeholder={`Exemplo:\n\n"Excelente profissional! Fiz um implante e o resultado ficou perfeito. Recomendo muito!" - Maria Silva\n\n"Melhor dentista da região. Atendimento impecável e preço justo." - João Santos\n\n"Meu filho tinha medo de dentista, mas adorou a consulta. Super recomendo!" - Ana Paula`}
+                />
+                {errors.depoimentos_texto && <p className="text-red-500 text-sm mt-1">{errors.depoimentos_texto}</p>}
+
+                <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-700">
+                    💡 <strong>Dica:</strong> Depoimentos específicos convertem mais! Exemplo: "Fiz clareamento e ficou incrível" é melhor que "Ótimo dentista".
+                  </p>
+                </div>
               </div>
             )}
 
