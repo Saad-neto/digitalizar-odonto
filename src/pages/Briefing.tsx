@@ -112,7 +112,7 @@ const BriefingOdonto = () => {
           updateFormData('rua', data.logradouro || '');
           updateFormData('bairro', data.bairro || '');
           updateFormData('cidade', data.localidade || '');
-          updateFormData('uf', data.uf || '');
+          updateFormData('estado', data.uf || '');
           return;
         } else {
           setErrors(prev => ({ ...prev, cep: 'CEP não encontrado' }));
@@ -146,6 +146,22 @@ const BriefingOdonto = () => {
         delete newErrors[field];
         return newErrors;
       });
+    }
+  };
+
+  const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+
+    // Formatar CEP: 00000-000
+    if (value.length > 5) {
+      value = value.slice(0, 5) + '-' + value.slice(5, 8);
+    }
+
+    updateFormData('cep', value);
+
+    // Buscar endereço quando CEP estiver completo
+    if (value.replace(/\D/g, '').length === 8) {
+      buscarEnderecoPorCEP(value);
     }
   };
 
