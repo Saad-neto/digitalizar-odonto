@@ -233,9 +233,15 @@ const BriefingOdonto = () => {
         break;
 
       case 2: // Serviços e Diferenciais
-        if (!formData.servico_1) newErrors.servico_1 = 'O 1º serviço é obrigatório';
-        if (!formData.servico_2) newErrors.servico_2 = 'O 2º serviço é obrigatório';
-        if (!formData.servico_3) newErrors.servico_3 = 'O 3º serviço é obrigatório';
+        if (!formData.servicos || formData.servicos.length < 3) {
+          newErrors.servicos = 'Selecione pelo menos 3 serviços';
+        }
+        if (formData.servicos && formData.servicos.length > 6) {
+          newErrors.servicos = 'Selecione no máximo 6 serviços';
+        }
+        if (formData.servicos?.includes('outro') && !formData.servico_outro) {
+          newErrors.servico_outro = 'Especifique qual outro serviço';
+        }
         if (!formData.aceita_convenios) newErrors.aceita_convenios = 'Informe se aceita convênios';
         if (formData.aceita_convenios === 'sim' && !formData.lista_convenios) {
           newErrors.lista_convenios = 'Liste os convênios aceitos';
@@ -1082,55 +1088,95 @@ const BriefingOdonto = () => {
             {/* Serviços Oferecidos */}
             <div>
               <label className="block text-purple-800 font-semibold mb-4 text-lg">
-                Quais os 3 serviços/tratamentos mais procurados pelos pacientes? *
+                Quais serviços/tratamentos você oferece? *
               </label>
               <p className="text-sm text-purple-600/70 mb-4">
-                Exemplos: Limpeza e profilaxia, Implante e prótese, Restaurações em resina, Ortodontia (aparelho), Clareamento dental, Bichectomia, etc.
+                Selecione de 3 a 6 serviços que você oferece (os principais que deseja destacar no site):
               </p>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-purple-700 mb-2 text-sm">1. Primeiro serviço *</label>
-                  <input
-                    type="text"
-                    value={formData.servico_1 || ''}
-                    onChange={(e) => setFormData({...formData, servico_1: e.target.value})}
-                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                      errors.servico_1 ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
-                    } focus:outline-none focus:ring-2 focus:ring-purple-200`}
-                    placeholder="Ex: Limpeza e profilaxia dental"
-                  />
-                  {errors.servico_1 && <p className="text-red-500 text-sm mt-1">{errors.servico_1}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-purple-700 mb-2 text-sm">2. Segundo serviço *</label>
-                  <input
-                    type="text"
-                    value={formData.servico_2 || ''}
-                    onChange={(e) => setFormData({...formData, servico_2: e.target.value})}
-                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                      errors.servico_2 ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
-                    } focus:outline-none focus:ring-2 focus:ring-purple-200`}
-                    placeholder="Ex: Restaurações em resina"
-                  />
-                  {errors.servico_2 && <p className="text-red-500 text-sm mt-1">{errors.servico_2}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-purple-700 mb-2 text-sm">3. Terceiro serviço *</label>
-                  <input
-                    type="text"
-                    value={formData.servico_3 || ''}
-                    onChange={(e) => setFormData({...formData, servico_3: e.target.value})}
-                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                      errors.servico_3 ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
-                    } focus:outline-none focus:ring-2 focus:ring-purple-200`}
-                    placeholder="Ex: Implantes dentários"
-                  />
-                  {errors.servico_3 && <p className="text-red-500 text-sm mt-1">{errors.servico_3}</p>}
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                  { value: 'limpeza', label: 'Limpeza e profilaxia', icon: '✨' },
+                  { value: 'clareamento', label: 'Clareamento dental', icon: '⚡' },
+                  { value: 'restauracoes', label: 'Restaurações em resina', icon: '🦷' },
+                  { value: 'canal', label: 'Tratamento de canal (endodontia)', icon: '🔧' },
+                  { value: 'implantes', label: 'Implantes dentários', icon: '💎' },
+                  { value: 'proteses', label: 'Próteses dentárias', icon: '👄' },
+                  { value: 'ortodontia_fixa', label: 'Ortodontia (aparelho fixo)', icon: '📐' },
+                  { value: 'ortodontia_invisivel', label: 'Ortodontia invisível (alinhadores)', icon: '🔍' },
+                  { value: 'extracao', label: 'Extração de dentes/sisos', icon: '🩺' },
+                  { value: 'periodontia', label: 'Periodontia (tratamento de gengiva)', icon: '🌿' },
+                  { value: 'odontopediatria', label: 'Odontopediatria (dentista infantil)', icon: '👶' },
+                  { value: 'harmonizacao', label: 'Harmonização facial', icon: '💉' },
+                  { value: 'bichectomia', label: 'Bichectomia', icon: '✂️' },
+                  { value: 'lentes', label: 'Lentes de contato dental', icon: '💫' },
+                  { value: 'facetas', label: 'Facetas de porcelana', icon: '🎨' },
+                  { value: 'cirurgia', label: 'Cirurgia bucomaxilofacial', icon: '🏥' },
+                  { value: 'dtm', label: 'DTM e bruxismo', icon: '😴' },
+                  { value: 'emergencia', label: 'Emergências 24h', icon: '🚨' },
+                  { value: 'outro', label: 'Outro', icon: '➕' }
+                ].map((servico) => (
+                  <label key={servico.value} className="flex items-center p-3 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                    <input
+                      type="checkbox"
+                      checked={formData.servicos?.includes(servico.value) || false}
+                      onChange={(e) => {
+                        const current = formData.servicos || [];
+                        if (e.target.checked) {
+                          // Limitar a 6 serviços
+                          if (current.length < 6) {
+                            setFormData({...formData, servicos: [...current, servico.value]});
+                          }
+                        } else {
+                          setFormData({...formData, servicos: current.filter(s => s !== servico.value)});
+                          // Se desmarcar "outro", limpar o campo
+                          if (servico.value === 'outro') {
+                            setFormData({...formData, servicos: current.filter(s => s !== servico.value), servico_outro: ''});
+                          }
+                        }
+                      }}
+                      className="mr-3 accent-purple-600 w-5 h-5"
+                      disabled={!formData.servicos?.includes(servico.value) && (formData.servicos?.length || 0) >= 6}
+                    />
+                    <span className="text-purple-800">
+                      <span className="mr-2">{servico.icon}</span>
+                      {servico.label}
+                    </span>
+                  </label>
+                ))}
               </div>
+
+              {/* Contador de serviços selecionados */}
+              <div className="mt-3 text-center">
+                <span className={`text-sm font-semibold ${
+                  (formData.servicos?.length || 0) < 3 ? 'text-red-600' :
+                  (formData.servicos?.length || 0) > 6 ? 'text-red-600' :
+                  'text-purple-600'
+                }`}>
+                  {formData.servicos?.length || 0} de 3-6 serviços selecionados
+                </span>
+              </div>
+
+              {errors.servicos && <p className="text-red-500 text-sm mt-2">{errors.servicos}</p>}
+
+              {/* Campo "Outro" condicional */}
+              {formData.servicos?.includes('outro') && (
+                <div className="mt-4">
+                  <label className="block text-purple-800 font-semibold mb-2">
+                    Qual outro serviço? *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.servico_outro || ''}
+                    onChange={(e) => setFormData({...formData, servico_outro: e.target.value})}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                      errors.servico_outro ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                    placeholder="Digite o serviço"
+                  />
+                  {errors.servico_outro && <p className="text-red-500 text-sm mt-1">{errors.servico_outro}</p>}
+                </div>
+              )}
             </div>
 
             {/* Aceita Convênios */}
