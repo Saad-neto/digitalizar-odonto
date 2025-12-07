@@ -1232,19 +1232,20 @@ const BriefingOdonto = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { value: 'unimed', label: 'Unimed', icon: '🏥' },
+                    { value: 'odontoprev', label: 'OdontoPrev (líder do mercado)', icon: '👑' },
                     { value: 'bradesco', label: 'Bradesco Dental', icon: '🏦' },
-                    { value: 'sulamerica', label: 'SulAmérica', icon: '💼' },
                     { value: 'amil', label: 'Amil Dental', icon: '🩺' },
+                    { value: 'sulamerica', label: 'SulAmérica Odonto', icon: '💼' },
+                    { value: 'unimed', label: 'Unimed Odonto', icon: '🏥' },
                     { value: 'porto_seguro', label: 'Porto Seguro Dental', icon: '🛡️' },
-                    { value: 'metlife', label: 'MetLife', icon: '💳' },
-                    { value: 'odontoprev', label: 'OdontoPrev', icon: '🦷' },
+                    { value: 'metlife', label: 'MetLife Dental', icon: '💳' },
+                    { value: 'interodonto', label: 'Interodonto', icon: '🦷' },
+                    { value: 'hapvida', label: 'Hapvida Odonto', icon: '💚' },
+                    { value: 'notredame', label: 'NotreDame Intermédica', icon: '⚕️' },
                     { value: 'dental_uni', label: 'Dental Uni', icon: '🏢' },
                     { value: 'golden_cross', label: 'Golden Cross', icon: '✨' },
-                    { value: 'notredame', label: 'NotreDame Intermédica', icon: '⚕️' },
+                    { value: 'sompo', label: 'Sompo Dental', icon: '🔷' },
                     { value: 'caixa_seguradora', label: 'Caixa Seguradora', icon: '🏛️' },
-                    { value: 'hapvida', label: 'Hapvida', icon: '💚' },
-                    { value: 'samp', label: 'SAMP', icon: '🩹' },
                     { value: 'outro_convenio', label: 'Outro', icon: '➕' }
                   ].map((convenio) => (
                     <label key={convenio.value} className="flex items-center p-3 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
@@ -1388,7 +1389,7 @@ const BriefingOdonto = () => {
                     onChange={(e) => setFormData({...formData, oferece_sedacao: e.target.value})}
                     className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-purple-800">Sim, oferecemos sedação</div>
+                  <div className="font-semibold text-purple-800">Sim, oferecemos sedação consciente</div>
                 </label>
 
                 <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
