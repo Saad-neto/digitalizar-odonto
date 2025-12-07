@@ -23,6 +23,7 @@ const BriefingOdonto = () => {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [uploadedFiles, setUploadedFiles] = useState<{[key: string]: UploadedFile[]}>({});
   const [loadingCep, setLoadingCep] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const sections = [
     { id: 'informacoes-essenciais', title: 'Informações Essenciais', subtitle: 'Vamos começar! Informações Básicas', required: true },
@@ -321,20 +322,56 @@ const BriefingOdonto = () => {
   };
 
   const handleSubmit = async () => {
-    if (!validateCurrentSection()) return;
+    // Validar última seção
+    if (!validateCurrentSection()) {
+      alert('Por favor, preencha todos os campos obrigatórios antes de enviar.');
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
-      // Aqui você salvaria no Supabase
-      console.log('Dados do formulário:', formData);
-      console.log('Arquivos:', uploadedFiles);
+      console.log('📤 Enviando briefing para o Supabase...');
+      console.log('📋 Dados do formulário:', formData);
+      console.log('📁 Arquivos:', uploadedFiles);
 
-      // await createLead(formData);
+      // Preparar dados para salvar
+      const briefingCompleto = {
+        ...formData,
+        // Incluir arquivos no briefing_data
+        arquivos: uploadedFiles,
+      };
 
-      alert('Briefing enviado com sucesso! Você receberá o site em até 24 horas.');
+      // Criar lead no Supabase
+      const lead = await createLead({
+        nome: formData.nome,
+        email: formData.email,
+        whatsapp: formData.whatsapp,
+        briefing_data: briefingCompleto,
+      });
+
+      console.log('✅ Lead criado com sucesso:', lead);
+
+      // Redirecionar para página de obrigado (ou pagamento)
+      alert('Briefing enviado com sucesso! 🎉\n\nVocê receberá o site em até 24 horas.');
       navigate('/obrigado');
-    } catch (error) {
-      console.error('Erro ao enviar:', error);
-      alert('Erro ao enviar o briefing. Tente novamente.');
+
+    } catch (error: any) {
+      console.error('❌ Erro ao enviar briefing:', error);
+
+      // Mensagem de erro mais específica
+      let errorMessage = 'Erro ao enviar o briefing. Por favor, tente novamente.';
+
+      if (error.message?.includes('duplicate')) {
+        errorMessage = 'Este e-mail já está cadastrado. Use outro e-mail ou entre em contato conosco.';
+      } else if (error.message?.includes('network')) {
+        errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+      }
+
+      alert(errorMessage);
+
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -1974,10 +2011,20 @@ const BriefingOdonto = () => {
           ) : (
             <Button
               onClick={handleSubmit}
-              className="flex items-center gap-2 px-8 py-3 bg-green-600 hover:bg-green-700"
+              disabled={isSubmitting}
+              className="flex items-center gap-2 px-8 py-3 bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Check className="w-4 h-4" />
-              Enviar Briefing
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Check className="w-4 h-4" />
+                  Enviar Briefing
+                </>
+              )}
             </Button>
           )}
         </div>
