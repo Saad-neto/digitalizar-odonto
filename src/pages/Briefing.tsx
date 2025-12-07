@@ -243,8 +243,11 @@ const BriefingOdonto = () => {
           newErrors.servico_outro = 'Especifique qual outro serviço';
         }
         if (!formData.aceita_convenios) newErrors.aceita_convenios = 'Informe se aceita convênios';
-        if (formData.aceita_convenios === 'sim' && !formData.lista_convenios) {
-          newErrors.lista_convenios = 'Liste os convênios aceitos';
+        if (formData.aceita_convenios === 'sim' && (!formData.lista_convenios_array || formData.lista_convenios_array.length === 0)) {
+          newErrors.lista_convenios = 'Selecione pelo menos um convênio';
+        }
+        if (formData.lista_convenios_array?.includes('outro_convenio') && !formData.outro_convenio) {
+          newErrors.outro_convenio = 'Especifique qual outro convênio';
         }
         if (!formData.atende_emergencia) newErrors.atende_emergencia = 'Informe sobre atendimento de emergência';
         if (!formData.tecnologias || formData.tecnologias.length === 0) {
@@ -1220,22 +1223,76 @@ const BriefingOdonto = () => {
             {/* Lista de Convênios (condicional) */}
             {formData.aceita_convenios === 'sim' && (
               <div>
-                <label className="block text-purple-800 font-semibold mb-2">
+                <label className="block text-purple-800 font-semibold mb-4 text-lg">
                   Quais convênios você aceita? *
                 </label>
-                <p className="text-sm text-purple-600/70 mb-3">
-                  Liste os convênios separados por vírgula (ex: Unimed, Bradesco Dental, SulAmérica)
+                <p className="text-sm text-purple-600/70 mb-4">
+                  Selecione todos os convênios que você aceita:
                 </p>
-                <textarea
-                  value={formData.lista_convenios || ''}
-                  onChange={(e) => setFormData({...formData, lista_convenios: e.target.value})}
-                  rows={3}
-                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.lista_convenios ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
-                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
-                  placeholder="Ex: Unimed, Bradesco Dental, SulAmérica, Amil, Porto Seguro"
-                />
-                {errors.lista_convenios && <p className="text-red-500 text-sm mt-1">{errors.lista_convenios}</p>}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    { value: 'unimed', label: 'Unimed', icon: '🏥' },
+                    { value: 'bradesco', label: 'Bradesco Dental', icon: '🏦' },
+                    { value: 'sulamerica', label: 'SulAmérica', icon: '💼' },
+                    { value: 'amil', label: 'Amil Dental', icon: '🩺' },
+                    { value: 'porto_seguro', label: 'Porto Seguro Dental', icon: '🛡️' },
+                    { value: 'metlife', label: 'MetLife', icon: '💳' },
+                    { value: 'odontoprev', label: 'OdontoPrev', icon: '🦷' },
+                    { value: 'dental_uni', label: 'Dental Uni', icon: '🏢' },
+                    { value: 'golden_cross', label: 'Golden Cross', icon: '✨' },
+                    { value: 'notredame', label: 'NotreDame Intermédica', icon: '⚕️' },
+                    { value: 'caixa_seguradora', label: 'Caixa Seguradora', icon: '🏛️' },
+                    { value: 'hapvida', label: 'Hapvida', icon: '💚' },
+                    { value: 'samp', label: 'SAMP', icon: '🩹' },
+                    { value: 'outro_convenio', label: 'Outro', icon: '➕' }
+                  ].map((convenio) => (
+                    <label key={convenio.value} className="flex items-center p-3 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
+                      <input
+                        type="checkbox"
+                        checked={formData.lista_convenios_array?.includes(convenio.value) || false}
+                        onChange={(e) => {
+                          const current = formData.lista_convenios_array || [];
+                          if (e.target.checked) {
+                            setFormData({...formData, lista_convenios_array: [...current, convenio.value]});
+                          } else {
+                            setFormData({...formData, lista_convenios_array: current.filter(c => c !== convenio.value)});
+                            // Se desmarcar "outro", limpar o campo
+                            if (convenio.value === 'outro_convenio') {
+                              setFormData({...formData, lista_convenios_array: current.filter(c => c !== convenio.value), outro_convenio: ''});
+                            }
+                          }
+                        }}
+                        className="mr-3 accent-purple-600 w-5 h-5"
+                      />
+                      <span className="text-purple-800">
+                        <span className="mr-2">{convenio.icon}</span>
+                        {convenio.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+
+                {errors.lista_convenios && <p className="text-red-500 text-sm mt-3">{errors.lista_convenios}</p>}
+
+                {/* Campo "Outro convênio" condicional */}
+                {formData.lista_convenios_array?.includes('outro_convenio') && (
+                  <div className="mt-4">
+                    <label className="block text-purple-800 font-semibold mb-2">
+                      Qual outro convênio? *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.outro_convenio || ''}
+                      onChange={(e) => setFormData({...formData, outro_convenio: e.target.value})}
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                        errors.outro_convenio ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                      } focus:outline-none focus:ring-2 focus:ring-purple-200`}
+                      placeholder="Digite o nome do convênio"
+                    />
+                    {errors.outro_convenio && <p className="text-red-500 text-sm mt-1">{errors.outro_convenio}</p>}
+                  </div>
+                )}
               </div>
             )}
 
