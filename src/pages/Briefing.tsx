@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle } from 'lucide
 import { Button } from '@/components/ui/button';
 import { compressImage, getPayloadSize, formatFileSize } from '@/utils/imageCompression';
 import { createLead } from '@/lib/supabase';
+import ReviewStep from '@/components/ReviewStep';
 
 interface FormData {
   [key: string]: any;
@@ -30,7 +31,8 @@ const BriefingOdonto = () => {
     { id: 'profissionais', title: 'Sobre o(s) Profissional(is)', subtitle: 'Vamos apresentar você (ou sua equipe) no site', required: true },
     { id: 'servicos-diferenciais', title: 'Serviços e Diferenciais', subtitle: 'O que você oferece e o que te torna único', required: true },
     { id: 'localizacao-contato', title: 'Localização e Contato', subtitle: 'Onde você está?', required: true },
-    { id: 'materiais-revisao', title: 'Materiais e Revisão Final', subtitle: 'Quase lá! Materiais e Revisão', required: true }
+    { id: 'materiais', title: 'Materiais e Preferências', subtitle: 'Quase lá! Materiais visuais', required: true },
+    { id: 'revisao', title: 'Revisão Final', subtitle: 'Confira todas as informações', required: false }
   ];
 
   const progressPercentage = ((currentSection + 1) / sections.length) * 100;
@@ -298,6 +300,9 @@ const BriefingOdonto = () => {
         if (formData.estrategia_depoimentos === 'texto' && !formData.depoimentos_texto) {
           newErrors.depoimentos_texto = 'Cole pelo menos 2 depoimentos';
         }
+        break;
+
+      case 5: // Revisão Final - Sem validações necessárias
         break;
     }
 
@@ -1944,6 +1949,18 @@ const BriefingOdonto = () => {
               </div>
             </div>
           </div>
+        );
+
+      case 5: // PÁGINA 6: Revisão Final
+        return (
+          <ReviewStep
+            formData={formData}
+            uploadedFiles={uploadedFiles}
+            onEdit={(sectionIndex) => {
+              setCurrentSection(sectionIndex);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
         );
 
       default:
