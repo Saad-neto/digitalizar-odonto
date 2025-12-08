@@ -11,9 +11,15 @@ import {
   MessageCircle,
   AlertCircle,
   Clock,
-  Briefcase
+  Briefcase,
+  Download,
+  FileImage,
+  FileText,
 } from 'lucide-react';
 import ReviewStep from '@/components/ReviewStep';
+import Timeline from '@/components/admin/Timeline';
+import Notes from '@/components/admin/Notes';
+import { downloadBriefingPDF, downloadImagesZIP } from '@/lib/downloadUtils';
 
 const LeadDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,7 +28,8 @@ const LeadDetails = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [copiedField, setCopiedField] = useState<string>('');
-  const [selectedTab, setSelectedTab] = useState<'resumo' | 'briefing' | 'timeline'>('resumo');
+  const [selectedTab, setSelectedTab] = useState<'resumo' | 'briefing' | 'timeline' | 'notas'>('resumo');
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -49,7 +56,19 @@ const LeadDetails = () => {
       setUpdating(true);
       const updatedLead = await updateLeadStatus(lead.id, newStatus);
       setLead(updatedLead);
-      alert('Status atualizado com sucesso!');
+
+      // Mostrar notificação
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-down';
+      notification.textContent = '✅ Status atualizado com sucesso!';
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+
+      // Recarregar página para atualizar timeline
+      await loadLead();
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
       alert('Erro ao atualizar status');
@@ -75,6 +94,48 @@ const LeadDetails = () => {
 
   const sendEmail = (email: string) => {
     window.location.href = `mailto:${email}`;
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!lead) return;
+
+    try {
+      setDownloading(true);
+      await downloadBriefingPDF(lead);
+
+      // Notificação de sucesso
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      notification.textContent = '✅ PDF baixado com sucesso!';
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+    } catch (error) {
+      console.error('Erro ao baixar PDF:', error);
+      alert('Erro ao gerar PDF. Tente novamente.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handleDownloadImages = async () => {
+    if (!lead) return;
+
+    try {
+      setDownloading(true);
+      await downloadImagesZIP(lead);
+
+      // Notificação de sucesso
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      notification.textContent = '✅ Imagens baixadas com sucesso!';
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+    } catch (error) {
+      console.error('Erro ao baixar imagens:', error);
+      alert('Erro ao baixar imagens. Tente novamente.');
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const getStatusBadge = (status: Lead['status']) => {
@@ -154,6 +215,37 @@ const LeadDetails = () => {
             </div>
             <div className="flex items-center gap-3">
               {getStatusBadge(lead.status)}
+
+              {/* Botões de Download */}
+              <Button
+                onClick={handleDownloadPDF}
+                disabled={downloading}
+                variant="outline"
+                size="sm"
+                className="hidden md:flex"
+              >
+                {downloading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600 mr-2" />
+                ) : (
+                  <FileText className="w-4 h-4 mr-2" />
+                )}
+                PDF
+              </Button>
+
+              <Button
+                onClick={handleDownloadImages}
+                disabled={downloading}
+                variant="outline"
+                size="sm"
+                className="hidden md:flex"
+              >
+                {downloading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600 mr-2" />
+                ) : (
+                  <FileImage className="w-4 h-4 mr-2" />
+                )}
+                Imagens
+              </Button>
             </div>
           </div>
         </div>
@@ -161,6 +253,28 @@ const LeadDetails = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Botões de Download Mobile */}
+        <div className="md:hidden mb-4 flex gap-2">
+          <Button
+            onClick={handleDownloadPDF}
+            disabled={downloading}
+            variant="outline"
+            className="flex-1"
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            Baixar PDF
+          </Button>
+          <Button
+            onClick={handleDownloadImages}
+            disabled={downloading}
+            variant="outline"
+            className="flex-1"
+          >
+            <FileImage className="w-4 h-4 mr-2" />
+            Baixar Imagens
+          </Button>
+        </div>
+
         {/* Alterar Status */}
         <div className="bg-white rounded-xl border-2 border-gray-200 p-6 mb-6 shadow-sm">
           <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -242,13 +356,13 @@ const LeadDetails = () => {
 
         {/* Abas */}
         <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
-          <div className="border-b-2 border-gray-200">
-            <div className="flex">
-              {(['resumo', 'briefing', 'timeline'] as const).map((tab) => (
+          <div className="border-b-2 border-gray-200 overflow-x-auto">
+            <div className="flex min-w-max">
+              {(['resumo', 'briefing', 'timeline', 'notas'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setSelectedTab(tab)}
-                  className={`px-6 py-4 font-semibold transition-colors ${
+                  className={`px-6 py-4 font-semibold transition-colors whitespace-nowrap ${
                     selectedTab === tab
                       ? 'bg-purple-50 text-purple-700 border-b-4 border-purple-600'
                       : 'text-gray-600 hover:bg-gray-50'
@@ -257,6 +371,7 @@ const LeadDetails = () => {
                   {tab === 'resumo' && '📋 Resumo'}
                   {tab === 'briefing' && '📝 Briefing Completo'}
                   {tab === 'timeline' && '📅 Timeline'}
+                  {tab === 'notas' && '💬 Notas'}
                 </button>
               ))}
             </div>
@@ -332,30 +447,11 @@ const LeadDetails = () => {
             )}
 
             {selectedTab === 'timeline' && (
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
-                    <div className="w-0.5 h-full bg-purple-200"></div>
-                  </div>
-                  <div className="pb-8">
-                    <p className="font-semibold text-gray-900">Briefing recebido</p>
-                    <p className="text-sm text-gray-500">{formatDate(lead.created_at)}</p>
-                  </div>
-                </div>
-                {lead.updated_at !== lead.created_at && (
-                  <div className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
-                      <div className="w-0.5 h-full bg-purple-200"></div>
-                    </div>
-                    <div className="pb-8">
-                      <p className="font-semibold text-gray-900">Status atualizado</p>
-                      <p className="text-sm text-gray-500">{formatDate(lead.updated_at)}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <Timeline leadId={lead.id} />
+            )}
+
+            {selectedTab === 'notas' && (
+              <Notes leadId={lead.id} />
             )}
           </div>
         </div>

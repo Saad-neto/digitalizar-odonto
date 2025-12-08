@@ -77,6 +77,25 @@ export interface Payment {
   canceled_at?: string;
 }
 
+export interface LeadStatusHistory {
+  id: string;
+  lead_id: string;
+  old_status: string | null;
+  new_status: string;
+  changed_by: string | null;
+  changed_at: string;
+  created_at: string;
+}
+
+export interface LeadNote {
+  id: string;
+  lead_id: string;
+  note: string;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 // Funções auxiliares para trabalhar com leads
 
 /**
@@ -293,4 +312,83 @@ export async function uploadFile(
     path: data.path,
     url: urlData.publicUrl,
   };
+}
+
+/**
+ * Buscar histórico de mudanças de status de um lead
+ */
+export async function getLeadStatusHistory(leadId: string) {
+  const { data, error } = await supabase
+    .from('lead_status_history')
+    .select('*')
+    .eq('lead_id', leadId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Erro ao buscar histórico:', error);
+    throw error;
+  }
+
+  return data as LeadStatusHistory[];
+}
+
+/**
+ * Buscar notas de um lead
+ */
+export async function getLeadNotes(leadId: string) {
+  const { data, error } = await supabase
+    .from('lead_notes')
+    .select('*')
+    .eq('lead_id', leadId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Erro ao buscar notas:', error);
+    throw error;
+  }
+
+  return data as LeadNote[];
+}
+
+/**
+ * Adicionar nota a um lead
+ */
+export async function addLeadNote(leadId: string, note: string) {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase
+    .from('lead_notes')
+    .insert([
+      {
+        lead_id: leadId,
+        note,
+        created_by: user?.id,
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao adicionar nota:', error);
+    throw error;
+  }
+
+  return data as LeadNote;
+}
+
+/**
+ * Deletar nota
+ */
+export async function deleteLeadNote(noteId: string) {
+  const { error } = await supabase
+    .from('lead_notes')
+    .delete()
+    .eq('id', noteId);
+
+  if (error) {
+    console.error('Erro ao deletar nota:', error);
+    throw error;
+  }
+
+  return true;
 }
