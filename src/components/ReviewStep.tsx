@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Edit2, CheckCircle2, MapPin, Briefcase, Star, Mail, Phone, Globe, Instagram } from 'lucide-react';
+import { Edit2, CheckCircle2, MapPin, Briefcase, Star, Mail, Phone, Globe, Instagram, AlertCircle } from 'lucide-react';
 
 interface FormData {
   [key: string]: any;
