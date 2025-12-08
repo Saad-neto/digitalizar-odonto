@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { compressImage, getPayloadSize, formatFileSize } from '@/utils/imageCompression';
 import { createLead } from '@/lib/supabase';
 import ReviewStep from '@/components/ReviewStep';
+import ProfessionalForm from '@/components/ProfessionalForm';
 
 interface FormData {
   [key: string]: any;
@@ -32,6 +33,7 @@ const BriefingOdonto = () => {
     { id: 'servicos-diferenciais', title: 'Serviços e Diferenciais', subtitle: 'O que você oferece e o que te torna único', required: true },
     { id: 'localizacao-contato', title: 'Localização e Contato', subtitle: 'Onde você está?', required: true },
     { id: 'materiais-visuais', title: 'Materiais Visuais', subtitle: 'Imagens e identidade visual do site', required: false },
+    { id: 'rastreamento', title: 'Rastreamento e Integrações', subtitle: 'Configure suas tags de análise (Opcional)', required: false },
     { id: 'depoimentos', title: 'Depoimentos e Avaliações', subtitle: 'Construa confiança com seus pacientes', required: true },
     { id: 'revisao', title: 'Revisão Final', subtitle: 'Confira todas as informações', required: false }
   ];
@@ -249,6 +251,24 @@ const BriefingOdonto = () => {
           if (!formData.diretor_cro) newErrors.diretor_cro = 'CRO do diretor é obrigatório';
           if (!formData.diretor_uf) newErrors.diretor_uf = 'UF do diretor é obrigatória';
           if (!formData.num_profissionais) newErrors.num_profissionais = 'Número de profissionais é obrigatório';
+
+          // Validação dinâmica para profissionais destacados
+          if (formData.destacar_profissionais === 'sim') {
+            if (!formData.num_profissionais_destacar) {
+              newErrors.num_profissionais_destacar = 'Selecione quantos profissionais quer destacar';
+            } else {
+              const numProf = parseInt(formData.num_profissionais_destacar);
+              for (let i = 1; i <= numProf; i++) {
+                const prefix = `profissional${i}`;
+                if (!formData[`${prefix}_nome`]) newErrors[`${prefix}_nome`] = 'Nome completo é obrigatório';
+                if (!formData[`${prefix}_apresentacao`]) newErrors[`${prefix}_apresentacao`] = 'Como quer ser apresentado é obrigatório';
+                if (!formData[`${prefix}_cro`]) newErrors[`${prefix}_cro`] = 'CRO é obrigatório';
+                if (!formData[`${prefix}_uf`]) newErrors[`${prefix}_uf`] = 'UF é obrigatório';
+                if (!formData[`${prefix}_especialidade`]) newErrors[`${prefix}_especialidade`] = 'Especialidade é obrigatória';
+                if (!formData[`${prefix}_formacao`]) newErrors[`${prefix}_formacao`] = 'Formação é obrigatória';
+              }
+            }
+          }
         }
         break;
 
@@ -295,7 +315,11 @@ const BriefingOdonto = () => {
         // Sem validações obrigatórias - cliente pode enviar depois
         break;
 
-      case 5: // Depoimentos
+      case 5: // Rastreamento e Integrações - Opcional
+        // Sem validações obrigatórias - tudo é opcional
+        break;
+
+      case 6: // Depoimentos
         if (!formData.estrategia_depoimentos) {
           newErrors.estrategia_depoimentos = 'Escolha como quer mostrar depoimentos';
         }
@@ -307,7 +331,7 @@ const BriefingOdonto = () => {
         }
         break;
 
-      case 6: // Revisão Final - Sem validações necessárias
+      case 7: // Revisão Final - Sem validações necessárias
         break;
     }
 
@@ -1135,13 +1159,60 @@ const BriefingOdonto = () => {
                   </div>
 
                   {formData.destacar_profissionais === 'sim' && (
-                    <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6">
-                      <p className="text-purple-800 text-sm mb-2">
-                        <strong>Funcionalidade em desenvolvimento:</strong> Por enquanto, você poderá enviar as informações dos profissionais por e-mail após o envio do briefing.
-                      </p>
-                      <p className="text-purple-600/70 text-xs">
-                        Precisaremos: nome, CRO, especialidade, mini bio e foto de cada profissional que deseja destacar.
-                      </p>
+                    <div className="space-y-6">
+                      <div className="bg-purple-50 border-2 border-purple-300 rounded-xl p-4">
+                        <p className="text-purple-800 text-sm font-semibold mb-2">
+                          Quantos profissionais você quer destacar no site? *
+                        </p>
+                        <select
+                          value={formData.num_profissionais_destacar || ''}
+                          onChange={(e) => updateFormData('num_profissionais_destacar', e.target.value)}
+                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                            errors.num_profissionais_destacar ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
+                          }`}
+                        >
+                          <option value="">Selecione...</option>
+                          <option value="2">2 profissionais</option>
+                          <option value="3">3 profissionais</option>
+                          <option value="4">4 profissionais</option>
+                          <option value="5">5 profissionais</option>
+                        </select>
+                        {errors.num_profissionais_destacar && (
+                          <p className="text-red-500 text-sm mt-2">{errors.num_profissionais_destacar}</p>
+                        )}
+                        <p className="text-purple-600/70 text-xs mt-2">
+                          Recomendamos destacar 2-3 profissionais principais para não sobrecarregar o site
+                        </p>
+                      </div>
+
+                      {formData.num_profissionais_destacar && (
+                        <div className="space-y-6">
+                          {Array.from({ length: parseInt(formData.num_profissionais_destacar) }, (_, i) => i + 1).map((index) => (
+                            <ProfessionalForm
+                              key={index}
+                              index={index}
+                              data={{
+                                nome: formData[`profissional${index}_nome`],
+                                apresentacao: formData[`profissional${index}_apresentacao`],
+                                cro: formData[`profissional${index}_cro`],
+                                uf: formData[`profissional${index}_uf`],
+                                especialidade: formData[`profissional${index}_especialidade`],
+                                formacao: formData[`profissional${index}_formacao`],
+                                biografia: formData[`profissional${index}_biografia`]
+                              }}
+                              foto={uploadedFiles[`foto_profissional_${index}`]}
+                              errors={errors}
+                              onChange={(field, value) => updateFormData(field, value)}
+                              onFileUpload={(files) => handleFileUpload(`foto_profissional_${index}`, files)}
+                              onRemoveFile={() => setUploadedFiles(prev => {
+                                const newFiles = { ...prev };
+                                delete newFiles[`foto_profissional_${index}`];
+                                return newFiles;
+                              })}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -2085,7 +2156,140 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 5: // PÁGINA 6: Depoimentos/Cases + Link do Google Maps
+      case 5: // PÁGINA 6: Rastreamento e Integrações (Opcional)
+        return (
+          <div className="space-y-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
+                {sections[5].title}
+              </h2>
+              <p className="text-purple-600/70 text-lg">{sections[5].subtitle}</p>
+            </div>
+
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8">
+              <div className="flex items-start gap-3">
+                <div className="text-3xl">ℹ️</div>
+                <div>
+                  <h3 className="font-bold text-blue-900 mb-2">Esta seção é opcional</h3>
+                  <p className="text-blue-800 text-sm mb-2">
+                    Se você não tiver essas informações agora, não tem problema! Você pode:
+                  </p>
+                  <ul className="text-blue-700 text-sm space-y-1 ml-4">
+                    <li>• Deixar em branco e enviar depois por email</li>
+                    <li>• Solicitar essas informações ao seu gestor de tráfego</li>
+                    <li>• Podemos adicionar mais tarde quando você tiver</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              {/* Google Analytics 4 */}
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Google Analytics 4 (GA4)
+                </label>
+                <input
+                  type="text"
+                  placeholder="G-XXXXXXXXXX"
+                  value={formData.ga4_id || ''}
+                  onChange={(e) => updateFormData('ga4_id', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                />
+                <p className="text-purple-600/60 text-xs mt-2">
+                  📊 <strong>O que é:</strong> Ferramenta do Google para acompanhar visitas, origem dos visitantes e comportamento no site.<br/>
+                  💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie gratuitamente em analytics.google.com
+                </p>
+              </div>
+
+              {/* Meta Pixel */}
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Meta Pixel (Facebook/Instagram)
+                </label>
+                <input
+                  type="text"
+                  placeholder="123456789012345"
+                  value={formData.meta_pixel_id || ''}
+                  onChange={(e) => updateFormData('meta_pixel_id', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                />
+                <p className="text-purple-600/60 text-xs mt-2">
+                  🎯 <strong>O que é:</strong> Código do Facebook para rastrear conversões de anúncios no Facebook/Instagram.<br/>
+                  💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie em business.facebook.com
+                </p>
+              </div>
+
+              {/* Google Tag Manager */}
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Google Tag Manager (GTM)
+                </label>
+                <input
+                  type="text"
+                  placeholder="GTM-XXXXXXX"
+                  value={formData.gtm_id || ''}
+                  onChange={(e) => updateFormData('gtm_id', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                />
+                <p className="text-purple-600/60 text-xs mt-2">
+                  🔧 <strong>O que é:</strong> Container para gerenciar múltiplas tags de rastreamento em um só lugar.<br/>
+                  💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie em tagmanager.google.com
+                </p>
+              </div>
+
+              {/* Google Ads Conversion */}
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Google Ads - Rastreamento de Conversão
+                </label>
+                <input
+                  type="text"
+                  placeholder="AW-XXXXXXXXX/XXXXXXX"
+                  value={formData.google_ads_conversion || ''}
+                  onChange={(e) => updateFormData('google_ads_conversion', e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                />
+                <p className="text-purple-600/60 text-xs mt-2">
+                  💰 <strong>O que é:</strong> Código para rastrear conversões (agendamentos, contatos) vindas de anúncios do Google.<br/>
+                  💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou acesse ads.google.com
+                </p>
+              </div>
+
+              {/* Outras Tags/Scripts */}
+              <div>
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
+                  Outras Tags ou Scripts (Opcional)
+                </label>
+                <textarea
+                  placeholder="Cole aqui qualquer outro código de rastreamento que precise ser instalado no site..."
+                  value={formData.outras_tags || ''}
+                  onChange={(e) => updateFormData('outras_tags', e.target.value)}
+                  rows={6}
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all font-mono text-sm"
+                />
+                <p className="text-purple-600/60 text-xs mt-2">
+                  📝 <strong>Exemplos:</strong> HotJar, RD Station, outros pixels de remarketing, etc.<br/>
+                  ⚠️ Cole apenas códigos fornecidos por plataformas confiáveis
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+              <div className="flex items-start gap-3">
+                <div className="text-3xl">✅</div>
+                <div>
+                  <h3 className="font-bold text-green-900 mb-2">Instalação incluída no serviço</h3>
+                  <p className="text-green-800 text-sm">
+                    Todas as tags fornecidas serão instaladas corretamente no seu site durante a criação. Não se preocupe com aspectos técnicos!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 6: // PÁGINA 7: Depoimentos/Cases + Link do Google Maps
         return (
           <div className="space-y-8">
             {/* Como você quer mostrar depoimentos no site? */}
@@ -2249,7 +2453,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 6: // PÁGINA 7: Revisão Final
+      case 7: // PÁGINA 8: Revisão Final
         return (
           <ReviewStep
             formData={formData}

@@ -351,6 +351,80 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               </div>
             )}
 
+            {/* Profissionais Destacados (Dinâmico) */}
+            {formData.destacar_profissionais === 'sim' && formData.num_profissionais_destacar && (
+              <div className="space-y-4">
+                <div className="bg-purple-50 p-3 rounded-lg">
+                  <h4 className="font-semibold text-purple-900 text-sm">
+                    Profissionais em Destaque ({formData.num_profissionais_destacar} selecionados)
+                  </h4>
+                </div>
+                {Array.from({ length: parseInt(formData.num_profissionais_destacar) }, (_, i) => i + 1).map((index) => {
+                  const prefix = `profissional${index}`;
+                  const nome = formData[`${prefix}_nome`];
+                  if (!nome) return null;
+
+                  return (
+                    <div key={index} className="border-l-4 border-purple-400 pl-4 bg-purple-50/30 p-3 rounded-r-lg">
+                      <h4 className="font-semibold text-gray-900 mb-3">Profissional {index}</h4>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-sm font-medium text-gray-500">Nome</label>
+                          <p className="text-gray-900 mt-1">{renderValue(nome)}</p>
+                        </div>
+                        {formData[`${prefix}_apresentacao`] && (
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Apresentação</label>
+                            <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_apresentacao`])}</p>
+                          </div>
+                        )}
+                        {formData[`${prefix}_cro`] && (
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <label className="text-sm font-medium text-gray-500">CRO</label>
+                              <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_cro`])}</p>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium text-gray-500">UF</label>
+                              <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_uf`])}</p>
+                            </div>
+                          </div>
+                        )}
+                        {formData[`${prefix}_especialidade`] && (
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Especialidade</label>
+                            <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_especialidade`])}</p>
+                          </div>
+                        )}
+                        {formData[`${prefix}_formacao`] && (
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Formação</label>
+                            <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_formacao`])}</p>
+                          </div>
+                        )}
+                        {formData[`${prefix}_biografia`] && (
+                          <div>
+                            <label className="text-sm font-medium text-gray-500">Mini Biografia</label>
+                            <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData[`${prefix}_biografia`])}</p>
+                          </div>
+                        )}
+                        {uploadedFiles[`foto_profissional_${index}`] && uploadedFiles[`foto_profissional_${index}`].length > 0 && (
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 block mb-2">Foto</label>
+                            <img
+                              src={uploadedFiles[`foto_profissional_${index}`][0].data}
+                              alt={`Profissional ${index}`}
+                              className="w-32 h-32 object-cover rounded-lg border-2 border-purple-200"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             {/* Fotos dos profissionais */}
             {uploadedFiles.fotos_profissionais && uploadedFiles.fotos_profissionais.length > 0 && (
               <div>
@@ -732,7 +806,74 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
         </CardContent>
       </Card>
 
-      {/* Seção 6: Depoimentos e Observações */}
+      {/* Seção 6: Rastreamento e Integrações */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Globe className="w-5 h-5 text-purple-600" />
+                Rastreamento e Integrações
+              </h3>
+              <p className="text-sm text-gray-500">Tags de análise e remarketing (Opcional)</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(5)}
+              className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+            >
+              <Edit2 className="w-4 h-4 mr-2" />
+              Editar
+            </Button>
+          </div>
+
+          {!formData.ga4_id && !formData.meta_pixel_id && !formData.gtm_id && !formData.google_ads_conversion && !formData.outras_tags ? (
+            <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4">
+              <p className="text-gray-500 text-sm">
+                Nenhuma tag de rastreamento configurada. Você pode adicionar mais tarde se precisar.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {formData.ga4_id && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Google Analytics 4 (GA4)</label>
+                  <p className="text-gray-900 mt-1 font-mono text-sm bg-gray-50 p-2 rounded">{formData.ga4_id}</p>
+                </div>
+              )}
+              {formData.meta_pixel_id && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Meta Pixel (Facebook/Instagram)</label>
+                  <p className="text-gray-900 mt-1 font-mono text-sm bg-gray-50 p-2 rounded">{formData.meta_pixel_id}</p>
+                </div>
+              )}
+              {formData.gtm_id && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Google Tag Manager (GTM)</label>
+                  <p className="text-gray-900 mt-1 font-mono text-sm bg-gray-50 p-2 rounded">{formData.gtm_id}</p>
+                </div>
+              )}
+              {formData.google_ads_conversion && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Google Ads - Rastreamento de Conversão</label>
+                  <p className="text-gray-900 mt-1 font-mono text-sm bg-gray-50 p-2 rounded">{formData.google_ads_conversion}</p>
+                </div>
+              )}
+              {formData.outras_tags && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Outras Tags/Scripts</label>
+                  <pre className="text-gray-900 mt-1 text-xs bg-gray-50 p-3 rounded border border-gray-200 overflow-x-auto">
+                    {formData.outras_tags}
+                  </pre>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Seção 7: Depoimentos e Observações */}
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-start mb-4">
@@ -746,7 +887,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onEdit(5)}
+              onClick={() => onEdit(6)}
               className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
             >
               <Edit2 className="w-4 h-4 mr-2" />
