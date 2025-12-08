@@ -31,7 +31,8 @@ const BriefingOdonto = () => {
     { id: 'profissionais', title: 'Sobre o(s) Profissional(is)', subtitle: 'Vamos apresentar você (ou sua equipe) no site', required: true },
     { id: 'servicos-diferenciais', title: 'Serviços e Diferenciais', subtitle: 'O que você oferece e o que te torna único', required: true },
     { id: 'localizacao-contato', title: 'Localização e Contato', subtitle: 'Onde você está?', required: true },
-    { id: 'materiais', title: 'Materiais e Preferências', subtitle: 'Quase lá! Materiais visuais', required: true },
+    { id: 'materiais-visuais', title: 'Materiais Visuais', subtitle: 'Imagens e identidade visual do site', required: false },
+    { id: 'depoimentos', title: 'Depoimentos e Avaliações', subtitle: 'Construa confiança com seus pacientes', required: true },
     { id: 'revisao', title: 'Revisão Final', subtitle: 'Confira todas as informações', required: false }
   ];
 
@@ -290,7 +291,11 @@ const BriefingOdonto = () => {
         if (!formData.tem_redes_sociais) newErrors.tem_redes_sociais = 'Informe se tem redes sociais';
         break;
 
-      case 4: // Depoimentos/Cases e Revisão Final
+      case 4: // Materiais Visuais - Opcional
+        // Sem validações obrigatórias - cliente pode enviar depois
+        break;
+
+      case 5: // Depoimentos
         if (!formData.estrategia_depoimentos) {
           newErrors.estrategia_depoimentos = 'Escolha como quer mostrar depoimentos';
         }
@@ -302,7 +307,7 @@ const BriefingOdonto = () => {
         }
         break;
 
-      case 5: // Revisão Final - Sem validações necessárias
+      case 6: // Revisão Final - Sem validações necessárias
         break;
     }
 
@@ -1787,7 +1792,300 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 4: // PÁGINA 5: Depoimentos/Cases + Link do Google Maps
+      case 4: // PÁGINA 5: Materiais Visuais
+        return (
+          <div className="space-y-8">
+            {/* Aviso Importante */}
+            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-300">
+              <div className="flex items-start">
+                <div className="text-3xl mr-4">ℹ️</div>
+                <div>
+                  <h3 className="text-xl font-bold text-blue-800 mb-2">
+                    Imagens e Materiais Visuais
+                  </h3>
+                  <p className="text-blue-700 mb-3">
+                    Esta seção é <strong>opcional</strong>. Se você não tiver todas as imagens agora, não tem problema!
+                  </p>
+                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                    <p className="text-yellow-800 text-sm">
+                      <strong>⏱️ Atenção quanto ao prazo:</strong> Se você não enviar as imagens agora, nossa equipe entrará
+                      em contato para solicitá-las. Porém, <strong>o prazo de entrega de 24h pode não ser cumprido</strong>
+                      enquanto aguardamos os materiais. Quanto mais completo você enviar, mais rápido ficará pronto!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Logo da Clínica */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
+                📱 Logo da Clínica/Consultório
+              </label>
+              <p className="text-sm text-purple-600/70 mb-3">
+                Sua logo aparecerá no <strong>cabeçalho do site</strong>, <strong>rodapé</strong> e em outros locais estratégicos.
+                Prefira PNG com fundo transparente para melhor resultado.
+              </p>
+              <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer">
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={(e) => handleFileUpload('logo', e.target.files)}
+                  className="hidden"
+                  id="upload_logo"
+                />
+                <label htmlFor="upload_logo" className="cursor-pointer flex flex-col items-center">
+                  <div className="text-5xl mb-3">🎨</div>
+                  <p className="text-purple-800 font-medium">Clique para fazer upload da logo</p>
+                  <p className="text-sm text-purple-600/70 mt-1">(PNG, JPG ou WEBP - máx. 5MB)</p>
+                </label>
+                {uploadedFiles.logo && uploadedFiles.logo.length > 0 && (
+                  <div className="mt-4 text-center text-green-700 font-semibold">
+                    ✓ {uploadedFiles.logo[0].name}
+                  </div>
+                )}
+              </div>
+              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <p className="text-xs text-gray-600">
+                  <strong>💡 Dica:</strong> A logo deve ter boa qualidade e ser legível em tamanhos pequenos.
+                  Formatos ideais: 500x500px ou 1000x300px (depende do formato da sua logo).
+                </p>
+              </div>
+            </div>
+
+            {/* Imagem Hero Desktop */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
+                🖥️ Imagem Principal do Site (Hero - Desktop)
+              </label>
+              <p className="text-sm text-purple-600/70 mb-3">
+                Esta é a <strong>primeira imagem que o visitante vê</strong> ao acessar seu site no computador.
+                Ela aparece no topo da página inicial e causa a primeira impressão. Escolha uma imagem profissional
+                do seu consultório, equipe ou um sorriso bonito.
+              </p>
+              <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer">
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={(e) => handleFileUpload('hero_desktop', e.target.files)}
+                  className="hidden"
+                  id="upload_hero_desktop"
+                />
+                <label htmlFor="upload_hero_desktop" className="cursor-pointer flex flex-col items-center">
+                  <div className="text-5xl mb-3">🖼️</div>
+                  <p className="text-purple-800 font-medium">Clique para fazer upload (Desktop)</p>
+                  <p className="text-sm text-purple-600/70 mt-1">(JPG, PNG ou WEBP - máx. 8MB)</p>
+                </label>
+                {uploadedFiles.hero_desktop && uploadedFiles.hero_desktop.length > 0 && (
+                  <div className="mt-4 text-center text-green-700 font-semibold">
+                    ✓ {uploadedFiles.hero_desktop[0].name}
+                  </div>
+                )}
+              </div>
+              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <p className="text-xs text-gray-600">
+                  <strong>💡 Formato ideal:</strong> 1920x1080px (proporção 16:9) - paisagem (horizontal).
+                  Evite imagens muito escuras ou com texto sobreposto.
+                </p>
+              </div>
+            </div>
+
+            {/* Imagem Hero Mobile */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
+                📱 Imagem Principal do Site (Hero - Mobile)
+              </label>
+              <p className="text-sm text-purple-600/70 mb-3">
+                Esta é a versão <strong>para celular</strong> da imagem principal. Como as telas de celular são
+                verticais, precisamos de uma imagem diferente para garantir boa visualização. Pode ser um recorte
+                da imagem desktop ou uma foto diferente.
+              </p>
+              <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer">
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={(e) => handleFileUpload('hero_mobile', e.target.files)}
+                  className="hidden"
+                  id="upload_hero_mobile"
+                />
+                <label htmlFor="upload_hero_mobile" className="cursor-pointer flex flex-col items-center">
+                  <div className="text-5xl mb-3">📱</div>
+                  <p className="text-purple-800 font-medium">Clique para fazer upload (Mobile)</p>
+                  <p className="text-sm text-purple-600/70 mt-1">(JPG, PNG ou WEBP - máx. 5MB)</p>
+                </label>
+                {uploadedFiles.hero_mobile && uploadedFiles.hero_mobile.length > 0 && (
+                  <div className="mt-4 text-center text-green-700 font-semibold">
+                    ✓ {uploadedFiles.hero_mobile[0].name}
+                  </div>
+                )}
+              </div>
+              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <p className="text-xs text-gray-600">
+                  <strong>💡 Formato ideal:</strong> 1080x1920px (proporção 9:16) - retrato (vertical).
+                  Ideal focar em rostos ou elementos centrais.
+                </p>
+              </div>
+            </div>
+
+            {/* Fotos da Clínica/Espaço */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
+                🏥 Fotos da Clínica/Consultório (Galeria)
+              </label>
+              <p className="text-sm text-purple-600/70 mb-3">
+                Fotos do seu espaço ajudam a gerar <strong>confiança e credibilidade</strong>. Mostram ao paciente
+                que você tem um ambiente profissional. Inclua: recepção, consultório, equipamentos modernos,
+                sala de espera, etc.
+              </p>
+              <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer">
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  multiple
+                  onChange={(e) => handleFileUpload('fotos_espaco', e.target.files)}
+                  className="hidden"
+                  id="upload_fotos_espaco"
+                />
+                <label htmlFor="upload_fotos_espaco" className="cursor-pointer flex flex-col items-center">
+                  <div className="text-5xl mb-3">📸</div>
+                  <p className="text-purple-800 font-medium">Clique para fazer upload (múltiplas fotos)</p>
+                  <p className="text-sm text-purple-600/70 mt-1">(JPG, PNG ou WEBP - máx. 5MB cada)</p>
+                </label>
+                {uploadedFiles.fotos_espaco && uploadedFiles.fotos_espaco.length > 0 && (
+                  <div className="mt-4 text-center text-green-700 font-semibold">
+                    ✓ {uploadedFiles.fotos_espaco.length} foto(s) selecionada(s)
+                  </div>
+                )}
+              </div>
+              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <p className="text-xs text-gray-600">
+                  <strong>💡 Dica:</strong> Ideal ter entre 4-8 fotos do espaço. Fotos bem iluminadas e organizadas
+                  transmitem profissionalismo.
+                </p>
+              </div>
+            </div>
+
+            {/* Cor Preferida */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
+                🎨 Cor Preferida para o Site
+              </label>
+              <p className="text-sm text-purple-600/70 mb-3">
+                Escolha a cor principal do seu site. Ela será usada em botões, destaques e elementos importantes.
+                Geralmente é a cor da sua marca/logo.
+              </p>
+              <input
+                type="color"
+                value={formData.cor_preferida || '#8B5CF6'}
+                onChange={(e) => setFormData({...formData, cor_preferida: e.target.value})}
+                className="w-full h-16 rounded-xl border-2 border-purple-300 cursor-pointer"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                Cor selecionada: <strong>{formData.cor_preferida || '#8B5CF6'}</strong>
+              </p>
+            </div>
+
+            {/* Estilo do Site */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                💅 Estilo Visual do Site *
+              </label>
+              <p className="text-sm text-purple-600/70 mb-4">
+                Que estilo você prefere para o seu site?
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { value: 'moderno', label: 'Moderno e Minimalista', desc: 'Design limpo, espaçado, com muitos espaços em branco' },
+                  { value: 'profissional', label: 'Profissional e Corporativo', desc: 'Sério, confiável, cores sóbrias' },
+                  { value: 'acolhedor', label: 'Acolhedor e Humano', desc: 'Cores suaves, imagens de pessoas, tom próximo' },
+                  { value: 'inovador', label: 'Inovador e Tecnológico', desc: 'Destaque para tecnologia, equipamentos de ponta' }
+                ].map((estilo) => (
+                  <label
+                    key={estilo.value}
+                    className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                      formData.estilo_site === estilo.value
+                        ? 'border-purple-500 bg-purple-50'
+                        : 'border-purple-200 hover:border-purple-400 bg-white'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="estilo_site"
+                      value={estilo.value}
+                      checked={formData.estilo_site === estilo.value}
+                      onChange={(e) => setFormData({...formData, estilo_site: e.target.value})}
+                      className="mr-3 mt-1 accent-purple-600"
+                    />
+                    <div>
+                      <div className="font-semibold text-purple-800">{estilo.label}</div>
+                      <div className="text-sm text-purple-600/70 mt-1">{estilo.desc}</div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              {errors.estilo_site && <p className="text-red-500 text-sm mt-2">{errors.estilo_site}</p>}
+            </div>
+
+            {/* Sites de Referência */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
+                🔗 Sites de Referência (Opcional)
+              </label>
+              <p className="text-sm text-purple-600/70 mb-3">
+                Tem algum site odontológico que você gosta? Cole os links aqui para nos inspirarmos no design!
+              </p>
+              <textarea
+                value={formData.sites_referencia || ''}
+                onChange={(e) => setFormData({...formData, sites_referencia: e.target.value})}
+                rows={4}
+                className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                placeholder="Ex:&#10;https://exemplodentista1.com&#10;https://exemplodentista2.com&#10;&#10;Você pode colar vários links, um por linha."
+              />
+            </div>
+
+            {/* Prazo Desejado */}
+            <div>
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
+                ⏱️ Prazo de Entrega Desejado
+              </label>
+              <p className="text-sm text-purple-600/70 mb-4">
+                Quando você precisa do site pronto?
+              </p>
+              <div className="space-y-3">
+                {[
+                  { value: 'urgente', label: '⚡ 24 horas (Urgente)', desc: 'Taxa adicional de R$ 200' },
+                  { value: 'rapido', label: '🚀 3-5 dias', desc: 'Entrega rápida' },
+                  { value: 'normal', label: '📅 1-2 semanas', desc: 'Prazo padrão' },
+                  { value: 'flexivel', label: '🕐 Flexível (mais de 2 semanas)', desc: 'Sem pressa' }
+                ].map((prazo) => (
+                  <label
+                    key={prazo.value}
+                    className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                      formData.prazo_desejado === prazo.value
+                        ? 'border-purple-500 bg-purple-50'
+                        : 'border-purple-200 hover:border-purple-400 bg-white'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="prazo_desejado"
+                      value={prazo.value}
+                      checked={formData.prazo_desejado === prazo.value}
+                      onChange={(e) => setFormData({...formData, prazo_desejado: e.target.value})}
+                      className="mr-3 mt-1 accent-purple-600"
+                    />
+                    <div>
+                      <div className="font-semibold text-purple-800">{prazo.label}</div>
+                      <div className="text-sm text-purple-600/70">{prazo.desc}</div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 5: // PÁGINA 6: Depoimentos/Cases + Link do Google Maps
         return (
           <div className="space-y-8">
             {/* Como você quer mostrar depoimentos no site? */}
@@ -1951,7 +2249,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 5: // PÁGINA 6: Revisão Final
+      case 6: // PÁGINA 7: Revisão Final
         return (
           <ReviewStep
             formData={formData}

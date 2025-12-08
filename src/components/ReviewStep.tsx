@@ -579,16 +579,16 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
         </CardContent>
       </Card>
 
-      {/* Seção 5: Materiais e Preferências */}
+      {/* Seção 5: Materiais Visuais */}
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-purple-600" />
-                Materiais e Preferências
+                Materiais Visuais
               </h3>
-              <p className="text-sm text-gray-500">Arquivos e observações</p>
+              <p className="text-sm text-gray-500">Imagens e identidade visual</p>
             </div>
             <Button
               variant="ghost"
@@ -604,7 +604,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
           <div className="space-y-4">
             {uploadedFiles.logo && uploadedFiles.logo.length > 0 && (
               <div>
-                <label className="text-sm font-medium text-gray-500 block mb-2">Logo</label>
+                <label className="text-sm font-medium text-gray-500 block mb-2">Logo da Clínica</label>
                 <div className="flex flex-wrap gap-2">
                   {uploadedFiles.logo.map((file, idx) => (
                     <div key={idx} className="relative">
@@ -619,6 +619,48 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {uploadedFiles.hero_desktop && uploadedFiles.hero_desktop.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-500 block mb-2">Imagem Hero (Desktop)</label>
+                <div className="flex flex-wrap gap-2">
+                  {uploadedFiles.hero_desktop.map((file, idx) => (
+                    <div key={idx} className="relative group">
+                      <img
+                        src={file.data}
+                        alt={file.name}
+                        className="w-48 h-28 object-cover rounded-lg border-2 border-gray-200"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                        <span className="text-white text-xs text-center px-2">{file.name}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Primeira imagem vista no computador</p>
+              </div>
+            )}
+
+            {uploadedFiles.hero_mobile && uploadedFiles.hero_mobile.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-500 block mb-2">Imagem Hero (Mobile)</label>
+                <div className="flex flex-wrap gap-2">
+                  {uploadedFiles.hero_mobile.map((file, idx) => (
+                    <div key={idx} className="relative group">
+                      <img
+                        src={file.data}
+                        alt={file.name}
+                        className="w-24 h-40 object-cover rounded-lg border-2 border-gray-200"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                        <span className="text-white text-xs text-center px-2">{file.name}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Versão para celular (vertical)</p>
               </div>
             )}
 
@@ -658,7 +700,13 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             {formData.estilo_site && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Estilo do Site</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.estilo_site)}</p>
+                <p className="text-gray-900 mt-1">
+                  {formData.estilo_site === 'moderno' && 'Moderno e Minimalista'}
+                  {formData.estilo_site === 'profissional' && 'Profissional e Corporativo'}
+                  {formData.estilo_site === 'acolhedor' && 'Acolhedor e Humano'}
+                  {formData.estilo_site === 'inovador' && 'Inovador e Tecnológico'}
+                  {!['moderno', 'profissional', 'acolhedor', 'inovador'].includes(formData.estilo_site) && renderValue(formData.estilo_site)}
+                </p>
               </div>
             )}
 
@@ -673,14 +721,40 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               <div>
                 <label className="text-sm font-medium text-gray-500">Prazo Desejado</label>
                 <p className="text-gray-900 mt-1">
-                  {formData.prazo_desejado === 'urgente' && '24-48 horas (Urgente)'}
-                  {formData.prazo_desejado === 'rapido' && '3-5 dias'}
-                  {formData.prazo_desejado === 'normal' && '1-2 semanas'}
-                  {formData.prazo_desejado === 'flexivel' && 'Flexível (mais de 2 semanas)'}
+                  {formData.prazo_desejado === 'urgente' && '⚡ 24 horas (Urgente) - Taxa adicional'}
+                  {formData.prazo_desejado === 'rapido' && '🚀 3-5 dias'}
+                  {formData.prazo_desejado === 'normal' && '📅 1-2 semanas'}
+                  {formData.prazo_desejado === 'flexivel' && '🕐 Flexível (mais de 2 semanas)'}
                 </p>
               </div>
             )}
+          </div>
+        </CardContent>
+      </Card>
 
+      {/* Seção 6: Depoimentos e Observações */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Star className="w-5 h-5 text-purple-600" />
+                Depoimentos e Observações
+              </h3>
+              <p className="text-sm text-gray-500">Avaliações e informações extras</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(5)}
+              className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+            >
+              <Edit2 className="w-4 h-4 mr-2" />
+              Editar
+            </Button>
+          </div>
+
+          <div className="space-y-4">
             {formData.estrategia_depoimentos && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Estratégia de Depoimentos</label>
