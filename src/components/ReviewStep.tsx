@@ -65,11 +65,37 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
     'outro': 'Outro'
   };
 
+  // Mapa de slogans para labels legíveis
+  const sloganMap: { [key: string]: string } = {
+    'sorriso_perfeito': 'Seu sorriso perfeito começa aqui',
+    'sorriso_confiante': 'Sorrisos com confiança e segurança',
+    'qualidade_atendimento': 'Odontologia de qualidade com atendimento humanizado',
+    'tecnologia_avancada': 'Tecnologia avançada para cuidar do seu sorriso',
+    'tratamento_odontologico': 'Tratamento odontológico com cuidado',
+    'tenho_slogan': 'Tenho meu próprio slogan',
+    'anos_experiencia': 'Cuidando do seu sorriso há [X] anos'
+  };
+
   const renderServicos = () => {
     if (!formData.servicos || formData.servicos.length === 0) {
       return <span className="text-gray-400 italic">Não informado</span>;
     }
     const labels = formData.servicos.map((s: string) => servicosMap[s] || s);
+    return labels.join(', ');
+  };
+
+  const renderHorarios = () => {
+    if (!formData.horarios_atendimento || formData.horarios_atendimento.length === 0) {
+      return <span className="text-gray-400 italic">Não informado</span>;
+    }
+    const horariosMap: { [key: string]: string } = {
+      'manha': 'Manhã',
+      'tarde': 'Tarde',
+      'noite': 'Noite',
+      'sabado': 'Sábado',
+      'domingo_feriados': 'Domingos e feriados'
+    };
+    const labels = formData.horarios_atendimento.map((h: string) => horariosMap[h] || h);
     return labels.join(', ');
   };
 
@@ -145,7 +171,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               <div className="md:col-span-2">
                 <label className="text-sm font-medium text-gray-500">Slogan</label>
                 <p className="text-gray-900 mt-1">
-                  {formData.slogan_opcao === 'custom' ? formData.slogan_custom : formData.slogan_opcao}
+                  {formData.slogan_opcao === 'custom' ? formData.slogan_custom : (sloganMap[formData.slogan_opcao] || formData.slogan_opcao)}
                 </p>
               </div>
             )}
@@ -384,9 +410,21 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               <div>
                 <label className="text-sm font-medium text-gray-500">Aceita Convênios?</label>
                 <p className="text-gray-900 mt-1">{formData.aceita_convenios === 'sim' ? 'Sim' : 'Não'}</p>
-                {formData.convenios_aceitos && formData.aceita_convenios === 'sim' && (
-                  <p className="text-gray-600 mt-1 text-sm">Convênios: {formData.convenios_aceitos}</p>
+                {formData.lista_convenios_array && formData.lista_convenios_array.length > 0 && formData.aceita_convenios === 'sim' && (
+                  <p className="text-gray-600 mt-1 text-sm">
+                    Convênios: {formData.lista_convenios_array.filter((c: string) => c !== 'outro_convenio').join(', ')}
+                    {formData.outro_convenio && `, ${formData.outro_convenio}`}
+                  </p>
                 )}
+              </div>
+            )}
+
+            {formData.atende_emergencia && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Atendimento de Emergência</label>
+                <p className="text-gray-900 mt-1">
+                  {formData.atende_emergencia === 'sim_24h' ? 'Sim, 24 horas' : 'Não, apenas horário comercial'}
+                </p>
               </div>
             )}
 
@@ -503,10 +541,10 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               </div>
             )}
 
-            {formData.horario_funcionamento && (
+            {formData.horarios_atendimento && formData.horarios_atendimento.length > 0 && (
               <div>
-                <label className="text-sm font-medium text-gray-500">Horário de Funcionamento</label>
-                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.horario_funcionamento)}</p>
+                <label className="text-sm font-medium text-gray-500">Horários de Atendimento</label>
+                <p className="text-gray-900 mt-1">{renderHorarios()}</p>
               </div>
             )}
 
@@ -521,6 +559,20 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               <div>
                 <label className="text-sm font-medium text-gray-500">Acessibilidade</label>
                 <p className="text-gray-900 mt-1">{formData.acessibilidade === 'sim' ? 'Sim' : 'Não'}</p>
+              </div>
+            )}
+
+            {formData.exibir_mapa && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Exibir Mapa do Google no Site</label>
+                <p className="text-gray-900 mt-1">{formData.exibir_mapa === 'sim' ? 'Sim' : 'Não'}</p>
+              </div>
+            )}
+
+            {formData.outras_redes && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Outras Redes Sociais</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.outras_redes)}</p>
               </div>
             )}
           </div>
@@ -629,10 +681,30 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               </div>
             )}
 
-            {formData.observacoes && (
+            {formData.estrategia_depoimentos && (
               <div>
-                <label className="text-sm font-medium text-gray-500">Observações Adicionais</label>
-                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.observacoes)}</p>
+                <label className="text-sm font-medium text-gray-500">Estratégia de Depoimentos</label>
+                <p className="text-gray-900 mt-1">
+                  {formData.estrategia_depoimentos === 'google' && '⭐ Usar avaliações do Google (automático)'}
+                  {formData.estrategia_depoimentos === 'texto' && '💬 Vou enviar depoimentos que já tenho'}
+                  {formData.estrategia_depoimentos === 'nao' && '⏭️ Não quero seção de depoimentos por enquanto'}
+                </p>
+                {formData.estrategia_depoimentos === 'google' && formData.link_google_maps && (
+                  <p className="text-gray-600 mt-1 text-sm">Link: {formData.link_google_maps}</p>
+                )}
+                {formData.estrategia_depoimentos === 'texto' && formData.depoimentos_texto && (
+                  <div className="mt-2 bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm font-medium text-gray-500 mb-1">Depoimentos:</p>
+                    <p className="text-gray-700 text-sm whitespace-pre-wrap">{formData.depoimentos_texto}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {formData.observacoes_finais && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Observações Finais</label>
+                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.observacoes_finais)}</p>
               </div>
             )}
           </div>
