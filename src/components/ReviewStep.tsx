@@ -357,6 +357,11 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                 <div className="bg-purple-50 p-3 rounded-lg">
                   <h4 className="font-semibold text-purple-900 text-sm">
                     Profissionais em Destaque ({formData.num_profissionais_destacar} selecionados)
+                    {formData.diretor_destacado && (
+                      <span className="ml-2 text-xs font-normal text-blue-600">
+                        • Diretor técnico incluído
+                      </span>
+                    )}
                   </h4>
                 </div>
                 {Array.from({ length: parseInt(formData.num_profissionais_destacar) }, (_, i) => i + 1).map((index) => {
