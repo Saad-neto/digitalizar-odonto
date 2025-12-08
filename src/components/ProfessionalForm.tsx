@@ -17,6 +17,7 @@ interface ProfessionalFormProps {
   onChange: (field: string, value: string) => void;
   onFileUpload: (file: FileList | null) => void;
   onRemoveFile: () => void;
+  isDiretor?: boolean;
 }
 
 const ProfessionalForm: React.FC<ProfessionalFormProps> = ({
@@ -26,7 +27,8 @@ const ProfessionalForm: React.FC<ProfessionalFormProps> = ({
   errors,
   onChange,
   onFileUpload,
-  onRemoveFile
+  onRemoveFile,
+  isDiretor
 }) => {
   const prefix = `profissional${index}`;
 
@@ -41,8 +43,17 @@ const ProfessionalForm: React.FC<ProfessionalFormProps> = ({
       <div className="border-b-2 border-purple-300 pb-4">
         <h3 className="text-xl font-bold text-purple-800">
           Profissional {index}
+          {isDiretor && <span className="ml-2 text-sm font-normal text-blue-600">(Diretor Técnico)</span>}
         </h3>
       </div>
+
+      {isDiretor && (
+        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-3">
+          <p className="text-blue-800 text-sm">
+            ℹ️ <strong>Dados pré-preenchidos do diretor técnico.</strong> Complete apenas os campos faltantes (apresentação, especialidade, formação, biografia e foto).
+          </p>
+        </div>
+      )}
 
       {/* Nome Completo */}
       <div>

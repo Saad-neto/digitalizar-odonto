@@ -366,7 +366,12 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
 
                   return (
                     <div key={index} className="border-l-4 border-purple-400 pl-4 bg-purple-50/30 p-3 rounded-r-lg">
-                      <h4 className="font-semibold text-gray-900 mb-3">Profissional {index}</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">
+                        Profissional {index}
+                        {index === 1 && formData.diretor_destacado && (
+                          <span className="ml-2 text-sm font-normal text-blue-600">(Diretor Técnico)</span>
+                        )}
+                      </h4>
                       <div className="space-y-3">
                         <div>
                           <label className="text-sm font-medium text-gray-500">Nome</label>

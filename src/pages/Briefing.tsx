@@ -1160,6 +1160,44 @@ const BriefingOdonto = () => {
 
                   {formData.destacar_profissionais === 'sim' && (
                     <div className="space-y-6">
+                      {/* Checkbox: Diretor é um dos destacados */}
+                      <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-4">
+                        <label className="flex items-start gap-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.diretor_destacado === true}
+                            onChange={(e) => {
+                              updateFormData('diretor_destacado', e.target.checked);
+                              // Se marcar, pré-preencher Profissional 1 com dados do diretor
+                              if (e.target.checked) {
+                                updateFormData('profissional1_nome', formData.diretor_nome);
+                                updateFormData('profissional1_cro', formData.diretor_cro);
+                                updateFormData('profissional1_uf', formData.diretor_uf);
+                              } else {
+                                // Se desmarcar, limpar Profissional 1
+                                updateFormData('profissional1_nome', '');
+                                updateFormData('profissional1_cro', '');
+                                updateFormData('profissional1_uf', '');
+                                updateFormData('profissional1_apresentacao', '');
+                                updateFormData('profissional1_especialidade', '');
+                                updateFormData('profissional1_formacao', '');
+                                updateFormData('profissional1_biografia', '');
+                              }
+                            }}
+                            className="mt-1 w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                          />
+                          <div>
+                            <p className="text-blue-900 font-semibold text-sm">
+                              ✅ O diretor técnico é um dos profissionais destacados
+                            </p>
+                            <p className="text-blue-700 text-xs mt-1">
+                              Marque esta opção se o diretor ({formData.diretor_nome || 'Dr. Roberto Silva'}) for aparecer com foto e biografia no site.
+                              Seus dados já cadastrados serão reaproveitados!
+                            </p>
+                          </div>
+                        </label>
+                      </div>
+
                       <div className="bg-purple-50 border-2 border-purple-300 rounded-xl p-4">
                         <p className="text-purple-800 text-sm font-semibold mb-2">
                           Quantos profissionais você quer destacar no site? *
@@ -1181,13 +1219,43 @@ const BriefingOdonto = () => {
                           <p className="text-red-500 text-sm mt-2">{errors.num_profissionais_destacar}</p>
                         )}
                         <p className="text-purple-600/70 text-xs mt-2">
-                          Recomendamos destacar 2-3 profissionais principais para não sobrecarregar o site
+                          {formData.diretor_destacado
+                            ? '💡 O diretor já conta como 1 profissional'
+                            : 'Recomendamos destacar 2-3 profissionais principais para não sobrecarregar o site'}
                         </p>
                       </div>
 
                       {formData.num_profissionais_destacar && (
                         <div className="space-y-6">
-                          {Array.from({ length: parseInt(formData.num_profissionais_destacar) }, (_, i) => i + 1).map((index) => (
+                          {/* Profissional 1 (pode ser o diretor) */}
+                          <ProfessionalForm
+                            key={1}
+                            index={1}
+                            data={{
+                              nome: formData.profissional1_nome,
+                              apresentacao: formData.profissional1_apresentacao,
+                              cro: formData.profissional1_cro,
+                              uf: formData.profissional1_uf,
+                              especialidade: formData.profissional1_especialidade,
+                              formacao: formData.profissional1_formacao,
+                              biografia: formData.profissional1_biografia
+                            }}
+                            foto={uploadedFiles[`foto_profissional_1`]}
+                            errors={errors}
+                            onChange={(field, value) => updateFormData(field, value)}
+                            onFileUpload={(files) => handleFileUpload(`foto_profissional_1`, files)}
+                            onRemoveFile={() => setUploadedFiles(prev => {
+                              const newFiles = { ...prev };
+                              delete newFiles[`foto_profissional_1`];
+                              return newFiles;
+                            })}
+                            isDiretor={formData.diretor_destacado === true}
+                          />
+
+                          {/* Demais profissionais */}
+                          {Array.from({
+                            length: parseInt(formData.num_profissionais_destacar) - 1
+                          }, (_, i) => i + 2).map((index) => (
                             <ProfessionalForm
                               key={index}
                               index={index}
