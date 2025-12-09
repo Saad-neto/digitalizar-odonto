@@ -50,8 +50,8 @@ const Dashboard = () => {
 
       // Calcular métricas
       const novos = allLeads.filter(l => l.status === 'novo').length;
-      const producao = allLeads.filter(l => l.status === 'em_producao').length;
-      const prontos = allLeads.filter(l => ['em_aprovacao', 'pago_100', 'concluido'].includes(l.status)).length;
+      const producao = allLeads.filter(l => ['em_producao', 'em_ajustes'].includes(l.status)).length;
+      const prontos = allLeads.filter(l => ['aguardando_aprovacao', 'aprovacao_final', 'no_ar', 'concluido'].includes(l.status)).length;
       const total = allLeads.reduce((sum, l) => sum + (l.valor_total / 100), 0);
 
       setMetrics({ novos, producao, prontos, total });
@@ -103,10 +103,12 @@ const Dashboard = () => {
   const getStatusBadge = (status: Lead['status']) => {
     const badges = {
       novo: { color: 'bg-green-100 text-green-800 border-green-200', icon: '🆕', label: 'Novo' },
-      pago_50: { color: 'bg-blue-100 text-blue-800 border-blue-200', icon: '💰', label: 'Pago 50%' },
-      em_producao: { color: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: '🔨', label: 'Produção' },
-      em_aprovacao: { color: 'bg-purple-100 text-purple-800 border-purple-200', icon: '👀', label: 'Aprovação' },
-      pago_100: { color: 'bg-indigo-100 text-indigo-800 border-indigo-200', icon: '💯', label: 'Pago 100%' },
+      em_producao: { color: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: '🔨', label: 'Em Produção' },
+      aguardando_aprovacao: { color: 'bg-purple-100 text-purple-800 border-purple-200', icon: '👀', label: 'Aguardando Aprovação' },
+      aprovado_pagamento: { color: 'bg-blue-100 text-blue-800 border-blue-200', icon: '💰', label: 'Aprovado e Pago' },
+      em_ajustes: { color: 'bg-orange-100 text-orange-800 border-orange-200', icon: '🔧', label: 'Em Ajustes' },
+      aprovacao_final: { color: 'bg-pink-100 text-pink-800 border-pink-200', icon: '✨', label: 'Aprovação Final' },
+      no_ar: { color: 'bg-indigo-100 text-indigo-800 border-indigo-200', icon: '🚀', label: 'No Ar' },
       concluido: { color: 'bg-gray-100 text-gray-800 border-gray-200', icon: '✅', label: 'Concluído' },
     };
     const badge = badges[status] || badges.novo;

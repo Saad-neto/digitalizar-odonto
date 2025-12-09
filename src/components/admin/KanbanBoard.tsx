@@ -23,10 +23,12 @@ interface KanbanBoardProps {
 
 const columns: { id: Lead['status']; title: string; color: string; icon: string }[] = [
   { id: 'novo', title: 'Novo', color: 'bg-green-500', icon: '🆕' },
-  { id: 'pago_50', title: 'Pago 50%', color: 'bg-blue-500', icon: '💰' },
   { id: 'em_producao', title: 'Em Produção', color: 'bg-yellow-500', icon: '🔨' },
-  { id: 'em_aprovacao', title: 'Em Aprovação', color: 'bg-purple-500', icon: '👀' },
-  { id: 'pago_100', title: 'Pago 100%', color: 'bg-indigo-500', icon: '💯' },
+  { id: 'aguardando_aprovacao', title: 'Aguardando Aprovação', color: 'bg-purple-500', icon: '👀' },
+  { id: 'aprovado_pagamento', title: 'Aprovado e Pago', color: 'bg-blue-500', icon: '💰' },
+  { id: 'em_ajustes', title: 'Em Ajustes', color: 'bg-orange-500', icon: '🔧' },
+  { id: 'aprovacao_final', title: 'Aprovação Final', color: 'bg-pink-500', icon: '✨' },
+  { id: 'no_ar', title: 'No Ar', color: 'bg-indigo-500', icon: '🚀' },
   { id: 'concluido', title: 'Concluído', color: 'bg-gray-500', icon: '✅' },
 ];
 

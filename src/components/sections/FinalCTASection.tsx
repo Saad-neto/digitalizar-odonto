@@ -7,12 +7,12 @@ import Counter from '../ui/counter';
 const FinalCTASection: React.FC = () => {
   const offerItems = [
     "Site profissional responsivo",
-    "Entrega garantida em 24h",
-    "Hospedagem premium 1º ano GRÁTIS", 
+    "Briefing e produção GRÁTIS",
+    "Só paga se aprovar o resultado",
+    "Hospedagem premium 1º ano GRÁTIS",
     "SSL + Otimização Google",
-    "Suporte especializado",
-    "Até 3 revisões incluídas",
-    "Garantia total de 30 dias"
+    "Até 2 rodadas de ajustes",
+    "Parcele em até 12x sem juros"
   ];
 
   return (
@@ -78,36 +78,36 @@ const FinalCTASection: React.FC = () => {
 
         {/* Main CTA Buttons */}
         <div className="space-y-6 mb-12">
-          <Link 
+          <Link
             to="/briefing"
             className="bg-success hover:bg-success-dark text-white text-2xl font-bold px-12 py-6 rounded-xl shadow-cta hover:shadow-hover transition-all duration-300 hover:scale-105 w-full md:w-auto inline-flex"
           >
             <div className="flex items-center justify-center gap-3">
               <Rocket size={28} />
-              SIM! QUERO MEU SITE EM 24H
+              SIM! QUERO COMEÇAR (SÓ PAGO SE APROVAR)
             </div>
           </Link>
-          
+
           <p className="text-white/80">
-            💻 Clique aqui para fazer seu briefing agora
+            💯 Briefing grátis • Produção grátis • Parcelamento em 12x
           </p>
-          
+
           <p className="text-success-light font-semibold">
-            ⏰ Vaga garantida para hoje
+            ✅ Sem riscos • Você decide depois de ver o site pronto
           </p>
         </div>
 
 
-        {/* Final Urgency */}
-        <div className="bg-red-alert/20 border border-red-alert/40 rounded-xl p-6">
-          
+        {/* Final Guarantee */}
+        <div className="bg-green-500/20 border border-green-400/40 rounded-xl p-6">
+
           <p className="text-xl text-white/90 mb-4">
-            "Restam apenas <strong className="text-red-light">2 vagas</strong> para entrega hoje. 
-            Amanhã você pode ter que aguardar disponibilidade."
+            "Faça seu briefing agora e receba seu site pronto em até <strong className="text-green-300">7 dias</strong>.
+            Você vê TUDO pronto e só decide se quer continuar."
           </p>
-          
+
           <p className="text-white/80">
-            Enquanto você pensa, seus concorrentes podem estar captando os pacientes que deveriam ser seus.
+            Sem compromisso, sem pegadinhas, sem riscos. Você no controle!
           </p>
         </div>
 

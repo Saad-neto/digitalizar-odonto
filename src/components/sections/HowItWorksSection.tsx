@@ -7,52 +7,52 @@ const HowItWorksSection: React.FC = () => {
     {
       number: "1",
       icon: FileText,
-      title: "BRIEFING RÁPIDO",
+      title: "BRIEFING GRÁTIS",
       duration: "15 minutos",
       description: "Você preenche nosso formulário inteligente",
       details: [
         "Enviamos link por WhatsApp para agilizar",
-        "Coletamos: especialidade, logo, fotos, textos", 
-        "Processo 100% online e descomplicado"
+        "Coletamos: especialidade, logo, fotos, textos",
+        "100% online e sem compromisso"
       ],
       color: "bg-blue-trust"
     },
     {
-      number: "2", 
+      number: "2",
       icon: Cog,
-      title: "CRIAÇÃO PROFISSIONAL",
-      duration: "12 horas",
-      description: "Nossa equipe especializada desenvolve seu site",
+      title: "PRODUÇÃO GRÁTIS",
+      duration: "até 7 dias",
+      description: "Criamos seu site profissional",
       details: [
         "Design responsivo para todos os dispositivos",
-        "Otimização automática para Google", 
-        "Integração com WhatsApp e redes sociais"
+        "Otimização automática para Google",
+        "Você não paga nada ainda!"
       ],
       color: "bg-orange-warning"
     },
     {
       number: "3",
       icon: Eye,
-      title: "REVISÕES RÁPIDAS",
-      duration: "até 3 alterações",
-      description: "Enviamos prévia para aprovação",
+      title: "VOCÊ APROVA E PAGA",
+      duration: "só paga se aprovar",
+      description: "Enviamos o site pronto para sua aprovação",
       details: [
-        "Você solicita ajustes se necessário",
-        "Finalizamos em poucas horas",
-        "Comunicação ágil via WhatsApp"
+        "Gostou? Paga em até 12x no cartão",
+        "Não gostou? Não paga nada!",
+        "Até 2 rodadas de ajustes inclusas"
       ],
       color: "bg-primary"
     },
     {
       number: "4",
       icon: Rocket,
-      title: "SITE NO AR",
-      duration: "24 horas",
+      title: "SITE NO AR EM 24H",
+      duration: "após aprovação final",
       description: "Publicamos em servidor premium",
       details: [
         "Configuramos SSL e segurança",
         "Enviamos todos os acessos",
-        "Site funcionando 100%"
+        "Suporte contínuo"
       ],
       color: "bg-success"
     }
@@ -63,12 +63,12 @@ const HowItWorksSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="mb-6">
-            Como Seu Site Fica Pronto em
-            <span className="block text-success">Apenas 24 Horas</span>
+            Só Paga Se Aprovar
+            <span className="block text-success">Parcelamento em até 12x</span>
           </h2>
           <p className="text-xl text-text-secondary max-w-3xl mx-auto">
-            Nosso processo é transparente, simples e eficiente. 
-            Veja como transformamos sua presença digital em tempo recorde.
+            Nosso processo é transparente e sem riscos. Você vê o site pronto
+            ANTES de pagar e decide se quer continuar. Justo, não é?
           </p>
         </div>
 
@@ -134,52 +134,52 @@ const HowItWorksSection: React.FC = () => {
         <div className="mt-16 bg-success-bg border border-success/20 rounded-2xl p-8 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-12 h-12 bg-success rounded-full flex items-center justify-center">
-              <Clock size={24} className="text-white" />
+              <CheckCircle size={24} className="text-white" />
             </div>
             <h3 className="text-2xl font-bold text-success-dark">
-              GARANTIA BLINDADA DE PRAZO
+              GARANTIA DE SATISFAÇÃO 100%
             </h3>
           </div>
-          
+
           <p className="text-lg text-success-dark font-semibold mb-4">
-            🕐 "Se não entregarmos em 24h, devolvemos 100% do seu dinheiro + R$ 200 de multa pelo transtorno."
+            💯 "Você só paga se gostar do resultado. Sem risco, sem taxas ocultas, sem pegadinhas."
           </p>
-          
+
           <p className="text-text-secondary">
-            Essa é nossa confiança no processo que desenvolvemos ao longo de 5 anos.
+            Essa é nossa confiança na qualidade do trabalho que entregamos há mais de 5 anos.
           </p>
         </div>
 
         {/* Stats Section */}
         <div className="mt-12 grid md:grid-cols-4 gap-6">
           <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">24h</div>
-            <p className="text-text-secondary">Prazo máximo</p>
+            <div className="text-4xl font-bold text-primary mb-2">12x</div>
+            <p className="text-text-secondary">Parcelamento</p>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-success mb-2">98.7%</div>
-            <p className="text-text-secondary">Taxa aprovação</p>
+            <div className="text-4xl font-bold text-success mb-2">100%</div>
+            <p className="text-text-secondary">Sem riscos</p>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-orange-warning mb-2">15min</div>
-            <p className="text-text-secondary">Briefing rápido</p>
+            <div className="text-4xl font-bold text-orange-warning mb-2">2</div>
+            <p className="text-text-secondary">Rodadas de ajustes</p>
           </div>
           <div className="text-center">
-            <div className="text-4xl font-bold text-blue-trust mb-2">100%</div>
-            <p className="text-text-secondary">Online</p>
+            <div className="text-4xl font-bold text-blue-trust mb-2">24h</div>
+            <p className="text-text-secondary">Publicação final</p>
           </div>
         </div>
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <Link 
+          <Link
             to="/briefing"
             className="btn-hero text-xl px-12 py-5"
           >
-            Começar Meu Briefing Agora
+            Começar Meu Briefing Grátis
           </Link>
           <p className="text-text-secondary mt-4">
-            ⏰ Processo 100% online • Entrega garantida em 24h
+            💯 Sem compromisso • Só paga se aprovar • Parcele em até 12x
           </p>
         </div>
       </div>

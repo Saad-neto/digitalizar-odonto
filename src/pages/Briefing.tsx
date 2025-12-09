@@ -386,8 +386,8 @@ const BriefingOdonto = () => {
 
       console.log('✅ Lead criado com sucesso:', lead);
 
-      // Redirecionar para página de obrigado (ou pagamento)
-      alert('Briefing enviado com sucesso! 🎉\n\nVocê receberá o site em até 24 horas.');
+      // Redirecionar para página de obrigado
+      alert('Briefing enviado com sucesso! 🎉\n\nAgora vamos produzir seu site. Em até 7 dias você receberá o link para aprovação.');
       navigate('/obrigado');
 
     } catch (error: any) {

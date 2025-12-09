@@ -30,9 +30,9 @@ const OffersSection: React.FC = () => {
   ];
 
   const ourMethod = [
-    { item: "Valor", value: "R$ 497 (economia de R$ 500)", positive: true },
-    { item: "Prazo", value: "24 horas garantidas", positive: true },
-    { item: "Processo", value: "Briefing de 15 minutos", positive: true },
+    { item: "Valor", value: "R$ 497 parcelado em 12x", positive: true },
+    { item: "Pagamento", value: "Só paga se aprovar!", positive: true },
+    { item: "Processo", value: "100% sem riscos", positive: true },
     { item: "Resultado", value: "Comprovado por 500+ dentistas", positive: true }
   ];
 
@@ -43,7 +43,7 @@ const OffersSection: React.FC = () => {
     { item: "Otimização básica para Google", value: "R$ 800" },
     { item: "Integração WhatsApp e redes sociais", value: "R$ 300" },
     { item: "Suporte técnico especializado", value: "R$ 600" },
-    { item: "Até 3 revisões incluídas", value: "R$ 450" }
+    { item: "Até 2 rodadas de ajustes incluídas", value: "R$ 450" }
   ];
 
   const bonuses = [
@@ -228,30 +228,30 @@ const OffersSection: React.FC = () => {
 
           {/* CTA Buttons */}
           <div className="text-center space-y-4">
-            <Link 
+            <Link
               to="/briefing"
               className="btn-hero text-xl px-12 py-5 w-full md:w-auto"
             >
-              🚀 SIM! QUERO MEU SITE EM 24H
+              🚀 SIM! QUERO MEU SITE (SÓ PAGO SE APROVAR)
             </Link>
-            
+
             <p className="text-text-secondary">
-              💻 Clique aqui para fazer seu briefing agora
+              💯 Briefing grátis • Produção grátis • Parcele em 12x
             </p>
-            
+
             <p className="text-success font-semibold">
-              ⏰ Vaga garantida para hoje
+              ✅ Sem riscos • Você decide depois de ver o site pronto
             </p>
           </div>
         </div>
 
-        {/* Urgency Notice */}
-        <div className="mt-12 text-center bg-orange-light border border-orange-warning/20 rounded-lg p-6">
-          <h4 className="text-xl font-bold text-orange-warning mb-2">
-            ⚠️ Restam apenas 2 vagas para entrega hoje
+        {/* Guarantee Notice */}
+        <div className="mt-12 text-center bg-green-50 border border-green-200 rounded-lg p-6">
+          <h4 className="text-xl font-bold text-green-700 mb-2">
+            💯 GARANTIA TOTAL: Só Paga Se Aprovar!
           </h4>
           <p className="text-text-secondary">
-            Amanhã você pode ter que aguardar disponibilidade.
+            Fazemos seu site GRÁTIS. Você vê o resultado pronto e decide se quer continuar. Sem compromisso!
           </p>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getLeadById, updateLeadStatus, Lead } from '@/lib/supabase';
+import { createPaymentForLead } from '@/lib/asaas';
 import { Button } from '@/components/ui/button';
 import {
   ArrowLeft,
@@ -15,6 +16,8 @@ import {
   Download,
   FileImage,
   FileText,
+  CreditCard,
+  ExternalLink,
 } from 'lucide-react';
 import ReviewStep from '@/components/ReviewStep';
 import Timeline from '@/components/admin/Timeline';
@@ -30,6 +33,7 @@ const LeadDetails = () => {
   const [copiedField, setCopiedField] = useState<string>('');
   const [selectedTab, setSelectedTab] = useState<'resumo' | 'briefing' | 'timeline' | 'notas'>('resumo');
   const [downloading, setDownloading] = useState(false);
+  const [sendingPayment, setSendingPayment] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -54,7 +58,41 @@ const LeadDetails = () => {
 
     try {
       setUpdating(true);
-      const updatedLead = await updateLeadStatus(lead.id, newStatus);
+
+      // Preparar dados extras para atualização
+      const extraData: Partial<Lead> = {};
+
+      // Se está mudando para 'em_ajustes', incrementar contador
+      if (newStatus === 'em_ajustes' && lead.status !== 'em_ajustes') {
+        const novasRodadas = (lead.rodadas_ajustes_usadas || 0) + 1;
+
+        // Avisar se atingiu o limite
+        if (novasRodadas > 2) {
+          const confirmar = window.confirm(
+            '⚠️ ATENÇÃO!\n\n' +
+            'Este projeto já utilizou as 2 rodadas de ajustes incluídas.\n\n' +
+            'Deseja mesmo iniciar uma 3ª rodada de ajustes? Isso pode gerar custo adicional.'
+          );
+
+          if (!confirmar) {
+            setUpdating(false);
+            return;
+          }
+        }
+
+        extraData.rodadas_ajustes_usadas = novasRodadas;
+      }
+
+      // Se está mudando para 'aprovacao_final', salvar data
+      if (newStatus === 'aprovacao_final') {
+        extraData.data_aprovacao_final = new Date().toISOString();
+        // Calcular deadline de 24h
+        const deadline = new Date();
+        deadline.setHours(deadline.getHours() + 24);
+        extraData.data_limite_publicacao = deadline.toISOString();
+      }
+
+      const updatedLead = await updateLeadStatus(lead.id, newStatus, extraData);
       setLead(updatedLead);
 
       // Mostrar notificação
@@ -138,13 +176,63 @@ const LeadDetails = () => {
     }
   };
 
+  const handleSendPaymentLink = async () => {
+    if (!lead) return;
+
+    try {
+      setSendingPayment(true);
+
+      // Criar pagamento no Asaas
+      const result = await createPaymentForLead({
+        leadId: lead.id,
+        nome: lead.briefing_data?.nome_consultorio || lead.nome,
+        email: lead.email,
+        whatsapp: lead.whatsapp,
+        valor: lead.valor_total / 100, // Converter de centavos para reais
+        installments: 12,
+      });
+
+      if (!result.success || !result.paymentUrl) {
+        throw new Error(result.error || 'Erro ao gerar link de pagamento');
+      }
+
+      // Atualizar lead com o link de pagamento
+      await updateLeadStatus(lead.id, lead.status, {
+        asaas_payment_url: result.paymentUrl,
+      });
+
+      // Atualizar estado local
+      setLead({ ...lead, asaas_payment_url: result.paymentUrl });
+
+      // Notificação de sucesso
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      notification.textContent = '✅ Link de pagamento gerado com sucesso!';
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+
+      // Copiar link para clipboard
+      await navigator.clipboard.writeText(result.paymentUrl);
+      setCopiedField('payment_link');
+      setTimeout(() => setCopiedField(''), 3000);
+
+    } catch (error) {
+      console.error('Erro ao gerar link de pagamento:', error);
+      alert('Erro ao gerar link de pagamento: ' + (error instanceof Error ? error.message : 'Erro desconhecido'));
+    } finally {
+      setSendingPayment(false);
+    }
+  };
+
   const getStatusBadge = (status: Lead['status']) => {
     const badges = {
       novo: { color: 'bg-green-100 text-green-800 border-green-300', icon: '🆕', label: 'Novo' },
-      pago_50: { color: 'bg-blue-100 text-blue-800 border-blue-300', icon: '💰', label: 'Pago 50%' },
       em_producao: { color: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: '🔨', label: 'Em Produção' },
-      em_aprovacao: { color: 'bg-purple-100 text-purple-800 border-purple-300', icon: '👀', label: 'Em Aprovação' },
-      pago_100: { color: 'bg-indigo-100 text-indigo-800 border-indigo-300', icon: '💯', label: 'Pago 100%' },
+      aguardando_aprovacao: { color: 'bg-purple-100 text-purple-800 border-purple-300', icon: '👀', label: 'Aguardando Aprovação' },
+      aprovado_pagamento: { color: 'bg-blue-100 text-blue-800 border-blue-300', icon: '💰', label: 'Aprovado e Pago' },
+      em_ajustes: { color: 'bg-orange-100 text-orange-800 border-orange-300', icon: '🔧', label: 'Em Ajustes' },
+      aprovacao_final: { color: 'bg-pink-100 text-pink-800 border-pink-300', icon: '✨', label: 'Aprovação Final' },
+      no_ar: { color: 'bg-indigo-100 text-indigo-800 border-indigo-300', icon: '🚀', label: 'No Ar' },
       concluido: { color: 'bg-gray-100 text-gray-800 border-gray-300', icon: '✅', label: 'Concluído' },
     };
     const badge = badges[status] || badges.novo;
@@ -282,7 +370,7 @@ const LeadDetails = () => {
             Alterar Status
           </h3>
           <div className="flex flex-wrap gap-3">
-            {(['novo', 'pago_50', 'em_producao', 'em_aprovacao', 'pago_100', 'concluido'] as Lead['status'][]).map((status) => (
+            {(['novo', 'em_producao', 'aguardando_aprovacao', 'aprovado_pagamento', 'em_ajustes', 'aprovacao_final', 'no_ar', 'concluido'] as Lead['status'][]).map((status) => (
               <Button
                 key={status}
                 onClick={() => handleStatusChange(status)}
@@ -299,6 +387,156 @@ const LeadDetails = () => {
             ))}
           </div>
         </div>
+
+        {/* Contador de Rodadas de Ajustes */}
+        {['aprovado_pagamento', 'em_ajustes', 'aprovacao_final'].includes(lead.status) && (
+          <div className={`rounded-xl border-2 p-6 mb-6 shadow-sm ${
+            lead.rodadas_ajustes_usadas >= 2
+              ? 'bg-gradient-to-r from-red-50 to-orange-50 border-red-200'
+              : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'
+          }`}>
+            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-blue-600" />
+              Rodadas de Ajustes
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <p className="text-sm text-gray-600 mb-2">Rodadas utilizadas:</p>
+                  <div className="flex gap-2">
+                    <div className={`h-10 flex items-center justify-center px-4 rounded-lg border-2 ${
+                      lead.rodadas_ajustes_usadas >= 1
+                        ? 'bg-orange-500 border-orange-600 text-white'
+                        : 'bg-gray-100 border-gray-300 text-gray-400'
+                    }`}>
+                      1
+                    </div>
+                    <div className={`h-10 flex items-center justify-center px-4 rounded-lg border-2 ${
+                      lead.rodadas_ajustes_usadas >= 2
+                        ? 'bg-red-500 border-red-600 text-white'
+                        : 'bg-gray-100 border-gray-300 text-gray-400'
+                    }`}>
+                      2
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-gray-900">
+                    {lead.rodadas_ajustes_usadas}/2
+                  </p>
+                  <p className="text-xs text-gray-500">rodadas usadas</p>
+                </div>
+              </div>
+
+              {lead.rodadas_ajustes_usadas >= 2 && (
+                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-red-800 mb-1">⚠️ Limite de ajustes atingido</p>
+                    <p className="text-xs text-red-600">
+                      Este projeto já utilizou as 2 rodadas de ajustes incluídas. Novos ajustes podem gerar custo adicional.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {lead.rodadas_ajustes_usadas === 1 && (
+                <div className="flex items-start gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-yellow-800 mb-1">Atenção</p>
+                    <p className="text-xs text-yellow-700">
+                      Resta apenas 1 rodada de ajustes gratuita. Após isso, novos ajustes podem gerar custo adicional.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {lead.rodadas_ajustes_usadas === 0 && (
+                <p className="text-xs text-gray-500">
+                  ✅ Cliente ainda tem direito a 2 rodadas de ajustes gratuitas.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Pagamento */}
+        {lead.status === 'aguardando_aprovacao' && (
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200 p-6 mb-6 shadow-sm">
+            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <CreditCard className="w-5 h-5 text-green-600" />
+              Link de Pagamento (12x no cartão)
+            </h3>
+
+            {!lead.asaas_payment_url ? (
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  O site está pronto e aguardando aprovação do cliente. Clique abaixo para gerar o link de pagamento parcelado em até 12x.
+                </p>
+                <Button
+                  onClick={handleSendPaymentLink}
+                  disabled={sendingPayment}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  {sendingPayment ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                      Gerando link...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      💰 Gerar Link de Pagamento
+                    </>
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-4 bg-white rounded-lg border border-green-200">
+                  <ExternalLink className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <div className="flex-1 overflow-hidden">
+                    <p className="text-xs text-gray-500 mb-1">Link de Pagamento Gerado:</p>
+                    <p className="text-sm font-mono text-gray-700 truncate">{lead.asaas_payment_url}</p>
+                  </div>
+                  <Button
+                    onClick={() => copyToClipboard(lead.asaas_payment_url || '', 'payment_link')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    {copiedField === 'payment_link' ? (
+                      <Check className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => window.open(lead.asaas_payment_url, '_blank')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Abrir Link
+                  </Button>
+                  <Button
+                    onClick={() => openWhatsApp(lead.whatsapp)}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    size="sm"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Enviar via WhatsApp
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500">
+                  ⚡ O cliente poderá parcelar em até 12x no cartão de crédito.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Contato Rápido */}
         <div className="bg-white rounded-xl border-2 border-gray-200 p-6 mb-6 shadow-sm">

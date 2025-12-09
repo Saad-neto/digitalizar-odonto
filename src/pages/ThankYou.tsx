@@ -31,34 +31,35 @@ const ThankYou = () => {
 
             <div className="p-8 space-y-8">
               {/* Timeline Promise */}
-              <div className="text-center p-8 rounded-lg border-l-4" style={{ 
-                background: 'var(--gradient-subtle)', 
+              <div className="text-center p-8 rounded-lg border-l-4" style={{
+                background: 'var(--gradient-subtle)',
                 borderColor: 'hsl(var(--primary))'
               }}>
                 <Zap className="mx-auto h-12 w-12 mb-4" style={{ color: 'hsl(var(--primary))' }} />
                 <h2 className="text-3xl font-bold mb-4" style={{ color: 'hsl(var(--primary))' }}>
-                  ⚡ SEU SITE ESTARÁ PRONTO EM ATÉ 24 HORAS!
+                  ⚡ SÓ PAGA SE APROVAR!
                 </h2>
                 <p className="text-lg mb-6" style={{ color: 'hsl(var(--text-primary))' }}>
-                  Nosso time já começou a trabalhar no seu projeto. Você receberá:
+                  <strong>Em até 7 dias você receberá seu site pronto para aprovação.</strong><br />
+                  Só pagará se gostar! 💯
                 </p>
-                
+
                 <div className="grid md:grid-cols-2 gap-4 text-left">
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                    <span><strong>Um site completo e profissional</strong></span>
+                    <span><strong>Site completo e profissional</strong></span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                    <span><strong>Design responsivo para todos os dispositivos</strong></span>
+                    <span><strong>Design responsivo (mobile e desktop)</strong></span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                    <span><strong>Otimizado para conversões</strong></span>
+                    <span><strong>Otimizado para Google</strong></span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                    <span><strong>Hospedagem premium inclusa no primeiro ano</strong></span>
+                    <span><strong>Hospedagem premium GRÁTIS no 1º ano</strong></span>
                   </div>
                 </div>
               </div>
@@ -71,32 +72,32 @@ const ThankYou = () => {
                     <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
                       1
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>CRIAÇÃO (24h)</h3>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Seu site será desenvolvido e enviado para aprovação</p>
+                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>PRODUÇÃO (até 7 dias)</h3>
+                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Criamos seu site e enviamos para aprovação</p>
                   </div>
-                  
+
                   <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
                     <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
                       2
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>REVISÕES (até 3 alterações)</h3>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Cada alteração será entregue em até 24h para sua conferência</p>
+                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>VOCÊ APROVA E PAGA</h3>
+                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Só paga se aprovar! Parcele em até 12x</p>
                   </div>
-                  
+
                   <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
                     <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
                       3
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>APROVAÇÃO FINAL</h3>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Após sua aprovação, você terá 24h para efetuar o pagamento</p>
+                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>AJUSTES (até 2 rodadas)</h3>
+                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Fazemos as alterações que solicitar</p>
                   </div>
-                  
+
                   <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
                     <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
                       4
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>SITE NO AR</h3>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Seu site ficará disponível imediatamente após o pagamento</p>
+                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>NO AR EM 24H</h3>
+                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Após aprovação final, site publicado em 24h</p>
                   </div>
                 </div>
               </div>

@@ -5,31 +5,31 @@ import { Link } from 'react-router-dom';
 const GuaranteesSection: React.FC = () => {
   const guarantees = [
     {
-      icon: Clock,
-      title: "GARANTIA DE PRAZO",
-      description: "Se não entregarmos em 24h, devolvemos 100% do seu dinheiro + R$ 200 de multa pelo transtorno.",
-      badge: "100% Blindada",
-      color: "bg-orange-warning"
-    },
-    {
       icon: ThumbsUp,
-      title: "GARANTIA DE SATISFAÇÃO", 
-      description: "30 dias para aprovar completamente. Se não gostar, reembolsamos integralmente.",
-      badge: "Risco Zero",
-      color: "bg-blue-trust"
-    },
-    {
-      icon: Wrench,
-      title: "GARANTIA TÉCNICA",
-      description: "Site funcionando perfeitamente ou corrigimos gratuitamente até ficar 100%.",
-      badge: "Suporte Total",
+      title: "SÓ PAGA SE APROVAR",
+      description: "Fazemos seu site GRÁTIS. Você vê o resultado pronto e só paga se gostar. Se não aprovar, não paga nada!",
+      badge: "Risco ZERO",
       color: "bg-success"
     },
     {
+      icon: Clock,
+      title: "GARANTIA DE PUBLICAÇÃO",
+      description: "Após aprovação final, seu site estará no ar em até 24h. Garantido!",
+      badge: "24h Após Aprovação",
+      color: "bg-orange-warning"
+    },
+    {
+      icon: Wrench,
+      title: "ATÉ 2 RODADAS DE AJUSTES",
+      description: "Depois que você aprovar e pagar, fazemos até 2 rodadas de ajustes incluídas no preço.",
+      badge: "Ajustes Inclusos",
+      color: "bg-blue-trust"
+    },
+    {
       icon: TrendingUp,
-      title: "GARANTIA DE RESULTADO",
-      description: "Se em 90 dias você não ver melhora na captação de pacientes, fazemos um novo site GRÁTIS.",
-      badge: "Resultado Assegurado",
+      title: "PARCELAMENTO EM 12X",
+      description: "Aprovou o site? Pague em até 12x no cartão sem juros. Cabe no seu bolso!",
+      badge: "12x Sem Juros",
       color: "bg-primary"
     }
   ];

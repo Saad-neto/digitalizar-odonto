@@ -21,8 +21,9 @@ export interface Lead {
   created_at: string;
   updated_at: string;
 
-  // Status do lead
-  status: 'novo' | 'pago_50' | 'em_producao' | 'em_aprovacao' | 'pago_100' | 'concluido';
+  // Status do lead (novo fluxo)
+  status: 'novo' | 'em_producao' | 'aguardando_aprovacao' | 'aprovado_pagamento' |
+          'em_ajustes' | 'aprovacao_final' | 'no_ar' | 'concluido';
 
   // Informações pessoais
   nome: string;
@@ -37,15 +38,26 @@ export interface Lead {
   valor_entrada: number; // 50%
   valor_saldo: number; // 50%
 
-  // IDs de pagamento Stripe
+  // IDs de pagamento Stripe (legado - manter por compatibilidade)
   stripe_payment_intent_entrada?: string;
   stripe_payment_intent_saldo?: string;
+
+  // IDs de pagamento Asaas (novo)
+  asaas_customer_id?: string;
+  asaas_payment_id?: string;
+  asaas_payment_url?: string;
 
   // URLs
   preview_url?: string;
   site_final_url?: string;
 
-  // Controle
+  // Controle de aprovações e ajustes
+  rodadas_ajustes_usadas: number; // máximo 2
+  data_aprovacao_inicial?: string; // primeira aprovação
+  data_aprovacao_final?: string; // aprovação após ajustes
+  data_limite_publicacao?: string; // 24h após aprovação final
+
+  // Controle (legado - manter por compatibilidade)
   pago_entrada_at?: string;
   pago_saldo_at?: string;
   aprovado_at?: string;
@@ -60,14 +72,19 @@ export interface Payment {
   lead_id: string;
 
   // Dados do pagamento
-  tipo: 'entrada' | 'saldo';
+  tipo: 'entrada' | 'saldo' | 'total'; // 'total' = 100% parcelado
   valor: number; // em centavos
   status: 'pending' | 'succeeded' | 'failed' | 'canceled';
 
-  // Stripe
-  stripe_payment_intent_id: string;
+  // Stripe (legado)
+  stripe_payment_intent_id?: string;
   stripe_session_id?: string;
   stripe_customer_id?: string;
+
+  // Asaas (novo)
+  asaas_payment_id?: string;
+  asaas_customer_id?: string;
+  payment_url?: string; // link para cliente pagar
 
   // Metadados
   metadata?: any;
