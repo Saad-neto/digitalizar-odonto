@@ -42,10 +42,10 @@ export interface Lead {
   stripe_payment_intent_entrada?: string;
   stripe_payment_intent_saldo?: string;
 
-  // IDs de pagamento Asaas (novo)
-  asaas_customer_id?: string;
-  asaas_payment_id?: string;
-  asaas_payment_url?: string;
+  // IDs de pagamento Mercado Pago (novo)
+  mercadopago_preference_id?: string;
+  mercadopago_payment_id?: string;
+  mercadopago_payment_url?: string;
 
   // URLs
   preview_url?: string;
@@ -81,9 +81,9 @@ export interface Payment {
   stripe_session_id?: string;
   stripe_customer_id?: string;
 
-  // Asaas (novo)
-  asaas_payment_id?: string;
-  asaas_customer_id?: string;
+  // Mercado Pago (novo)
+  mercadopago_payment_id?: string;
+  mercadopago_preference_id?: string;
   payment_url?: string; // link para cliente pagar
 
   // Metadados

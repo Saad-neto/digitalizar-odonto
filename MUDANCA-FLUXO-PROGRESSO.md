@@ -108,36 +108,35 @@ Agora o Kanban mostra **8 colunas** em vez de 6:
 
 ---
 
-### 5. ✅ Asaas Integrado
+### 5. ✅ Mercado Pago Integrado
 
 **Arquivos criados:**
-- `src/lib/asaas.ts` - Biblioteca completa de integração
-- `netlify/functions/asaas-webhook.ts` - Webhook handler
+- `src/lib/mercadopago.ts` - Biblioteca completa de integração
+- `netlify/functions/mercadopago-webhook.ts` - Webhook handler
 
 **Funções implementadas:**
-- `createAsaasCustomer()` - Cria cliente no Asaas
-- `createAsaasCharge()` - Cria cobrança com parcelamento (até 12x)
-- `getAsaasCharge()` - Consulta status de cobrança
-- `checkAsaasPaymentStatus()` - Verifica se foi pago
-- `getAsaasPaymentUrl()` - Gera link de pagamento
+- `createMercadoPagoPreference()` - Cria preferência de pagamento com parcelamento (até 12x)
+- `getMercadoPagoPayment()` - Consulta informações do pagamento
+- `checkMercadoPagoPaymentStatus()` - Verifica se foi aprovado
+- `createPaymentForLead()` - Helper para criar pagamento para um lead
+- `getLeadIdFromPayment()` - Extrai external_reference
 
 **Webhook processa:**
-- `PAYMENT_CREATED` - Registra pagamento no banco
-- `PAYMENT_CONFIRMED` - Atualiza lead para "aprovado_pagamento"
-- `PAYMENT_OVERDUE` - Marca como vencido
-- `PAYMENT_REFUNDED` - Volta lead para "aguardando_aprovacao"
+- `payment.created` - Registra pagamento no banco
+- `payment.updated` (status: approved) - Atualiza lead para "aprovado_pagamento"
+- `payment.updated` (status: rejected) - Registra falha
+- `payment.updated` (status: refunded) - Volta lead para "aguardando_aprovacao"
 
 **⚠️ AÇÃO NECESSÁRIA:**
 ```
-Você precisa configurar o Asaas:
-1. Criar conta em https://www.asaas.com/
-2. Pegar API Key em Integrações > API Key
+Você precisa configurar o Mercado Pago:
+1. Criar conta em https://www.mercadopago.com.br/
+2. Pegar Access Token em Integrações > Credenciais
 3. Adicionar no .env:
-   VITE_ASAAS_API_KEY=sua_api_key_aqui
-   ASAAS_WEBHOOK_TOKEN=token_do_webhook
-4. Configurar webhook no Asaas:
-   URL: https://seu-site.netlify.app/.netlify/functions/asaas-webhook
-   Eventos: PAYMENT_CREATED, PAYMENT_CONFIRMED, PAYMENT_OVERDUE, PAYMENT_REFUNDED
+   VITE_MERCADOPAGO_ACCESS_TOKEN=seu_access_token_aqui
+4. Configurar webhook no Mercado Pago:
+   URL: https://seu-site.pages.dev/.netlify/functions/mercadopago-webhook
+   Eventos: payment.created, payment.updated
 ```
 
 ---
@@ -145,15 +144,15 @@ Você precisa configurar o Asaas:
 ### 6. ✅ Botão de Pagamento Criado
 
 **Arquivos modificados:**
-- `src/lib/asaas.ts` - Adicionada função `createPaymentForLead()`
+- `src/lib/mercadopago.ts` - Função `createPaymentForLead()` implementada
 - `src/pages/admin/LeadDetails.tsx` - Botão e lógica implementados
 
 **Como funciona:**
 1. Botão aparece quando lead está em `aguardando_aprovacao`
 2. Admin clica em "Gerar Link de Pagamento"
-3. Sistema cria cliente no Asaas (se não existir)
-4. Cria cobrança com parcelamento em 12x
-5. Salva link no banco (`asaas_payment_url`)
+3. Sistema cria preferência de pagamento no Mercado Pago
+4. Preferência configurada para parcelamento em até 12x
+5. Salva link no banco (`mercadopago_payment_url`)
 6. Link é copiado automaticamente para clipboard
 7. Admin pode enviar via WhatsApp ou copiar link
 
@@ -307,26 +306,26 @@ Todas as 9 tarefas foram concluídas com sucesso! O sistema está pronto para o 
 ### 1. ✅ Executar SQL no Supabase (JÁ FEITO)
 Você já executou o SQL com sucesso.
 
-### 2. ⚠️ Configurar conta Asaas (PENDENTE)
-1. Criar conta em https://www.asaas.com/
-2. Pegar API Key em Integrações > API Key
-3. Adicionar no arquivo `.env`:
+### 2. ⚠️ Configurar conta Mercado Pago (PENDENTE)
+1. Criar conta em https://www.mercadopago.com.br/
+2. Ir em Integrações → Suas aplicações → Criar aplicação
+3. Pegar Access Token em Credenciais (modo Teste primeiro)
+4. Adicionar no arquivo `.env`:
    ```bash
-   VITE_ASAAS_API_KEY=sua_api_key_aqui
-   VITE_ASAAS_API_URL=https://sandbox.asaas.com/api/v3  # Teste
-   ASAAS_WEBHOOK_TOKEN=crie_um_token_secreto_aqui
+   VITE_MERCADOPAGO_ACCESS_TOKEN=seu_access_token_aqui
    ```
-4. Configurar webhook no Asaas:
-   - URL: `https://seu-site.netlify.app/.netlify/functions/asaas-webhook`
-   - Eventos: PAYMENT_CREATED, PAYMENT_CONFIRMED, PAYMENT_OVERDUE, PAYMENT_REFUNDED
+5. Configurar webhook no Mercado Pago:
+   - Vá em Integrações → Notificações
+   - URL: `https://seu-site.pages.dev/.netlify/functions/mercadopago-webhook`
+   - Eventos: payment.created, payment.updated
 
 ### 3. 🚀 Deploy e Testes
-1. Fazer deploy no Netlify com novas variáveis de ambiente
+1. Fazer deploy no Cloudflare Pages com novas variáveis de ambiente
 2. Testar fluxo completo:
    - Preencher briefing (deve redirecionar para "Obrigado" sem pagamento)
    - No admin, mudar lead para "aguardando_aprovacao"
    - Gerar link de pagamento (botão verde)
-   - Testar link de pagamento do Asaas
+   - Testar link de pagamento do Mercado Pago
    - Verificar webhook quando pagar (status deve mudar para "aprovado_pagamento")
    - Mudar para "em_ajustes" (contador deve incrementar)
    - Mudar para "aprovacao_final" (deve salvar data limite de 24h)
@@ -344,8 +343,8 @@ Quando tiver o sistema de email/WhatsApp pronto, apenas:
 
 ### Arquivos Criados:
 1. `supabase/migration-novo-fluxo.sql` - Migração completa do banco
-2. `src/lib/asaas.ts` - Integração com Asaas (pagamento 12x)
-3. `netlify/functions/asaas-webhook.ts` - Webhook do Asaas
+2. `src/lib/mercadopago.ts` - Integração com Mercado Pago (pagamento 12x)
+3. `netlify/functions/mercadopago-webhook.ts` - Webhook do Mercado Pago
 4. `src/lib/notifications.ts` - Sistema de gatilhos de email/WhatsApp
 5. `MUDANCA-FLUXO-PROGRESSO.md` - Este documento
 
@@ -366,10 +365,10 @@ Quando tiver o sistema de email/WhatsApp pronto, apenas:
 ## 🎯 Checklist Final
 
 - [x] ✅ SQL executado no Supabase
-- [ ] ⏳ Criar conta Asaas e configurar API
-- [ ] ⏳ Adicionar variáveis de ambiente do Asaas no `.env`
-- [ ] ⏳ Deploy no Netlify com novas env vars
-- [ ] ⏳ Configurar webhook do Asaas
+- [ ] ⏳ Criar conta Mercado Pago e configurar API
+- [ ] ⏳ Adicionar variável de ambiente `VITE_MERCADOPAGO_ACCESS_TOKEN` no `.env`
+- [ ] ⏳ Deploy no Cloudflare Pages com novas env vars
+- [ ] ⏳ Configurar webhook do Mercado Pago
 - [ ] ⏳ Testar fluxo completo (briefing → pagamento → ajustes)
 - [ ] ⏳ (Futuro) Integrar sistema de email/WhatsApp
 
@@ -380,10 +379,10 @@ Quando tiver o sistema de email/WhatsApp pronto, apenas:
 Se encontrar algum erro ou comportamento inesperado:
 1. Verifique os logs do console (navegador e Netlify Functions)
 2. Confirme que todas as variáveis de ambiente estão configuradas
-3. Teste no modo sandbox do Asaas primeiro
+3. Teste no modo sandbox do Mercado Pago primeiro (use credenciais de teste)
 4. Os códigos estão prontos, basta configurar as credenciais!
 
 ---
 
-**Última atualização:** 09/12/2025 às 18:30
-**Status:** ✅ IMPLEMENTAÇÃO 100% COMPLETA
+**Última atualização:** 09/12/2025 às 20:30
+**Status:** ✅ IMPLEMENTAÇÃO 100% COMPLETA - USANDO MERCADO PAGO

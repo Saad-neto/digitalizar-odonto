@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getLeadById, updateLeadStatus, Lead } from '@/lib/supabase';
-import { createPaymentForLead } from '@/lib/asaas';
+import { createPaymentForLead } from '@/lib/mercadopago';
 import { Button } from '@/components/ui/button';
 import {
   ArrowLeft,
@@ -182,14 +182,13 @@ const LeadDetails = () => {
     try {
       setSendingPayment(true);
 
-      // Criar pagamento no Asaas
+      // Criar pagamento no Mercado Pago
       const result = await createPaymentForLead({
         leadId: lead.id,
         nome: lead.briefing_data?.nome_consultorio || lead.nome,
         email: lead.email,
         whatsapp: lead.whatsapp,
         valor: lead.valor_total / 100, // Converter de centavos para reais
-        installments: 12,
       });
 
       if (!result.success || !result.paymentUrl) {
@@ -198,11 +197,11 @@ const LeadDetails = () => {
 
       // Atualizar lead com o link de pagamento
       await updateLeadStatus(lead.id, lead.status, {
-        asaas_payment_url: result.paymentUrl,
+        mercadopago_payment_url: result.paymentUrl,
       });
 
       // Atualizar estado local
-      setLead({ ...lead, asaas_payment_url: result.paymentUrl });
+      setLead({ ...lead, mercadopago_payment_url: result.paymentUrl });
 
       // Notificação de sucesso
       const notification = document.createElement('div');
@@ -469,7 +468,7 @@ const LeadDetails = () => {
               Link de Pagamento (12x no cartão)
             </h3>
 
-            {!lead.asaas_payment_url ? (
+            {!lead.mercadopago_payment_url ? (
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">
                   O site está pronto e aguardando aprovação do cliente. Clique abaixo para gerar o link de pagamento parcelado em até 12x.
@@ -498,10 +497,10 @@ const LeadDetails = () => {
                   <ExternalLink className="w-5 h-5 text-green-600 flex-shrink-0" />
                   <div className="flex-1 overflow-hidden">
                     <p className="text-xs text-gray-500 mb-1">Link de Pagamento Gerado:</p>
-                    <p className="text-sm font-mono text-gray-700 truncate">{lead.asaas_payment_url}</p>
+                    <p className="text-sm font-mono text-gray-700 truncate">{lead.mercadopago_payment_url}</p>
                   </div>
                   <Button
-                    onClick={() => copyToClipboard(lead.asaas_payment_url || '', 'payment_link')}
+                    onClick={() => copyToClipboard(lead.mercadopago_payment_url || '', 'payment_link')}
                     variant="outline"
                     size="sm"
                   >
@@ -514,7 +513,7 @@ const LeadDetails = () => {
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => window.open(lead.asaas_payment_url, '_blank')}
+                    onClick={() => window.open(lead.mercadopago_payment_url, '_blank')}
                     variant="outline"
                     size="sm"
                   >

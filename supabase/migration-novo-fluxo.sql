@@ -36,24 +36,24 @@ ALTER TABLE leads ADD COLUMN IF NOT EXISTS data_aprovacao_final TIMESTAMP WITH T
 -- Data limite para publicação (24h após aprovação final)
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS data_limite_publicacao TIMESTAMP WITH TIME ZONE;
 
--- 3. Adicionar campos para integração com Asaas
+-- 3. Adicionar campos para integração com Mercado Pago
 -- =============================================
 
--- ID do cliente no Asaas
-ALTER TABLE leads ADD COLUMN IF NOT EXISTS asaas_customer_id TEXT;
+-- ID da preferência no Mercado Pago
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS mercadopago_preference_id TEXT;
 
--- ID da cobrança no Asaas
-ALTER TABLE leads ADD COLUMN IF NOT EXISTS asaas_payment_id TEXT;
+-- ID do pagamento no Mercado Pago
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS mercadopago_payment_id TEXT;
 
--- Link da cobrança (enviar para cliente)
-ALTER TABLE leads ADD COLUMN IF NOT EXISTS asaas_payment_url TEXT;
+-- Link da preferência (enviar para cliente)
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS mercadopago_payment_url TEXT;
 
--- 4. Atualizar tabela de payments para suportar Asaas
+-- 4. Atualizar tabela de payments para suportar Mercado Pago
 -- =============================================
 
--- Adicionar colunas Asaas na tabela payments
-ALTER TABLE payments ADD COLUMN IF NOT EXISTS asaas_payment_id TEXT;
-ALTER TABLE payments ADD COLUMN IF NOT EXISTS asaas_customer_id TEXT;
+-- Adicionar colunas Mercado Pago na tabela payments
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS mercadopago_payment_id TEXT;
+ALTER TABLE payments ADD COLUMN IF NOT EXISTS mercadopago_preference_id TEXT;
 ALTER TABLE payments ADD COLUMN IF NOT EXISTS payment_url TEXT;
 
 -- Atualizar constraint de tipo para incluir 'total' (100% de uma vez)
@@ -65,8 +65,8 @@ ALTER TABLE payments ADD CONSTRAINT payments_tipo_check
 -- =============================================
 
 CREATE INDEX IF NOT EXISTS idx_leads_rodadas_ajustes ON leads(rodadas_ajustes_usadas);
-CREATE INDEX IF NOT EXISTS idx_leads_asaas_customer ON leads(asaas_customer_id);
-CREATE INDEX IF NOT EXISTS idx_leads_asaas_payment ON leads(asaas_payment_id);
+CREATE INDEX IF NOT EXISTS idx_leads_mercadopago_preference ON leads(mercadopago_preference_id);
+CREATE INDEX IF NOT EXISTS idx_leads_mercadopago_payment ON leads(mercadopago_payment_id);
 
 -- 6. Comentários nas colunas (documentação)
 -- =============================================
@@ -75,9 +75,9 @@ COMMENT ON COLUMN leads.rodadas_ajustes_usadas IS 'Contador de rodadas de ajuste
 COMMENT ON COLUMN leads.data_aprovacao_inicial IS 'Data/hora em que o cliente aprovou o site inicial';
 COMMENT ON COLUMN leads.data_aprovacao_final IS 'Data/hora em que o cliente aprovou a versão final';
 COMMENT ON COLUMN leads.data_limite_publicacao IS 'Data/hora limite para publicar o site (24h após aprovação final)';
-COMMENT ON COLUMN leads.asaas_customer_id IS 'ID do cliente no sistema Asaas';
-COMMENT ON COLUMN leads.asaas_payment_id IS 'ID da cobrança no Asaas';
-COMMENT ON COLUMN leads.asaas_payment_url IS 'Link da cobrança para enviar ao cliente';
+COMMENT ON COLUMN leads.mercadopago_preference_id IS 'ID da preferência de pagamento no Mercado Pago';
+COMMENT ON COLUMN leads.mercadopago_payment_id IS 'ID do pagamento confirmado no Mercado Pago';
+COMMENT ON COLUMN leads.mercadopago_payment_url IS 'Link da preferência para enviar ao cliente';
 
 -- 7. Atualizar leads existentes (se houver)
 -- =============================================
