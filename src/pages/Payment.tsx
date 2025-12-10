@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CheckCircle2, CreditCard, Shield, Loader2 } from 'lucide-react';
 import { getLeadById } from '@/lib/supabase';
-
-// Inicializar Stripe
-const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
+import { createPaymentForLead } from '@/lib/mercadopago';
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -32,15 +28,13 @@ const Payment = () => {
     });
   };
 
-  // Calcular parcelas (12x com juros aproximados de 2.5% ao mês)
-  const calcularParcela = (valor: number, parcelas: number = 12) => {
-    // Taxa de juros aproximada (2.5% ao mês)
-    const taxa = 0.025;
-    const valorComJuros = valor * Math.pow(1 + taxa, parcelas);
-    return Math.ceil(valorComJuros / parcelas);
+  // Converter centavos para reais (número decimal)
+  const centsToReais = (cents: number) => {
+    return cents / 100;
   };
 
-  const parcelaValor = calcularParcela(valorEntrada);
+  // Calcular parcela (Mercado Pago permite até 12x)
+  const parcelaValor = Math.ceil(valorEntrada / 12);
 
   // Carregar dados do lead
   useEffect(() => {
@@ -66,54 +60,41 @@ const Payment = () => {
   }, [leadId]);
 
   const handlePayment = async () => {
-    if (!leadId) {
-      alert('Erro: ID do lead não encontrado.');
+    if (!leadId || !leadData) {
+      alert('Erro: Dados do lead não encontrados.');
       return;
     }
 
-    if (!stripePromise) {
-      alert('Erro: Stripe não está configurado. Verifique a chave pública VITE_STRIPE_PUBLIC_KEY.');
+    const accessToken = import.meta.env.VITE_MERCADOPAGO_ACCESS_TOKEN;
+    if (!accessToken) {
+      alert('Erro: Mercado Pago não está configurado. Verifique VITE_MERCADOPAGO_ACCESS_TOKEN.');
       return;
     }
 
     setLoading(true);
 
     try {
-      // Criar sessão de checkout no Stripe via Cloudflare Worker
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          leadId,
-          tipo: 'entrada',
-          valor: valorEntrada,
-        }),
+      console.log('🔄 Criando pagamento no Mercado Pago...');
+
+      // Criar pagamento usando a biblioteca do Mercado Pago
+      const result = await createPaymentForLead({
+        leadId,
+        nome: leadData.nome || 'Cliente',
+        email: leadData.email || '',
+        whatsapp: leadData.whatsapp || '',
+        valor: centsToReais(valorEntrada), // Converter centavos para reais
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao criar sessão de pagamento');
+      if (!result.success || !result.paymentUrl) {
+        throw new Error(result.error || 'Não foi possível criar o link de pagamento');
       }
 
-      const { sessionId } = await response.json();
+      console.log('✅ Link de pagamento criado:', result.paymentUrl);
 
-      // Redirecionar para o Stripe Checkout
-      const stripe = await stripePromise;
-      if (!stripe) {
-        throw new Error('Stripe não pôde ser carregado');
-      }
-
-      const { error: stripeError } = await stripe.redirectToCheckout({
-        sessionId,
-      });
-
-      if (stripeError) {
-        throw new Error(stripeError.message);
-      }
+      // Redirecionar para o Mercado Pago
+      window.location.href = result.paymentUrl;
     } catch (err: any) {
-      console.error('Erro ao processar pagamento:', err);
+      console.error('❌ Erro ao processar pagamento:', err);
       alert(`Erro: ${err.message || 'Não foi possível processar o pagamento. Tente novamente.'}`);
       setLoading(false);
     }
@@ -195,9 +176,9 @@ const Payment = () => {
             <span className="text-lg font-normal ml-2">à vista</span>
           </div>
           <div className="text-lg opacity-90">
-            ou <span className="font-semibold">12x de {formatCurrency(parcelaValor)}</span>*
+            ou <span className="font-semibold">até 12x de {formatCurrency(parcelaValor)}</span>
           </div>
-          <p className="text-xs opacity-75 mt-2">*juros do cartão</p>
+          <p className="text-xs opacity-75 mt-2">*parcelas no cartão de crédito</p>
         </div>
 
         {/* Benefícios */}
@@ -236,14 +217,14 @@ const Payment = () => {
         {/* Selo de Segurança */}
         <div className="mt-6 flex items-center justify-center text-gray-500 text-sm">
           <Shield className="w-4 h-4 mr-2" />
-          <span>Pagamento 100% seguro via Stripe</span>
+          <span>Pagamento 100% seguro via Mercado Pago</span>
         </div>
 
         {/* Nota sobre modo teste */}
         {import.meta.env.DEV && (
           <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <p className="text-yellow-800 text-xs text-center">
-              <strong>Modo Desenvolvimento:</strong> Configure VITE_STRIPE_PUBLIC_KEY no arquivo .env para habilitar pagamentos.
+              <strong>Modo Desenvolvimento:</strong> Configure VITE_MERCADOPAGO_ACCESS_TOKEN no arquivo .env para habilitar pagamentos.
             </p>
           </div>
         )}
