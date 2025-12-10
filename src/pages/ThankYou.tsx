@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Clock, CreditCard, Globe, Star, Shield, Zap, Gift } from 'lucide-react';
+import { CheckCircle, Clock, CreditCard, Globe, Star, Shield, Zap, Gift, Sparkles } from 'lucide-react';
 
 const ThankYou = () => {
   const handleWhatsAppContact = () => {
@@ -15,16 +15,18 @@ const ThankYou = () => {
       <div className="container mx-auto py-8 px-4 max-w-4xl">
         <Card className="overflow-hidden" style={{ boxShadow: 'var(--shadow-lg)' }}>
           <CardContent className="p-0">
-            {/* Hero Section */}
+            {/* Hero Section - MELHORADO: Contraste aumentado */}
             <div className="bg-gradient-to-r from-[hsl(var(--success))] to-[hsl(var(--success-dark))] text-white text-center p-12">
               <div className="mb-6">
                 <CheckCircle className="mx-auto h-20 w-20 mb-4" />
-                <h1 className="text-4xl font-bold mb-4 text-white">🎉 Parabéns! Seu pedido foi recebido com sucesso!</h1>
-                <p className="text-xl opacity-90">
-                  <strong>Obrigado por confiar em nós para criar seu site profissional!</strong>
+                <h1 className="text-4xl font-bold mb-4 text-white drop-shadow-lg">🎉 Parabéns! Seu pedido foi recebido com sucesso!</h1>
+                {/* MELHORADO: Contraste muito melhor */}
+                <p className="text-xl text-white font-bold drop-shadow-md mb-4">
+                  Obrigado por confiar em nós para criar seu site profissional!
                 </p>
               </div>
-              <p className="text-lg">
+              {/* MELHORADO: Texto mais legível */}
+              <p className="text-lg text-white font-medium drop-shadow">
                 Estamos animados para transformar suas ideias em realidade e criar um site que vai impressionar seus visitantes e gerar resultados para seu negócio.
               </p>
             </div>
@@ -39,32 +41,67 @@ const ThankYou = () => {
                 <h2 className="text-3xl font-bold mb-4" style={{ color: 'hsl(var(--primary))' }}>
                   ⚡ SÓ PAGA SE APROVAR!
                 </h2>
-                <p className="text-lg mb-6" style={{ color: 'hsl(var(--text-primary))' }}>
-                  <strong>Em até 7 dias você receberá seu site pronto para aprovação.</strong><br />
+                <p className="text-lg mb-6 text-gray-800 font-semibold">
+                  Em até 7 dias você receberá seu site pronto para aprovação.<br />
                   Só pagará se gostar! 💯
                 </p>
 
                 <div className="grid md:grid-cols-2 gap-4 text-left">
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                    <span><strong>Site completo e profissional</strong></span>
+                    <span className="font-semibold text-gray-800">Site completo e profissional</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                    <span><strong>Design responsivo (mobile e desktop)</strong></span>
+                    <span className="font-semibold text-gray-800">Design responsivo (mobile e desktop)</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                    <span><strong>Otimizado para Google</strong></span>
+                    <span className="font-semibold text-gray-800">Otimizado para Google</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                    <span><strong>Hospedagem premium GRÁTIS no 1º ano</strong></span>
+                    <span className="font-semibold text-gray-800">Hospedagem premium GRÁTIS</span>
                   </div>
                 </div>
               </div>
 
-              {/* Process Steps */}
+              {/* NOVO: Destaque de Hospedagem e Domínio Grátis */}
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-8 rounded-xl shadow-2xl">
+                <div className="flex items-center justify-center mb-4">
+                  <Sparkles className="h-10 w-10 mr-3" />
+                  <h2 className="text-3xl font-bold">✨ DIFERENCIAIS EXCLUSIVOS</h2>
+                </div>
+                <div className="grid md:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border-2 border-white/30">
+                    <Globe className="h-10 w-10 mb-3 mx-auto" />
+                    <h3 className="text-xl font-bold mb-2 text-center">🌐 Hospedagem GRÁTIS</h3>
+                    <p className="text-white/90 text-center font-medium">
+                      Hospedagem premium <strong className="text-white">SEM CUSTO MENSAL!</strong>
+                    </p>
+                    <p className="text-sm text-white/80 text-center mt-2">
+                      Usamos Cloudflare Pages - infraestrutura de nível empresarial, 100% gratuita para você!
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border-2 border-white/30">
+                    <CheckCircle className="h-10 w-10 mb-3 mx-auto" />
+                    <h3 className="text-xl font-bold mb-2 text-center">🎯 Domínio Personalizado</h3>
+                    <p className="text-white/90 text-center font-medium">
+                      <strong className="text-white">SEM TAXA</strong> de configuração!
+                    </p>
+                    <p className="text-sm text-white/80 text-center mt-2">
+                      Conectamos seu domínio sem cobrar nada. Você só paga o registro (.com.br ~R$ 40/ano)
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-6 text-center bg-white/20 backdrop-blur-sm p-4 rounded-lg">
+                  <p className="text-white font-bold text-lg">
+                    💰 Economize mais de R$ 400/ano em hospedagem!
+                  </p>
+                </div>
+              </div>
+
+              {/* Process Steps - MELHORADO: Fonte menor nos títulos */}
               <div>
                 <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: 'hsl(var(--primary))' }}>🔄 COMO FUNCIONA O PROCESSO:</h2>
                 <div className="grid md:grid-cols-4 gap-6">
@@ -72,169 +109,152 @@ const ThankYou = () => {
                     <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
                       1
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>PRODUÇÃO (até 7 dias)</h3>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Criamos seu site e enviamos para aprovação</p>
+                    {/* MELHORADO: Fonte reduzida de sem definição para text-sm */}
+                    <h3 className="font-bold mb-2 text-sm" style={{ color: 'hsl(var(--primary))' }}>PRODUÇÃO (até 7 dias)</h3>
+                    <p className="text-xs text-gray-600">Criamos seu site e enviamos para aprovação</p>
                   </div>
 
                   <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
                     <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
                       2
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>VOCÊ APROVA E PAGA</h3>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Só paga se aprovar! Parcele em até 12x</p>
+                    {/* MELHORADO: Fonte reduzida */}
+                    <h3 className="font-bold mb-2 text-sm" style={{ color: 'hsl(var(--primary))' }}>VOCÊ APROVA E PAGA</h3>
+                    <p className="text-xs text-gray-600">Só paga se aprovar! Parcele em até 12x</p>
                   </div>
 
                   <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
                     <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
                       3
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>AJUSTES (até 2 rodadas)</h3>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Fazemos as alterações que solicitar</p>
+                    {/* MELHORADO: Fonte reduzida */}
+                    <h3 className="font-bold mb-2 text-sm" style={{ color: 'hsl(var(--primary))' }}>AJUSTES (até 2 rodadas)</h3>
+                    <p className="text-xs text-gray-600">Fazemos as alterações que solicitar</p>
                   </div>
 
                   <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
                     <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
                       4
                     </div>
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--primary))' }}>NO AR EM 24H</h3>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>Após aprovação final, site publicado em 24h</p>
+                    {/* MELHORADO: Fonte reduzida */}
+                    <h3 className="font-bold mb-2 text-sm" style={{ color: 'hsl(var(--primary))' }}>NO AR EM 24H</h3>
+                    <p className="text-xs text-gray-600">Após aprovação final, site publicado em 24h</p>
                   </div>
                 </div>
               </div>
 
               {/* Special Offer */}
-              <div className="p-8 rounded-lg border-l-4" style={{ 
-                background: 'hsl(var(--success-bg))', 
-                borderColor: 'hsl(var(--success))' 
+              <div className="p-8 rounded-lg border-l-4" style={{
+                background: 'hsl(var(--success-bg))',
+                borderColor: 'hsl(var(--success))'
               }}>
                 <div className="text-center">
                   <Gift className="mx-auto h-12 w-12 mb-4" style={{ color: 'hsl(var(--success))' }} />
-                  <h2 className="text-2xl font-bold mb-4" style={{ color: 'hsl(var(--success-dark))' }}>💰 OFERTA ESPECIAL - APENAS PARA HOJE:</h2>
-                  
+                  <h2 className="text-2xl font-bold mb-4" style={{ color: 'hsl(var(--success-dark))' }}>💰 INVESTIMENTO:</h2>
+
                   <div className="text-center mb-6">
-                    <span className="text-2xl line-through" style={{ color: 'hsl(var(--text-light))' }}>De R$ 997</span>
+                    <span className="text-2xl line-through text-gray-400">De R$ 997</span>
                     <span className="text-4xl font-bold ml-4" style={{ color: 'hsl(var(--success))' }}>por apenas R$ 497</span>
-                    <p className="text-lg mt-2" style={{ color: 'hsl(var(--text-secondary))' }}>
-                      <em>Ou 12x de R$ 49,70 no cartão</em>
+                    <p className="text-lg mt-2 text-gray-700 font-semibold">
+                      Ou 12x de R$ 49,70 no cartão
                     </p>
                   </div>
 
                   <div className="bg-white p-6 rounded-lg" style={{ boxShadow: 'var(--shadow-md)' }}>
-                    <h3 className="font-bold mb-4 text-lg" style={{ color: 'hsl(var(--success-dark))' }}>🎁 BÔNUS INCLUSOS:</h3>
+                    <h3 className="font-bold mb-4 text-lg" style={{ color: 'hsl(var(--success-dark))' }}>🎁 INCLUSOS NO PACOTE:</h3>
                     <div className="grid md:grid-cols-2 gap-4 text-left">
                       <div className="flex items-center space-x-3">
                         <CheckCircle className="h-5 w-5 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                        <span>Hospedagem premium <strong>GRÁTIS</strong> no primeiro ano (valor R$ 358,80)</span>
+                        <span className="text-gray-800 font-medium">Hospedagem premium <strong>GRÁTIS PARA SEMPRE</strong></span>
                       </div>
                       <div className="flex items-center space-x-3">
                         <CheckCircle className="h-5 w-5 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                        <span>Certificado SSL (segurança) <strong>GRÁTIS</strong></span>
+                        <span className="text-gray-800 font-medium">Certificado SSL (segurança) <strong>GRÁTIS</strong></span>
                       </div>
                       <div className="flex items-center space-x-3">
                         <CheckCircle className="h-5 w-5 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                        <span>Suporte técnico especializado</span>
+                        <span className="text-gray-800 font-medium">Domínio personalizado <strong>SEM TAXA</strong></span>
                       </div>
                       <div className="flex items-center space-x-3">
                         <CheckCircle className="h-5 w-5 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
-                        <span>Site responsivo para mobile</span>
+                        <span className="text-gray-800 font-medium">Site responsivo para mobile</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Hosting Options */}
-              <div className="p-8 rounded-lg" style={{ background: 'hsl(var(--bg-gray-50))' }}>
-                <div className="text-center mb-6">
-                  <Globe className="mx-auto h-12 w-12 mb-4" style={{ color: 'hsl(var(--primary))' }} />
-                  <h2 className="text-2xl font-bold" style={{ color: 'hsl(var(--primary))' }}>🌐 HOSPEDAGEM A PARTIR DO 2º ANO:</h2>
-                  <p className="mt-2" style={{ color: 'hsl(var(--text-secondary))' }}>Escolha a melhor opção para você:</p>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-                  <div className="bg-white p-6 rounded-lg border-2 border-gray-200 text-center" style={{ boxShadow: 'var(--shadow-md)' }}>
-                    <CreditCard className="mx-auto h-8 w-8 mb-3" style={{ color: 'hsl(var(--blue-trust))' }} />
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--blue-trust))' }}>💳 Mensal</h3>
-                    <div className="text-2xl font-bold mb-2" style={{ color: 'hsl(var(--text-primary))' }}>R$ 29,90/mês</div>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>(flexibilidade total)</p>
-                  </div>
-                  
-                  <div className="bg-white p-6 rounded-lg border-2 text-center relative" style={{ 
-                    boxShadow: 'var(--shadow-md)', 
-                    borderColor: 'hsl(var(--success))' 
-                  }}>
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 text-white px-4 py-1 rounded-full text-sm font-bold" style={{ background: 'hsl(var(--success))' }}>
-                      ECONOMIZE R$ 59,80
-                    </div>
-                    <Star className="mx-auto h-8 w-8 mb-3" style={{ color: 'hsl(var(--success))' }} />
-                    <h3 className="font-bold mb-2" style={{ color: 'hsl(var(--success))' }}>💎 Anual</h3>
-                    <div className="text-2xl font-bold mb-2" style={{ color: 'hsl(var(--text-primary))' }}>R$ 299,00/ano</div>
-                    <p className="text-sm" style={{ color: 'hsl(var(--text-secondary))' }}>*Pagamento anual = 2 meses grátis!</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Domain Options */}
-              <div className="p-6 rounded-lg border-l-4" style={{ 
-                background: 'hsl(var(--blue-light))', 
-                borderColor: 'hsl(var(--blue-trust))' 
+              {/* Domain Options - ATUALIZADO: Sem taxa de configuração */}
+              <div className="p-6 rounded-lg border-l-4" style={{
+                background: 'hsl(var(--blue-light))',
+                borderColor: 'hsl(var(--blue-trust))'
               }}>
                 <h3 className="text-xl font-bold mb-4" style={{ color: 'hsl(var(--blue-trust))' }}>🎯 DOMÍNIO PERSONALIZADO (OPCIONAL):</h3>
-                <p className="mb-4 font-semibold">Quer usar seu próprio domínio?</p>
-                <div className="space-y-2" style={{ color: 'hsl(var(--text-primary))' }}>
-                  <p>• Transferência de domínio existente: <strong>R$ 100,00</strong></p>
-                  <p>• Registro de novo domínio: <strong>R$ 100,00</strong></p>
+                <p className="mb-4 font-semibold text-gray-800">Quer usar seu próprio domínio?</p>
+                <div className="bg-white p-4 rounded-lg mb-4 border-2 border-green-500">
+                  <p className="text-green-700 font-bold text-lg mb-2">
+                    ✅ CONECTAMOS SEU DOMÍNIO SEM COBRAR TAXA!
+                  </p>
+                  <p className="text-gray-700 text-sm">
+                    Você só paga o custo de registro/renovação do domínio (direto no Registro.br ou provedor de sua escolha)
+                  </p>
                 </div>
-                <p className="text-sm mt-3 italic" style={{ color: 'hsl(var(--text-secondary))' }}>
-                  *Este serviço pode ser adicionado a qualquer momento durante o processo.
+                <div className="space-y-2 text-gray-800">
+                  <p>• Já tem um domínio? <strong>Conectamos GRÁTIS</strong></p>
+                  <p>• Precisa registrar novo domínio .com.br? <strong>~R$ 40/ano</strong> (direto no Registro.br)</p>
+                  <p>• Precisa registrar novo domínio .com? <strong>~R$ 60/ano</strong> (em provedores internacionais)</p>
+                </div>
+                <p className="text-sm mt-3 italic text-gray-600">
+                  *Podemos ajudar você a registrar o domínio ou você pode fazer por conta própria.
                 </p>
               </div>
 
               {/* Next Steps */}
-              <div className="p-6 rounded-lg border-l-4" style={{ 
-                background: 'hsl(var(--yellow-light))', 
-                borderColor: 'hsl(var(--yellow-highlight))' 
+              <div className="p-6 rounded-lg border-l-4" style={{
+                background: 'hsl(var(--yellow-light))',
+                borderColor: 'hsl(var(--yellow-highlight))'
               }}>
                 <h3 className="text-xl font-bold mb-4" style={{ color: 'hsl(var(--orange-warning))' }}>📧 PRÓXIMOS PASSOS:</h3>
-                <div className="space-y-3" style={{ color: 'hsl(var(--text-primary))' }}>
+                <div className="space-y-3 text-gray-800">
                   <div className="flex items-start space-x-3">
                     <div className="text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5" style={{ background: 'hsl(var(--yellow-highlight))' }}>1</div>
-                    <p><strong>Fique de olho no seu e-mail</strong> - enviaremos atualizações do progresso</p>
+                    <p className="font-semibold">Fique de olho no seu e-mail - enviaremos atualizações do progresso</p>
                   </div>
                   <div className="flex items-start space-x-3">
                     <div className="text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5" style={{ background: 'hsl(var(--yellow-highlight))' }}>2</div>
-                    <p><strong>Responda rapidamente</strong> - para agilizar as revisões</p>
+                    <p className="font-semibold">Responda rapidamente - para agilizar as revisões</p>
                   </div>
                   <div className="flex items-start space-x-3">
                     <div className="text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5" style={{ background: 'hsl(var(--yellow-highlight))' }}>3</div>
-                    <p><strong>Prepare seu conteúdo</strong> - textos, imagens e informações importantes</p>
+                    <p className="font-semibold">Prepare seu conteúdo - textos, imagens e informações importantes</p>
                   </div>
                 </div>
               </div>
 
-              {/* Excitement Section */}
+              {/* Excitement Section - MELHORADO: Contraste muito melhor */}
               <div className="text-center text-white p-8 rounded-lg" style={{ background: `linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-dark)) 100%)` }}>
-                <Clock className="mx-auto h-12 w-12 mb-4" />
-                <h2 className="text-2xl font-bold mb-4">🚀 ESTÁ ANSIOSO PARA VER SEU SITE?</h2>
-                <p className="text-lg mb-4">
-                  <strong>Nós também!</strong> Nosso time está dedicado a entregar um resultado que vai superar suas expectativas.
+                <Clock className="mx-auto h-12 w-12 mb-4 drop-shadow-lg" />
+                <h2 className="text-2xl font-bold mb-4 text-white drop-shadow-md">🚀 ESTÁ ANSIOSO PARA VER SEU SITE?</h2>
+                {/* MELHORADO: Texto mais legível com drop-shadow */}
+                <p className="text-lg mb-4 text-white font-bold drop-shadow">
+                  Nós também! Nosso time está dedicado a entregar um resultado que vai superar suas expectativas.
                 </p>
-                <p className="text-lg italic">
-                  <em>Em menos de 24 horas, você terá um site profissional que vai destacar seu negócio da concorrência.</em>
+                <p className="text-lg text-white font-semibold drop-shadow">
+                  Em menos de 24 horas, você terá um site profissional que vai destacar seu negócio da concorrência.
                 </p>
               </div>
 
               {/* Contact Section */}
-              <div className="text-center bg-white p-8 rounded-lg border-2" style={{ 
-                boxShadow: 'var(--shadow-md)', 
-                borderColor: 'hsl(var(--primary))' 
+              <div className="text-center bg-white p-8 rounded-lg border-2" style={{
+                boxShadow: 'var(--shadow-md)',
+                borderColor: 'hsl(var(--primary))'
               }}>
                 <Shield className="mx-auto h-12 w-12 mb-4" style={{ color: 'hsl(var(--primary))' }} />
                 <h3 className="text-xl font-bold mb-4" style={{ color: 'hsl(var(--primary))' }}>💬 Dúvidas? Estamos aqui para ajudar!</h3>
-                <p className="mb-6" style={{ color: 'hsl(var(--text-secondary))' }}>
+                <p className="mb-6 text-gray-700 font-medium">
                   Entre em contato conosco pelo WhatsApp e tire todas as suas dúvidas sobre o processo.
                 </p>
-                
+
                 <Button
                   onClick={handleWhatsAppContact}
                   className="bg-[hsl(var(--success))] hover:bg-[hsl(var(--success-dark))] text-white font-bold px-8 py-4 rounded-full text-lg transition-all duration-300 transform hover:scale-105"
@@ -242,13 +262,13 @@ const ThankYou = () => {
                 >
                   💬 Conversar no WhatsApp: (18) 3175-1052
                 </Button>
-                
+
                 <div className="mt-6 pt-6 border-t" style={{ borderColor: 'hsl(var(--border))' }}>
-                  <p className="font-semibold" style={{ color: 'hsl(var(--text-primary))' }}>
-                    <strong>Obrigado novamente pela confiança!</strong>
+                  <p className="font-semibold text-gray-800">
+                    Obrigado novamente pela confiança!
                   </p>
                   <p className="font-bold mt-2" style={{ color: 'hsl(var(--primary))' }}>
-                    <em>Equipe Digitalizar Odonto</em>
+                    Equipe Digitalizar Odonto
                   </p>
                 </div>
               </div>
