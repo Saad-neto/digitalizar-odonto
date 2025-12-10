@@ -39,8 +39,8 @@ const OffersSection: React.FC = () => {
   const included = [
     { item: "Site responsivo profissional", value: "R$ 2.000" },
     { item: "Hospedagem premium GRÁTIS PARA SEMPRE", value: "R$ 400/ano", highlight: true },
-    { item: "Domínio personalizado SEM TAXA de configuração", value: "R$ 150", highlight: true },
     { item: "Certificado SSL de segurança GRÁTIS", value: "R$ 200" },
+    { item: "Conexão do seu domínio SEM TAXA", value: "R$ 150" },
     { item: "Otimização básica para Google", value: "R$ 800" },
     { item: "Integração WhatsApp e redes sociais", value: "R$ 300" },
     { item: "Suporte técnico especializado", value: "R$ 600" },
@@ -222,7 +222,7 @@ const OffersSection: React.FC = () => {
                 <div className="flex items-start gap-2">
                   <Check size={18} className="mt-0.5 flex-shrink-0" />
                   <div>
-                    <strong>Domínio SEM TAXA:</strong> Conectamos seu domínio personalizado sem cobrar nada! Você paga apenas o registro anual (~R$ 40/ano direto no Registro.br).
+                    <strong>Conexão de Domínio GRÁTIS:</strong> Se você já tem um domínio (ou comprar um), conectamos ele ao seu site sem cobrar taxa nenhuma! Outras agências cobram até R$ 150 por isso.
                   </div>
                 </div>
               </div>
