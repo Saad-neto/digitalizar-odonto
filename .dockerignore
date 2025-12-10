@@ -1,0 +1,73 @@
+# Node modules
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist
+build
+.next
+.nuxt
+.cache
+
+# Development
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Testing
+coverage
+.nyc_output
+*.test.js
+*.spec.js
+__tests__
+__mocks__
+
+# Environment
+# .env - COMENTADO para permitir build com variáveis de ambiente
+.env.local
+.env.*.local
+.env.development
+.env.test
+# .env.production - COMENTADO para permitir build
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+docs
+*.md
+!nginx.conf
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+netlify.toml
+.cloudflare-deploy.md
+
+# Temp files
+tmp
+temp
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cloudflare/Netlify
+netlify
+functions
+.netlify

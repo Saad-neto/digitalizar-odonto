@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  digitalizar-odonto:
+    image: digitalizar-odonto:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - network_public
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+      labels:
+        # Traefik labels
+        - "traefik.enable=true"
+        - "traefik.http.routers.digitalizar-odonto.rule=Host(`sites-odonto.digitalizar.space`) || Host(`95.217.158.112`)"
+        - "traefik.http.routers.digitalizar-odonto.entrypoints=websecure"
+        - "traefik.http.routers.digitalizar-odonto.tls=true"
+        - "traefik.http.routers.digitalizar-odonto.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.digitalizar-odonto.loadbalancer.server.port=80"
+
+        # Redirect www to non-www
+        - "traefik.http.middlewares.digitalizar-odonto-redirect.redirectregex.regex=^https://www\\.(.+)"
+        - "traefik.http.middlewares.digitalizar-odonto-redirect.redirectregex.replacement=https://$${1}"
+        - "traefik.http.middlewares.digitalizar-odonto-redirect.redirectregex.permanent=true"
+        - "traefik.http.routers.digitalizar-odonto.middlewares=digitalizar-odonto-redirect"
+
+        # HTTP to HTTPS redirect
+        - "traefik.http.routers.digitalizar-odonto-http.rule=Host(`sites-odonto.digitalizar.space`) || Host(`95.217.158.112`)"
+        - "traefik.http.routers.digitalizar-odonto-http.entrypoints=web"
+        - "traefik.http.routers.digitalizar-odonto-http.middlewares=redirect-to-https"
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+
+networks:
+  network_public:
+    external: true
