@@ -25,15 +25,15 @@ const HeroSection: React.FC = () => {
             <div className="flex flex-wrap gap-6 justify-center lg:justify-start mb-8 text-white/80">
               <div className="flex items-center gap-2">
                 <CheckCircle size={20} className="text-success-light" />
-                <span>Responsivo</span>
+                <span className="font-semibold">Responsivo</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={20} className="text-success-light" />
-                <span>Otimizado Google</span>
+                <span className="font-semibold">Otimizado Google</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={20} className="text-success-light" />
-                <span>Hospedagem Incluída</span>
+                <span className="font-semibold">Hospedagem GRÁTIS</span>
               </div>
             </div>
 

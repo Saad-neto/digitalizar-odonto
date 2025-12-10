@@ -38,7 +38,8 @@ const OffersSection: React.FC = () => {
 
   const included = [
     { item: "Site responsivo profissional", value: "R$ 2.000" },
-    { item: "Hospedagem premium 1º ano GRÁTIS", value: "R$ 360" },
+    { item: "Hospedagem premium GRÁTIS PARA SEMPRE", value: "R$ 400/ano", highlight: true },
+    { item: "Domínio personalizado SEM TAXA de configuração", value: "R$ 150", highlight: true },
     { item: "Certificado SSL de segurança GRÁTIS", value: "R$ 200" },
     { item: "Otimização básica para Google", value: "R$ 800" },
     { item: "Integração WhatsApp e redes sociais", value: "R$ 300" },
@@ -53,7 +54,9 @@ const OffersSection: React.FC = () => {
   ];
 
   const totalValue = included.reduce((sum, item) => {
-    const value = parseInt(item.value.replace(/[^\d]/g, ''));
+    // Extrair apenas o primeiro número do valor (ex: "R$ 400/ano" vira 400)
+    const match = item.value.match(/\d+/);
+    const value = match ? parseInt(match[0]) : 0;
     return sum + value;
   }, 0);
 
@@ -184,14 +187,45 @@ const OffersSection: React.FC = () => {
             
             <div className="space-y-3">
               {included.map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                <div
+                  key={index}
+                  className={`flex items-center justify-between p-3 rounded-lg border ${
+                    item.highlight
+                      ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border-orange-300 shadow-md'
+                      : 'bg-white border-gray-200'
+                  }`}
+                >
                   <div className="flex items-center gap-3">
-                    <Check size={20} className="text-success" />
-                    <span className="text-text-primary">{item.item}</span>
+                    <Check size={20} className={item.highlight ? "text-orange-600" : "text-success"} />
+                    <span className={`${item.highlight ? 'font-bold text-gray-900' : 'text-text-primary'}`}>
+                      {item.item}
+                      {item.highlight && <span className="ml-2 text-xs bg-orange-500 text-white px-2 py-0.5 rounded-full">DESTAQUE</span>}
+                    </span>
                   </div>
-                  <span className="font-semibold text-success">{item.value}</span>
+                  <span className={`font-semibold ${item.highlight ? 'text-orange-600 text-lg' : 'text-success'}`}>
+                    {item.value}
+                  </span>
                 </div>
               ))}
+            </div>
+
+            {/* Explicação dos Diferenciais */}
+            <div className="mt-6 p-6 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-xl">
+              <h5 className="text-lg font-bold mb-4 text-center">💎 POR QUE NOSSOS DIFERENCIAIS SÃO ÚNICOS?</h5>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start gap-2">
+                  <Check size={18} className="mt-0.5 flex-shrink-0" />
+                  <div>
+                    <strong>Hospedagem GRÁTIS PARA SEMPRE:</strong> Usamos Cloudflare Pages, infraestrutura empresarial de nível mundial. Você economiza mais de R$ 400/ano comparado com hospedagens tradicionais!
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check size={18} className="mt-0.5 flex-shrink-0" />
+                  <div>
+                    <strong>Domínio SEM TAXA:</strong> Conectamos seu domínio personalizado sem cobrar nada! Você paga apenas o registro anual (~R$ 40/ano direto no Registro.br).
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="mt-6 p-4 bg-text-primary text-white rounded-lg text-center">

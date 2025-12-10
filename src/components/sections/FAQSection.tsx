@@ -19,8 +19,12 @@ const FAQSection: React.FC = () => {
       answer: "Sim! Fazemos otimização básica para SEO local incluída no pacote. Seu site será encontrado quando pacientes procurarem 'dentista + sua cidade'."
     },
     {
-      question: "E depois do primeiro ano de hospedagem?",
-      answer: "Apenas R$ 29,90/mês ou R$ 299/ano. Bem abaixo do mercado e com suporte técnico incluído. Sem taxas ocultas, surpresas ou aumentos abusivos."
+      question: "A hospedagem é realmente grátis para sempre?",
+      answer: "SIM! 100% GRÁTIS PARA SEMPRE! Usamos Cloudflare Pages, uma infraestrutura de nível empresarial que nos permite oferecer hospedagem premium sem custo mensal. Você economiza mais de R$ 400/ano comparado com hospedagens tradicionais. Zero taxas ocultas!"
+    },
+    {
+      question: "Vocês cobram para conectar meu domínio personalizado?",
+      answer: "NÃO! Conectamos seu domínio personalizado SEM COBRAR TAXA. Você só paga o registro do domínio (cerca de R$ 40/ano direto no Registro.br para .com.br). Se você já tem um domínio, conectamos totalmente GRÁTIS. Diferente de outras empresas que cobram R$ 100+ só para configurar!"
     },
     {
       question: "Funciona para qualquer especialidade odontológica?",
