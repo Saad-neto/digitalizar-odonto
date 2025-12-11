@@ -1,60 +1,46 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const FAQSection: React.FC = () => {
-  const [openFAQ, setOpenFAQ] = useState<number | null>(0);
-
   const faqs = [
     {
-      question: "Como vocês conseguem entregar em 24h?",
-      answer: "Desenvolvemos templates otimizados específicos para dentistas ao longo de 5 anos. Nosso sistema automatiza 70% do processo, permitindo focar na personalização e qualidade. Nossa equipe trabalha em turnos para garantir entregas rápidas sem comprometer a excelência."
+      question: "E se eu não gostar do layout?",
+      answer: "Você só paga após aprovar o layout. Se não gostar, não tem custo nenhum. Fazemos até 2 rodadas de revisão incluídas antes da aprovação final. Nossa taxa de aprovação é de 98,7%, mas se você fizer parte dos 1,3% que não aprovam, simplesmente não há cobrança. Zero risco para você."
     },
     {
-      question: "E se eu não tiver logo, fotos ou textos prontos?", 
-      answer: "Sem problemas! Criamos logo simples gratuitamente, temos banco de imagens premium odontológicas e redatores especializados em odontologia. Você só precisa responder nosso briefing de 15 minutos com as informações básicas do seu consultório."
+      question: "Por que tão barato? Tem pegadinha?",
+      answer: "Não tem pegadinha! Este é nosso preço de oferta de lançamento para conquistar mais dentistas e construir nosso portfólio. Desenvolvemos templates otimizados ao longo de 5 anos específicos para odontologia, o que nos permite automatizar 70% do processo e reduzir drasticamente os custos. Economias que repassamos para você. Além disso, trabalhamos em escala - quanto mais sites fazemos, mais eficientes ficamos."
     },
     {
-      question: "O site vai aparecer no Google?",
-      answer: "Sim! Fazemos otimização básica para SEO local incluída no pacote. Seu site será encontrado quando pacientes procurarem 'dentista + sua cidade'."
+      question: "Quanto tempo leva REALMENTE?",
+      answer: "De 3 a 7 dias úteis após você preencher o briefing e enviar os materiais (logo, fotos, textos). Se você já tiver tudo pronto, conseguimos entregar em 3 dias úteis. Se precisar da nossa ajuda para criar logo, selecionar imagens ou escrever textos, leva até 7 dias úteis. E temos garantia: se não entregarmos no prazo, você recebe reembolso total."
     },
     {
-      question: "A hospedagem é realmente grátis para sempre?",
-      answer: "SIM! 100% GRÁTIS PARA SEMPRE! Usamos Cloudflare Pages, uma infraestrutura de nível empresarial que nos permite oferecer hospedagem premium sem custo mensal. Você economiza mais de R$ 400/ano comparado com hospedagens tradicionais. Zero taxas ocultas!"
+      question: "Vou ter que pagar mensalidade?",
+      answer: "NÃO! A hospedagem é 100% GRÁTIS PARA SEMPRE! Usamos infraestrutura Cloudflare Pages de nível empresarial que nos permite oferecer hospedagem premium sem custo mensal. Você economiza mais de R$ 400/ano comparado com hospedagens tradicionais. Se quiser domínio personalizado (ex: suaclinica.com.br), você só paga o registro anual do domínio (cerca de R$ 40/ano no Registro.br). A conexão do domínio também é gratuita - diferente de outras empresas que cobram taxas extras."
     },
     {
-      question: "Vocês cobram para conectar meu domínio personalizado?",
-      answer: "NÃO! Conectamos seu domínio personalizado SEM COBRAR TAXA. Você só paga o registro do domínio (cerca de R$ 40/ano direto no Registro.br para .com.br). Se você já tem um domínio, conectamos totalmente GRÁTIS. Diferente de outras empresas que cobram R$ 100+ só para configurar!"
-    },
-    {
-      question: "Funciona para qualquer especialidade odontológica?",
-      answer: "Sim! Já criamos sites para ortodontistas, implantodontistas, dentistas estéticos, endodontistas, cirurgiões, periodontistas, odontopediatras e clínicas gerais. Cada site é personalizado para destacar sua especialidade específica."
+      question: "Como garanto que vão entregar?",
+      answer: "Temos três garantias sólidas: 1) Você só paga após aprovar o layout (então vê o resultado antes de pagar); 2) Garantia de prazo - se não entregarmos em 7 dias úteis, reembolso total; 3) Garantia de satisfação - 7 dias após o site no ar para pedir reembolso se não estiver satisfeito. Além disso, já entregamos 500+ sites sem nenhuma reclamação no Reclame Aqui. Todo o risco é nosso."
     },
     {
       question: "Posso fazer alterações depois?",
-      answer: "Claro! Cobramos apenas R$ 97,00 por solicitação de alterações. Isso significa que em uma única solicitação você pode pedir quantas mudanças quiser - textos, imagens, horários, o que precisar ajustar. É uma taxa fixa super justa que permite você fazer todas as alterações necessárias de uma vez só!"
+      answer: "Sim! Incluímos até 2 rodadas de ajustes durante o desenvolvimento (antes do site ir ao ar). Depois que o site estiver publicado, cobramos R$ 97,00 por solicitação de alterações. Importante: em uma única solicitação você pode pedir quantas mudanças quiser - trocar textos, atualizar fotos, mudar horários, adicionar serviços, etc. É uma taxa fixa que permite você fazer todas as alterações necessárias de uma vez."
     },
     {
-      question: "Como é o processo de pagamento?",
-      answer: "Aceitamos Pix, cartão de crédito ou débito. Pode parcelar em até 12x no cartão. O pagamento é 100% seguro!"
+      question: "Funciona para qualquer especialidade odontológica?",
+      answer: "Sim! Somos 100% especializados em odontologia e já criamos sites para todas as especialidades: ortodontia, implantodontia, odontologia estética, endodontia, periodontia, cirurgia bucomaxilofacial, odontopediatria, prótese dentária, DTM e dor orofacial, harmonização orofacial e clínicas gerais. Cada site é personalizado para destacar os diferenciais da sua especialidade específica."
     },
     {
-      question: "Vocês atendem qualquer cidade do Brasil?",
-      answer: "Sim! Atendemos dentistas de todo o Brasil. Nosso processo é 100% online, então não importa se você está em São Paulo, Interior ou qualquer estado. Já entregamos sites para mais de 200 cidades diferentes."
-    },
-    {
-      question: "E se eu não gostar do resultado?",
-      answer: "Você tem 7 dias para avaliar e solicitar o reembolso completo se não estiver satisfeito. Além disso, incluímos até 3 revisões durante o processo de construção do site. Nossa taxa de aprovação é de 98,7%."
-    },
-    {
-      question: "Qual a diferença entre vocês e outras empresas?",
-      answer: "Somos 100% especializados em dentistas, conhecemos profundamente o setor. Entregamos em 24h (outros levam 30-60 dias), oferecemos múltiplas garantias e assumimos todo o risco. Nossos preços são justos comparado às agências tradicionais."
+      question: "Quantas vagas restam da promoção?",
+      answer: "Trabalhamos com vagas limitadas por mês para garantir a qualidade da entrega. No momento temos poucas vagas disponíveis neste ciclo. Assim que atingirmos o limite mensal, novos pedidos só entram para o mês seguinte. Se você está vendo este site, ainda há vagas - mas recomendamos garantir a sua o quanto antes. Esta oferta de lançamento não ficará disponível para sempre."
     }
   ];
-
-  const toggleFAQ = (index: number) => {
-    setOpenFAQ(openFAQ === index ? null : index);
-  };
 
   return (
     <section id="faq" className="py-20 bg-gray-50">
@@ -65,41 +51,33 @@ const FAQSection: React.FC = () => {
             <span className="block text-primary">Eliminando Suas Últimas Dúvidas</span>
           </h2>
           <p className="text-xl text-text-secondary max-w-3xl mx-auto">
-            Compilamos as principais dúvidas dos mais de 500 dentistas que já atendemos 
+            Compilamos as principais dúvidas dos mais de 500 dentistas que já atendemos
             para que você tenha total clareza antes de decidir.
           </p>
         </div>
 
-        <div className="space-y-4">
+        <Accordion type="single" collapsible defaultValue="item-0" className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="card-premium">
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="w-full text-left flex items-center justify-between p-2 focus:outline-none"
-              >
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className="card-premium border-none"
+            >
+              <AccordionTrigger className="text-left px-6 hover:no-underline">
                 <h3 className="text-lg font-semibold text-text-primary pr-4">
-                  ❓ {faq.question}
+                  {faq.question}
                 </h3>
-                <div className="flex-shrink-0">
-                  {openFAQ === index ? (
-                    <ChevronUp size={24} className="text-primary" />
-                  ) : (
-                    <ChevronDown size={24} className="text-text-light" />
-                  )}
-                </div>
-              </button>
-              
-              {openFAQ === index && (
-                <div className="mt-4 p-4 bg-primary-ultra-light rounded-lg border-l-4 border-primary">
+              </AccordionTrigger>
+              <AccordionContent className="px-6">
+                <div className="pt-2 pb-4">
                   <p className="text-text-secondary leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
-              )}
-            </div>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
-
+        </Accordion>
       </div>
     </section>
   );

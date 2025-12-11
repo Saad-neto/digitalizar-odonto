@@ -1,36 +1,29 @@
 import React from 'react';
-import { Shield, Clock, ThumbsUp, Wrench, TrendingUp } from 'lucide-react';
+import { Shield, ThumbsUp, Clock, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const GuaranteesSection: React.FC = () => {
   const guarantees = [
     {
       icon: ThumbsUp,
-      title: "SÓ PAGA SE APROVAR",
-      description: "Fazemos seu site GRÁTIS. Você vê o resultado pronto e só paga se gostar. Se não aprovar, não paga nada!",
+      title: "Não Gostou? Não Paga",
+      description: "Você só paga após aprovar o layout. Se não gostar, não tem custo nenhum. Simples assim.",
       badge: "Risco ZERO",
       color: "bg-success"
     },
     {
       icon: Clock,
-      title: "GARANTIA DE PUBLICAÇÃO",
-      description: "Após aprovação final, seu site estará no ar em até 24h. Garantido!",
-      badge: "24h Após Aprovação",
+      title: "Prazo ou Reembolso",
+      description: "Se não entregarmos em 7 dias úteis após sua aprovação, devolvemos 100% do valor.",
+      badge: "7 Dias Úteis",
       color: "bg-orange-warning"
     },
     {
-      icon: Wrench,
-      title: "ATÉ 2 RODADAS DE AJUSTES",
-      description: "Depois que você aprovar e pagar, fazemos até 2 rodadas de ajustes incluídas no preço.",
-      badge: "Ajustes Inclusos",
-      color: "bg-blue-trust"
-    },
-    {
       icon: TrendingUp,
-      title: "PARCELAMENTO EM 12X",
-      description: "Aprovou o site? Pague em até 12x no cartão sem juros. Cabe no seu bolso!",
-      badge: "12x Sem Juros",
-      color: "bg-primary"
+      title: "7 Dias de Satisfação",
+      description: "Mesmo após o site no ar, se não ficar satisfeito em 7 dias, devolvemos seu dinheiro.",
+      badge: "7 Dias de Garantia",
+      color: "bg-blue-trust"
     }
   ];
 
@@ -41,140 +34,78 @@ const GuaranteesSection: React.FC = () => {
           <div className="w-20 h-20 bg-success rounded-full flex items-center justify-center mx-auto mb-6">
             <Shield size={40} className="text-white" />
           </div>
-          
+
           <h2 className="mb-6">
-            🛡️ Garantia Blindada:
-            <span className="block text-success">100% Sem Riscos</span>
+            🛡️ Garantia Tripla
+            <span className="block text-success">100% do Risco É Nosso</span>
           </h2>
-          
+
           <p className="text-xl text-text-secondary max-w-3xl mx-auto">
-            Assumimos todo o risco para você. Nossa confiança é tanta que oferecemos 
-            múltiplas garantias para sua total tranquilidade.
+            Assumimos todo o risco para você. Nossa confiança é tanta que oferecemos
+            uma garantia tripla para sua total tranquilidade.
           </p>
         </div>
 
-        {/* Guarantees Grid */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+        {/* Guarantees Grid - Larger Cards */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
           {guarantees.map((guarantee, index) => (
-            <div key={index} className="card-premium border-success/20 relative overflow-hidden">
+            <div key={index} className="card-premium border-success/20 relative overflow-hidden p-8">
               {/* Badge */}
-              <div className="absolute top-4 right-4">
-                <span className="bg-success text-white text-xs font-bold px-3 py-1 rounded-full">
+              <div className="absolute top-6 right-6">
+                <span className="bg-success text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
                   {guarantee.badge}
                 </span>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className={`w-16 h-16 ${guarantee.color} rounded-full flex items-center justify-center flex-shrink-0`}>
-                  <guarantee.icon size={32} className="text-white" />
+              <div className="flex flex-col items-center text-center">
+                <div className={`w-20 h-20 ${guarantee.color} rounded-full flex items-center justify-center mb-6 shadow-xl`}>
+                  <guarantee.icon size={40} className="text-white" />
                 </div>
-                
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-text-primary mb-3">
-                    {guarantee.title}
-                  </h3>
-                  
-                  <p className="text-text-secondary leading-relaxed">
-                    {guarantee.description}
-                  </p>
-                </div>
+
+                <h3 className="text-2xl font-bold text-text-primary mb-4">
+                  {guarantee.title}
+                </h3>
+
+                <p className="text-lg text-text-secondary leading-relaxed">
+                  {guarantee.description}
+                </p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Trust Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-12">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-text-primary mb-4">
-              Testemunho de Confiança
+        {/* Final Box - Risk Reversal */}
+        <div className="bg-gradient-hero text-white rounded-2xl p-10 text-center shadow-2xl">
+          <div className="max-w-3xl mx-auto">
+            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Shield size={32} className="text-white" />
+            </div>
+
+            <h3 className="text-3xl font-bold mb-6">
+              Você Só Tem a Ganhar
             </h3>
-            
-            <blockquote className="text-xl text-text-secondary italic max-w-3xl mx-auto">
-              "Já entregamos <strong className="text-success">500+ sites</strong> sem nenhuma reclamação no Reclame Aqui. 
-              Nossa reputação é nossa maior garantia."
-            </blockquote>
-          </div>
 
-          <div className="grid md:grid-cols-4 gap-6 text-center">
-            <div className="p-4">
-              <div className="text-3xl font-bold text-success mb-2">500+</div>
-              <p className="text-text-secondary">Sites Entregues</p>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold text-success mb-2">0</div>
-              <p className="text-text-secondary">Reclamações</p>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold text-success mb-2">5</div>
-              <p className="text-text-secondary">Anos no Mercado</p>
-            </div>
-            <div className="p-4">
-              <div className="text-3xl font-bold text-success mb-2">100%</div>
-              <p className="text-text-secondary">Especialização</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Risk Reversal */}
-        <div className="bg-gradient-hero text-white rounded-2xl p-8 text-center">
-          <h3 className="text-3xl font-bold mb-6">
-            Por Que Oferecemos Tantas Garantias?
-          </h3>
-          
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="p-6 bg-white/10 rounded-lg">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🎯</span>
-              </div>
-              <h4 className="font-bold mb-2">Confiança Total</h4>
-              <p className="text-white/90 text-sm">
-                Sabemos que nosso método funciona e entregamos resultados
-              </p>
-            </div>
-            
-            <div className="p-6 bg-white/10 rounded-lg">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤝</span>
-              </div>
-              <h4 className="font-bold mb-2">Parceria Real</h4>
-              <p className="text-white/90 text-sm">
-                Seu sucesso é o nosso sucesso. Queremos uma relação de longo prazo
-              </p>
-            </div>
-            
-            <div className="p-6 bg-white/10 rounded-lg">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⭐</span>
-              </div>
-              <h4 className="font-bold mb-2">Reputação Sólida</h4>
-              <p className="text-white/90 text-sm">
-                500+ dentistas satisfeitos são nossa maior propaganda
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white/20 rounded-lg p-6">
-            <p className="text-xl font-semibold mb-4">
-              🛡️ RESULTADO: Você investe com 100% de segurança
+            <p className="text-2xl font-semibold mb-4">
+              Todo o Risco É Nosso.
             </p>
-            <p className="text-white/90">
-              Não existe nenhum risco. Se algo não sair conforme prometido, 
-              você tem múltiplas garantias para te proteger.
+
+            <p className="text-xl text-white/90 leading-relaxed">
+              Não existe nenhum cenário onde você sai perdendo. Se algo não sair conforme prometido,
+              você tem três camadas de proteção garantindo seu investimento.
             </p>
           </div>
         </div>
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <Link 
+          <Link
             to="/briefing"
             className="btn-hero text-xl px-12 py-5"
           >
             Investir Sem Riscos Agora!
           </Link>
           <p className="text-text-secondary mt-4">
-            🛡️ 100% protegido por nossas garantias múltiplas
+            🛡️ 100% protegido pela nossa Garantia Tripla
           </p>
         </div>
       </div>

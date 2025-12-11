@@ -1,138 +1,142 @@
 import React from 'react';
-import { Rocket, MessageCircle, Clock, CheckCircle } from 'lucide-react';
+import { Rocket, MessageCircle, X, Check, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Timer from '../ui/timer';
-import Counter from '../ui/counter';
+
+// Mesmo contador da LaunchBar
+const REMAINING_SPOTS = 7;
 
 const FinalCTASection: React.FC = () => {
-  const offerItems = [
-    "Site profissional responsivo",
-    "Briefing e produção GRÁTIS",
-    "Só paga se aprovar o resultado",
-    "Hospedagem premium 1º ano GRÁTIS",
-    "SSL + Otimização Google",
-    "Até 2 rodadas de ajustes",
-    "Parcele em até 12x sem juros"
-  ];
-
   return (
-    <section id="cta-final" className="py-20 bg-gradient-hero text-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="mb-12">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-4xl">🚨</span>
-          </div>
-          
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Última Chance: Garanta Sua Vaga Agora
-          </h2>
-          
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Não perca mais pacientes para a concorrência. Seu site profissional 
-            pode estar funcionando ainda hoje.
-          </p>
-        </div>
-
-        {/* Offer Summary */}
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-8">
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Left: What's Included */}
-            <div>
-              <h3 className="text-2xl font-bold mb-6">Resumo da Oferta:</h3>
-              <div className="space-y-3 text-left">
-                {offerItems.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <CheckCircle size={20} className="text-success-light flex-shrink-0" />
-                    <span className="text-white/90">{item}</span>
-                  </div>
-                ))}
-              </div>
+    <section id="cta-final" className="py-20 bg-gradient-to-br from-orange-50 to-red-50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Urgency Box */}
+        <div className="bg-gradient-to-r from-orange-warning to-red-alert text-white rounded-2xl p-8 shadow-2xl mb-8">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-white/20 px-6 py-3 rounded-full mb-4">
+              <AlertTriangle size={24} />
+              <span className="font-bold text-lg">ATENÇÃO</span>
             </div>
 
-            {/* Right: Pricing & Timer */}
-            <div className="text-center">
-              <div className="mb-6">
-                <div className="text-lg text-white/70 line-through mb-2">DE R$ 997</div>
-                <div className="text-5xl font-bold text-success-light mb-2">R$ 497</div>
-                <div className="text-white/90">Ou 12x de R$ 49,70</div>
-              </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              ⚠️ Última Chance: Lançamento com 50% OFF
+            </h2>
 
-              <div className="bg-text-primary rounded-lg p-4 mb-6">
-                <p className="font-semibold mb-2">Esta oferta expira em:</p>
-                <Timer 
-                  initialHours={2}
-                  initialMinutes={47}
-                  initialSeconds={15}
-                  className="text-2xl"
-                />
-              </div>
+            <p className="text-xl text-white/90 mb-2">
+              Restam apenas{' '}
+              <span className="inline-flex items-center justify-center min-w-[40px] h-10 px-3 bg-white text-orange-warning font-bold text-2xl rounded mx-1">
+                {REMAINING_SPOTS}
+              </span>{' '}
+              {REMAINING_SPOTS === 1 ? 'vaga' : 'vagas'} com desconto
+            </p>
+          </div>
 
-              <div className="bg-orange-warning/20 border border-orange-warning rounded-lg p-3">
-                <p className="text-orange-warning font-semibold text-sm">
-                  Restam 2 de 5 vagas hoje
-                </p>
+          {/* Benefits List */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6">
+            <h3 className="text-2xl font-bold mb-4 text-center">🔥 Restam apenas {REMAINING_SPOTS} vagas com:</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex items-center gap-3">
+                <Check size={20} className="text-success-light flex-shrink-0" />
+                <span>Desconto de 50% (R$ 997 → R$ 497)</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check size={20} className="text-success-light flex-shrink-0" />
+                <span>Pagamento SOMENTE após aprovar</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check size={20} className="text-success-light flex-shrink-0" />
+                <span>Prioridade no desenvolvimento</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check size={20} className="text-success-light flex-shrink-0" />
+                <span>Bônus: Otimização Google My Business (R$ 197 grátis)</span>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Main CTA Buttons */}
-        <div className="space-y-6 mb-12">
-          <Link
-            to="/briefing"
-            className="bg-success hover:bg-success-dark text-white text-2xl font-bold px-12 py-6 rounded-xl shadow-cta hover:shadow-hover transition-all duration-300 hover:scale-105 w-full md:w-auto inline-flex"
-          >
-            <div className="flex items-center justify-center gap-3">
-              <Rocket size={28} />
-              SIM! QUERO COMEÇAR (SÓ PAGO SE APROVAR)
+          {/* After 10 Spots Comparison */}
+          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-8">
+            <h3 className="text-xl font-bold mb-4 text-center">Após as 10 vagas:</h3>
+            <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <X size={18} className="text-red-200 flex-shrink-0" />
+                <span>Preço volta para R$ 997</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <X size={18} className="text-red-200 flex-shrink-0" />
+                <span>Pagamento antecipado obrigatório</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <X size={18} className="text-red-200 flex-shrink-0" />
+                <span>Prazo normal de 15 dias</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <X size={18} className="text-red-200 flex-shrink-0" />
+                <span>Sem bônus inclusos</span>
+              </div>
             </div>
-          </Link>
+          </div>
 
-          <p className="text-white/80">
-            💯 Briefing grátis • Produção grátis • Parcelamento em 12x
-          </p>
-
-          <p className="text-success-light font-semibold">
-            ✅ Sem riscos • Você decide depois de ver o site pronto
-          </p>
-        </div>
-
-
-        {/* Final Guarantee */}
-        <div className="bg-green-500/20 border border-green-400/40 rounded-xl p-6">
-
-          <p className="text-xl text-white/90 mb-4">
-            "Faça seu briefing agora e receba seu site pronto em até <strong className="text-green-300">7 dias</strong>.
-            Você vê TUDO pronto e só decide se quer continuar."
-          </p>
-
-          <p className="text-white/80">
-            Sem compromisso, sem pegadinhas, sem riscos. Você no controle!
-          </p>
-        </div>
-
-        {/* Social Proof */}
-        <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-white/70">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-white">
-              <Counter targetNumber={500} suffix="+" />
+          {/* Price Display */}
+          <div className="text-center mb-8">
+            <div className="inline-block bg-white/20 backdrop-blur-sm rounded-xl p-6">
+              <div className="text-lg text-white/70 line-through mb-2">DE R$ 997</div>
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <div className="text-5xl md:text-6xl font-bold text-white">R$ 497</div>
+              </div>
+              <div className="text-white/90 text-lg">Ou 12x de R$ 49,70 sem juros</div>
             </div>
-            <p className="text-sm">Dentistas Satisfeitos</p>
           </div>
-          
-          <div className="text-center">
-            <div className="text-2xl font-bold text-white">98.7%</div>
-            <p className="text-sm">Taxa de Aprovação</p>
+
+          {/* Main CTA */}
+          <div className="text-center space-y-4">
+            <Link
+              to="/briefing"
+              className="bg-success hover:bg-success-dark text-white text-xl md:text-2xl font-bold px-10 py-5 rounded-xl shadow-2xl hover:shadow-cta transition-all duration-300 hover:scale-105 w-full md:w-auto inline-block"
+            >
+              🎯 Sim, Quero Garantir Minha Vaga por R$ 497
+            </Link>
+
+            <p className="text-white/90 text-sm">
+              💬 Dúvida?{' '}
+              <a
+                href="https://wa.me/5518317510052?text=Olá! Tenho interesse em fazer um site odontológico."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-white font-semibold"
+              >
+                Chama no WhatsApp: (18) 3175-1052
+              </a>
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/80">
+              <span className="flex items-center gap-1">
+                <Check size={16} className="text-success-light" />
+                Pagamento 100% seguro
+              </span>
+              <span className="flex items-center gap-1">
+                <Check size={16} className="text-success-light" />
+                340+ dentistas confiam em nós
+              </span>
+              <span className="flex items-center gap-1">
+                <Check size={16} className="text-success-light" />
+                Garantia de satisfação
+              </span>
+            </div>
           </div>
-          
-          <div className="text-center">
-            <div className="text-2xl font-bold text-white">4.9/5</div>
-            <p className="text-sm">Avaliação Média</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="text-2xl font-bold text-white">5</div>
-            <p className="text-sm">Anos Especializados</p>
+        </div>
+
+        {/* Final Testimonial/Social Proof */}
+        <div className="text-center bg-white rounded-xl p-6 shadow-md">
+          <p className="text-text-secondary text-lg italic mb-4">
+            "Aprovei na quarta, site no ar na sexta. Em 15 dias tinha 12 novos pacientes agendados!"
+          </p>
+          <p className="font-semibold text-text-primary">
+            - Dra. Mariana Costa, São Paulo
+          </p>
+          <div className="flex items-center justify-center gap-1 mt-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span key={star} className="text-yellow-highlight text-xl">★</span>
+            ))}
           </div>
         </div>
       </div>
