@@ -1,6 +1,7 @@
 import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Index from "../pages/Index";
+import IndexNew from "../pages/IndexNew";
 import Briefing from "../pages/Briefing";
 import Payment from "../pages/Payment";
 import ThankYou from "../pages/ThankYou";
@@ -39,6 +40,7 @@ const RouterProvider = () => {
   const routes = (
     <Routes>
       <Route path="/" element={<Index />} />
+      <Route path="/novo" element={<IndexNew />} />
       <Route path="/briefing" element={<Briefing />} />
       <Route path="/pagamento" element={<Payment />} />
       <Route path="/obrigado" element={<ThankYou />} />
