@@ -1,38 +1,48 @@
 import React from 'react';
-import Header from '../components/Header';
-import LaunchBar from '../components/LaunchBar';
-import HeroSection from '../components/sections/HeroSection';
-import ComparisonSection from '../components/sections/ComparisonSection';
-import ProblemsSection from '../components/sections/ProblemsSection';
-import SolutionSection from '../components/sections/SolutionSection';
-import HowItWorksSection from '../components/sections/HowItWorksSection';
-import TestimonialsSection from '../components/sections/TestimonialsSection';
-import OffersSection from '../components/sections/OffersSection';
-import GuaranteesSection from '../components/sections/GuaranteesSection';
-import FAQSection from '../components/sections/FAQSection';
-import FinalCTASection from '../components/sections/FinalCTASection';
-import Footer from '../components/Footer';
-import WhatsAppButton from '../components/WhatsAppButton';
+import HeaderNew from '../components/redesign/HeaderNew';
+import FooterNew from '../components/redesign/FooterNew';
+import HeroSectionNew from '../components/redesign/sections/HeroSectionNew';
+import ProblemsSectionNew from '../components/redesign/sections/ProblemsSectionNew';
+import SolutionSectionNew from '../components/redesign/sections/SolutionSectionNew';
+import HowItWorksSectionNew from '../components/redesign/sections/HowItWorksSectionNew';
+import TestimonialsSectionNew from '../components/redesign/sections/TestimonialsSectionNew';
+import OffersSectionNew from '../components/redesign/sections/OffersSectionNew';
+import GuaranteesSectionNew from '../components/redesign/sections/GuaranteesSectionNew';
+import FAQSectionNew from '../components/redesign/sections/FAQSectionNew';
+import FinalCTASectionNew from '../components/redesign/sections/FinalCTASectionNew';
 
-const Index = () => {
+const Index: React.FC = () => {
   return (
-    <div className="min-h-screen">
-      <Header />
-      <LaunchBar /> {/* Barra de lançamento fixa no topo */}
-      <main className="pt-28 md:pt-32"> {/* Padding-top para compensar LaunchBar + Header fixos */}
-        <HeroSection />
-        <ComparisonSection /> {/* Nova seção de comparação */}
-        <ProblemsSection />
-        <HowItWorksSection />
-        <SolutionSection />
-        <TestimonialsSection />
-        <OffersSection />
-        <GuaranteesSection />
-        <FAQSection />
-        <FinalCTASection />
+    <div className="min-h-screen bg-white">
+      <HeaderNew />
+
+      <main className="pt-20">
+        <HeroSectionNew />
+        <ProblemsSectionNew />
+        <SolutionSectionNew />
+
+        <div id="como-funciona">
+          <HowItWorksSectionNew />
+        </div>
+
+        <div id="depoimentos">
+          <TestimonialsSectionNew />
+        </div>
+
+        <OffersSectionNew />
+
+        <div id="garantias">
+          <GuaranteesSectionNew />
+        </div>
+
+        <div id="faq">
+          <FAQSectionNew />
+        </div>
+
+        <FinalCTASectionNew />
       </main>
-      <Footer />
-      <WhatsAppButton /> {/* Botão flutuante de WhatsApp */}
+
+      <FooterNew />
     </div>
   );
 };
