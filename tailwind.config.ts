@@ -83,6 +83,54 @@ export default {
           highlight: "hsl(var(--yellow-highlight))",
           light: "hsl(var(--yellow-light))",
         },
+        // Redesign: Paleta profissional azul médico
+        medical: {
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#0066CC',  // Principal - Azul médico
+          600: '#0052A3',
+          700: '#003D7A',
+          800: '#002952',
+          900: '#001F3F',
+        },
+        mint: {
+          50: '#F0FDFA',
+          100: '#CCFBF1',
+          200: '#99F6E4',
+          300: '#5EEAD4',
+          400: '#2DD4BF',
+          500: '#14B8A6',  // Secundária - Verde menta
+          600: '#0D9488',
+          700: '#0F766E',
+          800: '#115E59',
+          900: '#134E4A',
+        },
+        neutral: {
+          50: '#FAFAFA',
+          100: '#F5F5F5',
+          200: '#E5E5E5',
+          300: '#D4D4D4',
+          400: '#A3A3A3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+        },
+        gold: {
+          500: '#D4AF37',  // Acento premium
+          600: '#B8941F',
+        },
+      },
+      spacing: {
+        // Redesign: Espaçamentos Behance-style
+        'section': '5rem',      // 80px
+        'section-lg': '6rem',   // 96px
+        'section-xl': '8rem',   // 128px
+        'card-padding': '2rem', // 32px
       },
       backgroundImage: {
         "gradient-hero": "var(--gradient-hero)",
@@ -100,6 +148,9 @@ export default {
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["ui-monospace", "SFMono-Regular", "Consolas", "monospace"],
+        // Redesign: Serif para títulos (autoridade médica)
+        heading: ["Merriweather", "Georgia", "serif"],
+        body: ["Inter", "system-ui", "sans-serif"],
       },
       fontSize: {
         h1: "var(--h1-size)",
@@ -108,6 +159,14 @@ export default {
         h4: "var(--h4-size)",
         body: "var(--body-size)",
         small: "var(--small-size)",
+        // Redesign: Hierarquia Behance-style
+        'display': ['3.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],  // 56px
+        'title-xl': ['3rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }],   // 48px
+        'title-lg': ['2.25rem', { lineHeight: '1.3' }],                          // 36px
+        'title-md': ['1.5rem', { lineHeight: '1.4' }],                           // 24px
+        'body-lg': ['1.125rem', { lineHeight: '1.7' }],                          // 18px
+        'body-md': ['1rem', { lineHeight: '1.6' }],                              // 16px
+        'body-sm': ['0.875rem', { lineHeight: '1.5' }],                          // 14px
       },
       transitionTimingFunction: {
         smooth: "cubic-bezier(0.4, 0, 0.2, 1)",
