@@ -18,12 +18,13 @@ import {
   BarChart3,
 } from 'lucide-react';
 import KanbanBoard from '@/components/admin/KanbanBoard';
+import AdminLayout from '@/components/admin/AdminLayout';
 import Papa from 'papaparse';
 
 type ViewMode = 'list' | 'kanban';
 type DateFilter = 'all' | 'today' | 'week' | 'month';
 
-const Dashboard = () => {
+const Leads = () => {
   const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -168,43 +169,12 @@ const Dashboard = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b-2 border-gray-200 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Home className="w-8 h-8 text-purple-600" />
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-sm text-gray-500">Sites Odonto 24H</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                onClick={() => navigate('/admin/reports')}
-                variant="outline"
-                size="sm"
-                className="hidden md:flex"
-              >
-                <BarChart3 className="w-4 h-4 mr-2" />
-                Relatórios
-              </Button>
-              <Button
-                onClick={handleLogout}
-                variant="ghost"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <LogOut className="w-5 h-5 mr-2" />
-                Sair
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <AdminLayout>
+      {/* Header do Leads */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gerenciar Leads</h1>
+        <p className="text-gray-600">Kanban de produção de sites</p>
+      </div>
         {/* Métricas */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl border-2 border-green-200 p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -415,9 +385,8 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-      </main>
-    </div>
+    </AdminLayout>
   );
 };
 
-export default Dashboard;
+export default Leads;

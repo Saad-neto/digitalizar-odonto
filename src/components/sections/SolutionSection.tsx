@@ -7,8 +7,8 @@ const SolutionSection: React.FC = () => {
   const benefits = [
     {
       icon: Zap,
-      title: "VELOCIDADE INCOMPARÁVEL",
-      description: "Seu site profissional pronto em 24h (não 30-60 dias como a concorrência)",
+      title: "AGILIDADE QUE SALVA SUA RECEITA",
+      description: "Seu site no ar em 7 dias úteis (não 60-90 dias de agências). Cada semana de atraso = R$ 3-8 mil em pacientes perdidos para concorrentes",
       color: "text-yellow-highlight"
     },
     {
@@ -25,8 +25,8 @@ const SolutionSection: React.FC = () => {
     },
     {
       icon: Smartphone,
-      title: "TUDO INCLUÍDO",
-      description: "Responsivo, SSL, hospedagem premium, otimização para Google",
+      title: "TUDO INCLUÍDO PARA VOCÊ APARECER NO GOOGLE",
+      description: "Site que funciona perfeitamente em celular (onde 80% dos pacientes buscam), seguro (transmite confiança), rápido (Google favorece) e otimizado para aparecer quando buscarem 'dentista [sua cidade]'",
       color: "text-blue-trust"
     },
     {
@@ -49,10 +49,10 @@ const SolutionSection: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="mb-6">
             A Única Solução Que Entrega Seu Site Profissional
-            <span className="block text-primary">em 24 Horas</span>
+            <span className="block text-primary">em 7 Dias Úteis (Não 60 Dias Como Agências)</span>
           </h2>
           <p className="text-xl text-text-secondary max-w-4xl mx-auto">
-            Desenvolvemos sites odontológicos há 5 anos. Criamos um sistema exclusivo que nos permite 
+            Desenvolvemos sites odontológicos há 5 anos. Criamos um sistema exclusivo que nos permite
             entregar sites profissionais de alta conversão em tempo recorde, sem comprometer a qualidade.
           </p>
         </div>
@@ -157,11 +157,11 @@ const SolutionSection: React.FC = () => {
 
         {/* CTA Section */}
         <div className="text-center mt-16">
-          <Link 
+          <Link
             to="/briefing"
             className="btn-hero text-xl px-12 py-5"
           >
-            Quero Meu Site em 24h Também!
+            Quero Começar a Atrair Pacientes Particulares em 7 Dias
           </Link>
           <p className="text-text-secondary mt-4">
             Junte-se aos <Counter targetNumber={500} suffix="+ dentistas" /> que já transformaram suas práticas

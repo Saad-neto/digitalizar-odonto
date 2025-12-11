@@ -11,10 +11,10 @@ const TestimonialsSection: React.FC = () => {
     {
       name: "Dr. Ricardo Almeida",
       specialty: "Ortodontista",
-      location: "São Paulo - SP", 
+      location: "São Paulo - SP",
       photo: professionalDentist,
-      testimonial: "Inacreditável! Em 24h tinha um site mais profissional que concorrentes com anos de mercado. Em 1 mês, já recuperei o investimento com novos pacientes vindos do Google.",
-      result: "+200% em agendamentos online",
+      testimonial: "Eu estava gastando R$ 2 mil/mês com anúncios no Facebook e vinha 1, 2 pacientes. Fiz o site em janeiro. Em fevereiro já apareci na primeira página do Google para 'ortodontista [bairro]'. Março tive 8 agendamentos orgânicos. Abril, 14. Maio, 23. Parei os anúncios. Hoje 70% dos meus pacientes novos vêm do site.",
+      result: "+200% em agendamentos online nos primeiros 90 dias",
       rating: 5,
       badge: "Resultado Comprovado"
     },
@@ -59,7 +59,7 @@ const TestimonialsSection: React.FC = () => {
       number: 150,
       suffix: "%",
       label: "aumento médio",
-      sublabel: "em consultas",
+      sublabel: "em consultas nos primeiros 90 dias (de 20 para 50 agendamentos/mês)",
       icon: TrendingUp
     },
     {

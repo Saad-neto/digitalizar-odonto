@@ -53,25 +53,25 @@ const FinalCTASection: React.FC = () => {
             </div>
           </div>
 
-          {/* After 10 Spots Comparison */}
+          {/* After 7 Spots Comparison */}
           <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-8">
-            <h3 className="text-xl font-bold mb-4 text-center">Após as 10 vagas:</h3>
+            <h3 className="text-xl font-bold mb-4 text-center">🔥 Quem garante vaga HOJE leva:</h3>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <div className="flex items-center gap-2">
-                <X size={18} className="text-red-200 flex-shrink-0" />
-                <span>Preço volta para R$ 997</span>
+                <Check size={18} className="text-success-light flex-shrink-0" />
+                <span>50% OFF (economia de R$ 500)</span>
               </div>
               <div className="flex items-center gap-2">
-                <X size={18} className="text-red-200 flex-shrink-0" />
-                <span>Pagamento antecipado obrigatório</span>
+                <Check size={18} className="text-success-light flex-shrink-0" />
+                <span>Pagamento só após aprovar (depois volta ao modelo tradicional)</span>
               </div>
               <div className="flex items-center gap-2">
-                <X size={18} className="text-red-200 flex-shrink-0" />
-                <span>Prazo normal de 15 dias</span>
+                <Check size={18} className="text-success-light flex-shrink-0" />
+                <span>Prioridade no desenvolvimento (entrega em 7 dias, depois 15 dias)</span>
               </div>
               <div className="flex items-center gap-2">
-                <X size={18} className="text-red-200 flex-shrink-0" />
-                <span>Sem bônus inclusos</span>
+                <Check size={18} className="text-success-light flex-shrink-0" />
+                <span>Bônus: Otimização Google My Business (R$ 197 grátis)</span>
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@ const FinalCTASection: React.FC = () => {
               to="/briefing"
               className="bg-success hover:bg-success-dark text-white text-xl md:text-2xl font-bold px-10 py-5 rounded-xl shadow-2xl hover:shadow-cta transition-all duration-300 hover:scale-105 w-full md:w-auto inline-block"
             >
-              🎯 Sim, Quero Garantir Minha Vaga por R$ 497
+              🎯 Quero Começar Meu Site Agora (Vagas Limitadas)
             </Link>
 
             <p className="text-white/90 text-sm">
@@ -115,7 +115,7 @@ const FinalCTASection: React.FC = () => {
               </span>
               <span className="flex items-center gap-1">
                 <Check size={16} className="text-success-light" />
-                340+ dentistas confiam em nós
+                500+ dentistas confiam em nós
               </span>
               <span className="flex items-center gap-1">
                 <Check size={16} className="text-success-light" />

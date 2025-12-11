@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { X, Check, Gift, CreditCard, Smartphone } from 'lucide-react';
+import { X, Check, Gift, CreditCard, Smartphone, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Timer from '../ui/timer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 
 const OffersSection: React.FC = () => {
@@ -141,14 +140,12 @@ const OffersSection: React.FC = () => {
               <span className="price-highlight">R$ 497</span>
             </div>
 
-            <div className="bg-text-primary text-white rounded-lg p-4 inline-block">
-              <p className="font-semibold mb-2">Esta oferta expira em:</p>
-              <Timer 
-                initialHours={2}
-                initialMinutes={47}
-                initialSeconds={15}
-                className="text-2xl"
-              />
+            <div className="bg-orange-warning text-white rounded-lg p-4 inline-flex items-center gap-3">
+              <AlertTriangle size={24} />
+              <div>
+                <p className="font-semibold">Vagas Limitadas!</p>
+                <p className="text-sm">Restam apenas 7 vagas neste ciclo</p>
+              </div>
             </div>
           </div>
 

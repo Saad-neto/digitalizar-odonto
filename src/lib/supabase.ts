@@ -409,3 +409,275 @@ export async function deleteLeadNote(noteId: string) {
 
   return true;
 }
+
+// =============================================
+// FUNÇÕES DE AGENDAMENTO
+// =============================================
+
+export interface Agendamento {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  lead_id?: string;
+  nome: string;
+  email: string;
+  whatsapp: string;
+  empresa?: string;
+  data: string; // formato YYYY-MM-DD
+  horario: string; // formato HH:MM
+  duracao: number;
+  status: 'agendado' | 'confirmado' | 'realizado' | 'cancelado' | 'remarcado';
+  tipo: 'comercial' | 'alinhamento' | 'aprovacao' | 'suporte';
+  observacoes?: string;
+  motivo_cancelamento?: string;
+  link_reuniao?: string;
+  lembrete_enviado: boolean;
+  lembrete_enviado_at?: string;
+  confirmado_at?: string;
+  realizado_at?: string;
+  cancelado_at?: string;
+}
+
+export interface Disponibilidade {
+  id: string;
+  dia_semana: number; // 0 = Domingo, 6 = Sábado
+  horario_inicio: string;
+  horario_fim: string;
+  ativo: boolean;
+  duracao_slot: number;
+}
+
+export interface HorarioDisponivel {
+  horario: string;
+}
+
+/**
+ * Criar novo agendamento
+ */
+export async function createAgendamento(data: {
+  nome: string;
+  email: string;
+  whatsapp: string;
+  empresa?: string;
+  data: string;
+  horario: string;
+  tipo?: string;
+  observacoes?: string;
+  lead_id?: string;
+}) {
+  // Preparar dados para inserção
+  const insertData: any = {
+    nome: data.nome,
+    email: data.email,
+    whatsapp: data.whatsapp,
+    data: data.data,
+    horario: data.horario,
+    tipo: data.tipo || 'comercial',
+    status: 'agendado',
+  };
+
+  // Adicionar campos opcionais apenas se tiverem valor
+  if (data.empresa) insertData.empresa = data.empresa;
+  if (data.observacoes) insertData.observacoes = data.observacoes;
+  if (data.lead_id) insertData.lead_id = data.lead_id;
+
+  console.log('[DEBUG] Criando agendamento com dados:', insertData);
+
+  // Tentar INSERT sem SELECT primeiro (o SELECT pode estar sendo bloqueado por RLS)
+  const { data: agendamento, error } = await supabase
+    .from('agendamentos')
+    .insert(insertData);
+
+  if (error) {
+    console.error('[ERROR] Erro ao criar agendamento:', error);
+    console.error('[ERROR] Detalhes completos:', {
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      code: error.code,
+      status: error.status,
+    });
+    throw error;
+  }
+
+  console.log('[SUCCESS] Agendamento criado (sem retorno de dados)');
+
+  // Retornar um objeto básico sem fazer SELECT
+  return {
+    id: 'created',
+    nome: insertData.nome,
+    email: insertData.email,
+    data: insertData.data,
+    horario: insertData.horario,
+  } as any;
+}
+
+/**
+ * Listar horários disponíveis de uma data
+ */
+export async function listarHorariosDisponiveis(data: string): Promise<string[]> {
+  const { data: horarios, error } = await supabase
+    .rpc('listar_horarios_disponiveis', { p_data: data });
+
+  if (error) {
+    console.error('Erro ao listar horários disponíveis:', error);
+    throw error;
+  }
+
+  return horarios.map((h: HorarioDisponivel) => h.horario);
+}
+
+/**
+ * Verificar se um horário está disponível
+ */
+export async function verificarDisponibilidade(
+  data: string,
+  horario: string
+): Promise<boolean> {
+  const { data: disponivel, error } = await supabase
+    .rpc('verificar_disponibilidade', {
+      p_data: data,
+      p_horario: horario,
+    });
+
+  if (error) {
+    console.error('Erro ao verificar disponibilidade:', error);
+    throw error;
+  }
+
+  return disponivel as boolean;
+}
+
+/**
+ * Listar agendamentos
+ */
+export async function listarAgendamentos(filtros?: {
+  status?: string;
+  data_inicio?: string;
+  data_fim?: string;
+}): Promise<Agendamento[]> {
+  let query = supabase
+    .from('agendamentos')
+    .select('*')
+    .order('data', { ascending: true })
+    .order('horario', { ascending: true });
+
+  if (filtros?.status) {
+    query = query.eq('status', filtros.status);
+  }
+
+  if (filtros?.data_inicio) {
+    query = query.gte('data', filtros.data_inicio);
+  }
+
+  if (filtros?.data_fim) {
+    query = query.lte('data', filtros.data_fim);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('Erro ao listar agendamentos:', error);
+    throw error;
+  }
+
+  return data as Agendamento[];
+}
+
+/**
+ * Buscar agendamento por ID
+ */
+export async function getAgendamentoById(id: string): Promise<Agendamento> {
+  const { data, error } = await supabase
+    .from('agendamentos')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Erro ao buscar agendamento:', error);
+    throw error;
+  }
+
+  return data as Agendamento;
+}
+
+/**
+ * Atualizar status do agendamento
+ */
+export async function updateAgendamentoStatus(
+  id: string,
+  status: 'agendado' | 'confirmado' | 'realizado' | 'cancelado' | 'remarcado',
+  motivoCancelamento?: string
+) {
+  const updateData: any = { status };
+
+  if (status === 'confirmado') {
+    updateData.confirmado_at = new Date().toISOString();
+  } else if (status === 'realizado') {
+    updateData.realizado_at = new Date().toISOString();
+  } else if (status === 'cancelado') {
+    updateData.cancelado_at = new Date().toISOString();
+    updateData.motivo_cancelamento = motivoCancelamento;
+  }
+
+  const { data, error } = await supabase
+    .from('agendamentos')
+    .update(updateData)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao atualizar status do agendamento:', error);
+    throw error;
+  }
+
+  return data as Agendamento;
+}
+
+/**
+ * Remarcar agendamento
+ */
+export async function remarcarAgendamento(
+  id: string,
+  novaData: string,
+  novoHorario: string
+) {
+  const { data, error } = await supabase
+    .from('agendamentos')
+    .update({
+      data: novaData,
+      horario: novoHorario,
+      status: 'agendado',
+    })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao remarcar agendamento:', error);
+    throw error;
+  }
+
+  return data as Agendamento;
+}
+
+/**
+ * Listar disponibilidade configurada
+ */
+export async function listarDisponibilidade(): Promise<Disponibilidade[]> {
+  const { data, error } = await supabase
+    .from('disponibilidade')
+    .select('*')
+    .eq('ativo', true)
+    .order('dia_semana', { ascending: true })
+    .order('horario_inicio', { ascending: true });
+
+  if (error) {
+    console.error('Erro ao listar disponibilidade:', error);
+    throw error;
+  }
+
+  return data as Disponibilidade[];
+}

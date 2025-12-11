@@ -4,11 +4,15 @@ import Index from "../pages/Index";
 import Briefing from "../pages/Briefing";
 import Payment from "../pages/Payment";
 import ThankYou from "../pages/ThankYou";
+import Agendar from "../pages/Agendar";
 import NotFound from "../pages/NotFound";
 import Login from "../pages/admin/Login";
-import Dashboard from "../pages/admin/Dashboard";
+import DashboardOverview from "../pages/admin/DashboardOverview";
+import Leads from "../pages/admin/Leads";
 import LeadDetails from "../pages/admin/LeadDetails";
 import Reports from "../pages/admin/Reports";
+import Agendamentos from "../pages/admin/Agendamentos";
+import Configuracoes from "../pages/admin/Configuracoes";
 import PrivateRoute from "../components/admin/PrivateRoute";
 import { getRouterType } from "../utils/router";
 
@@ -38,12 +42,16 @@ const RouterProvider = () => {
       <Route path="/briefing" element={<Briefing />} />
       <Route path="/pagamento" element={<Payment />} />
       <Route path="/obrigado" element={<ThankYou />} />
+      <Route path="/agendar" element={<Agendar />} />
 
       {/* Admin Routes */}
       <Route path="/admin/login" element={<Login />} />
-      <Route path="/admin/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+      <Route path="/admin/dashboard" element={<PrivateRoute><DashboardOverview /></PrivateRoute>} />
+      <Route path="/admin/leads" element={<PrivateRoute><Leads /></PrivateRoute>} />
       <Route path="/admin/leads/:id" element={<PrivateRoute><LeadDetails /></PrivateRoute>} />
+      <Route path="/admin/agendamentos" element={<PrivateRoute><Agendamentos /></PrivateRoute>} />
       <Route path="/admin/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
+      <Route path="/admin/configuracoes" element={<PrivateRoute><Configuracoes /></PrivateRoute>} />
 
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />

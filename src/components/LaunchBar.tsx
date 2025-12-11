@@ -22,7 +22,7 @@ const LaunchBar: React.FC = () => {
         {/* Texto Principal */}
         <p className="text-sm md:text-base font-semibold">
           <span className="hidden sm:inline">🔥 </span>
-          10 Primeiras Vagas com <span className="font-bold text-yellow-highlight">50% OFF</span>
+          Lançamento com <span className="font-bold text-yellow-highlight">50% OFF</span>
           <span className="mx-2">•</span>
           Restam apenas{' '}
           <span className="inline-flex items-center justify-center min-w-[28px] h-7 px-2 bg-yellow-highlight text-text-primary font-bold rounded mx-1">

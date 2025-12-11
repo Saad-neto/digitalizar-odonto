@@ -28,6 +28,7 @@ import {
 } from 'recharts';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, subMonths } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import AdminLayout from '@/components/admin/AdminLayout';
 
 const Reports = () => {
   const navigate = useNavigate();
@@ -126,29 +127,12 @@ const Reports = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <AdminLayout>
       {/* Header */}
-      <header className="bg-white border-b-2 border-gray-200 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={() => navigate('/admin/dashboard')}
-                variant="ghost"
-                size="sm"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Relatórios e Métricas</h1>
-                <p className="text-sm text-gray-500">Análise de performance e resultados</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Relatórios e Métricas</h1>
+        <p className="text-gray-600">Análise de performance e resultados</p>
+      </div>
         {/* KPIs Principais */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl border-2 border-purple-200 p-6 shadow-sm">
@@ -333,8 +317,7 @@ const Reports = () => {
             </table>
           </div>
         </div>
-      </main>
-    </div>
+    </AdminLayout>
   );
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Accordion,
   AccordionContent,
@@ -13,8 +14,12 @@ const FAQSection: React.FC = () => {
       answer: "Você só paga após aprovar o layout. Se não gostar, não tem custo nenhum. Fazemos até 2 rodadas de revisão incluídas antes da aprovação final. Nossa taxa de aprovação é de 98,7%, mas se você fizer parte dos 1,3% que não aprovam, simplesmente não há cobrança. Zero risco para você."
     },
     {
+      question: "Posso ver exemplos de sites que vocês criaram?",
+      answer: "Sim! Por questão de privacidade dos nossos clientes, não exibimos todos os sites publicamente (muitos dentistas preferem discrição). Mas temos um portfólio com 15+ exemplos anônimos que mostramos após você preencher o briefing. Dessa forma garantimos que você veja exemplos relevantes para sua especialidade específica. Se preferir, podemos enviar 3 exemplos por WhatsApp agora mesmo: (18) 3175-1052."
+    },
+    {
       question: "Por que tão barato? Tem pegadinha?",
-      answer: "Não tem pegadinha! Este é nosso preço de oferta de lançamento para conquistar mais dentistas e construir nosso portfólio. Desenvolvemos templates otimizados ao longo de 5 anos específicos para odontologia, o que nos permite automatizar 70% do processo e reduzir drasticamente os custos. Economias que repassamos para você. Além disso, trabalhamos em escala - quanto mais sites fazemos, mais eficientes ficamos."
+      answer: "Não tem pegadinha! **Este é nosso preço de lançamento** para construir portfólio. Além disso, **trabalhamos em escala com templates otimizados** - automatizamos 70% do processo. Isso nos permite cobrar menos mantendo alta qualidade. Agências cobram R$ 3-8 mil porque fazem tudo do zero, com reuniões presenciais e equipes grandes. **Nosso modelo digital = economia que repassamos para você.**"
     },
     {
       question: "Quanto tempo leva REALMENTE?",
@@ -78,6 +83,31 @@ const FAQSection: React.FC = () => {
             </AccordionItem>
           ))}
         </Accordion>
+
+        {/* CTA after FAQ */}
+        <div className="mt-12 text-center">
+          <div className="bg-primary-ultra-light rounded-2xl p-8">
+            <p className="text-xl text-text-primary font-semibold mb-6">
+              Ainda tem dúvidas?
+            </p>
+            <div className="flex flex-col md:flex-row gap-4 justify-center">
+              <a
+                href="https://wa.me/5518317510052?text=Olá!%20Tenho%20dúvidas%20sobre%20o%20site%20odontológico"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary inline-flex items-center justify-center gap-2"
+              >
+                💬 Falar com Especialista no WhatsApp
+              </a>
+              <Link
+                to="/briefing"
+                className="btn-hero inline-flex items-center justify-center"
+              >
+                Ou Preencher Briefing Grátis (2 minutos)
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

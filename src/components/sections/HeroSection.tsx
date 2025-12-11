@@ -8,23 +8,23 @@ const REMAINING_SPOTS = 7;
 
 const HeroSection: React.FC = () => {
   return (
-    <section id="hero" className="section-hero min-h-screen flex items-center pt-20 lg:pt-0">
+    <section id="hero" className="section-hero min-h-screen flex items-center">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content */}
           <div className="text-center lg:text-left">
             {/* Emotional Headline */}
             <h1 className="mb-6 text-white leading-tight">
-              Consultório Vazio Enquanto
+              Perdendo R$ 15 Mil/Mês em Pacientes Particulares Enquanto
               <span className="block text-yellow-highlight">
-                Concorrentes Lotam a Agenda?
+                Concorrentes com Site Profissional Lotam a Agenda?
               </span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-xl text-white/90 mb-8 max-w-2xl leading-relaxed">
-              <strong className="text-success-light">Site profissional em 3-7 dias úteis</strong> que atrai pacientes de alto valor
-              e posiciona você como autoridade. <strong>Só paga depois de aprovar o layout.</strong>
+              Pare de perder pacientes particulares para concorrentes com presença digital. <strong className="text-success-light">Site profissional em até 7 dias úteis</strong> que atrai pacientes de alto valor
+              e posiciona você como autoridade. <strong>Só paga depois de aprovar o layout - zero risco.</strong>
             </p>
 
             {/* Urgency Counter */}
@@ -51,11 +51,10 @@ const HeroSection: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-semibold mb-1">
-                      Dias 1-5: Briefing + Layout Personalizado
+                      Dias 1-3: Briefing + Layout Personalizado
                     </h4>
                     <p className="text-white/80 text-sm">
-                      Você preenche um formulário rápido e recebemos seu logo/fotos.
-                      Criamos o layout inicial exclusivo para sua clínica.
+                      Você preenche um formulário online rápido (10 minutos): nome da clínica, especialidade, serviços, fotos e logo (se tiver). Criamos o layout inicial exclusivo para sua clínica.
                     </p>
                   </div>
                 </div>
@@ -83,10 +82,10 @@ const HeroSection: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-white font-semibold mb-1">
-                      48h Depois: Site Completo no Ar
+                      Dias 4-7: Site Completo no Ar
                     </h4>
                     <p className="text-white/80 text-sm">
-                      Após aprovação e pagamento, finalizamos tudo e colocamos seu site online.
+                      Após aprovação e pagamento, finalizamos tudo e colocamos seu site online em até 7 dias úteis.
                       Pronto para receber pacientes!
                     </p>
                   </div>
@@ -100,7 +99,7 @@ const HeroSection: React.FC = () => {
                 to="/briefing"
                 className="btn-hero text-lg px-8 py-5 text-center shadow-2xl transform hover:scale-105 transition-transform"
               >
-                🔒 Garantir Minha Vaga por R$ 497
+                🎯 Quero Atrair Mais Pacientes Particulares (Sem Risco)
               </Link>
 
               <a
@@ -210,7 +209,7 @@ const HeroSection: React.FC = () => {
 
                 <p className="text-text-light text-xs mt-4">
                   <Calendar size={12} className="inline mr-1" />
-                  Prazo de entrega: 3-7 dias úteis após aprovação do briefing
+                  Prazo de entrega: até 7 dias úteis após aprovação do layout
                 </p>
               </div>
             </div>

@@ -19,7 +19,7 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       <LaunchBar /> {/* Barra de lançamento fixa no topo */}
-      <main className="pt-16"> {/* Padding-top para compensar LaunchBar fixo */}
+      <main className="pt-28 md:pt-32"> {/* Padding-top para compensar LaunchBar + Header fixos */}
         <HeroSection />
         <ComparisonSection /> {/* Nova seção de comparação */}
         <ProblemsSection />
