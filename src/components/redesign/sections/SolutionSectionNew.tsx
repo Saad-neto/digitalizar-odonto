@@ -84,10 +84,10 @@ const SolutionSectionNew: React.FC = () => {
                 <h3 className="font-heading text-title-lg mb-4">
                   O Diferencial que Nossos Clientes Mais Valorizam:
                 </h3>
-                <p className="text-body-lg leading-relaxed opacity-95 mb-6">
-                  <strong className="text-mint-300">Você só paga depois de aprovar o layout.</strong>
+                <p className="text-body-lg leading-relaxed mb-6">
+                  <strong className="text-mint-200 font-bold">Você só paga depois de aprovar o layout.</strong>
                 </p>
-                <p className="text-body-md leading-relaxed opacity-90">
+                <p className="text-body-md leading-relaxed text-white">
                   Isso mesmo. Zero risco. Criamos o design do seu site, você revisa, aprova
                   (ou pede ajustes), e só depois disso você efetua o pagamento. Se não gostar,
                   não paga. Simples assim.

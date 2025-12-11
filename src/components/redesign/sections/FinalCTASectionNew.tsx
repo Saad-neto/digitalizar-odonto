@@ -22,7 +22,7 @@ const FinalCTASectionNew: React.FC = () => {
             Você Está a Um Passo de Parar de Perder Pacientes para a Concorrência
           </h2>
 
-          <p className="text-body-lg leading-relaxed opacity-95 max-w-3xl mx-auto">
+          <p className="text-body-lg leading-relaxed text-white max-w-3xl mx-auto">
             Enquanto você lê isso, seus concorrentes com sites profissionais estão recebendo agendamentos.
             Quanto tempo mais você vai esperar para ter sua presença digital?
           </p>
@@ -38,7 +38,7 @@ const FinalCTASectionNew: React.FC = () => {
             {finalReasons.map((reason, index) => (
               <div key={index} className="flex items-start gap-3">
                 <CheckCircle2 size={20} className="text-mint-300 flex-shrink-0 mt-0.5" />
-                <span className="text-body-md leading-relaxed opacity-95">{reason}</span>
+                <span className="text-body-md leading-relaxed text-white">{reason}</span>
               </div>
             ))}
           </div>
@@ -62,7 +62,7 @@ const FinalCTASectionNew: React.FC = () => {
             <ArrowRight size={24} />
           </Link>
 
-          <p className="text-body-sm mt-4 opacity-90">
+          <p className="text-body-sm mt-4 text-white/95">
             Leva 5-10 minutos. Nenhum pagamento necessário agora.
           </p>
         </div>
@@ -81,11 +81,11 @@ const FinalCTASectionNew: React.FC = () => {
 
         {/* Final Social Proof */}
         <div className="mt-16 pt-12 border-t border-white/20 text-center">
-          <p className="text-body-md opacity-90 mb-4">
+          <p className="text-body-md text-white mb-4">
             Junte-se a centenas de dentistas que já transformaram suas práticas:
           </p>
 
-          <div className="flex flex-wrap justify-center items-center gap-8 text-body-sm opacity-80">
+          <div className="flex flex-wrap justify-center items-center gap-8 text-body-sm text-white/90">
             <div className="flex items-center gap-2">
               <CheckCircle2 size={16} className="text-mint-300" />
               <span>500+ sites entregues</span>

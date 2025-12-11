@@ -92,12 +92,12 @@ const GuaranteesSectionNew: React.FC = () => {
               Por Que Assumimos Todo o Risco?
             </h3>
 
-            <p className="text-body-lg leading-relaxed opacity-95 mb-6">
-              Porque temos <strong>absoluta confiança</strong> na qualidade do nosso trabalho.
-              Mais de 500 dentistas já confiaram em nós e <strong>98.7% aprovaram na primeira entrega</strong>.
+            <p className="text-body-lg leading-relaxed text-white mb-6">
+              Porque temos <strong className="font-bold">absoluta confiança</strong> na qualidade do nosso trabalho.
+              Mais de 500 dentistas já confiaram em nós e <strong className="font-bold">98.7% aprovaram na primeira entrega</strong>.
             </p>
 
-            <p className="text-body-lg leading-relaxed opacity-95">
+            <p className="text-body-lg leading-relaxed text-white">
               Se estivéssemos entregando trabalho ruim, não poderíamos oferecer estas garantias.
               Mas como entregamos sites profissionais de altíssima qualidade, podemos assumir todo o risco
               e deixar você tranquilo.
