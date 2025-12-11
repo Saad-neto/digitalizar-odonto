@@ -417,60 +417,60 @@ const BriefingOdonto = () => {
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
                 {sections[0].title}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[0].subtitle}</p>
+              <p className="text-purple-600/70 text-lg">{sections[0].subtitle}</p>
             </div>
 
             <div className="space-y-6">
               {/* Tipo de Negócio */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Qual o tipo do seu negócio odontológico? *
                 </label>
                 <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                     <input
                       type="radio"
                       name="tipo_negocio"
                       value="individual"
                       checked={formData.tipo_negocio === 'individual'}
                       onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
-                      className="w-4 h-4 text-medical-600"
+                      className="w-4 h-4 text-purple-600"
                     />
                     <span className="ml-3 text-gray-700">Consultório individual - trabalho sozinho(a)</span>
                   </label>
-                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                     <input
                       type="radio"
                       name="tipo_negocio"
                       value="parceria"
                       checked={formData.tipo_negocio === 'parceria'}
                       onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
-                      className="w-4 h-4 text-medical-600"
+                      className="w-4 h-4 text-purple-600"
                     />
                     <span className="ml-3 text-gray-700">Consultório em parceria - somos 2 dentistas dividindo o espaço</span>
                   </label>
-                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                     <input
                       type="radio"
                       name="tipo_negocio"
                       value="clinica"
                       checked={formData.tipo_negocio === 'clinica'}
                       onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
-                      className="w-4 h-4 text-medical-600"
+                      className="w-4 h-4 text-purple-600"
                     />
                     <span className="ml-3 text-gray-700">Clínica odontológica - equipe com 3 ou mais profissionais</span>
                   </label>
                 </div>
                 {errors.tipo_negocio && <p className="text-red-500 text-sm mt-2">{errors.tipo_negocio}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Isso nos ajuda a personalizar o conteúdo do seu site</p>
+                <p className="text-purple-600/60 text-xs mt-2">Isso nos ajuda a personalizar o conteúdo do seu site</p>
               </div>
 
               {/* Nome do Consultório */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Qual o nome do seu consultório ou clínica? *
                 </label>
                 <input
@@ -478,8 +478,8 @@ const BriefingOdonto = () => {
                   placeholder="Ex: Clínica Odontológica Dr. Carlos Silva"
                   value={formData.nome_consultorio || ''}
                   onChange={(e) => updateFormData('nome_consultorio', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                    errors.nome_consultorio ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.nome_consultorio ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
                 {errors.nome_consultorio && <p className="text-red-500 text-sm mt-2">{errors.nome_consultorio}</p>}
@@ -487,7 +487,7 @@ const BriefingOdonto = () => {
 
               {/* Seu Nome */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Como você se chama? *
                 </label>
                 <input
@@ -495,17 +495,17 @@ const BriefingOdonto = () => {
                   placeholder="Ex: Dr. Carlos Eduardo Silva"
                   value={formData.nome || ''}
                   onChange={(e) => updateFormData('nome', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                    errors.nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
                 {errors.nome && <p className="text-red-500 text-sm mt-2">{errors.nome}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Nome completo para nossa comunicação durante o projeto</p>
+                <p className="text-purple-600/60 text-xs mt-2">Nome completo para nossa comunicação durante o projeto</p>
               </div>
 
               {/* WhatsApp */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Qual seu WhatsApp para agendamentos? *
                 </label>
                 <input
@@ -517,17 +517,17 @@ const BriefingOdonto = () => {
                     updateFormData('whatsapp', formatted);
                   }}
                   maxLength={15}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                    errors.whatsapp ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.whatsapp ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
                 {errors.whatsapp && <p className="text-red-500 text-sm mt-2">{errors.whatsapp}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Este número aparecerá no site para os pacientes agendarem consultas</p>
+                <p className="text-purple-600/60 text-xs mt-2">Este número aparecerá no site para os pacientes agendarem consultas</p>
               </div>
 
               {/* E-mail */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Seu melhor e-mail *
                 </label>
                 <input
@@ -535,17 +535,17 @@ const BriefingOdonto = () => {
                   placeholder="contato@clinica.com.br"
                   value={formData.email || ''}
                   onChange={(e) => updateFormData('email', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                    errors.email ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.email ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
                 {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Enviaremos o site pronto neste e-mail em até 24 horas</p>
+                <p className="text-purple-600/60 text-xs mt-2">Enviaremos o site pronto neste e-mail em até 24 horas</p>
               </div>
 
               {/* Slogan */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Escolha a frase principal do seu site: *
                 </label>
                 <div className="space-y-2">
@@ -557,29 +557,29 @@ const BriefingOdonto = () => {
                     { value: 'tecnologia', label: 'Tecnologia avançada para cuidar do seu sorriso', desc: '' },
                     { value: 'sem_dor', label: 'Tratamento odontológico sem dor', desc: '' },
                   ].map((opcao) => (
-                    <label key={opcao.value} className="flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                    <label key={opcao.value} className="flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                       <input
                         type="radio"
                         name="slogan_opcao"
                         value={opcao.value}
                         checked={formData.slogan_opcao === opcao.value}
                         onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
-                        className="w-4 h-4 text-medical-600 mt-1"
+                        className="w-4 h-4 text-purple-600 mt-1"
                       />
                       <div className="ml-3">
                         <div className="text-gray-700">{opcao.label}</div>
-                        {opcao.desc && <div className="text-xs text-medical-600/60 mt-1">{opcao.desc}</div>}
+                        {opcao.desc && <div className="text-xs text-purple-600/60 mt-1">{opcao.desc}</div>}
                       </div>
                     </label>
                   ))}
-                  <label className="flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <label className="flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                     <input
                       type="radio"
                       name="slogan_opcao"
                       value="custom"
                       checked={formData.slogan_opcao === 'custom'}
                       onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
-                      className="w-4 h-4 text-medical-600 mt-1"
+                      className="w-4 h-4 text-purple-600 mt-1"
                     />
                     <div className="ml-3 flex-1">
                       <div className="text-gray-700">Tenho meu próprio slogan:</div>
@@ -589,19 +589,19 @@ const BriefingOdonto = () => {
                           placeholder="Digite seu slogan personalizado"
                           value={formData.slogan_custom || ''}
                           onChange={(e) => updateFormData('slogan_custom', e.target.value)}
-                          className="w-full mt-2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-400"
+                          className="w-full mt-2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
                         />
                       )}
                     </div>
                   </label>
-                  <label className="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <label className="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                     <input
                       type="radio"
                       name="slogan_opcao"
                       value="confiamos"
                       checked={formData.slogan_opcao === 'confiamos'}
                       onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
-                      className="w-4 h-4 text-medical-600"
+                      className="w-4 h-4 text-purple-600"
                     />
                     <span className="ml-3 text-gray-700">Escolham vocês com base no meu perfil</span>
                   </label>
@@ -612,7 +612,7 @@ const BriefingOdonto = () => {
 
               {/* Ano de Início */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Desde que ano você atua na odontologia? *
                 </label>
                 <input
@@ -622,17 +622,17 @@ const BriefingOdonto = () => {
                   max="2025"
                   value={formData.ano_inicio || ''}
                   onChange={(e) => updateFormData('ano_inicio', parseInt(e.target.value))}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                    errors.ano_inicio ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                    errors.ano_inicio ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
                 {errors.ano_inicio && <p className="text-red-500 text-sm mt-2">{errors.ano_inicio}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Usaremos para calcular os anos de experiência e mostrar no site</p>
+                <p className="text-purple-600/60 text-xs mt-2">Usaremos para calcular os anos de experiência e mostrar no site</p>
               </div>
 
               {/* Número de Pacientes (Opcional) */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Aproximadamente quantos pacientes você já atendeu?
                 </label>
                 <div className="space-y-2">
@@ -643,36 +643,36 @@ const BriefingOdonto = () => {
                     { value: 'mais_5000', label: 'Mais de 5.000' },
                     { value: 'nao_informar', label: 'Não sei / Prefiro não informar' },
                   ].map((opcao) => (
-                    <label key={opcao.value} className="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                    <label key={opcao.value} className="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                       <input
                         type="radio"
                         name="num_pacientes"
                         value={opcao.value}
                         checked={formData.num_pacientes === opcao.value}
                         onChange={(e) => updateFormData('num_pacientes', e.target.value)}
-                        className="w-4 h-4 text-medical-600"
+                        className="w-4 h-4 text-purple-600"
                       />
                       <span className="ml-3 text-gray-700">{opcao.label}</span>
                     </label>
                   ))}
                 </div>
-                <p className="text-medical-600/60 text-xs mt-2">Não precisa ser exato. Usaremos para mostrar sua experiência no site (ex: '+5.000 pacientes atendidos')</p>
+                <p className="text-purple-600/60 text-xs mt-2">Não precisa ser exato. Usaremos para mostrar sua experiência no site (ex: '+5.000 pacientes atendidos')</p>
               </div>
 
               {/* Google Meu Negócio */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Tem Google Meu Negócio?
                 </label>
                 <div className="space-y-3">
-                  <label className="flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <label className="flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                     <input
                       type="radio"
                       name="tem_google_negocio"
                       value="sim"
                       checked={formData.tem_google_negocio === 'sim'}
                       onChange={(e) => updateFormData('tem_google_negocio', e.target.value)}
-                      className="w-4 h-4 text-medical-600 mt-1"
+                      className="w-4 h-4 text-purple-600 mt-1"
                     />
                     <div className="ml-3 flex-1">
                       <div className="text-gray-700">Sim, tenho</div>
@@ -683,26 +683,26 @@ const BriefingOdonto = () => {
                             placeholder="Cole o link do Google Meu Negócio"
                             value={formData.link_google_negocio || ''}
                             onChange={(e) => updateFormData('link_google_negocio', e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-400"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
                           />
-                          <p className="text-xs text-medical-600/60">💡 Como encontrar? Busque sua clínica no Google Maps, clique em "Compartilhar" e copie o link</p>
+                          <p className="text-xs text-purple-600/60">💡 Como encontrar? Busque sua clínica no Google Maps, clique em "Compartilhar" e copie o link</p>
                         </div>
                       )}
                     </div>
                   </label>
-                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                     <input
                       type="radio"
                       name="tem_google_negocio"
                       value="nao"
                       checked={formData.tem_google_negocio === 'nao'}
                       onChange={(e) => updateFormData('tem_google_negocio', e.target.value)}
-                      className="w-4 h-4 text-medical-600"
+                      className="w-4 h-4 text-purple-600"
                     />
                     <span className="ml-3 text-gray-700">Não tenho</span>
                   </label>
                 </div>
-                <p className="text-medical-600/60 text-xs mt-2">Se tiver Google Meu Negócio com avaliações, mostraremos no seu site para aumentar a credibilidade</p>
+                <p className="text-purple-600/60 text-xs mt-2">Se tiver Google Meu Negócio com avaliações, mostraremos no seu site para aumentar a credibilidade</p>
               </div>
             </div>
           </div>
@@ -712,24 +712,24 @@ const BriefingOdonto = () => {
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
                 {sections[1].title}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[1].subtitle}</p>
+              <p className="text-purple-600/70 text-lg">{sections[1].subtitle}</p>
             </div>
 
             <div className="space-y-8">
               {/* Mensagem informativa baseada no tipo */}
               {formData.tipo_negocio === 'parceria' && (
-                <div className="bg-neutral-50 border-2 border-medical-200 rounded-xl p-4">
-                  <p className="text-neutral-900 text-sm">
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4">
+                  <p className="text-purple-800 text-sm">
                     Você informou que são <strong>2 dentistas em parceria</strong>. Vamos coletar os dados de cada profissional para mostrar no site.
                   </p>
                 </div>
               )}
               {formData.tipo_negocio === 'clinica' && (
-                <div className="bg-neutral-50 border-2 border-medical-200 rounded-xl p-4">
-                  <p className="text-neutral-900 text-sm">
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4">
+                  <p className="text-purple-800 text-sm">
                     Sua clínica tem uma <strong>equipe de profissionais</strong>. Vamos coletar os dados do diretor técnico e decidir quais profissionais destacar no site.
                   </p>
                 </div>
@@ -739,13 +739,13 @@ const BriefingOdonto = () => {
               {(formData.tipo_negocio === 'individual' || formData.tipo_negocio === 'parceria') && (
                 <div className="space-y-6">
                   {formData.tipo_negocio === 'parceria' && (
-                    <div className="border-t-4 border-medical-400 pt-6">
-                      <h3 className="text-xl font-bold text-neutral-900 mb-4">Profissional 1</h3>
+                    <div className="border-t-4 border-purple-400 pt-6">
+                      <h3 className="text-xl font-bold text-purple-800 mb-4">Profissional 1</h3>
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Qual seu nome completo? *
                     </label>
                     <input
@@ -753,15 +753,15 @@ const BriefingOdonto = () => {
                       placeholder="Carlos Eduardo Silva"
                       value={formData.profissional1_nome || ''}
                       onChange={(e) => updateFormData('profissional1_nome', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional1_nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional1_nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     />
                     {errors.profissional1_nome && <p className="text-red-500 text-sm mt-2">{errors.profissional1_nome}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Como gostaria de ser apresentado no site? *
                     </label>
                     <input
@@ -769,17 +769,17 @@ const BriefingOdonto = () => {
                       placeholder="Dr. Carlos Eduardo  OU  Dra. Ana Silva"
                       value={formData.profissional1_apresentacao || ''}
                       onChange={(e) => updateFormData('profissional1_apresentacao', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional1_apresentacao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional1_apresentacao ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     />
                     {errors.profissional1_apresentacao && <p className="text-red-500 text-sm mt-2">{errors.profissional1_apresentacao}</p>}
-                    <p className="text-medical-600/60 text-xs mt-2">Este nome aparecerá em destaque na seção 'Sobre' do site</p>
+                    <p className="text-purple-600/60 text-xs mt-2">Este nome aparecerá em destaque na seção 'Sobre' do site</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
                         CRO *
                       </label>
                       <input
@@ -787,21 +787,21 @@ const BriefingOdonto = () => {
                         placeholder="12345"
                         value={formData.profissional1_cro || ''}
                         onChange={(e) => updateFormData('profissional1_cro', e.target.value)}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.profissional1_cro ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.profissional1_cro ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                         }`}
                       />
                       {errors.profissional1_cro && <p className="text-red-500 text-sm mt-2">{errors.profissional1_cro}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
                         UF *
                       </label>
                       <select
                         value={formData.profissional1_uf || ''}
                         onChange={(e) => updateFormData('profissional1_uf', e.target.value)}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.profissional1_uf ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.profissional1_uf ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                         }`}
                       >
                         <option value="">Selecione</option>
@@ -814,14 +814,14 @@ const BriefingOdonto = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Qual sua principal especialidade? *
                     </label>
                     <select
                       value={formData.profissional1_especialidade || ''}
                       onChange={(e) => updateFormData('profissional1_especialidade', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional1_especialidade ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional1_especialidade ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     >
                       <option value="">Selecione...</option>
@@ -841,7 +841,7 @@ const BriefingOdonto = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Resumo da sua formação *
                     </label>
                     <textarea
@@ -850,16 +850,16 @@ const BriefingOdonto = () => {
                       onChange={(e) => updateFormData('profissional1_formacao', e.target.value)}
                       maxLength={200}
                       rows={3}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional1_formacao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional1_formacao ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     />
                     {errors.profissional1_formacao && <p className="text-red-500 text-sm mt-2">{errors.profissional1_formacao}</p>}
-                    <p className="text-medical-600/60 text-xs mt-2">Graduação + principal especialização. Seja breve. (máx. 200 caracteres)</p>
+                    <p className="text-purple-600/60 text-xs mt-2">Graduação + principal especialização. Seja breve. (máx. 200 caracteres)</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Breve apresentação pessoal (opcional)
                     </label>
                     <textarea
@@ -868,16 +868,16 @@ const BriefingOdonto = () => {
                       onChange={(e) => updateFormData('profissional1_bio', e.target.value)}
                       maxLength={400}
                       rows={4}
-                      className="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all border-medical-200 focus:border-medical-400"
+                      className="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all border-purple-200 focus:border-purple-400"
                     />
-                    <p className="text-medical-600/60 text-xs mt-2">Opcional, mas recomendado. Conte um pouco sobre você e sua missão. (máx. 400 caracteres)</p>
+                    <p className="text-purple-600/60 text-xs mt-2">Opcional, mas recomendado. Conte um pouco sobre você e sua missão. (máx. 400 caracteres)</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Sua foto profissional *
                     </label>
-                    <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 text-center hover:border-medical-400 transition-all">
+                    <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 text-center hover:border-purple-400 transition-all">
                       <input
                         type="file"
                         accept="image/*"
@@ -886,9 +886,9 @@ const BriefingOdonto = () => {
                         id="profissional1_foto"
                       />
                       <label htmlFor="profissional1_foto" className="cursor-pointer">
-                        <Upload className="w-8 h-8 mx-auto mb-2 text-medical-400" />
-                        <p className="text-neutral-900 font-medium">Clique para fazer upload</p>
-                        <p className="text-medical-600/60 text-xs mt-1">JPG ou PNG (máx. 5MB)</p>
+                        <Upload className="w-8 h-8 mx-auto mb-2 text-purple-400" />
+                        <p className="text-purple-800 font-medium">Clique para fazer upload</p>
+                        <p className="text-purple-600/60 text-xs mt-1">JPG ou PNG (máx. 5MB)</p>
                       </label>
                       {uploadedFiles.profissional1_foto && uploadedFiles.profissional1_foto.length > 0 && (
                         <div className="mt-3 text-sm text-green-600">
@@ -896,7 +896,7 @@ const BriefingOdonto = () => {
                         </div>
                       )}
                     </div>
-                    <div className="mt-2 text-xs text-medical-600/70 space-y-1">
+                    <div className="mt-2 text-xs text-purple-600/70 space-y-1">
                       <p>✅ Foto de boa qualidade (não use selfie)</p>
                       <p>✅ Fundo neutro ou do consultório</p>
                       <p>✅ Roupa profissional (jaleco de preferência)</p>
@@ -907,12 +907,12 @@ const BriefingOdonto = () => {
 
               {/* PARCERIA - PROFISSIONAL 2 */}
               {formData.tipo_negocio === 'parceria' && (
-                <div className="space-y-6 border-t-4 border-medical-400 pt-8">
-                  <h3 className="text-xl font-bold text-neutral-900 mb-4">Profissional 2</h3>
+                <div className="space-y-6 border-t-4 border-purple-400 pt-8">
+                  <h3 className="text-xl font-bold text-purple-800 mb-4">Profissional 2</h3>
 
                   {/* Campos idênticos ao Profissional 1, mas com profissional2_* */}
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Nome completo do 2º profissional *
                     </label>
                     <input
@@ -920,15 +920,15 @@ const BriefingOdonto = () => {
                       placeholder="Ana Paula Santos"
                       value={formData.profissional2_nome || ''}
                       onChange={(e) => updateFormData('profissional2_nome', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional2_nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional2_nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     />
                     {errors.profissional2_nome && <p className="text-red-500 text-sm mt-2">{errors.profissional2_nome}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Como gostaria de ser apresentado(a) no site? *
                     </label>
                     <input
@@ -936,8 +936,8 @@ const BriefingOdonto = () => {
                       placeholder="Dra. Ana Paula"
                       value={formData.profissional2_apresentacao || ''}
                       onChange={(e) => updateFormData('profissional2_apresentacao', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional2_apresentacao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional2_apresentacao ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     />
                     {errors.profissional2_apresentacao && <p className="text-red-500 text-sm mt-2">{errors.profissional2_apresentacao}</p>}
@@ -945,7 +945,7 @@ const BriefingOdonto = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
                         CRO *
                       </label>
                       <input
@@ -953,21 +953,21 @@ const BriefingOdonto = () => {
                         placeholder="54321"
                         value={formData.profissional2_cro || ''}
                         onChange={(e) => updateFormData('profissional2_cro', e.target.value)}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.profissional2_cro ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.profissional2_cro ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                         }`}
                       />
                       {errors.profissional2_cro && <p className="text-red-500 text-sm mt-2">{errors.profissional2_cro}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
                         UF *
                       </label>
                       <select
                         value={formData.profissional2_uf || ''}
                         onChange={(e) => updateFormData('profissional2_uf', e.target.value)}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.profissional2_uf ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.profissional2_uf ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                         }`}
                       >
                         <option value="">Selecione</option>
@@ -980,14 +980,14 @@ const BriefingOdonto = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Especialidade principal *
                     </label>
                     <select
                       value={formData.profissional2_especialidade || ''}
                       onChange={(e) => updateFormData('profissional2_especialidade', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional2_especialidade ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional2_especialidade ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     >
                       <option value="">Selecione...</option>
@@ -1007,7 +1007,7 @@ const BriefingOdonto = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Resumo da formação *
                     </label>
                     <textarea
@@ -1016,19 +1016,19 @@ const BriefingOdonto = () => {
                       onChange={(e) => updateFormData('profissional2_formacao', e.target.value)}
                       maxLength={200}
                       rows={3}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional2_formacao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                        errors.profissional2_formacao ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                       }`}
                     />
                     {errors.profissional2_formacao && <p className="text-red-500 text-sm mt-2">{errors.profissional2_formacao}</p>}
-                    <p className="text-medical-600/60 text-xs mt-2">máx. 200 caracteres</p>
+                    <p className="text-purple-600/60 text-xs mt-2">máx. 200 caracteres</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                    <label className="block text-sm font-semibold text-purple-800 mb-3">
                       Foto profissional *
                     </label>
-                    <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 text-center hover:border-medical-400 transition-all">
+                    <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 text-center hover:border-purple-400 transition-all">
                       <input
                         type="file"
                         accept="image/*"
@@ -1037,9 +1037,9 @@ const BriefingOdonto = () => {
                         id="profissional2_foto"
                       />
                       <label htmlFor="profissional2_foto" className="cursor-pointer">
-                        <Upload className="w-8 h-8 mx-auto mb-2 text-medical-400" />
-                        <p className="text-neutral-900 font-medium">Clique para fazer upload</p>
-                        <p className="text-medical-600/60 text-xs mt-1">JPG ou PNG (máx. 5MB)</p>
+                        <Upload className="w-8 h-8 mx-auto mb-2 text-purple-400" />
+                        <p className="text-purple-800 font-medium">Clique para fazer upload</p>
+                        <p className="text-purple-600/60 text-xs mt-1">JPG ou PNG (máx. 5MB)</p>
                       </label>
                       {uploadedFiles.profissional2_foto && uploadedFiles.profissional2_foto.length > 0 && (
                         <div className="mt-3 text-sm text-green-600">
@@ -1055,11 +1055,11 @@ const BriefingOdonto = () => {
               {formData.tipo_negocio === 'clinica' && (
                 <div className="space-y-8">
                   <div className="space-y-6">
-                    <h3 className="text-xl font-bold text-neutral-900">Diretor Técnico (Obrigatório por lei)</h3>
+                    <h3 className="text-xl font-bold text-purple-800">Diretor Técnico (Obrigatório por lei)</h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                        <label className="block text-sm font-semibold text-purple-800 mb-3">
                           Nome completo *
                         </label>
                         <input
@@ -1067,15 +1067,15 @@ const BriefingOdonto = () => {
                           placeholder="Dr. Roberto Silva"
                           value={formData.diretor_nome || ''}
                           onChange={(e) => updateFormData('diretor_nome', e.target.value)}
-                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                            errors.diretor_nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                            errors.diretor_nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                           }`}
                         />
                         {errors.diretor_nome && <p className="text-red-500 text-sm mt-2">{errors.diretor_nome}</p>}
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                          <label className="block text-sm font-semibold text-purple-800 mb-3">
                             CRO *
                           </label>
                           <input
@@ -1083,21 +1083,21 @@ const BriefingOdonto = () => {
                             placeholder="12345"
                             value={formData.diretor_cro || ''}
                             onChange={(e) => updateFormData('diretor_cro', e.target.value)}
-                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                              errors.diretor_cro ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                              errors.diretor_cro ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                             }`}
                           />
                           {errors.diretor_cro && <p className="text-red-500 text-sm mt-2">{errors.diretor_cro}</p>}
                         </div>
                         <div>
-                          <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                          <label className="block text-sm font-semibold text-purple-800 mb-3">
                             UF *
                           </label>
                           <select
                             value={formData.diretor_uf || ''}
                             onChange={(e) => updateFormData('diretor_uf', e.target.value)}
-                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                              errors.diretor_uf ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                              errors.diretor_uf ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                             }`}
                           >
                             <option value="">UF</option>
@@ -1111,7 +1111,7 @@ const BriefingOdonto = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                      <label className="block text-sm font-semibold text-purple-800 mb-3">
                         Quantos profissionais trabalham na clínica? *
                       </label>
                       <input
@@ -1120,44 +1120,44 @@ const BriefingOdonto = () => {
                         min="3"
                         value={formData.num_profissionais || ''}
                         onChange={(e) => updateFormData('num_profissionais', parseInt(e.target.value))}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.num_profissionais ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                          errors.num_profissionais ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                         }`}
                       />
                       {errors.num_profissionais && <p className="text-red-500 text-sm mt-2">{errors.num_profissionais}</p>}
-                      <p className="text-medical-600/60 text-xs mt-2">Mostraremos no site: 'Equipe com X especialistas'</p>
+                      <p className="text-purple-600/60 text-xs mt-2">Mostraremos no site: 'Equipe com X especialistas'</p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <label className="block text-sm font-semibold text-neutral-900">
+                    <label className="block text-sm font-semibold text-purple-800">
                       Deseja destacar alguns profissionais no site?
                     </label>
                     <div className="space-y-3">
-                      <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                      <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                         <input
                           type="radio"
                           name="destacar_profissionais"
                           value="nao"
                           checked={formData.destacar_profissionais === 'nao'}
                           onChange={(e) => updateFormData('destacar_profissionais', e.target.value)}
-                          className="w-4 h-4 text-medical-600"
+                          className="w-4 h-4 text-purple-600"
                         />
                         <span className="ml-3 text-gray-700">Não, apenas mencionar que temos equipe especializada</span>
                       </label>
-                      <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                      <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-purple-400 hover:bg-purple-50/50">
                         <input
                           type="radio"
                           name="destacar_profissionais"
                           value="sim"
                           checked={formData.destacar_profissionais === 'sim'}
                           onChange={(e) => updateFormData('destacar_profissionais', e.target.value)}
-                          className="w-4 h-4 text-medical-600"
+                          className="w-4 h-4 text-purple-600"
                         />
                         <span className="ml-3 text-gray-700">Sim, quero destacar profissionais específicos</span>
                       </label>
                     </div>
-                    <p className="text-medical-600/60 text-xs">Destacar profissionais principais aumenta a confiança. Recomendamos mostrar pelo menos 2-3.</p>
+                    <p className="text-purple-600/60 text-xs">Destacar profissionais principais aumenta a confiança. Recomendamos mostrar pelo menos 2-3.</p>
                   </div>
 
                   {formData.destacar_profissionais === 'sim' && (
@@ -1200,15 +1200,15 @@ const BriefingOdonto = () => {
                         </label>
                       </div>
 
-                      <div className="bg-neutral-50 border-2 border-medical-300 rounded-xl p-4">
-                        <p className="text-neutral-900 text-sm font-semibold mb-2">
+                      <div className="bg-purple-50 border-2 border-purple-300 rounded-xl p-4">
+                        <p className="text-purple-800 text-sm font-semibold mb-2">
                           Quantos profissionais você quer destacar no site? *
                         </p>
                         <select
                           value={formData.num_profissionais_destacar || ''}
                           onChange={(e) => updateFormData('num_profissionais_destacar', e.target.value)}
-                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                            errors.num_profissionais_destacar ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                            errors.num_profissionais_destacar ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                           }`}
                         >
                           <option value="">Selecione...</option>
@@ -1220,7 +1220,7 @@ const BriefingOdonto = () => {
                         {errors.num_profissionais_destacar && (
                           <p className="text-red-500 text-sm mt-2">{errors.num_profissionais_destacar}</p>
                         )}
-                        <p className="text-medical-600/70 text-xs mt-2">
+                        <p className="text-purple-600/70 text-xs mt-2">
                           {formData.diretor_destacado
                             ? '💡 O diretor já conta como 1 profissional'
                             : 'Recomendamos destacar 2-3 profissionais principais para não sobrecarregar o site'}
@@ -1296,10 +1296,10 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* Serviços Oferecidos */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Quais serviços/tratamentos você oferece? *
               </label>
-              <p className="text-sm text-medical-600/70 mb-4">
+              <p className="text-sm text-purple-600/70 mb-4">
                 Selecione de 3 a 6 serviços que você oferece (os principais que deseja destacar no site):
               </p>
 
@@ -1325,7 +1325,7 @@ const BriefingOdonto = () => {
                   { value: 'emergencia', label: 'Emergências 24h', icon: '🚨' },
                   { value: 'outro', label: 'Outro', icon: '➕' }
                 ].map((servico) => (
-                  <label key={servico.value} className="flex items-center p-3 rounded-lg border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                  <label key={servico.value} className="flex items-center p-3 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                     <input
                       type="checkbox"
                       checked={formData.servicos?.includes(servico.value) || false}
@@ -1344,10 +1344,10 @@ const BriefingOdonto = () => {
                           }
                         }
                       }}
-                      className="mr-3 accent-medical-600 w-5 h-5"
+                      className="mr-3 accent-purple-600 w-5 h-5"
                       disabled={!formData.servicos?.includes(servico.value) && (formData.servicos?.length || 0) >= 6}
                     />
-                    <span className="text-neutral-900">
+                    <span className="text-purple-800">
                       <span className="mr-2">{servico.icon}</span>
                       {servico.label}
                     </span>
@@ -1360,7 +1360,7 @@ const BriefingOdonto = () => {
                 <span className={`text-sm font-semibold ${
                   (formData.servicos?.length || 0) < 3 ? 'text-red-600' :
                   (formData.servicos?.length || 0) > 6 ? 'text-red-600' :
-                  'text-medical-600'
+                  'text-purple-600'
                 }`}>
                   {formData.servicos?.length || 0} de 3-6 serviços selecionados
                 </span>
@@ -1371,7 +1371,7 @@ const BriefingOdonto = () => {
               {/* Campo "Outro" condicional */}
               {formData.servicos?.includes('outro') && (
                 <div className="mt-4">
-                  <label className="block text-neutral-900 font-semibold mb-2">
+                  <label className="block text-purple-800 font-semibold mb-2">
                     Qual outro serviço? *
                   </label>
                   <input
@@ -1379,8 +1379,8 @@ const BriefingOdonto = () => {
                     value={formData.servico_outro || ''}
                     onChange={(e) => setFormData({...formData, servico_outro: e.target.value})}
                     className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                      errors.servico_outro ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                    } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                      errors.servico_outro ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                     placeholder="Digite o serviço"
                   />
                   {errors.servico_outro && <p className="text-red-500 text-sm mt-1">{errors.servico_outro}</p>}
@@ -1390,36 +1390,36 @@ const BriefingOdonto = () => {
 
             {/* Aceita Convênios */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Aceita convênios? *
               </label>
               <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="aceita_convenios"
                     value="sim"
                     checked={formData.aceita_convenios === 'sim'}
                     onChange={(e) => setFormData({...formData, aceita_convenios: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
                   <div>
-                    <div className="font-semibold text-neutral-900">✅ Sim, aceito convênios</div>
-                    <div className="text-sm text-medical-600/70">(Unimed, Bradesco Dental, SulAmérica, etc.)</div>
+                    <div className="font-semibold text-purple-800">✅ Sim, aceito convênios</div>
+                    <div className="text-sm text-purple-600/70">(Unimed, Bradesco Dental, SulAmérica, etc.)</div>
                   </div>
                 </label>
 
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="aceita_convenios"
                     value="nao"
                     checked={formData.aceita_convenios === 'nao'}
                     onChange={(e) => setFormData({...formData, aceita_convenios: e.target.value, lista_convenios: ''})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
                   <div>
-                    <div className="font-semibold text-neutral-900">❌ Não, apenas particular</div>
+                    <div className="font-semibold text-purple-800">❌ Não, apenas particular</div>
                   </div>
                 </label>
               </div>
@@ -1429,10 +1429,10 @@ const BriefingOdonto = () => {
             {/* Lista de Convênios (condicional) */}
             {formData.aceita_convenios === 'sim' && (
               <div>
-                <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+                <label className="block text-purple-800 font-semibold mb-4 text-lg">
                   Quais convênios você aceita? *
                 </label>
-                <p className="text-sm text-medical-600/70 mb-4">
+                <p className="text-sm text-purple-600/70 mb-4">
                   Selecione todos os convênios que você aceita:
                 </p>
 
@@ -1454,7 +1454,7 @@ const BriefingOdonto = () => {
                     { value: 'caixa_seguradora', label: 'Caixa Seguradora', icon: '🏛️' },
                     { value: 'outro_convenio', label: 'Outro', icon: '➕' }
                   ].map((convenio) => (
-                    <label key={convenio.value} className="flex items-center p-3 rounded-lg border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                    <label key={convenio.value} className="flex items-center p-3 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                       <input
                         type="checkbox"
                         checked={formData.lista_convenios_array?.includes(convenio.value) || false}
@@ -1470,9 +1470,9 @@ const BriefingOdonto = () => {
                             }
                           }
                         }}
-                        className="mr-3 accent-medical-600 w-5 h-5"
+                        className="mr-3 accent-purple-600 w-5 h-5"
                       />
-                      <span className="text-neutral-900">
+                      <span className="text-purple-800">
                         <span className="mr-2">{convenio.icon}</span>
                         {convenio.label}
                       </span>
@@ -1485,7 +1485,7 @@ const BriefingOdonto = () => {
                 {/* Campo "Outro convênio" condicional */}
                 {formData.lista_convenios_array?.includes('outro_convenio') && (
                   <div className="mt-4">
-                    <label className="block text-neutral-900 font-semibold mb-2">
+                    <label className="block text-purple-800 font-semibold mb-2">
                       Qual outro convênio? *
                     </label>
                     <input
@@ -1493,8 +1493,8 @@ const BriefingOdonto = () => {
                       value={formData.outro_convenio || ''}
                       onChange={(e) => setFormData({...formData, outro_convenio: e.target.value})}
                       className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                        errors.outro_convenio ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                      } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                        errors.outro_convenio ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                      } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                       placeholder="Digite o nome do convênio"
                     />
                     {errors.outro_convenio && <p className="text-red-500 text-sm mt-1">{errors.outro_convenio}</p>}
@@ -1505,32 +1505,32 @@ const BriefingOdonto = () => {
 
             {/* Atendimento de Emergência */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Tem atendimento de emergência, fora? *
               </label>
               <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="atende_emergencia"
                     value="sim_24h"
                     checked={formData.atende_emergencia === 'sim_24h'}
                     onChange={(e) => setFormData({...formData, atende_emergencia: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">Sim, 24 horas</div>
+                  <div className="font-semibold text-purple-800">Sim, 24 horas</div>
                 </label>
 
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="atende_emergencia"
                     value="nao_horario"
                     checked={formData.atende_emergencia === 'nao_horario'}
                     onChange={(e) => setFormData({...formData, atende_emergencia: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">Não, apenas horário comercial</div>
+                  <div className="font-semibold text-purple-800">Não, apenas horário comercial</div>
                 </label>
               </div>
               {errors.atende_emergencia && <p className="text-red-500 text-sm mt-2">{errors.atende_emergencia}</p>}
@@ -1538,10 +1538,10 @@ const BriefingOdonto = () => {
 
             {/* Equipamentos/Tecnologia */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Quais equipamentos/tecnologias disponíveis? *
               </label>
-              <p className="text-sm text-medical-600/70 mb-4">
+              <p className="text-sm text-purple-600/70 mb-4">
                 Marque todos que se aplicam:
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1559,7 +1559,7 @@ const BriefingOdonto = () => {
                   { value: 'piezocirurgia', label: 'Piezocirurgia' },
                   { value: 'tecnologia_ponta', label: 'Tecnologia de ponta' }
                 ].map((tech) => (
-                  <label key={tech.value} className="flex items-center p-3 rounded-lg border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                  <label key={tech.value} className="flex items-center p-3 rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                     <input
                       type="checkbox"
                       checked={formData.tecnologias?.includes(tech.value) || false}
@@ -1571,9 +1571,9 @@ const BriefingOdonto = () => {
                           setFormData({...formData, tecnologias: current.filter(t => t !== tech.value)});
                         }
                       }}
-                      className="mr-3 accent-medical-600 w-5 h-5"
+                      className="mr-3 accent-purple-600 w-5 h-5"
                     />
-                    <span className="text-neutral-900">{tech.label}</span>
+                    <span className="text-purple-800">{tech.label}</span>
                   </label>
                 ))}
               </div>
@@ -1582,32 +1582,32 @@ const BriefingOdonto = () => {
 
             {/* Oferece Sessão? */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Oferece sedação consciente? *
               </label>
               <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="oferece_sedacao"
                     value="sim"
                     checked={formData.oferece_sedacao === 'sim'}
                     onChange={(e) => setFormData({...formData, oferece_sedacao: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">Sim, oferecemos sedação consciente</div>
+                  <div className="font-semibold text-purple-800">Sim, oferecemos sedação consciente</div>
                 </label>
 
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="oferece_sedacao"
                     value="nao"
                     checked={formData.oferece_sedacao === 'nao'}
                     onChange={(e) => setFormData({...formData, oferece_sedacao: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">Não oferecemos</div>
+                  <div className="font-semibold text-purple-800">Não oferecemos</div>
                 </label>
               </div>
               {errors.oferece_sedacao && <p className="text-red-500 text-sm mt-2">{errors.oferece_sedacao}</p>}
@@ -1620,7 +1620,7 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* CEP */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2">
+              <label className="block text-purple-800 font-semibold mb-2">
                 CEP *
               </label>
               <input
@@ -1629,8 +1629,8 @@ const BriefingOdonto = () => {
                 onChange={handleCepChange}
                 maxLength={9}
                 className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                  errors.cep ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                  errors.cep ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                 placeholder="00000-000"
               />
               {errors.cep && <p className="text-red-500 text-sm mt-1">{errors.cep}</p>}
@@ -1638,7 +1638,7 @@ const BriefingOdonto = () => {
 
             {/* Rua/Logradouro */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2">
+              <label className="block text-purple-800 font-semibold mb-2">
                 Rua/Logradouro *
               </label>
               <input
@@ -1646,8 +1646,8 @@ const BriefingOdonto = () => {
                 value={formData.rua || ''}
                 onChange={(e) => setFormData({...formData, rua: e.target.value})}
                 className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                  errors.rua ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                  errors.rua ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                 placeholder="Rua das Flores"
               />
               {errors.rua && <p className="text-red-500 text-sm mt-1">{errors.rua}</p>}
@@ -1656,7 +1656,7 @@ const BriefingOdonto = () => {
             {/* Número e Bairro (2 colunas) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-neutral-900 font-semibold mb-2">
+                <label className="block text-purple-800 font-semibold mb-2">
                   Número *
                 </label>
                 <input
@@ -1664,15 +1664,15 @@ const BriefingOdonto = () => {
                   value={formData.numero || ''}
                   onChange={(e) => setFormData({...formData, numero: e.target.value})}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.numero ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    errors.numero ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                   placeholder="123"
                 />
                 {errors.numero && <p className="text-red-500 text-sm mt-1">{errors.numero}</p>}
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-neutral-900 font-semibold mb-2">
+                <label className="block text-purple-800 font-semibold mb-2">
                   Bairro *
                 </label>
                 <input
@@ -1680,8 +1680,8 @@ const BriefingOdonto = () => {
                   value={formData.bairro || ''}
                   onChange={(e) => setFormData({...formData, bairro: e.target.value})}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.bairro ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    errors.bairro ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                   placeholder="Centro"
                 />
                 {errors.bairro && <p className="text-red-500 text-sm mt-1">{errors.bairro}</p>}
@@ -1691,7 +1691,7 @@ const BriefingOdonto = () => {
             {/* Cidade e UF (2 colunas) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-neutral-900 font-semibold mb-2">
+                <label className="block text-purple-800 font-semibold mb-2">
                   Cidade *
                 </label>
                 <input
@@ -1699,15 +1699,15 @@ const BriefingOdonto = () => {
                   value={formData.cidade || ''}
                   onChange={(e) => setFormData({...formData, cidade: e.target.value})}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.cidade ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    errors.cidade ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                   placeholder="São Paulo"
                 />
                 {errors.cidade && <p className="text-red-500 text-sm mt-1">{errors.cidade}</p>}
               </div>
 
               <div>
-                <label className="block text-neutral-900 font-semibold mb-2">
+                <label className="block text-purple-800 font-semibold mb-2">
                   UF *
                 </label>
                 <input
@@ -1716,8 +1716,8 @@ const BriefingOdonto = () => {
                   onChange={(e) => setFormData({...formData, estado: e.target.value.toUpperCase()})}
                   maxLength={2}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.estado ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    errors.estado ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                   placeholder="SP"
                 />
                 {errors.estado && <p className="text-red-500 text-sm mt-1">{errors.estado}</p>}
@@ -1726,46 +1726,46 @@ const BriefingOdonto = () => {
 
             {/* Complemento (opcional) */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2">
+              <label className="block text-purple-800 font-semibold mb-2">
                 Complemento (opcional)
               </label>
               <input
                 type="text"
                 value={formData.complemento || ''}
                 onChange={(e) => setFormData({...formData, complemento: e.target.value})}
-                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                 placeholder="Sala 12, 2º andar"
               />
             </div>
 
             {/* Tem estacionamento? */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Tem estacionamento? *
               </label>
               <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="tem_estacionamento"
                     value="sim_gratuito"
                     checked={formData.tem_estacionamento === 'sim_gratuito'}
                     onChange={(e) => setFormData({...formData, tem_estacionamento: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">✅ Sim, temos estacionamento</div>
+                  <div className="font-semibold text-purple-800">✅ Sim, temos estacionamento</div>
                 </label>
 
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="tem_estacionamento"
                     value="nao_conveniado"
                     checked={formData.tem_estacionamento === 'nao_conveniado'}
                     onChange={(e) => setFormData({...formData, tem_estacionamento: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">❌ Não temos estacionamento</div>
+                  <div className="font-semibold text-purple-800">❌ Não temos estacionamento</div>
                 </label>
               </div>
               {errors.tem_estacionamento && <p className="text-red-500 text-sm mt-2">{errors.tem_estacionamento}</p>}
@@ -1773,10 +1773,10 @@ const BriefingOdonto = () => {
 
             {/* Horários de Atendimento */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Quais horários de atendimento? *
               </label>
-              <p className="text-sm text-medical-600/70 mb-4">
+              <p className="text-sm text-purple-600/70 mb-4">
                 Marque todos os horários que você atende:
               </p>
               <div className="space-y-3">
@@ -1787,7 +1787,7 @@ const BriefingOdonto = () => {
                   { value: 'sabado', label: '📅 Sábado' },
                   { value: 'domingo', label: '🗓️ Domingo e feriados' }
                 ].map((horario) => (
-                  <label key={horario.value} className="flex items-center p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                  <label key={horario.value} className="flex items-center p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                     <input
                       type="checkbox"
                       checked={formData.horarios_atendimento?.includes(horario.value) || false}
@@ -1799,9 +1799,9 @@ const BriefingOdonto = () => {
                           setFormData({...formData, horarios_atendimento: current.filter(h => h !== horario.value)});
                         }
                       }}
-                      className="mr-3 accent-medical-600 w-5 h-5"
+                      className="mr-3 accent-purple-600 w-5 h-5"
                     />
-                    <span className="font-semibold text-neutral-900">{horario.label}</span>
+                    <span className="font-semibold text-purple-800">{horario.label}</span>
                   </label>
                 ))}
               </div>
@@ -1810,32 +1810,32 @@ const BriefingOdonto = () => {
 
             {/* Quer exibir o mapa do Google Maps? */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Quer exibir o mapa do Google no site? *
               </label>
               <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="exibir_mapa"
                     value="sim"
                     checked={formData.exibir_mapa === 'sim'}
                     onChange={(e) => setFormData({...formData, exibir_mapa: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">✅ Sim, quero mostrar minha localização no mapa</div>
+                  <div className="font-semibold text-purple-800">✅ Sim, quero mostrar minha localização no mapa</div>
                 </label>
 
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="exibir_mapa"
                     value="nao"
                     checked={formData.exibir_mapa === 'nao'}
                     onChange={(e) => setFormData({...formData, exibir_mapa: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">❌ Não, apenas o endereço de texto</div>
+                  <div className="font-semibold text-purple-800">❌ Não, apenas o endereço de texto</div>
                 </label>
               </div>
               {errors.exibir_mapa && <p className="text-red-500 text-sm mt-2">{errors.exibir_mapa}</p>}
@@ -1843,32 +1843,32 @@ const BriefingOdonto = () => {
 
             {/* Tem redes sociais ativas? */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Tem redes sociais ativas? *
               </label>
               <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="tem_redes_sociais"
                     value="sim"
                     checked={formData.tem_redes_sociais === 'sim'}
                     onChange={(e) => setFormData({...formData, tem_redes_sociais: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">✅ Sim, tenho Instagram e/ou Facebook</div>
+                  <div className="font-semibold text-purple-800">✅ Sim, tenho Instagram e/ou Facebook</div>
                 </label>
 
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="tem_redes_sociais"
                     value="nao"
                     checked={formData.tem_redes_sociais === 'nao'}
                     onChange={(e) => setFormData({...formData, tem_redes_sociais: e.target.value, instagram: '', facebook: ''})}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
-                  <div className="font-semibold text-neutral-900">❌ Não tenho redes sociais</div>
+                  <div className="font-semibold text-purple-800">❌ Não tenho redes sociais</div>
                 </label>
               </div>
               {errors.tem_redes_sociais && <p className="text-red-500 text-sm mt-2">{errors.tem_redes_sociais}</p>}
@@ -1878,53 +1878,53 @@ const BriefingOdonto = () => {
             {formData.tem_redes_sociais === 'sim' && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-neutral-900 font-semibold mb-2">
+                  <label className="block text-purple-800 font-semibold mb-2">
                     Instagram (opcional)
                   </label>
                   <input
                     type="url"
                     value={formData.instagram || ''}
                     onChange={(e) => setFormData({...formData, instagram: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                     placeholder="https://instagram.com/seu_usuario"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-neutral-900 font-semibold mb-2">
+                  <label className="block text-purple-800 font-semibold mb-2">
                     Facebook (opcional)
                   </label>
                   <input
                     type="url"
                     value={formData.facebook || ''}
                     onChange={(e) => setFormData({...formData, facebook: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                     placeholder="https://facebook.com/sua_pagina"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-neutral-900 font-semibold mb-2">
+                  <label className="block text-purple-800 font-semibold mb-2">
                     LinkedIn (opcional)
                   </label>
                   <input
                     type="url"
                     value={formData.linkedin || ''}
                     onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                     placeholder="https://linkedin.com/in/seu_perfil"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-neutral-900 font-semibold mb-2">
+                  <label className="block text-purple-800 font-semibold mb-2">
                     Outras redes (opcional)
                   </label>
                   <input
                     type="url"
                     value={formData.outras_redes || ''}
                     onChange={(e) => setFormData({...formData, outras_redes: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                     placeholder="https://..."
                   />
                 </div>
@@ -1960,14 +1960,14 @@ const BriefingOdonto = () => {
 
             {/* Logo da Clínica */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
                 📱 Logo da Clínica/Consultório
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
+              <p className="text-sm text-purple-600/70 mb-3">
                 Sua logo aparecerá no <strong>cabeçalho do site</strong>, <strong>rodapé</strong> e em outros locais estratégicos.
                 Prefira PNG com fundo transparente para melhor resultado.
               </p>
-              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
+              <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer">
                 <input
                   type="file"
                   accept=".jpg,.jpeg,.png,.webp"
@@ -1977,8 +1977,8 @@ const BriefingOdonto = () => {
                 />
                 <label htmlFor="upload_logo" className="cursor-pointer flex flex-col items-center">
                   <div className="text-5xl mb-3">🎨</div>
-                  <p className="text-neutral-900 font-medium">Clique para fazer upload da logo</p>
-                  <p className="text-sm text-medical-600/70 mt-1">(PNG, JPG ou WEBP - máx. 5MB)</p>
+                  <p className="text-purple-800 font-medium">Clique para fazer upload da logo</p>
+                  <p className="text-sm text-purple-600/70 mt-1">(PNG, JPG ou WEBP - máx. 5MB)</p>
                 </label>
                 {uploadedFiles.logo && uploadedFiles.logo.length > 0 && (
                   <div className="mt-4 text-center text-green-700 font-semibold">
@@ -1996,15 +1996,15 @@ const BriefingOdonto = () => {
 
             {/* Imagem Hero Desktop */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
                 🖥️ Imagem Principal do Site (Hero - Desktop)
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
+              <p className="text-sm text-purple-600/70 mb-3">
                 Esta é a <strong>primeira imagem que o visitante vê</strong> ao acessar seu site no computador.
                 Ela aparece no topo da página inicial e causa a primeira impressão. Escolha uma imagem profissional
                 do seu consultório, equipe ou um sorriso bonito.
               </p>
-              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
+              <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer">
                 <input
                   type="file"
                   accept=".jpg,.jpeg,.png,.webp"
@@ -2014,8 +2014,8 @@ const BriefingOdonto = () => {
                 />
                 <label htmlFor="upload_hero_desktop" className="cursor-pointer flex flex-col items-center">
                   <div className="text-5xl mb-3">🖼️</div>
-                  <p className="text-neutral-900 font-medium">Clique para fazer upload (Desktop)</p>
-                  <p className="text-sm text-medical-600/70 mt-1">(JPG, PNG ou WEBP - máx. 8MB)</p>
+                  <p className="text-purple-800 font-medium">Clique para fazer upload (Desktop)</p>
+                  <p className="text-sm text-purple-600/70 mt-1">(JPG, PNG ou WEBP - máx. 8MB)</p>
                 </label>
                 {uploadedFiles.hero_desktop && uploadedFiles.hero_desktop.length > 0 && (
                   <div className="mt-4 text-center text-green-700 font-semibold">
@@ -2033,15 +2033,15 @@ const BriefingOdonto = () => {
 
             {/* Imagem Hero Mobile */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
                 📱 Imagem Principal do Site (Hero - Mobile)
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
+              <p className="text-sm text-purple-600/70 mb-3">
                 Esta é a versão <strong>para celular</strong> da imagem principal. Como as telas de celular são
                 verticais, precisamos de uma imagem diferente para garantir boa visualização. Pode ser um recorte
                 da imagem desktop ou uma foto diferente.
               </p>
-              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
+              <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer">
                 <input
                   type="file"
                   accept=".jpg,.jpeg,.png,.webp"
@@ -2051,8 +2051,8 @@ const BriefingOdonto = () => {
                 />
                 <label htmlFor="upload_hero_mobile" className="cursor-pointer flex flex-col items-center">
                   <div className="text-5xl mb-3">📱</div>
-                  <p className="text-neutral-900 font-medium">Clique para fazer upload (Mobile)</p>
-                  <p className="text-sm text-medical-600/70 mt-1">(JPG, PNG ou WEBP - máx. 5MB)</p>
+                  <p className="text-purple-800 font-medium">Clique para fazer upload (Mobile)</p>
+                  <p className="text-sm text-purple-600/70 mt-1">(JPG, PNG ou WEBP - máx. 5MB)</p>
                 </label>
                 {uploadedFiles.hero_mobile && uploadedFiles.hero_mobile.length > 0 && (
                   <div className="mt-4 text-center text-green-700 font-semibold">
@@ -2070,15 +2070,15 @@ const BriefingOdonto = () => {
 
             {/* Fotos da Clínica/Espaço */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
                 🏥 Fotos da Clínica/Consultório (Galeria)
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
+              <p className="text-sm text-purple-600/70 mb-3">
                 Fotos do seu espaço ajudam a gerar <strong>confiança e credibilidade</strong>. Mostram ao paciente
                 que você tem um ambiente profissional. Inclua: recepção, consultório, equipamentos modernos,
                 sala de espera, etc.
               </p>
-              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
+              <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer">
                 <input
                   type="file"
                   accept=".jpg,.jpeg,.png,.webp"
@@ -2089,8 +2089,8 @@ const BriefingOdonto = () => {
                 />
                 <label htmlFor="upload_fotos_espaco" className="cursor-pointer flex flex-col items-center">
                   <div className="text-5xl mb-3">📸</div>
-                  <p className="text-neutral-900 font-medium">Clique para fazer upload (múltiplas fotos)</p>
-                  <p className="text-sm text-medical-600/70 mt-1">(JPG, PNG ou WEBP - máx. 5MB cada)</p>
+                  <p className="text-purple-800 font-medium">Clique para fazer upload (múltiplas fotos)</p>
+                  <p className="text-sm text-purple-600/70 mt-1">(JPG, PNG ou WEBP - máx. 5MB cada)</p>
                 </label>
                 {uploadedFiles.fotos_espaco && uploadedFiles.fotos_espaco.length > 0 && (
                   <div className="mt-4 text-center text-green-700 font-semibold">
@@ -2108,10 +2108,10 @@ const BriefingOdonto = () => {
 
             {/* Cor Preferida */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
                 🎨 Cor Preferida para o Site
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
+              <p className="text-sm text-purple-600/70 mb-3">
                 Escolha a cor principal do seu site. Ela será usada em botões, destaques e elementos importantes.
                 Geralmente é a cor da sua marca/logo.
               </p>
@@ -2119,7 +2119,7 @@ const BriefingOdonto = () => {
                 type="color"
                 value={formData.cor_preferida || '#8B5CF6'}
                 onChange={(e) => setFormData({...formData, cor_preferida: e.target.value})}
-                className="w-full h-16 rounded-xl border-2 border-medical-300 cursor-pointer"
+                className="w-full h-16 rounded-xl border-2 border-purple-300 cursor-pointer"
               />
               <p className="text-sm text-gray-600 mt-2">
                 Cor selecionada: <strong>{formData.cor_preferida || '#8B5CF6'}</strong>
@@ -2128,10 +2128,10 @@ const BriefingOdonto = () => {
 
             {/* Estilo do Site */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 💅 Estilo Visual do Site *
               </label>
-              <p className="text-sm text-medical-600/70 mb-4">
+              <p className="text-sm text-purple-600/70 mb-4">
                 Que estilo você prefere para o seu site?
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2145,8 +2145,8 @@ const BriefingOdonto = () => {
                     key={estilo.value}
                     className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
                       formData.estilo_site === estilo.value
-                        ? 'border-medical-500 bg-neutral-50'
-                        : 'border-medical-200 hover:border-medical-400 bg-white'
+                        ? 'border-purple-500 bg-purple-50'
+                        : 'border-purple-200 hover:border-purple-400 bg-white'
                     }`}
                   >
                     <input
@@ -2155,11 +2155,11 @@ const BriefingOdonto = () => {
                       value={estilo.value}
                       checked={formData.estilo_site === estilo.value}
                       onChange={(e) => setFormData({...formData, estilo_site: e.target.value})}
-                      className="mr-3 mt-1 accent-medical-600"
+                      className="mr-3 mt-1 accent-purple-600"
                     />
                     <div>
-                      <div className="font-semibold text-neutral-900">{estilo.label}</div>
-                      <div className="text-sm text-medical-600/70 mt-1">{estilo.desc}</div>
+                      <div className="font-semibold text-purple-800">{estilo.label}</div>
+                      <div className="text-sm text-purple-600/70 mt-1">{estilo.desc}</div>
                     </div>
                   </label>
                 ))}
@@ -2169,27 +2169,27 @@ const BriefingOdonto = () => {
 
             {/* Sites de Referência */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
                 🔗 Sites de Referência (Opcional)
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
+              <p className="text-sm text-purple-600/70 mb-3">
                 Tem algum site odontológico que você gosta? Cole os links aqui para nos inspirarmos no design!
               </p>
               <textarea
                 value={formData.sites_referencia || ''}
                 onChange={(e) => setFormData({...formData, sites_referencia: e.target.value})}
                 rows={4}
-                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                 placeholder="Ex:&#10;https://exemplodentista1.com&#10;https://exemplodentista2.com&#10;&#10;Você pode colar vários links, um por linha."
               />
             </div>
 
             {/* Prazo Desejado */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 ⏱️ Prazo de Entrega Desejado
               </label>
-              <p className="text-sm text-medical-600/70 mb-4">
+              <p className="text-sm text-purple-600/70 mb-4">
                 Quando você precisa do site pronto?
               </p>
               <div className="space-y-3">
@@ -2203,8 +2203,8 @@ const BriefingOdonto = () => {
                     key={prazo.value}
                     className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
                       formData.prazo_desejado === prazo.value
-                        ? 'border-medical-500 bg-neutral-50'
-                        : 'border-medical-200 hover:border-medical-400 bg-white'
+                        ? 'border-purple-500 bg-purple-50'
+                        : 'border-purple-200 hover:border-purple-400 bg-white'
                     }`}
                   >
                     <input
@@ -2213,11 +2213,11 @@ const BriefingOdonto = () => {
                       value={prazo.value}
                       checked={formData.prazo_desejado === prazo.value}
                       onChange={(e) => setFormData({...formData, prazo_desejado: e.target.value})}
-                      className="mr-3 mt-1 accent-medical-600"
+                      className="mr-3 mt-1 accent-purple-600"
                     />
                     <div>
-                      <div className="font-semibold text-neutral-900">{prazo.label}</div>
-                      <div className="text-sm text-medical-600/70">{prazo.desc}</div>
+                      <div className="font-semibold text-purple-800">{prazo.label}</div>
+                      <div className="text-sm text-purple-600/70">{prazo.desc}</div>
                     </div>
                   </label>
                 ))}
@@ -2230,10 +2230,10 @@ const BriefingOdonto = () => {
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
                 {sections[5].title}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[5].subtitle}</p>
+              <p className="text-purple-600/70 text-lg">{sections[5].subtitle}</p>
             </div>
 
             <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8">
@@ -2256,7 +2256,7 @@ const BriefingOdonto = () => {
             <div className="space-y-8">
               {/* Google Analytics 4 */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Google Analytics 4 (GA4)
                 </label>
                 <input
@@ -2264,9 +2264,9 @@ const BriefingOdonto = () => {
                   placeholder="G-XXXXXXXXXX"
                   value={formData.ga4_id || ''}
                   onChange={(e) => updateFormData('ga4_id', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-purple-600/60 text-xs mt-2">
                   📊 <strong>O que é:</strong> Ferramenta do Google para acompanhar visitas, origem dos visitantes e comportamento no site.<br/>
                   💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie gratuitamente em analytics.google.com
                 </p>
@@ -2274,7 +2274,7 @@ const BriefingOdonto = () => {
 
               {/* Meta Pixel */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Meta Pixel (Facebook/Instagram)
                 </label>
                 <input
@@ -2282,9 +2282,9 @@ const BriefingOdonto = () => {
                   placeholder="123456789012345"
                   value={formData.meta_pixel_id || ''}
                   onChange={(e) => updateFormData('meta_pixel_id', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-purple-600/60 text-xs mt-2">
                   🎯 <strong>O que é:</strong> Código do Facebook para rastrear conversões de anúncios no Facebook/Instagram.<br/>
                   💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie em business.facebook.com
                 </p>
@@ -2292,7 +2292,7 @@ const BriefingOdonto = () => {
 
               {/* Google Tag Manager */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Google Tag Manager (GTM)
                 </label>
                 <input
@@ -2300,9 +2300,9 @@ const BriefingOdonto = () => {
                   placeholder="GTM-XXXXXXX"
                   value={formData.gtm_id || ''}
                   onChange={(e) => updateFormData('gtm_id', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-purple-600/60 text-xs mt-2">
                   🔧 <strong>O que é:</strong> Container para gerenciar múltiplas tags de rastreamento em um só lugar.<br/>
                   💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie em tagmanager.google.com
                 </p>
@@ -2310,7 +2310,7 @@ const BriefingOdonto = () => {
 
               {/* Google Ads Conversion */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Google Ads - Rastreamento de Conversão
                 </label>
                 <input
@@ -2318,9 +2318,9 @@ const BriefingOdonto = () => {
                   placeholder="AW-XXXXXXXXX/XXXXXXX"
                   value={formData.google_ads_conversion || ''}
                   onChange={(e) => updateFormData('google_ads_conversion', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-purple-600/60 text-xs mt-2">
                   💰 <strong>O que é:</strong> Código para rastrear conversões (agendamentos, contatos) vindas de anúncios do Google.<br/>
                   💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou acesse ads.google.com
                 </p>
@@ -2328,7 +2328,7 @@ const BriefingOdonto = () => {
 
               {/* Outras Tags/Scripts */}
               <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                <label className="block text-sm font-semibold text-purple-800 mb-3">
                   Outras Tags ou Scripts (Opcional)
                 </label>
                 <textarea
@@ -2336,9 +2336,9 @@ const BriefingOdonto = () => {
                   value={formData.outras_tags || ''}
                   onChange={(e) => updateFormData('outras_tags', e.target.value)}
                   rows={6}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all font-mono text-sm"
+                  className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all font-mono text-sm"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-purple-600/60 text-xs mt-2">
                   📝 <strong>Exemplos:</strong> HotJar, RD Station, outros pixels de remarketing, etc.<br/>
                   ⚠️ Cole apenas códigos fornecidos por plataformas confiáveis
                 </p>
@@ -2364,14 +2364,14 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* Como você quer mostrar depoimentos no site? */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-purple-800 font-semibold mb-4 text-lg">
                 Como você quer mostrar depoimentos no site? *
               </label>
-              <p className="text-sm text-medical-600/70 mb-4">
+              <p className="text-sm text-purple-600/70 mb-4">
                 Depoimentos são essenciais para gerar confiança. Escolha a melhor opção para você:
               </p>
               <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="estrategia_depoimentos"
@@ -2382,15 +2382,15 @@ const BriefingOdonto = () => {
                       estrategia_depoimentos: e.target.value,
                       depoimentos_texto: '' // Limpar campo de texto se mudar
                     })}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
                   <div>
-                    <div className="font-semibold text-neutral-900">⭐ Usar minhas avaliações do Google (automático)</div>
-                    <div className="text-sm text-medical-600/70 mt-1">Exibiremos suas avaliações do Google Meu Negócio no site</div>
+                    <div className="font-semibold text-purple-800">⭐ Usar minhas avaliações do Google (automático)</div>
+                    <div className="text-sm text-purple-600/70 mt-1">Exibiremos suas avaliações do Google Meu Negócio no site</div>
                   </div>
                 </label>
 
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="estrategia_depoimentos"
@@ -2401,15 +2401,15 @@ const BriefingOdonto = () => {
                       estrategia_depoimentos: e.target.value,
                       link_google_maps: '' // Limpar link se mudar
                     })}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
                   <div>
-                    <div className="font-semibold text-neutral-900">💬 Vou enviar depoimentos que já tenho</div>
-                    <div className="text-sm text-medical-600/70 mt-1">Depoimentos salvos de WhatsApp, mensagens ou outros canais</div>
+                    <div className="font-semibold text-purple-800">💬 Vou enviar depoimentos que já tenho</div>
+                    <div className="text-sm text-purple-600/70 mt-1">Depoimentos salvos de WhatsApp, mensagens ou outros canais</div>
                   </div>
                 </label>
 
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                <label className="flex items-start p-4 rounded-xl border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
                     name="estrategia_depoimentos"
@@ -2421,11 +2421,11 @@ const BriefingOdonto = () => {
                       link_google_maps: '',
                       depoimentos_texto: ''
                     })}
-                    className="mt-1 mr-3 accent-medical-600"
+                    className="mt-1 mr-3 accent-purple-600"
                   />
                   <div>
-                    <div className="font-semibold text-neutral-900">⏭️ Não quero seção de depoimentos por enquanto</div>
-                    <div className="text-sm text-medical-600/70 mt-1">Podemos adicionar depois se necessário</div>
+                    <div className="font-semibold text-purple-800">⏭️ Não quero seção de depoimentos por enquanto</div>
+                    <div className="text-sm text-purple-600/70 mt-1">Podemos adicionar depois se necessário</div>
                   </div>
                 </label>
               </div>
@@ -2435,10 +2435,10 @@ const BriefingOdonto = () => {
             {/* Link do Google Maps (se escolheu Google) */}
             {formData.estrategia_depoimentos === 'google' && (
               <div>
-                <label className="block text-neutral-900 font-semibold mb-2">
+                <label className="block text-purple-800 font-semibold mb-2">
                   Link do Google Maps *
                 </label>
-                <p className="text-sm text-medical-600/70 mb-3">
+                <p className="text-sm text-purple-600/70 mb-3">
                   Cole o link do seu Google Meu Negócio. Para encontrar: acesse google.com/maps, pesquise seu consultório e copie o link da barra de endereços.
                 </p>
                 <input
@@ -2446,14 +2446,14 @@ const BriefingOdonto = () => {
                   value={formData.link_google_maps || ''}
                   onChange={(e) => setFormData({...formData, link_google_maps: e.target.value})}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.link_google_maps ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    errors.link_google_maps ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                   placeholder="https://maps.google.com/..."
                 />
                 {errors.link_google_maps && <p className="text-red-500 text-sm mt-1">{errors.link_google_maps}</p>}
 
-                <div className="mt-3 p-3 bg-neutral-50 rounded-lg border border-medical-200">
-                  <p className="text-sm text-medical-700">
+                <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                  <p className="text-sm text-purple-700">
                     ℹ️ <strong>Dica:</strong> Suas avaliações do Google aparecerão automaticamente no site com estrelas e comentários dos pacientes.
                   </p>
                 </div>
@@ -2463,10 +2463,10 @@ const BriefingOdonto = () => {
             {/* Depoimentos em Texto (se escolheu texto) */}
             {formData.estrategia_depoimentos === 'texto' && (
               <div>
-                <label className="block text-neutral-900 font-semibold mb-2">
+                <label className="block text-purple-800 font-semibold mb-2">
                   Cole aqui 2-3 depoimentos *
                 </label>
-                <p className="text-sm text-medical-600/70 mb-3">
+                <p className="text-sm text-purple-600/70 mb-3">
                   Cole depoimentos reais de pacientes. Um por linha. Inclua o nome do paciente se possível.
                 </p>
                 <textarea
@@ -2474,8 +2474,8 @@ const BriefingOdonto = () => {
                   onChange={(e) => setFormData({...formData, depoimentos_texto: e.target.value})}
                   rows={8}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.depoimentos_texto ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    errors.depoimentos_texto ? 'border-red-400 bg-red-50' : 'border-purple-200 focus:border-purple-500'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-200`}
                   placeholder={`Exemplo:\n\n"Excelente profissional! Fiz um implante e o resultado ficou perfeito. Recomendo muito!" - Maria Silva\n\n"Melhor dentista da região. Atendimento impecável e preço justo." - João Santos\n\n"Meu filho tinha medo de dentista, mas adorou a consulta. Super recomendo!" - Ana Paula`}
                 />
                 {errors.depoimentos_texto && <p className="text-red-500 text-sm mt-1">{errors.depoimentos_texto}</p>}
@@ -2490,30 +2490,30 @@ const BriefingOdonto = () => {
 
             {/* Observações Finais */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
+              <label className="block text-purple-800 font-semibold mb-2 text-lg">
                 Observações finais ou algo que não perguntamos?
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
+              <p className="text-sm text-purple-600/70 mb-3">
                 Use este espaço para nos contar qualquer informação adicional que você acha importante para o site.
               </p>
               <textarea
                 value={formData.observacoes_finais || ''}
                 onChange={(e) => setFormData({...formData, observacoes_finais: e.target.value})}
                 rows={5}
-                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                className="w-full px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                 placeholder="Ex: Tenho um diferencial específico, atendo um público especial, quero destacar algo em especial..."
               />
             </div>
 
             {/* Mensagem de Conclusão */}
-            <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl p-6 border-2 border-medical-300">
+            <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl p-6 border-2 border-purple-300">
               <div className="flex items-start">
                 <div className="text-3xl mr-4">🎉</div>
                 <div>
-                  <h3 className="text-xl font-bold text-neutral-900 mb-2">
+                  <h3 className="text-xl font-bold text-purple-800 mb-2">
                     Quase lá! Revise suas informações
                   </h3>
-                  <p className="text-medical-700">
+                  <p className="text-purple-700">
                     Você está na última etapa. Revise todas as informações preenchidas antes de enviar.
                     Use o botão "Anterior" para voltar e corrigir algo se necessário.
                   </p>
@@ -2536,7 +2536,7 @@ const BriefingOdonto = () => {
         );
 
       default:
-        return <div className="text-center text-medical-600">Página em desenvolvimento...</div>;
+        return <div className="text-center text-purple-600">Página em desenvolvimento...</div>;
     }
   };
 

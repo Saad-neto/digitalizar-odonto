@@ -70,7 +70,7 @@ const ThankYou = () => {
               </div>
 
               {/* NOVO: Destaque de Hospedagem e Domínio Grátis */}
-              <div className="bg-gradient-to-br from-medical-500 to-medical-700 text-white p-8 rounded-xl shadow-2xl">
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white p-8 rounded-xl shadow-2xl">
                 <div className="flex items-center justify-center mb-4">
                   <Sparkles className="h-10 w-10 mr-3" />
                   <h2 className="text-3xl font-bold">✨ DIFERENCIAIS EXCLUSIVOS</h2>
@@ -279,7 +279,6 @@ const ThankYou = () => {
           </CardContent>
         </Card>
       </div>
-      <FooterNew />
     </div>
   );
 };

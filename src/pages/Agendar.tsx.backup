@@ -198,28 +198,28 @@ const Agendar = () => {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-purple-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
                 Vamos nos conhecer!
               </h2>
-              <p className="text-medical-600/70">
+              <p className="text-purple-600/70">
                 Preencha suas informações para agendar uma reunião
               </p>
             </div>
 
             {/* Nome */}
             <div>
-              <label className="block text-sm font-semibold text-neutral-900 mb-2">
+              <label className="block text-sm font-semibold text-purple-800 mb-2">
                 Nome Completo *
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 text-medical-400" size={20} />
+                <User className="absolute left-3 top-3 text-purple-400" size={20} />
                 <input
                   type="text"
                   placeholder="Ex: Dr. João Silva"
                   value={formData.nome}
                   onChange={(e) => updateFormData('nome', e.target.value)}
                   className={`w-full pl-11 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
-                    errors.nome ? 'border-red-400' : 'border-medical-200 focus:border-purple-400'
+                    errors.nome ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
               </div>
@@ -228,18 +228,18 @@ const Agendar = () => {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-semibold text-neutral-900 mb-2">
+              <label className="block text-sm font-semibold text-purple-800 mb-2">
                 E-mail *
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 text-medical-400" size={20} />
+                <Mail className="absolute left-3 top-3 text-purple-400" size={20} />
                 <input
                   type="email"
                   placeholder="seu@email.com"
                   value={formData.email}
                   onChange={(e) => updateFormData('email', e.target.value)}
                   className={`w-full pl-11 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
-                    errors.email ? 'border-red-400' : 'border-medical-200 focus:border-purple-400'
+                    errors.email ? 'border-red-400' : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
               </div>
@@ -248,11 +248,11 @@ const Agendar = () => {
 
             {/* WhatsApp */}
             <div>
-              <label className="block text-sm font-semibold text-neutral-900 mb-2">
+              <label className="block text-sm font-semibold text-purple-800 mb-2">
                 WhatsApp *
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3 text-medical-400" size={20} />
+                <Phone className="absolute left-3 top-3 text-purple-400" size={20} />
                 <input
                   type="tel"
                   placeholder="(11) 99999-9999"
@@ -263,7 +263,7 @@ const Agendar = () => {
                   className={`w-full pl-11 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
                     errors.whatsapp
                       ? 'border-red-400'
-                      : 'border-medical-200 focus:border-purple-400'
+                      : 'border-purple-200 focus:border-purple-400'
                   }`}
                 />
               </div>
@@ -272,24 +272,24 @@ const Agendar = () => {
 
             {/* Empresa/Consultório */}
             <div>
-              <label className="block text-sm font-semibold text-neutral-900 mb-2">
+              <label className="block text-sm font-semibold text-purple-800 mb-2">
                 Nome do Consultório/Clínica (opcional)
               </label>
               <div className="relative">
-                <Building2 className="absolute left-3 top-3 text-medical-400" size={20} />
+                <Building2 className="absolute left-3 top-3 text-purple-400" size={20} />
                 <input
                   type="text"
                   placeholder="Ex: Clínica Odontológica Dr. Silva"
                   value={formData.empresa}
                   onChange={(e) => updateFormData('empresa', e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                  className="w-full pl-11 pr-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
                 />
               </div>
             </div>
 
             {/* Tipo de Reunião */}
             <div>
-              <label className="block text-sm font-semibold text-neutral-900 mb-3">
+              <label className="block text-sm font-semibold text-purple-800 mb-3">
                 Tipo de Reunião
               </label>
               <select
@@ -297,7 +297,7 @@ const Agendar = () => {
                 onChange={(e) =>
                   updateFormData('tipo', e.target.value as FormData['tipo'])
                 }
-                className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
               >
                 <option value="comercial">Comercial - Conhecer o serviço</option>
                 <option value="alinhamento">Alinhamento - Já sou cliente</option>
@@ -308,17 +308,17 @@ const Agendar = () => {
 
             {/* Observações */}
             <div>
-              <label className="block text-sm font-semibold text-neutral-900 mb-2">
+              <label className="block text-sm font-semibold text-purple-800 mb-2">
                 Observações (opcional)
               </label>
               <div className="relative">
-                <FileText className="absolute left-3 top-3 text-medical-400" size={20} />
+                <FileText className="absolute left-3 top-3 text-purple-400" size={20} />
                 <textarea
                   placeholder="Alguma informação adicional que queira compartilhar..."
                   value={formData.observacoes}
                   onChange={(e) => updateFormData('observacoes', e.target.value)}
                   rows={4}
-                  className="w-full pl-11 pr-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all resize-none"
+                  className="w-full pl-11 pr-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all resize-none"
                 />
               </div>
             </div>
@@ -329,10 +329,10 @@ const Agendar = () => {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-purple-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
                 Escolha uma data
               </h2>
-              <p className="text-medical-600/70">
+              <p className="text-purple-600/70">
                 Selecione o dia da sua reunião
               </p>
             </div>
@@ -344,7 +344,7 @@ const Agendar = () => {
                 onSelect={setSelectedDate}
                 disabled={isDateDisabled}
                 locale={ptBR}
-                className="rounded-xl border-2 border-medical-200 p-4"
+                className="rounded-xl border-2 border-purple-200 p-4"
               />
             </div>
 
@@ -355,9 +355,9 @@ const Agendar = () => {
               </div>
             )}
 
-            <div className="bg-neutral-50 border-2 border-medical-200 rounded-xl p-4">
-              <h4 className="font-semibold text-neutral-900 mb-2">Horário de atendimento:</h4>
-              <ul className="text-sm text-medical-600 space-y-1">
+            <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4">
+              <h4 className="font-semibold text-purple-800 mb-2">Horário de atendimento:</h4>
+              <ul className="text-sm text-purple-600 space-y-1">
                 <li>• Segunda a Quinta: 9h às 12h e 14h às 18h</li>
                 <li>• Sexta: 9h às 12h e 14h às 17h</li>
                 <li>• Sábado e Domingo: Não atendemos</li>
@@ -370,18 +370,18 @@ const Agendar = () => {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-purple-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
                 Escolha um horário
               </h2>
-              <p className="text-medical-600/70">
+              <p className="text-purple-600/70">
                 {selectedDate && `Para ${format(selectedDate, "dd 'de' MMMM", { locale: ptBR })}`}
               </p>
             </div>
 
             {loadingTimes ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600 mx-auto"></div>
-                <p className="text-medical-600 mt-4">Carregando horários disponíveis...</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                <p className="text-purple-600 mt-4">Carregando horários disponíveis...</p>
               </div>
             ) : availableTimes.length === 0 ? (
               <div className="text-center py-8">
@@ -400,8 +400,8 @@ const Agendar = () => {
                     onClick={() => setSelectedTime(time)}
                     className={`py-3 px-4 rounded-xl font-semibold transition-all ${
                       selectedTime === time
-                        ? 'bg-medical-600 text-white shadow-lg'
-                        : 'bg-neutral-50 text-purple-700 hover:bg-medical-100 border-2 border-medical-200'
+                        ? 'bg-purple-600 text-white shadow-lg'
+                        : 'bg-purple-50 text-purple-700 hover:bg-purple-100 border-2 border-purple-200'
                     }`}
                   >
                     {time}
@@ -423,17 +423,17 @@ const Agendar = () => {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-purple-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-3">
                 Confirme seus dados
               </h2>
-              <p className="text-medical-600/70">
+              <p className="text-purple-600/70">
                 Revise as informações antes de finalizar
               </p>
             </div>
 
-            <div className="bg-white border-2 border-medical-200 rounded-xl p-6 space-y-4">
+            <div className="bg-white border-2 border-purple-200 rounded-xl p-6 space-y-4">
               <div>
-                <h4 className="font-semibold text-neutral-900 mb-2">Suas informações</h4>
+                <h4 className="font-semibold text-purple-800 mb-2">Suas informações</h4>
                 <p className="text-gray-700">
                   <strong>Nome:</strong> {formData.nome}
                 </p>
@@ -451,7 +451,7 @@ const Agendar = () => {
               </div>
 
               <div className="border-t-2 border-purple-100 pt-4">
-                <h4 className="font-semibold text-neutral-900 mb-2">Data e Horário</h4>
+                <h4 className="font-semibold text-purple-800 mb-2">Data e Horário</h4>
                 <p className="text-gray-700">
                   <strong>Data:</strong>{' '}
                   {selectedDate && format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
@@ -462,7 +462,7 @@ const Agendar = () => {
               </div>
 
               <div className="border-t-2 border-purple-100 pt-4">
-                <h4 className="font-semibold text-neutral-900 mb-2">Tipo de Reunião</h4>
+                <h4 className="font-semibold text-purple-800 mb-2">Tipo de Reunião</h4>
                 <p className="text-gray-700">
                   {formData.tipo === 'comercial' && 'Comercial - Conhecer o serviço'}
                   {formData.tipo === 'alinhamento' && 'Alinhamento - Já sou cliente'}
@@ -473,7 +473,7 @@ const Agendar = () => {
 
               {formData.observacoes && (
                 <div className="border-t-2 border-purple-100 pt-4">
-                  <h4 className="font-semibold text-neutral-900 mb-2">Observações</h4>
+                  <h4 className="font-semibold text-purple-800 mb-2">Observações</h4>
                   <p className="text-gray-700">{formData.observacoes}</p>
                 </div>
               )}
@@ -484,9 +484,8 @@ const Agendar = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <HeaderNew />
-      <div className="container mx-auto px-4 max-w-4xl py-16">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 py-12">
+      <div className="container mx-auto px-4 max-w-4xl">
         {/* Progress Steps */}
         <div className="mb-12">
           <div className="flex items-center justify-between">
@@ -496,15 +495,15 @@ const Agendar = () => {
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
                       index <= currentStep
-                        ? 'bg-medical-600 text-white shadow-lg'
-                        : 'bg-medical-100 text-medical-400'
+                        ? 'bg-purple-600 text-white shadow-lg'
+                        : 'bg-purple-100 text-purple-400'
                     }`}
                   >
                     <step.icon size={24} />
                   </div>
                   <p
                     className={`text-sm mt-2 font-semibold ${
-                      index <= currentStep ? 'text-medical-600' : 'text-medical-400'
+                      index <= currentStep ? 'text-purple-600' : 'text-purple-400'
                     }`}
                   >
                     {step.title}
@@ -513,7 +512,7 @@ const Agendar = () => {
                 {index < steps.length - 1 && (
                   <div
                     className={`flex-1 h-1 mx-2 transition-all ${
-                      index < currentStep ? 'bg-medical-600' : 'bg-purple-200'
+                      index < currentStep ? 'bg-purple-600' : 'bg-purple-200'
                     }`}
                   />
                 )}
@@ -541,7 +540,7 @@ const Agendar = () => {
           {currentStep < steps.length - 1 ? (
             <Button
               onClick={handleNext}
-              className="flex-1 py-6 text-lg bg-medical-600 hover:bg-medical-700"
+              className="flex-1 py-6 text-lg bg-purple-600 hover:bg-purple-700"
             >
               Próximo
             </Button>
@@ -556,7 +555,6 @@ const Agendar = () => {
           )}
         </div>
       </div>
-      <FooterNew />
     </div>
   );
 };
