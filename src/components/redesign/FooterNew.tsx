@@ -19,10 +19,12 @@ const FooterNew: React.FC = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-medical-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">S</span>
-              </div>
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src="/logo-new.png"
+                alt="Sites Odonto 24H"
+                className="w-12 h-12 object-contain"
+              />
               <div>
                 <div className="font-heading font-bold text-white text-lg leading-tight">
                   Sites Odonto

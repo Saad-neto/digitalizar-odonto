@@ -34,10 +34,12 @@ const HeaderNew: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-medical-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">S</span>
-            </div>
+          <Link to="/" className="flex items-center gap-3">
+            <img
+              src="/logo-new.png"
+              alt="Sites Odonto 24H"
+              className="w-12 h-12 object-contain"
+            />
             <div>
               <div className="font-heading font-bold text-neutral-900 text-lg leading-tight">
                 Sites Odonto
