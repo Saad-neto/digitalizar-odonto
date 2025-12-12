@@ -1,13 +1,13 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Clock, CreditCard, Globe, Star, Shield, Zap, Gift, Sparkles } from 'lucide-react';
+import { CheckCircle, Clock, Globe, Star, Shield, Zap, Gift, Sparkles } from 'lucide-react';
 import HeaderNew from '@/components/redesign/HeaderNew';
 import FooterNew from '@/components/redesign/FooterNew';
 
 const ThankYou = () => {
   const handleWhatsAppContact = () => {
-    const phoneNumber = "5518931751052"; // Format: country code + area code + number without spaces
+    const phoneNumber = "5518931751052";
     const message = encodeURIComponent("Olá! Acabei de enviar meu briefing para criação do site odontológico e gostaria de tirar algumas dúvidas.");
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
@@ -15,33 +15,33 @@ const ThankYou = () => {
   return (
     <div className="min-h-screen bg-white">
       <HeaderNew />
+
       <div className="container mx-auto py-16 px-4 max-w-4xl">
-        <Card className="overflow-hidden" style={{ boxShadow: 'var(--shadow-lg)' }}>
+        <Card className="overflow-hidden shadow-2xl border-medical-200">
           <CardContent className="p-0">
-            {/* Hero Section - MELHORADO: Contraste aumentado */}
-            <div className="bg-gradient-to-r from-[hsl(var(--success))] to-[hsl(var(--success-dark))] text-white text-center p-12">
+
+            {/* Hero Success Section */}
+            <div className="bg-gradient-to-r from-medical-500 to-medical-700 text-white text-center p-12">
               <div className="mb-6">
-                <CheckCircle className="mx-auto h-20 w-20 mb-4" />
-                <h1 className="text-4xl font-bold mb-4 text-white drop-shadow-lg">🎉 Parabéns! Seu pedido foi recebido com sucesso!</h1>
-                {/* MELHORADO: Contraste muito melhor */}
+                <CheckCircle className="mx-auto h-20 w-20 mb-4 drop-shadow-lg" />
+                <h1 className="text-4xl font-bold mb-4 text-white drop-shadow-lg">
+                  🎉 Parabéns! Seu pedido foi recebido com sucesso!
+                </h1>
                 <p className="text-xl text-white font-bold drop-shadow-md mb-4">
                   Obrigado por confiar em nós para criar seu site profissional!
                 </p>
               </div>
-              {/* MELHORADO: Texto mais legível */}
               <p className="text-lg text-white font-medium drop-shadow">
                 Estamos animados para transformar suas ideias em realidade e criar um site que vai impressionar seus visitantes e gerar resultados para seu negócio.
               </p>
             </div>
 
             <div className="p-8 space-y-8">
-              {/* Timeline Promise */}
-              <div className="text-center p-8 rounded-lg border-l-4" style={{
-                background: 'var(--gradient-subtle)',
-                borderColor: 'hsl(var(--primary))'
-              }}>
-                <Zap className="mx-auto h-12 w-12 mb-4" style={{ color: 'hsl(var(--primary))' }} />
-                <h2 className="text-3xl font-bold mb-4" style={{ color: 'hsl(var(--primary))' }}>
+
+              {/* SÓ PAGA SE APROVAR */}
+              <div className="text-center p-8 rounded-lg border-l-4 border-medical-500 bg-gradient-to-br from-medical-50 to-mint-50">
+                <Zap className="mx-auto h-12 w-12 mb-4 text-medical-600" />
+                <h2 className="text-3xl font-bold mb-4 text-medical-700">
                   ⚡ SÓ PAGA SE APROVAR!
                 </h2>
                 <p className="text-lg mb-6 text-gray-800 font-semibold">
@@ -51,30 +51,31 @@ const ThankYou = () => {
 
                 <div className="grid md:grid-cols-2 gap-4 text-left">
                   <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
+                    <CheckCircle className="h-6 w-6 flex-shrink-0 text-medical-600" />
                     <span className="font-semibold text-gray-800">Site completo e profissional</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
+                    <CheckCircle className="h-6 w-6 flex-shrink-0 text-medical-600" />
                     <span className="font-semibold text-gray-800">Design responsivo (mobile e desktop)</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
+                    <CheckCircle className="h-6 w-6 flex-shrink-0 text-medical-600" />
                     <span className="font-semibold text-gray-800">Otimizado para Google</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-6 w-6 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
+                    <CheckCircle className="h-6 w-6 flex-shrink-0 text-medical-600" />
                     <span className="font-semibold text-gray-800">Hospedagem premium GRÁTIS</span>
                   </div>
                 </div>
               </div>
 
-              {/* NOVO: Destaque de Hospedagem e Domínio Grátis */}
+              {/* DIFERENCIAIS EXCLUSIVOS */}
               <div className="bg-gradient-to-br from-medical-500 to-medical-700 text-white p-8 rounded-xl shadow-2xl">
                 <div className="flex items-center justify-center mb-4">
                   <Sparkles className="h-10 w-10 mr-3" />
                   <h2 className="text-3xl font-bold">✨ DIFERENCIAIS EXCLUSIVOS</h2>
                 </div>
+
                 <div className="grid md:grid-cols-2 gap-6 mt-6">
                   <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border-2 border-white/30">
                     <Globe className="h-10 w-10 mb-3 mx-auto" />
@@ -86,6 +87,7 @@ const ThankYou = () => {
                       Usamos Cloudflare Pages - infraestrutura de nível empresarial, 100% gratuita para você!
                     </p>
                   </div>
+
                   <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border-2 border-white/30">
                     <CheckCircle className="h-10 w-10 mb-3 mx-auto" />
                     <h3 className="text-xl font-bold mb-2 text-center">🎯 Domínio Personalizado</h3>
@@ -97,6 +99,7 @@ const ThankYou = () => {
                     </p>
                   </div>
                 </div>
+
                 <div className="mt-6 text-center bg-white/20 backdrop-blur-sm p-4 rounded-lg">
                   <p className="text-white font-bold text-lg">
                     💰 Economize mais de R$ 400/ano em hospedagem!
@@ -104,82 +107,82 @@ const ThankYou = () => {
                 </div>
               </div>
 
-              {/* Process Steps - MELHORADO: Fonte menor nos títulos */}
+              {/* COMO FUNCIONA O PROCESSO */}
               <div>
-                <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: 'hsl(var(--primary))' }}>🔄 COMO FUNCIONA O PROCESSO:</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center text-medical-700">
+                  🔄 COMO FUNCIONA O PROCESSO:
+                </h2>
+
                 <div className="grid md:grid-cols-4 gap-6">
-                  <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
-                    <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
+                  {/* Step 1 */}
+                  <div className="text-center p-6 bg-white rounded-lg border-2 border-medical-200 hover:border-medical-500 transition-colors shadow-md">
+                    <div className="bg-medical-500 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                       1
                     </div>
-                    {/* MELHORADO: Fonte reduzida de sem definição para text-sm */}
-                    <h3 className="font-bold mb-2 text-sm" style={{ color: 'hsl(var(--primary))' }}>PRODUÇÃO (até 7 dias)</h3>
+                    <h3 className="font-bold mb-2 text-sm text-medical-700">PRODUÇÃO (até 7 dias)</h3>
                     <p className="text-xs text-gray-600">Criamos seu site e enviamos para aprovação</p>
                   </div>
 
-                  <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
-                    <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
+                  {/* Step 2 */}
+                  <div className="text-center p-6 bg-white rounded-lg border-2 border-medical-200 hover:border-medical-500 transition-colors shadow-md">
+                    <div className="bg-medical-500 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                       2
                     </div>
-                    {/* MELHORADO: Fonte reduzida */}
-                    <h3 className="font-bold mb-2 text-sm" style={{ color: 'hsl(var(--primary))' }}>VOCÊ APROVA E PAGA</h3>
+                    <h3 className="font-bold mb-2 text-sm text-medical-700">VOCÊ APROVA E PAGA</h3>
                     <p className="text-xs text-gray-600">Só paga se aprovar! Parcele em até 12x</p>
                   </div>
 
-                  <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
-                    <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
+                  {/* Step 3 */}
+                  <div className="text-center p-6 bg-white rounded-lg border-2 border-medical-200 hover:border-medical-500 transition-colors shadow-md">
+                    <div className="bg-medical-500 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                       3
                     </div>
-                    {/* MELHORADO: Fonte reduzida */}
-                    <h3 className="font-bold mb-2 text-sm" style={{ color: 'hsl(var(--primary))' }}>AJUSTES (até 2 rodadas)</h3>
+                    <h3 className="font-bold mb-2 text-sm text-medical-700">AJUSTES (até 2 rodadas)</h3>
                     <p className="text-xs text-gray-600">Fazemos as alterações que solicitar</p>
                   </div>
 
-                  <div className="text-center p-6 bg-white rounded-lg border-2 border-gray-100 transition-colors hover:border-[hsl(var(--primary))]" style={{ boxShadow: 'var(--shadow-md)' }}>
-                    <div className="text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold" style={{ background: 'hsl(var(--primary))' }}>
+                  {/* Step 4 */}
+                  <div className="text-center p-6 bg-white rounded-lg border-2 border-medical-200 hover:border-medical-500 transition-colors shadow-md">
+                    <div className="bg-medical-500 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                       4
                     </div>
-                    {/* MELHORADO: Fonte reduzida */}
-                    <h3 className="font-bold mb-2 text-sm" style={{ color: 'hsl(var(--primary))' }}>NO AR EM 24H</h3>
+                    <h3 className="font-bold mb-2 text-sm text-medical-700">NO AR EM 24H</h3>
                     <p className="text-xs text-gray-600">Após aprovação final, site publicado em 24h</p>
                   </div>
                 </div>
               </div>
 
-              {/* Special Offer */}
-              <div className="p-8 rounded-lg border-l-4" style={{
-                background: 'hsl(var(--success-bg))',
-                borderColor: 'hsl(var(--success))'
-              }}>
+              {/* INVESTIMENTO */}
+              <div className="p-8 rounded-lg border-l-4 border-mint-500 bg-gradient-to-br from-mint-50 to-mint-100">
                 <div className="text-center">
-                  <Gift className="mx-auto h-12 w-12 mb-4" style={{ color: 'hsl(var(--success))' }} />
-                  <h2 className="text-2xl font-bold mb-4" style={{ color: 'hsl(var(--success-dark))' }}>💰 INVESTIMENTO:</h2>
+                  <Gift className="mx-auto h-12 w-12 mb-4 text-mint-600" />
+                  <h2 className="text-2xl font-bold mb-4 text-mint-800">💰 INVESTIMENTO:</h2>
 
                   <div className="text-center mb-6">
                     <span className="text-2xl line-through text-gray-400">De R$ 997</span>
-                    <span className="text-4xl font-bold ml-4" style={{ color: 'hsl(var(--success))' }}>por apenas R$ 497</span>
+                    <span className="text-4xl font-bold ml-4 text-mint-700">por apenas R$ 497</span>
                     <p className="text-lg mt-2 text-gray-700 font-semibold">
                       Ou 12x de R$ 49,70 no cartão
                     </p>
                   </div>
 
-                  <div className="bg-white p-6 rounded-lg" style={{ boxShadow: 'var(--shadow-md)' }}>
-                    <h3 className="font-bold mb-4 text-lg" style={{ color: 'hsl(var(--success-dark))' }}>🎁 INCLUSOS NO PACOTE:</h3>
+                  <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h3 className="font-bold mb-4 text-lg text-mint-800">🎁 INCLUSOS NO PACOTE:</h3>
                     <div className="grid md:grid-cols-2 gap-4 text-left">
                       <div className="flex items-center space-x-3">
-                        <CheckCircle className="h-5 w-5 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
+                        <CheckCircle className="h-5 w-5 flex-shrink-0 text-mint-600" />
                         <span className="text-gray-800 font-medium">Hospedagem premium <strong>GRÁTIS PARA SEMPRE</strong></span>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <CheckCircle className="h-5 w-5 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
+                        <CheckCircle className="h-5 w-5 flex-shrink-0 text-mint-600" />
                         <span className="text-gray-800 font-medium">Certificado SSL (segurança) <strong>GRÁTIS</strong></span>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <CheckCircle className="h-5 w-5 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
+                        <CheckCircle className="h-5 w-5 flex-shrink-0 text-mint-600" />
                         <span className="text-gray-800 font-medium">Domínio personalizado <strong>SEM TAXA</strong></span>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <CheckCircle className="h-5 w-5 flex-shrink-0" style={{ color: 'hsl(var(--success))' }} />
+                        <CheckCircle className="h-5 w-5 flex-shrink-0 text-mint-600" />
                         <span className="text-gray-800 font-medium">Site responsivo para mobile</span>
                       </div>
                     </div>
@@ -187,58 +190,56 @@ const ThankYou = () => {
                 </div>
               </div>
 
-              {/* Domain Options - ATUALIZADO: Sem taxa de configuração */}
-              <div className="p-6 rounded-lg border-l-4" style={{
-                background: 'hsl(var(--blue-light))',
-                borderColor: 'hsl(var(--blue-trust))'
-              }}>
-                <h3 className="text-xl font-bold mb-4" style={{ color: 'hsl(var(--blue-trust))' }}>🎯 DOMÍNIO PERSONALIZADO (OPCIONAL):</h3>
+              {/* DOMÍNIO PERSONALIZADO */}
+              <div className="p-6 rounded-lg border-l-4 border-medical-400 bg-blue-50">
+                <h3 className="text-xl font-bold mb-4 text-medical-700">🎯 DOMÍNIO PERSONALIZADO (OPCIONAL):</h3>
                 <p className="mb-4 font-semibold text-gray-800">Quer usar seu próprio domínio?</p>
-                <div className="bg-white p-4 rounded-lg mb-4 border-2 border-green-500">
-                  <p className="text-green-700 font-bold text-lg mb-2">
+
+                <div className="bg-white p-4 rounded-lg mb-4 border-2 border-mint-500">
+                  <p className="text-mint-700 font-bold text-lg mb-2">
                     ✅ CONECTAMOS SEU DOMÍNIO SEM COBRAR TAXA!
                   </p>
                   <p className="text-gray-700 text-sm">
                     Você só paga o custo de registro/renovação do domínio (direto no Registro.br ou provedor de sua escolha)
                   </p>
                 </div>
+
                 <div className="space-y-2 text-gray-800">
                   <p>• Já tem um domínio? <strong>Conectamos GRÁTIS</strong></p>
                   <p>• Precisa registrar novo domínio .com.br? <strong>~R$ 40/ano</strong> (direto no Registro.br)</p>
                   <p>• Precisa registrar novo domínio .com? <strong>~R$ 60/ano</strong> (em provedores internacionais)</p>
                 </div>
+
                 <p className="text-sm mt-3 italic text-gray-600">
                   *Podemos ajudar você a registrar o domínio ou você pode fazer por conta própria.
                 </p>
               </div>
 
-              {/* Next Steps */}
-              <div className="p-6 rounded-lg border-l-4" style={{
-                background: 'hsl(var(--yellow-light))',
-                borderColor: 'hsl(var(--yellow-highlight))'
-              }}>
-                <h3 className="text-xl font-bold mb-4" style={{ color: 'hsl(var(--orange-warning))' }}>📧 PRÓXIMOS PASSOS:</h3>
+              {/* PRÓXIMOS PASSOS */}
+              <div className="p-6 rounded-lg border-l-4 border-yellow-400 bg-yellow-50">
+                <h3 className="text-xl font-bold mb-4 text-orange-600">📧 PRÓXIMOS PASSOS:</h3>
                 <div className="space-y-3 text-gray-800">
                   <div className="flex items-start space-x-3">
-                    <div className="text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5" style={{ background: 'hsl(var(--yellow-highlight))' }}>1</div>
+                    <div className="bg-yellow-400 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">1</div>
                     <p className="font-semibold">Fique de olho no seu e-mail - enviaremos atualizações do progresso</p>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <div className="text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5" style={{ background: 'hsl(var(--yellow-highlight))' }}>2</div>
+                    <div className="bg-yellow-400 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">2</div>
                     <p className="font-semibold">Responda rapidamente - para agilizar as revisões</p>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <div className="text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5" style={{ background: 'hsl(var(--yellow-highlight))' }}>3</div>
+                    <div className="bg-yellow-400 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">3</div>
                     <p className="font-semibold">Prepare seu conteúdo - textos, imagens e informações importantes</p>
                   </div>
                 </div>
               </div>
 
-              {/* Excitement Section - MELHORADO: Contraste muito melhor */}
-              <div className="text-center text-white p-8 rounded-lg" style={{ background: `linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-dark)) 100%)` }}>
+              {/* ESTÁ ANSIOSO? */}
+              <div className="text-center text-white p-8 rounded-lg bg-gradient-to-r from-medical-600 to-medical-800">
                 <Clock className="mx-auto h-12 w-12 mb-4 drop-shadow-lg" />
-                <h2 className="text-2xl font-bold mb-4 text-white drop-shadow-md">🚀 ESTÁ ANSIOSO PARA VER SEU SITE?</h2>
-                {/* MELHORADO: Texto mais legível com drop-shadow */}
+                <h2 className="text-2xl font-bold mb-4 text-white drop-shadow-md">
+                  🚀 ESTÁ ANSIOSO PARA VER SEU SITE?
+                </h2>
                 <p className="text-lg mb-4 text-white font-bold drop-shadow">
                   Nós também! Nosso time está dedicado a entregar um resultado que vai superar suas expectativas.
                 </p>
@@ -247,38 +248,36 @@ const ThankYou = () => {
                 </p>
               </div>
 
-              {/* Contact Section */}
-              <div className="text-center bg-white p-8 rounded-lg border-2" style={{
-                boxShadow: 'var(--shadow-md)',
-                borderColor: 'hsl(var(--primary))'
-              }}>
-                <Shield className="mx-auto h-12 w-12 mb-4" style={{ color: 'hsl(var(--primary))' }} />
-                <h3 className="text-xl font-bold mb-4" style={{ color: 'hsl(var(--primary))' }}>💬 Dúvidas? Estamos aqui para ajudar!</h3>
+              {/* CONTATO WHATSAPP */}
+              <div className="text-center bg-white p-8 rounded-lg border-2 border-medical-300 shadow-md">
+                <Shield className="mx-auto h-12 w-12 mb-4 text-medical-600" />
+                <h3 className="text-xl font-bold mb-4 text-medical-700">💬 Dúvidas? Estamos aqui para ajudar!</h3>
                 <p className="mb-6 text-gray-700 font-medium">
                   Entre em contato conosco pelo WhatsApp e tire todas as suas dúvidas sobre o processo.
                 </p>
 
                 <Button
                   onClick={handleWhatsAppContact}
-                  className="bg-[hsl(var(--success))] hover:bg-[hsl(var(--success-dark))] text-white font-bold px-8 py-4 rounded-full text-lg transition-all duration-300 transform hover:scale-105"
-                  style={{ boxShadow: 'var(--shadow-cta)' }}
+                  className="bg-mint-500 hover:bg-mint-600 text-white font-bold px-8 py-4 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   💬 Conversar no WhatsApp: (18) 3175-1052
                 </Button>
 
-                <div className="mt-6 pt-6 border-t" style={{ borderColor: 'hsl(var(--border))' }}>
+                <div className="mt-6 pt-6 border-t border-gray-200">
                   <p className="font-semibold text-gray-800">
                     Obrigado novamente pela confiança!
                   </p>
-                  <p className="font-bold mt-2" style={{ color: 'hsl(var(--primary))' }}>
+                  <p className="font-bold mt-2 text-medical-600">
                     Equipe Digitalizar Odonto
                   </p>
                 </div>
               </div>
+
             </div>
           </CardContent>
         </Card>
       </div>
+
       <FooterNew />
     </div>
   );
