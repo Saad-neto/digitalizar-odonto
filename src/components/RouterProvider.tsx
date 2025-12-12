@@ -6,6 +6,8 @@ import Briefing from "../pages/Briefing";
 import Payment from "../pages/Payment";
 import ThankYou from "../pages/ThankYou";
 import Agendar from "../pages/Agendar";
+import Privacidade from "../pages/Privacidade";
+import Termos from "../pages/Termos";
 import NotFound from "../pages/NotFound";
 import Login from "../pages/admin/Login";
 import DashboardOverview from "../pages/admin/DashboardOverview";
@@ -45,6 +47,8 @@ const RouterProvider = () => {
       <Route path="/pagamento" element={<Payment />} />
       <Route path="/obrigado" element={<ThankYou />} />
       <Route path="/agendar" element={<Agendar />} />
+      <Route path="/privacidade" element={<Privacidade />} />
+      <Route path="/termos" element={<Termos />} />
 
       {/* Admin Routes */}
       <Route path="/admin/login" element={<Login />} />

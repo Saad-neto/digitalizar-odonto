@@ -10,6 +10,7 @@ import OffersSectionNew from '../components/redesign/sections/OffersSectionNew';
 import GuaranteesSectionNew from '../components/redesign/sections/GuaranteesSectionNew';
 import FAQSectionNew from '../components/redesign/sections/FAQSectionNew';
 import FinalCTASectionNew from '../components/redesign/sections/FinalCTASectionNew';
+import WhatsAppFloating from '../components/mobile/WhatsAppFloating';
 
 const Index: React.FC = () => {
   return (
@@ -43,6 +44,7 @@ const Index: React.FC = () => {
       </main>
 
       <FooterNew />
+      <WhatsAppFloating />
     </div>
   );
 };

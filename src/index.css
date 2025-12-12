@@ -4,6 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile-First Enhancements */
+@import './styles/mobile-enhancements.css';
+
 /* MEDICAL TECH PREMIUM DESIGN SYSTEM - ODONTOLÓGICO 24H */
 
 @layer base {

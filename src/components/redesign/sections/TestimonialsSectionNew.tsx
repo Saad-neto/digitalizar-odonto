@@ -1,166 +1,166 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, Quote, TrendingUp, ArrowRight } from 'lucide-react';
-import Counter from '../../ui/counter';
-import professionalDentist from '../../../assets/professional-dentist.jpg';
-import draFernandaCosta from '../../../assets/dra-fernanda-costa.jpg';
-import drPauloSantos from '../../../assets/dr-paulo-santos.jpg';
+import { Star, ArrowRight, Shield, Zap, Heart, TrendingUp } from 'lucide-react';
 
 const TestimonialsSectionNew: React.FC = () => {
-  const testimonials = [
+  const benefits = [
     {
-      name: "Dr. Ricardo Almeida",
-      specialty: "Ortodontista",
-      location: "São Paulo - SP",
-      photo: professionalDentist,
-      testimonial: "Eu estava gastando R$ 2 mil/mês com anúncios no Facebook e vinha 1, 2 pacientes. Fiz o site em janeiro. Em fevereiro já apareci na primeira página do Google para 'ortodontista [bairro]'. Março tive 8 agendamentos orgânicos. Abril, 14. Maio, 23. Parei os anúncios. Hoje 70% dos meus pacientes novos vêm do site.",
-      result: "+200% em agendamentos nos primeiros 90 dias",
-      rating: 5
+      icon: Heart,
+      title: "Atenção 100% Exclusiva",
+      description: "Você não será 'mais um cliente'. Como estamos começando, cada site recebe nossa dedicação total. Sem produção em massa.",
+      highlight: "Dedicação máxima"
     },
     {
-      name: "Dra. Fernanda Costa",
-      specialty: "Implantodontista",
-      location: "Rio de Janeiro - RJ",
-      photo: draFernandaCosta,
-      testimonial: "Estava pagando R$ 300/mês para uma agência que nunca entregava nada. Aqui em 1 dia estava tudo pronto e funcionando. O melhor investimento que fiz para o consultório este ano.",
-      result: "Economia de R$ 3.600/ano + resultados reais",
-      rating: 5
+      icon: TrendingUp,
+      title: "Preço que Nunca Mais Volta",
+      description: "R$ 497 é nosso preço de fundador. Após os primeiros 10 clientes, o preço sobe para R$ 997. Aproveite agora.",
+      highlight: "Economia de R$ 500"
     },
     {
-      name: "Dr. Paulo Santos",
-      specialty: "Clínica Geral",
-      location: "Belo Horizonte - MG",
-      photo: drPauloSantos,
-      testimonial: "O processo foi tão simples que nem acreditei. Mandei o briefing na segunda, na terça estava aprovando o layout, na quinta o site já estava no ar. Profissionalismo total.",
-      result: "1º posição no Google local em 30 dias",
-      rating: 5
+      icon: Shield,
+      title: "Risco Zero Absoluto",
+      description: "Não gostou do layout? Não paga. Simples assim. Assumimos todo o risco porque temos confiança no nosso trabalho.",
+      highlight: "Garantia total"
+    },
+    {
+      icon: Zap,
+      title: "Motivação Extra",
+      description: "Precisamos do seu depoimento e case de sucesso. Por isso, vamos fazer o MELHOR trabalho possível para impressionar você.",
+      highlight: "Fome de resultado"
     }
   ];
 
   return (
-    <section className="py-section-lg bg-neutral-50">
+    <section className="py-16 md:py-24 bg-neutral-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="font-heading text-title-xl text-neutral-900 mb-6">
-            Mais de <Counter targetNumber={500} suffix="+ Dentistas" />{' '}
-            <span className="text-medical-600">Já Transformaram Suas Práticas</span>
+        <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-medical-50 text-medical-700 rounded-full text-sm md:text-base font-medium mb-6">
+            <Star size={16} className="text-medical-500" />
+            Por Que Nos Escolher?
+          </div>
+
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-neutral-900 mb-6 leading-tight">
+            Por Que Contratar Uma{' '}
+            <span className="text-medical-600">Empresa que Está Começando?</span>
           </h2>
 
-          <p className="text-body-lg text-neutral-600 leading-relaxed">
-            Veja os resultados reais de colegas que decidiram investir em presença digital
-            profissional e como isso impactou positivamente seus consultórios.
+          <p className="text-base md:text-lg text-neutral-600 leading-relaxed">
+            Somos honestos: estamos no início. Mas isso é uma <strong>vantagem para você</strong>.
+            Veja por quê:
           </p>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-16">
-          {testimonials.map((testimonial, index) => (
+        {/* Benefits Grid */}
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-12 md:mb-16">
+          {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl p-8 shadow-sm border border-neutral-200 hover:shadow-md transition-all duration-300"
+              className="bg-white rounded-xl p-6 md:p-8 shadow-sm border border-neutral-200 hover:shadow-md transition-all duration-300 hover:border-medical-300"
             >
-              {/* Stars */}
-              <div className="flex gap-1 mb-6">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} size={18} className="text-yellow-500 fill-current" />
-                ))}
+              {/* Icon */}
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-medical-50 rounded-xl flex items-center justify-center mb-6">
+                <benefit.icon size={32} className="text-medical-600" />
               </div>
 
-              {/* Quote Icon */}
-              <div className="mb-4">
-                <Quote size={32} className="text-medical-200" />
+              {/* Highlight Badge */}
+              <div className="inline-block px-3 py-1 bg-mint-50 text-mint-700 rounded-full text-xs md:text-sm font-medium mb-4">
+                {benefit.highlight}
               </div>
 
-              {/* Testimonial */}
-              <blockquote className="text-body-md text-neutral-700 leading-relaxed mb-6">
-                "{testimonial.testimonial}"
-              </blockquote>
+              {/* Title */}
+              <h3 className="font-heading text-xl md:text-2xl text-neutral-900 mb-4">
+                {benefit.title}
+              </h3>
 
-              {/* Result Badge */}
-              <div className="bg-mint-50 border border-mint-200 rounded-lg p-3 mb-6">
-                <div className="flex items-center gap-2 text-mint-700 font-semibold text-body-sm">
-                  <TrendingUp size={16} />
-                  {testimonial.result}
-                </div>
-              </div>
-
-              {/* Doctor Info */}
-              <div className="flex items-center gap-4 pt-6 border-t border-neutral-200">
-                <img
-                  src={testimonial.photo}
-                  alt={testimonial.name}
-                  className="w-14 h-14 rounded-full object-cover"
-                />
-                <div>
-                  <h4 className="font-semibold text-neutral-900 text-body-md">
-                    {testimonial.name}
-                  </h4>
-                  <p className="text-neutral-600 text-body-sm">
-                    {testimonial.specialty}
-                  </p>
-                  <p className="text-neutral-500 text-body-sm">
-                    {testimonial.location}
-                  </p>
-                </div>
-              </div>
+              {/* Description */}
+              <p className="text-base md:text-lg text-neutral-600 leading-relaxed">
+                {benefit.description}
+              </p>
             </div>
           ))}
         </div>
 
-        {/* Stats Bar */}
-        <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-8 mb-12">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-title-xl font-bold text-medical-600 mb-2">
-                <Counter targetNumber={500} suffix="+" duration={2000} />
+        {/* Honest Box - "O que esperamos de você" */}
+        <div className="bg-gradient-to-br from-medical-50 to-mint-50 rounded-2xl p-6 md:p-12 border border-medical-200 mb-12">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="font-heading text-2xl md:text-3xl text-neutral-900 mb-6 text-center">
+              O Que Esperamos de Você (Em Troca do Preço Especial)
+            </h3>
+
+            <div className="space-y-4 text-base md:text-lg text-neutral-700 leading-relaxed">
+              <div className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-medical-500 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <p>
+                  <strong>Feedback honesto:</strong> Queremos saber o que funcionou e o que pode melhorar.
+                  Sua opinião é valiosa para crescermos.
+                </p>
               </div>
-              <p className="text-body-md font-medium text-neutral-900">Sites Entregues</p>
-              <p className="text-body-sm text-neutral-500">Em tempo recorde</p>
+
+              <div className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-medical-500 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <p>
+                  <strong>Depoimento (se ficar satisfeito):</strong> Se o resultado for bom, gostaríamos
+                  de usar seu depoimento e screenshot do site como exemplo (podemos ocultar dados se preferir).
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-medical-500 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <p>
+                  <strong>Paciência com nosso processo:</strong> Estamos aprendendo e melhorando.
+                  Se algo demorar um pouco mais, agradecemos sua compreensão.
+                </p>
+              </div>
+
+              <p className="text-center pt-6 font-semibold text-medical-700 text-lg md:text-xl">
+                Em troca: preço 50% menor + atenção exclusiva + garantia absoluta.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Future Section - "Em breve, depoimentos reais aqui" */}
+        <div className="bg-white rounded-xl p-6 md:p-8 shadow-sm border-2 border-dashed border-medical-200 mb-12">
+          <div className="text-center max-w-2xl mx-auto">
+            <div className="w-16 h-16 bg-medical-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Star size={32} className="text-medical-500" />
             </div>
 
-            <div>
-              <div className="text-title-xl font-bold text-medical-600 mb-2">
-                98.7%
-              </div>
-              <p className="text-body-md font-medium text-neutral-900">Taxa de Aprovação</p>
-              <p className="text-body-sm text-neutral-500">Na primeira entrega</p>
-            </div>
+            <h3 className="font-heading text-xl md:text-2xl text-neutral-900 mb-4">
+              Seja Um dos Primeiros Clientes
+            </h3>
 
-            <div>
-              <div className="text-title-xl font-bold text-medical-600 mb-2">
-                <Counter targetNumber={150} suffix="%" duration={2000} />
-              </div>
-              <p className="text-body-md font-medium text-neutral-900">Aumento Médio</p>
-              <p className="text-body-sm text-neutral-500">Em consultas nos primeiros 90 dias</p>
-            </div>
-
-            <div>
-              <div className="text-title-xl font-bold text-medical-600 mb-2">
-                4.9/5
-              </div>
-              <p className="text-body-md font-medium text-neutral-900">Avaliação Média</p>
-              <p className="text-body-sm text-neutral-500">Satisfação dos clientes</p>
-            </div>
+            <p className="text-base md:text-lg text-neutral-600 leading-relaxed">
+              Ainda não temos depoimentos porque estamos começando. Mas isso significa que você
+              receberá atenção que nunca mais poderemos dar quando estivermos com agenda cheia.
+              <strong className="text-medical-600"> Seja nosso case de sucesso.</strong>
+            </p>
           </div>
         </div>
 
         {/* CTA */}
         <div className="text-center">
-          <h3 className="font-heading text-title-lg text-neutral-900 mb-6">
-            Pronto para ter resultados como esses?
+          <h3 className="font-heading text-2xl md:text-3xl text-neutral-900 mb-6">
+            Pronto para aproveitar o preço de fundador?
           </h3>
 
           <Link
             to="/briefing"
-            className="inline-flex items-center justify-center gap-2 px-10 py-5 bg-medical-500 text-white text-body-lg font-semibold rounded-lg hover:bg-medical-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+            className="inline-flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 bg-medical-500 text-white text-base md:text-lg font-semibold rounded-lg hover:bg-medical-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] min-h-[56px]"
           >
-            Quero Resultados Como Esses
+            Garantir Minha Vaga Agora
             <ArrowRight size={22} />
           </Link>
 
-          <p className="text-body-sm text-neutral-500 mt-4">
-            Junte-se aos <Counter targetNumber={500} suffix="+ dentistas" /> satisfeitos
+          <p className="text-sm md:text-base text-neutral-500 mt-4">
+            Primeiras 10 vagas • Preço sobe após isso
           </p>
         </div>
       </div>
