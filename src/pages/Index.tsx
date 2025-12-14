@@ -4,6 +4,7 @@ import FooterNew from '../components/redesign/FooterNew';
 import HeroSectionNew from '../components/redesign/sections/HeroSectionNew';
 import ProblemsSectionNew from '../components/redesign/sections/ProblemsSectionNew';
 import SolutionSectionNew from '../components/redesign/sections/SolutionSectionNew';
+import ExamplesSectionNew from '../components/redesign/sections/ExamplesSectionNew';
 import HowItWorksSectionNew from '../components/redesign/sections/HowItWorksSectionNew';
 import TestimonialsSectionNew from '../components/redesign/sections/TestimonialsSectionNew';
 import OffersSectionNew from '../components/redesign/sections/OffersSectionNew';
@@ -11,6 +12,7 @@ import GuaranteesSectionNew from '../components/redesign/sections/GuaranteesSect
 import FAQSectionNew from '../components/redesign/sections/FAQSectionNew';
 import FinalCTASectionNew from '../components/redesign/sections/FinalCTASectionNew';
 import WhatsAppFloating from '../components/mobile/WhatsAppFloating';
+import ScheduleBanner from '../components/redesign/ScheduleBanner';
 
 const Index: React.FC = () => {
   return (
@@ -21,6 +23,10 @@ const Index: React.FC = () => {
         <HeroSectionNew />
         <ProblemsSectionNew />
         <SolutionSectionNew />
+
+        <div id="exemplos">
+          <ExamplesSectionNew />
+        </div>
 
         <div id="como-funciona">
           <HowItWorksSectionNew />
@@ -45,6 +51,7 @@ const Index: React.FC = () => {
 
       <FooterNew />
       <WhatsAppFloating />
+      <ScheduleBanner />
     </div>
   );
 };

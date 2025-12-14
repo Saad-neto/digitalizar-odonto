@@ -16,7 +16,7 @@ const WhatsAppFloating: React.FC = () => {
 
   return (
     <a
-      href="https://wa.me/5518317510052?text=Olá!%20Tenho%20interesse%20no%20site%20odontológico"
+      href="https://wa.me/5511963256658?text=Olá!%20Tenho%20interesse%20no%20site%20odontológico"
       target="_blank"
       rel="noopener noreferrer"
       className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${

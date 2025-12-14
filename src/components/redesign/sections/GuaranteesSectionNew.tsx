@@ -81,29 +81,29 @@ const GuaranteesSectionNew: React.FC = () => {
         </div>
 
         {/* Risk Reversal Highlight Box */}
-        <div className="bg-gradient-to-br from-mint-500 to-mint-700 rounded-2xl p-6 md:p-12 text-white mb-12">
+        <div className="bg-gradient-to-br from-mint-600 to-mint-800 rounded-2xl p-6 md:p-12 text-white mb-12 shadow-xl">
           <div className="max-w-4xl mx-auto text-center">
             <div className="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mx-auto mb-6">
               <Shield size={40} className="text-white" />
             </div>
 
-            <h3 className="font-heading text-2xl md:text-3xl mb-6">
+            <h3 className="font-heading text-2xl md:text-3xl mb-6 font-bold">
               Por Que Assumimos Todo o Risco?
             </h3>
 
-            <div className="space-y-4 text-base md:text-lg leading-relaxed text-white">
-              <p>
-                Porque temos <strong className="font-bold">absoluta confiança</strong> na qualidade
+            <div className="space-y-4 text-base md:text-lg leading-relaxed">
+              <p className="text-white/95">
+                Porque temos <strong className="font-bold text-white">absoluta confiança</strong> na qualidade
                 do nosso trabalho e na tecnologia que usamos (React, TypeScript, Supabase).
               </p>
 
-              <p>
+              <p className="text-white/95">
                 Como estamos começando, precisamos construir reputação. A melhor forma?
                 Entregar sites excelentes e assumir TODO o risco. Se o trabalho não for bom,
                 você não paga.
               </p>
 
-              <p className="font-semibold text-xl">
+              <p className="font-bold text-xl text-white">
                 Simples assim: você só ganha. Nós assumimos o risco.
               </p>
             </div>

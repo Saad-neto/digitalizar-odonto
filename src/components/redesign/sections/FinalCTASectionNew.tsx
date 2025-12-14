@@ -70,39 +70,13 @@ const FinalCTASectionNew: React.FC = () => {
         {/* Secondary CTA */}
         <div className="text-center">
           <a
-            href="https://wa.me/5518317510052?text=Olá!%20Tenho%20dúvidas%20sobre%20o%20site%20odontológico"
+            href="https://wa.me/5511963256658?text=Olá!%20Tenho%20dúvidas%20sobre%20o%20site%20odontológico"
             target="_blank"
             rel="noopener noreferrer"
             className="text-body-md underline hover:text-mint-300 transition-colors duration-300"
           >
             Ainda tem dúvidas? Fale conosco no WhatsApp
           </a>
-        </div>
-
-        {/* Final Social Proof */}
-        <div className="mt-16 pt-12 border-t border-white/20 text-center">
-          <p className="text-body-md text-white mb-4">
-            Junte-se a centenas de dentistas que já transformaram suas práticas:
-          </p>
-
-          <div className="flex flex-wrap justify-center items-center gap-8 text-body-sm text-white/90">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-mint-300" />
-              <span>500+ sites entregues</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-mint-300" />
-              <span>98.7% de aprovação</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-mint-300" />
-              <span>Avaliação 4.9/5</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-mint-300" />
-              <span>Especialistas há 5 anos</span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

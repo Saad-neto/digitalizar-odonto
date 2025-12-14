@@ -26,7 +26,7 @@ const SolutionSectionNew: React.FC = () => {
     },
     {
       title: "Hospedagem Profissional Incluída",
-      description: "12 meses de hospedagem grátis. Site rápido, seguro e sempre no ar. Você não precisa se preocupar com nada técnico."
+      description: "Hospedagem gratuita para sempre. Site rápido, seguro e sempre no ar. Você não precisa se preocupar com nada técnico."
     }
   ];
 
@@ -112,27 +112,6 @@ const SolutionSectionNew: React.FC = () => {
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Social Proof Strip */}
-        <div className="mt-12 text-center">
-          <p className="text-body-md text-neutral-600 mb-4">
-            Junte-se a centenas de dentistas que já transformaram suas práticas:
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 text-neutral-500">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={20} className="text-mint-500" />
-              <span className="text-body-sm">500+ sites entregues</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={20} className="text-mint-500" />
-              <span className="text-body-sm">98.7% de aprovação</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 size={20} className="text-mint-500" />
-              <span className="text-body-sm">Avaliação 4.9/5</span>
             </div>
           </div>
         </div>

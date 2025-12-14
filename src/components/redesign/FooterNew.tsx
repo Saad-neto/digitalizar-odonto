@@ -137,22 +137,22 @@ const FooterNew: React.FC = () => {
             <ul className="space-y-4">
               <li>
                 <a
-                  href="https://wa.me/5518317510052"
+                  href="https://wa.me/5511963256658"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-body-sm text-neutral-400 hover:text-medical-400 transition-colors duration-300"
                 >
                   <MessageCircle size={18} className="flex-shrink-0" />
-                  WhatsApp: (18) 3175-1052
+                  WhatsApp: (11) 96325-6658
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:+551831751052"
+                  href="tel:+5511963256658"
                   className="flex items-center gap-3 text-body-sm text-neutral-400 hover:text-medical-400 transition-colors duration-300"
                 >
                   <Phone size={18} className="flex-shrink-0" />
-                  (18) 3175-1052
+                  (11) 96325-6658
                 </a>
               </li>
               <li>

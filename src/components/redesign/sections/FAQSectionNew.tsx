@@ -16,7 +16,7 @@ const FAQSectionNew: React.FC = () => {
     },
     {
       question: "O que está incluso no pacote de R$ 497?",
-      answer: "TUDO que você precisa: design personalizado para sua especialidade, site responsivo (mobile/tablet/desktop), otimização básica para Google (SEO on-page), integração WhatsApp, formulários de contato, 12 meses de hospedagem profissional GRÁTIS, certificado SSL (segurança), suporte técnico por 30 dias, Google Analytics configurado, e otimização de imagens. Sem custos ocultos."
+      answer: "TUDO que você precisa: design 100% personalizado, site responsivo, SEO on-page, integração WhatsApp, reviews do Google e Google Maps integrados, hospedagem GRATUITA PARA SEMPRE, SSL, suporte por 30 dias, Google Analytics, Meta Pixel (opcional), e otimização de imagens. Sem custos ocultos. Valor real de mercado: R$ 2.000-5.000."
     },
     {
       question: "Vocês fazem sites genéricos ou personalizados?",
@@ -35,8 +35,8 @@ const FAQSectionNew: React.FC = () => {
       answer: "Você tem 30 dias de suporte técnico gratuito para ajustes e correções. Após isso, fazemos alterações sob demanda por valores acessíveis (ajustes simples geralmente entre R$ 50-150 dependendo da complexidade). A maioria dos clientes não precisa de alterações frequentes."
     },
     {
-      question: "A hospedagem é realmente grátis por 12 meses?",
-      answer: "SIM! Os primeiros 12 meses de hospedagem profissional estão inclusos no pacote (valor aproximado de R$ 180-300/ano). Após 1 ano, a renovação custa aproximadamente R$ 15-25/mês dependendo do provedor. Você pode renovar conosco ou migrar para onde preferir - o código do site é 100% seu."
+      question: "A hospedagem é grátis mesmo? Para sempre?",
+      answer: "SIM! Utilizamos Cloudflare Pages, que oferece hospedagem gratuita permanente com alta performance e segurança. Seu site fica no ar 24/7 sem nenhum custo mensal ou anual de hospedagem. Inclui certificado SSL e CDN global. O código é 100% seu - você pode migrar para outro provedor quando quiser, mas dificilmente precisará."
     },
     {
       question: "Posso ver exemplos de sites que vocês fizeram?",
@@ -49,6 +49,10 @@ const FAQSectionNew: React.FC = () => {
     {
       question: "Por que o preço é tão mais barato que outras agências?",
       answer: "Porque é nosso PREÇO DE LANÇAMENTO. Precisamos dos primeiros clientes para construir portfólio e depoimentos. Após os primeiros 10 clientes, o preço sobe para R$ 997 (valor real de mercado). Estamos oferecendo 50% de desconto em troca de: feedback honesto, permissão para usar seu site como exemplo (se ficar satisfeito), e paciência com nosso processo. É uma troca justa."
+    },
+    {
+      question: "Posso conversar com alguém antes de decidir?",
+      answer: "Claro! Entendemos que investir no site do seu consultório é uma decisão importante. Se preferir tirar suas dúvidas em uma conversa rápida antes de começar, ficaremos felizes em agendar 15 minutos com você. É sem compromisso e sem pressão de venda. Você também pode começar direto pelo briefing online - a escolha é sua!"
     }
   ];
 
@@ -122,29 +126,30 @@ const FAQSectionNew: React.FC = () => {
             </h3>
 
             <p className="text-base md:text-lg text-neutral-600 mb-6">
-              Estamos aqui para ajudar! Fale conosco pelo WhatsApp e tire todas as suas dúvidas
-              antes de decidir. Sem compromisso, sem pressão.
+              Estamos aqui para ajudar! Escolha a melhor forma de continuar:
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="https://wa.me/5518317510052?text=Olá!%20Tenho%20dúvidas%20sobre%20o%20site%20odontológico"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-mint-500 text-white text-base md:text-lg font-semibold rounded-lg hover:bg-mint-600 transition-all duration-300 shadow-md hover:shadow-lg min-h-[56px]"
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch">
+              <Link
+                to="/agendar"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-neutral-700 text-white text-base md:text-lg font-semibold rounded-lg hover:bg-neutral-800 transition-all duration-300 shadow-md hover:shadow-lg min-h-[56px]"
               >
                 <MessageCircle size={20} />
-                Falar no WhatsApp
-              </a>
+                Agendar Conversa
+              </Link>
 
               <Link
                 to="/briefing"
-                className="inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-medical-500 text-white text-base md:text-lg font-semibold rounded-lg hover:bg-medical-600 transition-all duration-300 shadow-md hover:shadow-lg min-h-[56px]"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-medical-500 text-white text-base md:text-lg font-semibold rounded-lg hover:bg-medical-600 transition-all duration-300 shadow-md hover:shadow-lg min-h-[56px]"
               >
-                Preencher Briefing Agora
+                Começar Agora
                 <ArrowRight size={20} />
               </Link>
             </div>
+
+            <p className="text-sm text-neutral-500 mt-4">
+              Prefere conversar antes? Sem problema. Quer começar direto? Também pode!
+            </p>
           </div>
         </div>
       </div>

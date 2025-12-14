@@ -81,13 +81,13 @@ const HeaderNew: React.FC = () => {
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-4">
             <a
-              href="https://wa.me/5518317510052"
+              href="https://wa.me/5511963256658"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-body-md text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium"
             >
               <Phone size={18} />
-              (18) 3175-1052
+              (11) 96325-6658
             </a>
 
             <Link
@@ -137,13 +137,13 @@ const HeaderNew: React.FC = () => {
               </button>
 
               <a
-                href="https://wa.me/5518317510052"
+                href="https://wa.me/5511963256658"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-body-md text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium"
               >
                 <Phone size={18} />
-                (18) 3175-1052
+                (11) 96325-6658
               </a>
 
               <Link

@@ -8,8 +8,9 @@ const OffersSectionNew: React.FC = () => {
     "Responsivo (perfeito em celular, tablet e desktop)",
     "Otimização básica para Google (SEO on-page)",
     "Integração WhatsApp para facilitar contato",
-    "Formulários de contato otimizados",
-    "12 meses de hospedagem profissional GRÁTIS",
+    "Reviews do Google integrados no site",
+    "Google Maps interativo com localização da clínica",
+    "Hospedagem profissional GRATUITA PARA SEMPRE",
     "SSL (certificado de segurança) incluído",
     "Suporte técnico por 30 dias após entrega"
   ];
@@ -169,10 +170,7 @@ const OffersSectionNew: React.FC = () => {
             Compare: agências cobram entre R$ 2.000 - R$ 5.000 + mensalidades de R$ 200-500.
           </p>
           <p className="text-base md:text-lg font-semibold text-medical-600">
-            Aqui você paga R$ 497 uma única vez. Sem mensalidade. Sem surpresas.
-          </p>
-          <p className="text-sm md:text-base text-neutral-500 mt-4">
-            Após 12 meses: renovação de hospedagem R$ 15-25/mês (custo real de servidor).
+            Aqui você paga R$ 497 uma única vez. Sem mensalidade. Sem surpresas. Hospedagem gratuita para sempre.
           </p>
         </div>
       </div>

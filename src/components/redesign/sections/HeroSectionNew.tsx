@@ -40,14 +40,12 @@ const HeroSectionNew: React.FC = () => {
                 <ArrowRight size={20} />
               </Link>
 
-              <a
-                href="https://wa.me/5518317510052?text=Olá!%20Tenho%20dúvidas%20sobre%20o%20site%20odontológico"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/agendar"
                 className="inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 md:py-5 border-2 border-neutral-300 text-neutral-700 text-base md:text-lg font-semibold rounded-lg hover:border-medical-500 hover:text-medical-600 transition-all duration-300 min-h-[56px]"
               >
                 Tirar Dúvidas
-              </a>
+              </Link>
             </div>
 
             {/* Trust Badge */}
@@ -123,7 +121,7 @@ const HeroSectionNew: React.FC = () => {
                     'Design personalizado para sua especialidade',
                     'Responsivo (celular, tablet, desktop)',
                     'Otimização básica para Google (SEO)',
-                    'Hospedagem grátis por 12 meses',
+                    'Hospedagem gratuita para sempre',
                     'Botão WhatsApp integrado',
                   ].map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
