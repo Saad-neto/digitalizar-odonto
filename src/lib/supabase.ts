@@ -681,3 +681,627 @@ export async function listarDisponibilidade(): Promise<Disponibilidade[]> {
 
   return data as Disponibilidade[];
 }
+
+// =============================================
+// FUNÇÕES DO BLOG
+// =============================================
+
+export interface BlogPost {
+  id: string;
+  created_at: string;
+  updated_at: string;
+
+  // Conteúdo
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: any; // JSON do Tiptap
+  featured_image: string | null;
+
+  // SEO
+  meta_title: string | null;
+  meta_description: string | null;
+
+  // Categorização
+  category_id: string | null;
+  category?: BlogCategory; // Join opcional
+
+  // Tags (quando incluído com join)
+  tags?: BlogTag[];
+
+  // Autor
+  author_id: string | null;
+  author_name: string;
+
+  // Status
+  status: 'draft' | 'published' | 'archived';
+  published_at: string | null;
+
+  // Analytics
+  view_count: number;
+}
+
+export interface BlogCategory {
+  id: string;
+  created_at: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  parent_id: string | null;
+  display_order: number;
+}
+
+export interface BlogTag {
+  id: string;
+  created_at: string;
+  name: string;
+  slug: string;
+}
+
+/**
+ * Listar posts do blog (frontend público)
+ * Retorna apenas posts publicados
+ */
+export async function listBlogPosts(params?: {
+  page?: number;
+  limit?: number;
+  categorySlug?: string;
+  tagSlug?: string;
+  search?: string;
+}) {
+  const { page = 1, limit = 10, categorySlug, tagSlug, search } = params || {};
+  const offset = (page - 1) * limit;
+
+  let query = supabase
+    .from('blog_posts')
+    .select(
+      `
+      *,
+      category:blog_categories(*),
+      tags:blog_post_tags(tag:blog_tags(*))
+    `,
+      { count: 'exact' }
+    )
+    .eq('status', 'published')
+    .not('published_at', 'is', null)
+    .order('published_at', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  // Filtro por categoria
+  if (categorySlug) {
+    const { data: category } = await supabase
+      .from('blog_categories')
+      .select('id')
+      .eq('slug', categorySlug)
+      .single();
+
+    if (category) {
+      query = query.eq('category_id', category.id);
+    }
+  }
+
+  // Filtro por tag
+  if (tagSlug) {
+    const { data: tag } = await supabase
+      .from('blog_tags')
+      .select('id')
+      .eq('slug', tagSlug)
+      .single();
+
+    if (tag) {
+      const { data: postIds } = await supabase
+        .from('blog_post_tags')
+        .select('post_id')
+        .eq('tag_id', tag.id);
+
+      if (postIds && postIds.length > 0) {
+        query = query.in(
+          'id',
+          postIds.map((p) => p.post_id)
+        );
+      }
+    }
+  }
+
+  // Busca textual
+  if (search) {
+    query = query.or(`title.ilike.%${search}%,excerpt.ilike.%${search}%`);
+  }
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    console.error('Erro ao listar posts:', error);
+    throw error;
+  }
+
+  return {
+    posts: data || [],
+    total: count || 0,
+    pages: Math.ceil((count || 0) / limit),
+    currentPage: page,
+  };
+}
+
+/**
+ * Buscar post por slug (frontend público)
+ * Incrementa contador de visualizações automaticamente
+ */
+export async function getBlogPostBySlug(slug: string) {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select(
+      `
+      *,
+      category:blog_categories(*),
+      tags:blog_post_tags(tag:blog_tags(*))
+    `
+    )
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .single();
+
+  if (error) {
+    console.error('Erro ao buscar post:', error);
+    throw error;
+  }
+
+  // Incrementar view_count (chamada assíncrona, não espera)
+  supabase.rpc('increment_post_views', { post_id: data.id }).then(() => {
+    // Silenciosamente incrementa, não afeta o retorno
+  });
+
+  return data as BlogPost;
+}
+
+/**
+ * Buscar posts relacionados (mesma categoria ou tags em comum)
+ */
+export async function getRelatedPosts(postId: string, limit = 3) {
+  const { data, error } = await supabase.rpc('get_related_posts', {
+    p_post_id: postId,
+    p_limit: limit,
+  });
+
+  if (error) {
+    console.error('Erro ao buscar posts relacionados:', error);
+    throw error;
+  }
+
+  return data || [];
+}
+
+/**
+ * Admin: Listar todos os posts (incluindo drafts)
+ */
+export async function listAllBlogPosts(params?: {
+  status?: 'draft' | 'published' | 'archived';
+  limit?: number;
+  offset?: number;
+}) {
+  const { status, limit = 50, offset = 0 } = params || {};
+
+  let query = supabase
+    .from('blog_posts')
+    .select(
+      `
+      *,
+      category:blog_categories(name, slug)
+    `,
+      { count: 'exact' }
+    )
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (status) {
+    query = query.eq('status', status);
+  }
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    console.error('Erro ao listar posts (admin):', error);
+    throw error;
+  }
+
+  return {
+    posts: data || [],
+    total: count || 0,
+  };
+}
+
+/**
+ * Admin: Buscar post por ID (incluindo drafts)
+ */
+export async function getBlogPostById(id: string) {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select(
+      `
+      *,
+      category:blog_categories(*),
+      tags:blog_post_tags(tag:blog_tags(*))
+    `
+    )
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Erro ao buscar post por ID:', error);
+    throw error;
+  }
+
+  return data as BlogPost;
+}
+
+/**
+ * Admin: Criar novo post
+ */
+export async function createBlogPost(
+  post: {
+    title: string;
+    slug: string;
+    excerpt?: string;
+    content: any;
+    featured_image?: string;
+    meta_title?: string;
+    meta_description?: string;
+    category_id?: string;
+    author_name: string;
+    status?: 'draft' | 'published';
+  },
+  tagIds: string[] = []
+) {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const postData: any = {
+    title: post.title,
+    slug: post.slug,
+    content: post.content,
+    author_name: post.author_name,
+    author_id: user?.id || null,
+    status: post.status || 'draft',
+  };
+
+  if (post.excerpt) postData.excerpt = post.excerpt;
+  if (post.featured_image) postData.featured_image = post.featured_image;
+  if (post.meta_title) postData.meta_title = post.meta_title;
+  if (post.meta_description) postData.meta_description = post.meta_description;
+  if (post.category_id) postData.category_id = post.category_id;
+
+  if (post.status === 'published') {
+    postData.published_at = new Date().toISOString();
+  }
+
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .insert([postData])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao criar post:', error);
+    throw error;
+  }
+
+  // Associar tags
+  if (tagIds.length > 0) {
+    const { error: tagError } = await supabase.from('blog_post_tags').insert(
+      tagIds.map((tagId) => ({
+        post_id: data.id,
+        tag_id: tagId,
+      }))
+    );
+
+    if (tagError) {
+      console.error('Erro ao associar tags:', tagError);
+    }
+  }
+
+  return data as BlogPost;
+}
+
+/**
+ * Admin: Atualizar post existente
+ */
+export async function updateBlogPost(
+  id: string,
+  updates: {
+    title?: string;
+    slug?: string;
+    excerpt?: string;
+    content?: any;
+    featured_image?: string;
+    meta_title?: string;
+    meta_description?: string;
+    category_id?: string;
+    status?: 'draft' | 'published' | 'archived';
+  },
+  tagIds?: string[]
+) {
+  const updateData: any = { ...updates };
+
+  // Se mudar para published e ainda não tem published_at, definir agora
+  if (updates.status === 'published') {
+    const { data: currentPost } = await supabase
+      .from('blog_posts')
+      .select('published_at')
+      .eq('id', id)
+      .single();
+
+    if (currentPost && !currentPost.published_at) {
+      updateData.published_at = new Date().toISOString();
+    }
+  }
+
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .update(updateData)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao atualizar post:', error);
+    throw error;
+  }
+
+  // Atualizar tags se fornecidas
+  if (tagIds !== undefined) {
+    // Remover tags antigas
+    await supabase.from('blog_post_tags').delete().eq('post_id', id);
+
+    // Adicionar novas tags
+    if (tagIds.length > 0) {
+      await supabase.from('blog_post_tags').insert(
+        tagIds.map((tagId) => ({
+          post_id: id,
+          tag_id: tagId,
+        }))
+      );
+    }
+  }
+
+  return data as BlogPost;
+}
+
+/**
+ * Admin: Deletar post
+ */
+export async function deleteBlogPost(id: string) {
+  const { error } = await supabase.from('blog_posts').delete().eq('id', id);
+
+  if (error) {
+    console.error('Erro ao deletar post:', error);
+    throw error;
+  }
+
+  return true;
+}
+
+/**
+ * Listar todas as categorias
+ */
+export async function listCategories() {
+  const { data, error } = await supabase
+    .from('blog_categories')
+    .select('*')
+    .order('display_order', { ascending: true });
+
+  if (error) {
+    console.error('Erro ao listar categorias:', error);
+    throw error;
+  }
+
+  return data as BlogCategory[];
+}
+
+/**
+ * Buscar categoria por slug
+ */
+export async function getCategoryBySlug(slug: string) {
+  const { data, error } = await supabase
+    .from('blog_categories')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    console.error('Erro ao buscar categoria:', error);
+    throw error;
+  }
+
+  return data as BlogCategory;
+}
+
+/**
+ * Admin: Criar categoria
+ */
+export async function createCategory(category: {
+  name: string;
+  slug: string;
+  description?: string;
+  parent_id?: string;
+  display_order?: number;
+}) {
+  const { data, error } = await supabase
+    .from('blog_categories')
+    .insert([category])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao criar categoria:', error);
+    throw error;
+  }
+
+  return data as BlogCategory;
+}
+
+/**
+ * Admin: Atualizar categoria
+ */
+export async function updateCategory(id: string, updates: Partial<BlogCategory>) {
+  const { data, error } = await supabase
+    .from('blog_categories')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao atualizar categoria:', error);
+    throw error;
+  }
+
+  return data as BlogCategory;
+}
+
+/**
+ * Admin: Deletar categoria
+ */
+export async function deleteCategory(id: string) {
+  const { error } = await supabase
+    .from('blog_categories')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Erro ao deletar categoria:', error);
+    throw error;
+  }
+
+  return true;
+}
+
+/**
+ * Listar todas as tags
+ */
+export async function listTags() {
+  const { data, error } = await supabase
+    .from('blog_tags')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) {
+    console.error('Erro ao listar tags:', error);
+    throw error;
+  }
+
+  return data as BlogTag[];
+}
+
+/**
+ * Buscar tag por slug
+ */
+export async function getTagBySlug(slug: string) {
+  const { data, error } = await supabase
+    .from('blog_tags')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    console.error('Erro ao buscar tag:', error);
+    throw error;
+  }
+
+  return data as BlogTag;
+}
+
+/**
+ * Admin: Criar tag
+ */
+export async function createTag(tag: { name: string; slug: string }) {
+  const { data, error } = await supabase
+    .from('blog_tags')
+    .insert([tag])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao criar tag:', error);
+    throw error;
+  }
+
+  return data as BlogTag;
+}
+
+/**
+ * Admin: Atualizar tag
+ */
+export async function updateTag(id: string, updates: { name?: string; slug?: string }) {
+  const { data, error } = await supabase
+    .from('blog_tags')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Erro ao atualizar tag:', error);
+    throw error;
+  }
+
+  return data as BlogTag;
+}
+
+/**
+ * Admin: Deletar tag
+ */
+export async function deleteTag(id: string) {
+  const { error } = await supabase.from('blog_tags').delete().eq('id', id);
+
+  if (error) {
+    console.error('Erro ao deletar tag:', error);
+    throw error;
+  }
+
+  return true;
+}
+
+/**
+ * Upload de imagem do blog para o storage
+ */
+export async function uploadBlogImage(file: File, postId?: string) {
+  const timestamp = Date.now();
+  const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+  const folder = postId || 'temp';
+  const fileName = `${folder}/${timestamp}-${sanitizedName}`;
+
+  const { data, error } = await supabase.storage
+    .from('blog-images')
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false,
+    });
+
+  if (error) {
+    console.error('Erro ao fazer upload de imagem do blog:', error);
+    throw error;
+  }
+
+  // Obter URL pública
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from('blog-images').getPublicUrl(fileName);
+
+  return {
+    path: data.path,
+    url: publicUrl,
+  };
+}
+
+/**
+ * Buscar estatísticas do blog
+ */
+export async function getBlogStats() {
+  const { data, error } = await supabase.rpc('blog_stats');
+
+  if (error) {
+    console.error('Erro ao buscar estatísticas do blog:', error);
+    throw error;
+  }
+
+  return data && data.length > 0 ? data[0] : null;
+}
