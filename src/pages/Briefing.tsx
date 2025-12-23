@@ -350,13 +350,6 @@ const BriefingOdonto = () => {
         if (!formData.email || !validateEmail(formData.email)) {
           newErrors.email = 'E-mail inválido';
         }
-        if (!formData.slogan_opcao) newErrors.slogan_opcao = 'Escolha uma opção de slogan';
-        if (formData.slogan_opcao === 'custom' && !formData.slogan_custom) {
-          newErrors.slogan_custom = 'Digite seu slogan personalizado';
-        }
-        if (!formData.ano_inicio || formData.ano_inicio < 1970 || formData.ano_inicio > 2025) {
-          newErrors.ano_inicio = 'Ano inválido';
-        }
         break;
 
       case 1: // Profissionais
@@ -377,6 +370,14 @@ const BriefingOdonto = () => {
               newErrors[`profissional_${index}_descricao`] = 'A biografia deve ter pelo menos 50 caracteres';
             }
           });
+        }
+        // Validar questões transferidas da página 1
+        if (!formData.slogan_opcao) newErrors.slogan_opcao = 'Escolha uma opção de slogan';
+        if (formData.slogan_opcao === 'custom' && !formData.slogan_custom) {
+          newErrors.slogan_custom = 'Digite seu slogan personalizado';
+        }
+        if (!formData.ano_inicio || formData.ano_inicio < 1970 || formData.ano_inicio > 2025) {
+          newErrors.ano_inicio = 'Ano inválido';
         }
         break;
 
@@ -970,6 +971,171 @@ const BriefingOdonto = () => {
               <span className="text-2xl">+</span>
               Adicionar outro profissional
             </button>
+
+            {/* Divisor */}
+            <div className="border-t-2 border-medical-200 my-8"></div>
+
+            {/* Slogan */}
+            <div>
+              <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                Escolha a frase principal do seu site: *
+              </label>
+              <div className="space-y-2">
+                {[
+                  { value: 'anos_experiencia', label: 'Cuidando do seu sorriso há [X] anos', desc: 'Personalização: mostrará seus anos de experiência' },
+                  { value: 'sorriso_perfeito', label: 'Seu sorriso perfeito começa aqui', desc: '' },
+                  { value: 'confianca', label: 'Sorria com confiança e segurança', desc: '' },
+                  { value: 'humanizado', label: 'Odontologia de qualidade com atendimento humanizado', desc: '' },
+                  { value: 'tecnologia', label: 'Tecnologia avançada para cuidar do seu sorriso', desc: '' },
+                  { value: 'sem_dor', label: 'Tratamento odontológico sem dor', desc: '' },
+                ].map((opcao) => (
+                  <label key={opcao.value} className="flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                    <input
+                      type="radio"
+                      name="slogan_opcao"
+                      value={opcao.value}
+                      checked={formData.slogan_opcao === opcao.value}
+                      onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
+                      className="w-4 h-4 text-medical-600 mt-1"
+                    />
+                    <div className="ml-3">
+                      <div className="text-gray-700">{opcao.label}</div>
+                      {opcao.desc && <div className="text-xs text-medical-600/60 mt-1">{opcao.desc}</div>}
+                    </div>
+                  </label>
+                ))}
+                <label className="flex items-start p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <input
+                    type="radio"
+                    name="slogan_opcao"
+                    value="custom"
+                    checked={formData.slogan_opcao === 'custom'}
+                    onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
+                    className="w-4 h-4 text-medical-600 mt-1"
+                  />
+                  <div className="ml-3 flex-1">
+                    <div className="text-gray-700">Tenho meu próprio slogan:</div>
+                    {formData.slogan_opcao === 'custom' && (
+                      <input
+                        type="text"
+                        placeholder="Digite seu slogan personalizado"
+                        value={formData.slogan_custom || ''}
+                        onChange={(e) => updateFormData('slogan_custom', e.target.value)}
+                        className="w-full mt-2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-400"
+                      />
+                    )}
+                  </div>
+                </label>
+                <label className="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <input
+                    type="radio"
+                    name="slogan_opcao"
+                    value="confiamos"
+                    checked={formData.slogan_opcao === 'confiamos'}
+                    onChange={(e) => updateFormData('slogan_opcao', e.target.value)}
+                    className="w-4 h-4 text-medical-600"
+                  />
+                  <span className="ml-3 text-gray-700">Escolham vocês com base no meu perfil</span>
+                </label>
+              </div>
+              {errors.slogan_opcao && <p className="text-red-500 text-sm mt-2">{errors.slogan_opcao}</p>}
+              {errors.slogan_custom && <p className="text-red-500 text-sm mt-2">{errors.slogan_custom}</p>}
+            </div>
+
+            {/* Ano de Início */}
+            <div>
+              <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                Desde que ano você atua na odontologia? *
+              </label>
+              <input
+                type="number"
+                placeholder="Ex: 2010"
+                min="1970"
+                max="2025"
+                value={formData.ano_inicio || ''}
+                onChange={(e) => updateFormData('ano_inicio', parseInt(e.target.value))}
+                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  errors.ano_inicio ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                }`}
+              />
+              {errors.ano_inicio && <p className="text-red-500 text-sm mt-2">{errors.ano_inicio}</p>}
+              <p className="text-medical-600/60 text-xs mt-2">Usaremos para calcular os anos de experiência e mostrar no site</p>
+            </div>
+
+            {/* Número de Pacientes (Opcional) */}
+            <div>
+              <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                Aproximadamente quantos pacientes você já atendeu?
+              </label>
+              <div className="space-y-2">
+                {[
+                  { value: 'menos_500', label: 'Menos de 500' },
+                  { value: '500_2000', label: 'Entre 500 e 2.000' },
+                  { value: '2000_5000', label: 'Entre 2.000 e 5.000' },
+                  { value: 'mais_5000', label: 'Mais de 5.000' },
+                  { value: 'nao_informar', label: 'Não sei / Prefiro não informar' },
+                ].map((opcao) => (
+                  <label key={opcao.value} className="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                    <input
+                      type="radio"
+                      name="num_pacientes"
+                      value={opcao.value}
+                      checked={formData.num_pacientes === opcao.value}
+                      onChange={(e) => updateFormData('num_pacientes', e.target.value)}
+                      className="w-4 h-4 text-medical-600"
+                    />
+                    <span className="ml-3 text-gray-700">{opcao.label}</span>
+                  </label>
+                ))}
+              </div>
+              <p className="text-medical-600/60 text-xs mt-2">Não precisa ser exato. Usaremos para mostrar sua experiência no site (ex: '+5.000 pacientes atendidos')</p>
+            </div>
+
+            {/* Google Meu Negócio */}
+            <div>
+              <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                Tem Google Meu Negócio?
+              </label>
+              <div className="space-y-3">
+                <label className="flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <input
+                    type="radio"
+                    name="tem_google_negocio"
+                    value="sim"
+                    checked={formData.tem_google_negocio === 'sim'}
+                    onChange={(e) => updateFormData('tem_google_negocio', e.target.value)}
+                    className="w-4 h-4 text-medical-600 mt-1"
+                  />
+                  <div className="ml-3 flex-1">
+                    <div className="text-gray-700">Sim, tenho</div>
+                    {formData.tem_google_negocio === 'sim' && (
+                      <div className="mt-3 space-y-3">
+                        <input
+                          type="text"
+                          placeholder="Cole o link do Google Meu Negócio"
+                          value={formData.link_google_negocio || ''}
+                          onChange={(e) => updateFormData('link_google_negocio', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-400"
+                        />
+                        <p className="text-xs text-medical-600/60">💡 Como encontrar? Busque sua clínica no Google Maps, clique em "Compartilhar" e copie o link</p>
+                      </div>
+                    )}
+                  </div>
+                </label>
+                <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
+                  <input
+                    type="radio"
+                    name="tem_google_negocio"
+                    value="nao"
+                    checked={formData.tem_google_negocio === 'nao'}
+                    onChange={(e) => updateFormData('tem_google_negocio', e.target.value)}
+                    className="w-4 h-4 text-medical-600"
+                  />
+                  <span className="ml-3 text-gray-700">Não tenho</span>
+                </label>
+              </div>
+              <p className="text-medical-600/60 text-xs mt-2">Se tiver Google Meu Negócio com avaliações, mostraremos no seu site para aumentar a credibilidade</p>
+            </div>
           </div>
         );
 
