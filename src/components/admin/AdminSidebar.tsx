@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
+  UserCheck,
   Calendar,
   BarChart3,
   Settings,
@@ -39,6 +40,11 @@ const AdminSidebar = () => {
       icon: Users,
       label: 'Leads',
       path: '/admin/leads',
+    },
+    {
+      icon: UserCheck,
+      label: 'Clientes',
+      path: '/admin/clientes',
     },
     {
       icon: Calendar,

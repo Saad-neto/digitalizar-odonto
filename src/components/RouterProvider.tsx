@@ -13,7 +13,8 @@ import Blog from "../pages/Blog";
 import BlogPost from "../pages/BlogPost";
 import Login from "../pages/admin/Login";
 import DashboardOverview from "../pages/admin/DashboardOverview";
-import Leads from "../pages/admin/Leads";
+import Clientes from "../pages/admin/Clientes";
+import LeadsParciais from "../pages/admin/LeadsParciais";
 import LeadDetails from "../pages/admin/LeadDetails";
 import Reports from "../pages/admin/Reports";
 import Agendamentos from "../pages/admin/Agendamentos";
@@ -69,8 +70,10 @@ const RouterProvider = () => {
       {/* Admin Routes */}
       <Route path="/admin/login" element={<Login />} />
       <Route path="/admin/dashboard" element={<DashboardOverview />} />
-      <Route path="/admin/leads" element={<Leads />} />
+      <Route path="/admin/leads" element={<LeadsParciais />} />
+      <Route path="/admin/clientes" element={<Clientes />} />
       <Route path="/admin/leads/:id" element={<LeadDetails />} />
+      <Route path="/admin/clientes/:id" element={<LeadDetails />} />
       <Route path="/admin/agendamentos" element={<Agendamentos />} />
       <Route path="/admin/reports" element={<Reports />} />
       <Route path="/admin/configuracoes" element={<Configuracoes />} />

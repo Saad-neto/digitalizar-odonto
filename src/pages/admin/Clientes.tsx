@@ -24,7 +24,7 @@ import Papa from 'papaparse';
 type ViewMode = 'list' | 'kanban';
 type DateFilter = 'all' | 'today' | 'week' | 'month';
 
-const Leads = () => {
+const Clientes = () => {
   const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,17 +47,20 @@ const Leads = () => {
     try {
       setLoading(true);
       const { leads: allLeads } = await listLeads({ limit: 1000 });
-      setLeads(allLeads);
+
+      // Filtrar apenas CLIENTES (excluir leads parciais)
+      const clientes = allLeads.filter(l => l.status !== 'lead_parcial');
+      setLeads(clientes);
 
       // Calcular métricas
-      const novos = allLeads.filter(l => l.status === 'novo').length;
-      const producao = allLeads.filter(l => ['em_producao', 'em_ajustes'].includes(l.status)).length;
-      const prontos = allLeads.filter(l => ['aguardando_aprovacao', 'aprovacao_final', 'no_ar', 'concluido'].includes(l.status)).length;
-      const total = allLeads.reduce((sum, l) => sum + (l.valor_total / 100), 0);
+      const novos = clientes.filter(l => l.status === 'novo').length;
+      const producao = clientes.filter(l => ['em_producao', 'em_ajustes'].includes(l.status)).length;
+      const prontos = clientes.filter(l => ['aguardando_aprovacao', 'aprovacao_final', 'no_ar', 'concluido'].includes(l.status)).length;
+      const total = clientes.reduce((sum, l) => sum + (l.valor_total / 100), 0);
 
       setMetrics({ novos, producao, prontos, total });
     } catch (error) {
-      console.error('Erro ao carregar leads:', error);
+      console.error('Erro ao carregar clientes:', error);
     } finally {
       setLoading(false);
     }
@@ -170,10 +173,10 @@ const Leads = () => {
 
   return (
     <AdminLayout>
-      {/* Header do Leads */}
+      {/* Header de Clientes */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gerenciar Leads</h1>
-        <p className="text-gray-600">Kanban de produção de sites</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Clientes (Briefing Completo)</h1>
+        <p className="text-gray-600">Kanban de produção de sites | Apenas clientes que completaram o formulário</p>
       </div>
         {/* Métricas */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -340,7 +343,7 @@ const Leads = () => {
           <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b-2 border-gray-200 bg-gray-50">
               <h2 className="text-lg font-bold text-gray-900">
-                Leads Recentes ({filteredLeads.length})
+                Clientes Recentes ({filteredLeads.length})
               </h2>
             </div>
 
@@ -355,6 +358,11 @@ const Leads = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         {getStatusBadge(lead.status)}
+                        {(lead as any).origem === 'convertido_de_lead' && (
+                          <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full border border-purple-200" title="Cliente convertido de lead parcial">
+                            🎯 Convertido
+                          </span>
+                        )}
                         <h3 className="text-lg font-semibold text-gray-900">
                           {lead.briefing_data?.nome_consultorio || 'Sem nome'}
                         </h3>
@@ -389,4 +397,4 @@ const Leads = () => {
   );
 };
 
-export default Leads;
+export default Clientes;

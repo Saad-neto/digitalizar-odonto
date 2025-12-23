@@ -166,6 +166,7 @@ export async function createPartialLead(data: {
 
 /**
  * Atualizar lead parcial para completo
+ * Marca origem como 'convertido_de_lead' para tracking de remarketing
  */
 export async function updateLeadToComplete(leadId: string, data: {
   nome: string;
@@ -182,6 +183,7 @@ export async function updateLeadToComplete(leadId: string, data: {
         whatsapp: data.whatsapp,
         briefing_data: data.briefing_data,
         status: 'novo',
+        origem: 'convertido_de_lead', // Tag para identificar leads convertidos
       })
       .eq('id', leadId)
       .select()
