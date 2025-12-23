@@ -48,36 +48,42 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <button 
+            <button
               onClick={() => scrollToSection('como-funciona')}
               className="text-text-primary hover:text-primary transition-colors story-link"
             >
               Como Funciona
             </button>
-            <button 
+            <button
               onClick={() => scrollToSection('depoimentos')}
               className="text-text-primary hover:text-primary transition-colors story-link"
             >
               Depoimentos
             </button>
-            <button 
+            <button
               onClick={() => scrollToSection('ofertas')}
               className="text-text-primary hover:text-primary transition-colors story-link"
             >
               Preços
             </button>
-            <button 
+            <button
               onClick={() => scrollToSection('garantias')}
               className="text-text-primary hover:text-primary transition-colors story-link"
             >
               Garantias
             </button>
-            <button 
+            <button
               onClick={() => scrollToSection('faq')}
               className="text-text-primary hover:text-primary transition-colors story-link"
             >
               FAQ
             </button>
+            <Link
+              to="/blog"
+              className="text-text-primary hover:text-primary transition-colors story-link"
+            >
+              Blog
+            </Link>
           </nav>
 
           {/* CTA Buttons */}
@@ -134,12 +140,19 @@ const Header: React.FC = () => {
               >
                 Garantias
               </button>
-              <button 
+              <button
                 onClick={() => scrollToSection('faq')}
                 className="block w-full text-left px-4 py-2 text-text-primary hover:bg-gray-50 transition-colors"
               >
                 FAQ
               </button>
+              <Link
+                to="/blog"
+                className="block w-full text-left px-4 py-2 text-text-primary hover:bg-gray-50 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
               <div className="px-4 py-2 space-y-2">
                 <Link 
                   to="/briefing"

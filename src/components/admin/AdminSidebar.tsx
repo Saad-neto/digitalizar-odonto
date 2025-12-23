@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   Home,
+  BookOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
@@ -45,6 +46,11 @@ const AdminSidebar = () => {
       path: '/admin/agendamentos',
     },
     {
+      icon: BookOpen,
+      label: 'Blog',
+      path: '/admin/blog',
+    },
+    {
       icon: BarChart3,
       label: 'Relatórios',
       path: '/admin/reports',
@@ -57,6 +63,9 @@ const AdminSidebar = () => {
   ];
 
   const isActive = (path: string) => {
+    if (path === '/admin/blog') {
+      return location.pathname.startsWith('/admin/blog');
+    }
     return location.pathname === path;
   };
 
