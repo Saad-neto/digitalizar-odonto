@@ -1,164 +1,373 @@
-# 🚀 Guia de Deploy - Docker Swarm
+# 🚀 Guia de Deploy - Sites Odonto 24H
 
-## ✅ Setup Atual
+## 📋 Informações do Ambiente
 
-- **Plataforma**: Docker Swarm + Traefik
+- **Plataforma**: Docker Swarm + Traefik (Reverse Proxy)
+- **Servidor**: VPS - 95.217.158.112
 - **Domínio**: sites-odonto.digitalizar.space
-- **IP VPS**: 95.217.158.112
-- **Deploy**: Instantâneo (10 segundos)
+- **Serviço Principal**: `digitalizar-odonto_digitalizar-odonto`
+- **Tempo de Deploy**: ~30 segundos
 
 ---
 
-## 📋 Como Fazer Deploy
+## 🔧 Pré-requisitos
 
-### 1️⃣ Fazer Alterações no Código
+- Acesso SSH ao servidor VPS (95.217.158.112)
+- Docker Swarm configurado e ativo
+- Traefik configurado como reverse proxy
+- Repositório clonado no servidor
+
+---
+
+## 📦 Como Fazer Deploy
+
+### 1️⃣ Acesse o Servidor
 
 ```bash
-# Edite os arquivos em src/
-# Ex: src/components/sections/HeroSection.tsx
+ssh root@95.217.158.112
 ```
 
-### 2️⃣ Build da Imagem Docker
+### 2️⃣ Navegue até o Diretório do Projeto
 
 ```bash
-cd /root/projetos/sites-odonto/swift-dent-studio-16
+cd /root/projetos/sites-odonto/projeto-principal/swift-dent-studio-16
+```
 
-# Build (leva ~1-2 minutos)
+### 3️⃣ Atualize o Código (se necessário)
+
+```bash
+# Pull das últimas alterações do Git
+git pull origin main
+```
+
+### 4️⃣ Build da Imagem Docker
+
+```bash
 docker build -t digitalizar-odonto:latest .
 ```
 
-### 3️⃣ Deploy no Swarm
+**Tempo estimado**: 20-30 segundos
+
+**O que acontece**:
+- Build multi-stage (Node 20 + Nginx Alpine)
+- Instala dependências com `npm ci`
+- Executa `npm run build` (compila React + Vite)
+- Copia o build para imagem Nginx otimizada
+- Copia configuração customizada do Nginx
+
+### 5️⃣ Atualizar Serviço no Swarm
 
 ```bash
-# Opção 1: Stack deploy (recomendado)
-docker stack deploy -c docker-compose.yml digitalizar-odonto
-
-# Opção 2: Force update (mais rápido)
 docker service update --image digitalizar-odonto:latest --force digitalizar-odonto_digitalizar-odonto
 ```
 
-### 4️⃣ Verificar Deploy
+**Tempo estimado**: 10-15 segundos
+
+**O que acontece**:
+- Puxa a nova imagem
+- Para o container antigo
+- Inicia novo container com a imagem atualizada
+- Aguarda 5 segundos para verificar estabilidade
+- Marca como "converged" (estável)
+
+### 6️⃣ Verificar Deploy
 
 ```bash
-# Ver status do serviço
+# Verificar status do serviço
 docker service ls | grep digitalizar
 
 # Ver logs em tempo real
-docker service logs -f digitalizar-odonto_digitalizar-odonto
+docker service logs -f digitalizar-odonto_digitalizar-odonto --tail 50
 
-# Testar site
-curl -I -k https://sites-odonto.digitalizar.space
+# Verificar se o site está respondendo
+curl -I https://sites-odonto.digitalizar.space
 ```
 
 ---
 
-## 🔥 Deploy Rápido (One-liner)
+## ⚡ Deploy Rápido (One-liner)
+
+Para deployar tudo de uma vez:
 
 ```bash
-cd /root/projetos/sites-odonto/swift-dent-studio-16 && \
+cd /root/projetos/sites-odonto/projeto-principal/swift-dent-studio-16 && \
+git pull origin main && \
 docker build -t digitalizar-odonto:latest . && \
-docker service update --image digitalizar-odonto:latest --force digitalizar-odonto_digitalizar-odonto
+docker service update --image digitalizar-odonto:latest --force digitalizar-odonto_digitalizar-odonto && \
+docker service logs --tail 20 digitalizar-odonto_digitalizar-odonto
+```
+
+---
+
+## 🔍 Verificações Importantes
+
+### ✅ Verificar se o serviço está rodando
+
+```bash
+docker service ps digitalizar-odonto_digitalizar-odonto
+```
+
+**Saída esperada**:
+```
+ID            NAME                                  NODE      DESIRED STATE   CURRENT STATE
+abc123...     digitalizar-odonto_digitalizar-...   manager1  Running         Running 2 minutes ago
+```
+
+### ✅ Verificar se o gateway NÃO está interferindo
+
+**⚠️ IMPORTANTE**: Existe um serviço chamado `sites-odonto-gateway_gateway` que usa o mesmo domínio e pode causar conflito.
+
+```bash
+# Verificar se o gateway está desligado
+docker service ls | grep sites-odonto-gateway
+```
+
+**Saída esperada**:
+```
+sites-odonto-gateway_gateway   replicated   0/0   ...
+```
+
+Se estiver com `1/1`, desligue-o:
+
+```bash
+docker service scale sites-odonto-gateway_gateway=0
+```
+
+### ✅ Testar site em produção
+
+```bash
+# Teste de conectividade
+curl -I https://sites-odonto.digitalizar.space
+
+# Verificar se está servindo a aplicação React correta
+curl -s https://sites-odonto.digitalizar.space | grep "Sites Odonto 24H"
 ```
 
 ---
 
 ## 🛠️ Comandos Úteis
 
-### Verificar Status
+### Logs e Debugging
+
 ```bash
-# Listar serviços
+# Ver logs em tempo real
+docker service logs -f digitalizar-odonto_digitalizar-odonto
+
+# Ver últimas 100 linhas de log
+docker service logs --tail 100 digitalizar-odonto_digitalizar-odonto
+
+# Ver logs com timestamps
+docker service logs -t digitalizar-odonto_digitalizar-odonto
+```
+
+### Gerenciamento de Serviços
+
+```bash
+# Listar todos os serviços
 docker service ls
 
 # Ver detalhes do serviço
+docker service inspect digitalizar-odonto_digitalizar-odonto
+
+# Ver réplicas em execução
 docker service ps digitalizar-odonto_digitalizar-odonto
 
-# Ver logs (últimas 100 linhas)
-docker service logs --tail 100 digitalizar-odonto_digitalizar-odonto
-```
-
-### Troubleshooting
-```bash
-# Reiniciar serviço
-docker service scale digitalizar-odonto_digitalizar-odonto=0
-docker service scale digitalizar-odonto_digitalizar-odonto=1
-
-# Remover e recriar stack
-docker stack rm digitalizar-odonto
-# Aguarde 30 segundos
-docker stack deploy -c docker-compose.yml digitalizar-odonto
+# Escalar serviço (adicionar mais réplicas)
+docker service scale digitalizar-odonto_digitalizar-odonto=2
 ```
 
 ### Rebuild Completo (sem cache)
+
+Se houver problemas de cache ou dependências:
+
 ```bash
 docker build --no-cache -t digitalizar-odonto:latest .
+docker service update --image digitalizar-odonto:latest --force digitalizar-odonto_digitalizar-odonto
+```
+
+### Reiniciar Serviço
+
+```bash
+# Método 1: Scale down e up
+docker service scale digitalizar-odonto_digitalizar-odonto=0
+sleep 5
+docker service scale digitalizar-odonto_digitalizar-odonto=1
+
+# Método 2: Force update (recomendado)
+docker service update --force digitalizar-odonto_digitalizar-odonto
 ```
 
 ---
 
-## 📊 Comparação: Antes vs Agora
+## 🐛 Troubleshooting
 
-| **Cloudflare Pages (ANTES)** | **Docker Swarm (AGORA)** |
-|------------------------------|--------------------------|
-| ❌ Cache imprevisível         | ✅ Sem cache             |
-| ❌ Deploy 5-10 min            | ✅ Deploy 10s            |
-| ❌ Build pode falhar          | ✅ Controle total        |
-| ❌ Sem logs                   | ✅ Logs em tempo real    |
+### Problema: Site não carrega ou mostra página errada
 
----
+**Causa**: Serviço `sites-odonto-gateway_gateway` está ativo e interceptando requisições
 
-## 🌐 URLs
+**Solução**:
+```bash
+docker service scale sites-odonto-gateway_gateway=0
+```
 
-- **Produção**: https://sites-odonto.digitalizar.space
-- **Por IP**: https://95.217.158.112
-- **Dev local**: http://localhost:5173 (npm run dev)
+### Problema: Deploy falha no build
 
----
+**Causa**: Erro de compilação ou dependências
 
-## 🔐 SSL/TLS
+**Solução**:
+1. Verifique os logs do build
+2. Teste localmente: `npm run build`
+3. Verifique se o `.env` está presente
+4. Tente rebuild sem cache: `docker build --no-cache ...`
 
-O Traefik gerencia automaticamente certificados Let's Encrypt:
-- **Certresolver**: letsencryptresolver
-- **Renovação**: Automática
-- **Fallback**: Certificado self-signed temporário
+### Problema: Container inicia mas morre logo depois
 
-Se o certificado SSL não estiver válido:
-1. É temporário (self-signed do Traefik)
-2. Let's Encrypt está processando
-3. Pode levar minutos a horas
-4. Será atualizado automaticamente
+**Causa**: Nginx não consegue iniciar ou configuração inválida
 
----
+**Solução**:
+```bash
+# Ver logs de erro
+docker service logs digitalizar-odonto_digitalizar-odonto
 
-## ⚠️ Notas Importantes
+# Verificar configuração do Nginx
+cat nginx.conf
 
-1. **Variáveis de Ambiente**
-   - As variáveis `VITE_*` são embarcadas no build
-   - Se alterar `.env`, precisa rebuild da imagem
-   - `.dockerignore` está configurado para incluir `.env`
+# Testar Nginx localmente
+docker run --rm -v $(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf nginx:alpine nginx -t
+```
 
-2. **Nginx Config**
-   - Configuração customizada em `nginx.conf`
-   - Cache desabilitado para SPAs
-   - Gzip habilitado
-   - History fallback configurado
+### Problema: SSL/HTTPS não funciona
 
-3. **Traefik Labels**
-   - Configuradas no `docker-compose.yml`
-   - Domínio: sites-odonto.digitalizar.space
-   - Fallback: IP 95.217.158.112
-   - HTTPS redirect automático
+**Causa**: Traefik não gerou certificado Let's Encrypt
 
----
+**Solução**:
+1. Certificado pode demorar minutos/horas para ser emitido
+2. Verifique logs do Traefik: `docker service logs traefik_traefik`
+3. Verifique DNS: `dig sites-odonto.digitalizar.space`
+4. Aguarde - certificado é renovado automaticamente
 
-## 📞 Suporte
+### Problema: Alterações não aparecem no site
 
-Em caso de dúvidas:
-1. Verificar logs do serviço
-2. Verificar logs do Traefik: `docker service logs traefik_traefik`
-3. Testar build local: `npm run build`
-4. Verificar DNS: `dig sites-odonto.digitalizar.space`
+**Causa**: Cache do navegador
+
+**Solução**:
+1. Limpe cache do navegador (Ctrl + Shift + R)
+2. Teste em navegador anônimo
+3. Verifique se o build realmente tem as alterações:
+   ```bash
+   docker exec <container-id> cat /usr/share/nginx/html/index.html
+   ```
 
 ---
 
-**Última atualização**: 2025-12-10
-**Commit**: 8fae85a
+## 📊 Arquitetura do Deploy
+
+```
+[GitHub] → [VPS: /root/projetos/sites-odonto/...]
+                    ↓
+            [Docker Build]
+                    ↓
+        [Imagem: digitalizar-odonto:latest]
+                    ↓
+            [Docker Swarm]
+                    ↓
+         [Container: Nginx + Build React]
+                    ↓
+      [Traefik Reverse Proxy]
+                    ↓
+    [SSL/TLS: Let's Encrypt Auto]
+                    ↓
+  [sites-odonto.digitalizar.space]
+```
+
+---
+
+## 🔐 Configurações de Segurança
+
+### Traefik Labels (docker-compose.yml)
+
+O serviço possui labels Traefik configuradas para:
+- ✅ Roteamento por domínio (`sites-odonto.digitalizar.space`)
+- ✅ Redirecionamento HTTP → HTTPS automático
+- ✅ SSL/TLS via Let's Encrypt
+- ✅ Remoção de `www.` do domínio
+
+### Nginx
+
+- ✅ Configuração customizada em `nginx.conf`
+- ✅ Gzip compression habilitado
+- ✅ Cache desabilitado para SPAs (evita problemas de atualização)
+- ✅ History API fallback (todas rotas → index.html)
+
+---
+
+## 🔄 Processo de CI/CD Manual
+
+1. **Desenvolvimento Local**
+   ```bash
+   npm run dev
+   ```
+
+2. **Commit e Push**
+   ```bash
+   git add .
+   git commit -m "feat: nova funcionalidade"
+   git push origin main
+   ```
+
+3. **Deploy no Servidor**
+   ```bash
+   ssh root@95.217.158.112
+   cd /root/projetos/sites-odonto/projeto-principal/swift-dent-studio-16
+   git pull origin main
+   docker build -t digitalizar-odonto:latest .
+   docker service update --image digitalizar-odonto:latest --force digitalizar-odonto_digitalizar-odonto
+   ```
+
+4. **Verificação**
+   - Acesse https://sites-odonto.digitalizar.space
+   - Limpe cache (Ctrl + Shift + R)
+   - Teste a funcionalidade
+
+---
+
+## ⚙️ Variáveis de Ambiente
+
+As variáveis `VITE_*` são **embarcadas no build** (hardcoded no JavaScript compilado).
+
+Se alterar variáveis de ambiente:
+1. Edite o arquivo `.env`
+2. Rebuild a imagem Docker (`docker build`)
+3. Update o serviço
+
+**⚠️ Importante**: Variáveis de ambiente não podem ser alteradas sem rebuild!
+
+---
+
+## 📞 Contato e Suporte
+
+Em caso de problemas:
+
+1. ✅ Verifique os logs do serviço
+2. ✅ Verifique se o gateway está desligado
+3. ✅ Teste build local
+4. ✅ Verifique status do Traefik
+5. ✅ Contate o administrador do servidor
+
+---
+
+## 📝 Changelog
+
+### 2024-12-23
+- ✅ Atualização da documentação de deploy
+- ✅ Correção de conflito com serviço gateway
+- ✅ Remoção da questão "tipo de negócio" do briefing
+
+### 2024-12-10
+- ✅ Configuração inicial Docker Swarm
+- ✅ Migração do Cloudflare Pages para VPS
+- ✅ Configuração Traefik + Let's Encrypt
+
+---
+
+**Última atualização**: 23 de Dezembro de 2024
