@@ -9,6 +9,8 @@ import Agendar from "../pages/Agendar";
 import Privacidade from "../pages/Privacidade";
 import Termos from "../pages/Termos";
 import NotFound from "../pages/NotFound";
+import Blog from "../pages/Blog";
+import BlogPost from "../pages/BlogPost";
 import Login from "../pages/admin/Login";
 import DashboardOverview from "../pages/admin/DashboardOverview";
 import Leads from "../pages/admin/Leads";
@@ -59,6 +61,10 @@ const RouterProvider = () => {
       <Route path="/agendar" element={<Agendar />} />
       <Route path="/privacidade" element={<Privacidade />} />
       <Route path="/termos" element={<Termos />} />
+
+      {/* Blog Public Routes */}
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:slug" element={<BlogPost />} />
 
       {/* Admin Routes */}
       <Route path="/admin/login" element={<Login />} />
