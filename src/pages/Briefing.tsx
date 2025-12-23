@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { compressImage, getPayloadSize, formatFileSize } from '@/utils/imageCompression';
-import { createLead } from '@/lib/supabase';
+import { createLead, createPartialLead, updateLeadToComplete } from '@/lib/supabase';
 import ReviewStep from '@/components/ReviewStep';
 import ProfessionalForm from '@/components/ProfessionalForm';
 import HeaderNew from '@/components/redesign/HeaderNew';
@@ -448,8 +448,30 @@ const BriefingOdonto = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateCurrentSection()) {
+      // Captura automática de lead após página 1 (seção 0)
+      if (currentSection === 0) {
+        // Verificar se já existe um lead parcial salvo
+        const existingLeadId = localStorage.getItem('partial_lead_id');
+
+        if (!existingLeadId) {
+          // Criar lead parcial silenciosamente
+          const partialLead = await createPartialLead({
+            nome: formData.nome,
+            email: formData.email,
+            whatsapp: formData.whatsapp,
+            nome_consultorio: formData.nome_consultorio,
+          });
+
+          if (partialLead) {
+            // Salvar leadId no localStorage
+            localStorage.setItem('partial_lead_id', partialLead.id);
+            console.log('✅ Lead parcial capturado:', partialLead.id);
+          }
+        }
+      }
+
       if (currentSection < sections.length - 1) {
         setCurrentSection(prev => prev + 1);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -485,15 +507,31 @@ const BriefingOdonto = () => {
         arquivos: uploadedFiles,
       };
 
-      // Criar lead no Supabase
-      const lead = await createLead({
-        nome: formData.nome,
-        email: formData.email,
-        whatsapp: formData.whatsapp,
-        briefing_data: briefingCompleto,
-      });
+      // Verificar se existe lead parcial
+      const existingLeadId = localStorage.getItem('partial_lead_id');
+      let lead;
 
-      console.log('✅ Lead criado com sucesso:', lead);
+      if (existingLeadId) {
+        // Atualizar lead parcial para completo
+        lead = await updateLeadToComplete(existingLeadId, {
+          nome: formData.nome,
+          email: formData.email,
+          whatsapp: formData.whatsapp,
+          briefing_data: briefingCompleto,
+        });
+        console.log('✅ Lead parcial atualizado para completo:', lead);
+        // Limpar localStorage
+        localStorage.removeItem('partial_lead_id');
+      } else {
+        // Criar novo lead
+        lead = await createLead({
+          nome: formData.nome,
+          email: formData.email,
+          whatsapp: formData.whatsapp,
+          briefing_data: briefingCompleto,
+        });
+        console.log('✅ Lead criado com sucesso:', lead);
+      }
 
       // Redirecionar para página de obrigado
       alert('Briefing enviado com sucesso! 🎉\n\nAgora vamos produzir seu site. Em até 7 dias você receberá o link para aprovação.');

@@ -118,6 +118,87 @@ export interface LeadNote {
 /**
  * Criar um novo lead no Supabase
  */
+/**
+ * Criar lead parcial (captura silenciosa após página 1)
+ * Status: 'lead_parcial' - para remarketing de abandonos
+ */
+export async function createPartialLead(data: {
+  nome: string;
+  email: string;
+  whatsapp: string;
+  nome_consultorio: string;
+}) {
+  try {
+    const { data: lead, error } = await supabase
+      .from('leads')
+      .insert([
+        {
+          nome: data.nome,
+          email: data.email,
+          whatsapp: data.whatsapp,
+          briefing_data: {
+            nome_consultorio: data.nome_consultorio,
+            nome: data.nome,
+            email: data.email,
+            whatsapp: data.whatsapp,
+            capturado_em: new Date().toISOString(),
+          },
+          valor_total: 49700,
+          valor_entrada: 24850,
+          valor_saldo: 24850,
+          status: 'lead_parcial',
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erro ao criar lead parcial:', error);
+      return null;
+    }
+
+    return lead;
+  } catch (error) {
+    console.error('Erro ao criar lead parcial:', error);
+    return null;
+  }
+}
+
+/**
+ * Atualizar lead parcial para completo
+ */
+export async function updateLeadToComplete(leadId: string, data: {
+  nome: string;
+  email: string;
+  whatsapp: string;
+  briefing_data: any;
+}) {
+  try {
+    const { data: lead, error } = await supabase
+      .from('leads')
+      .update({
+        nome: data.nome,
+        email: data.email,
+        whatsapp: data.whatsapp,
+        briefing_data: data.briefing_data,
+        status: 'novo',
+      })
+      .eq('id', leadId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erro ao atualizar lead:', error);
+      throw error;
+    }
+
+    return lead;
+  } catch (error) {
+    console.error('Erro ao atualizar lead:', error);
+    throw error;
+  }
+}
+
 export async function createLead(data: {
   nome: string;
   email: string;
