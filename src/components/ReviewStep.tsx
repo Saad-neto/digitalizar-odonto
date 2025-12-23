@@ -141,15 +141,6 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               <p className="text-gray-900 mt-1">{renderValue(formData.nome_consultorio)}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-500">Tipo de Negócio</label>
-              <p className="text-gray-900 mt-1">
-                {formData.tipo_negocio === 'solo' && 'Profissional solo (atuo sozinho)'}
-                {formData.tipo_negocio === 'pequena_equipe' && 'Pequena equipe (2-5 profissionais)'}
-                {formData.tipo_negocio === 'clinica' && 'Clínica odontológica'}
-                {!formData.tipo_negocio && renderValue(formData.tipo_negocio)}
-              </p>
-            </div>
-            <div>
               <label className="text-sm font-medium text-gray-500">Seu Nome</label>
               <p className="text-gray-900 mt-1">{renderValue(formData.nome)}</p>
             </div>

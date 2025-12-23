@@ -17,50 +17,6 @@ const InformacoesEssenciais: React.FC<BriefingSectionProps> = ({
       </div>
 
       <div className="space-y-6">
-        {/* Tipo de Negócio */}
-        <div>
-          <label className="block text-sm font-semibold text-neutral-900 mb-3">
-            Qual o tipo do seu negócio odontológico? *
-          </label>
-          <div className="space-y-3">
-            <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
-              <input
-                type="radio"
-                name="tipo_negocio"
-                value="individual"
-                checked={formData.tipo_negocio === 'individual'}
-                onChange={(e) => onUpdate('tipo_negocio', e.target.value)}
-                className="w-4 h-4 text-medical-600"
-              />
-              <span className="ml-3 text-gray-700">Consultório individual - trabalho sozinho(a)</span>
-            </label>
-            <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
-              <input
-                type="radio"
-                name="tipo_negocio"
-                value="parceria"
-                checked={formData.tipo_negocio === 'parceria'}
-                onChange={(e) => onUpdate('tipo_negocio', e.target.value)}
-                className="w-4 h-4 text-medical-600"
-              />
-              <span className="ml-3 text-gray-700">Consultório em parceria - somos 2 dentistas dividindo o espaço</span>
-            </label>
-            <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
-              <input
-                type="radio"
-                name="tipo_negocio"
-                value="clinica"
-                checked={formData.tipo_negocio === 'clinica'}
-                onChange={(e) => onUpdate('tipo_negocio', e.target.value)}
-                className="w-4 h-4 text-medical-600"
-              />
-              <span className="ml-3 text-gray-700">Clínica odontológica - equipe com 3 ou mais profissionais</span>
-            </label>
-          </div>
-          {errors.tipo_negocio && <p className="text-red-500 text-sm mt-2">{errors.tipo_negocio}</p>}
-          <p className="text-medical-600/60 text-xs mt-2">Isso nos ajuda a personalizar o conteúdo do seu site</p>
-        </div>
-
         {/* Nome do Consultório */}
         <div>
           <label className="block text-sm font-semibold text-neutral-900 mb-3">
