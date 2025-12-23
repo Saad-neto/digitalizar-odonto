@@ -21,7 +21,7 @@ const statusColors: Record<string, string> = {
   'novo': 'bg-green-500',
   'pago_50': 'bg-blue-500',
   'em_producao': 'bg-yellow-500',
-  'em_aprovacao': 'bg-purple-500',
+  'em_aprovacao': 'bg-medical-500',
   'pago_100': 'bg-pink-500',
   'concluido': 'bg-emerald-500',
 };
@@ -48,7 +48,7 @@ const Timeline: React.FC<TimelineProps> = ({ leadId }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-medical-600"></div>
       </div>
     );
   }
@@ -87,11 +87,11 @@ const Timeline: React.FC<TimelineProps> = ({ leadId }) => {
                       {oldStatusLabel ? (
                         <>
                           Status alterado de <span className="text-gray-600">{oldStatusLabel}</span> para{' '}
-                          <span className="text-purple-600">{newStatusLabel}</span>
+                          <span className="text-medical-600">{newStatusLabel}</span>
                         </>
                       ) : (
                         <>
-                          Lead criado com status <span className="text-purple-600">{newStatusLabel}</span>
+                          Lead criado com status <span className="text-medical-600">{newStatusLabel}</span>
                         </>
                       )}
                     </p>

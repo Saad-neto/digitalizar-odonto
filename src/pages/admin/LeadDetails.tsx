@@ -227,7 +227,7 @@ const LeadDetails = () => {
     const badges = {
       novo: { color: 'bg-green-100 text-green-800 border-green-300', icon: '🆕', label: 'Novo' },
       em_producao: { color: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: '🔨', label: 'Em Produção' },
-      aguardando_aprovacao: { color: 'bg-purple-100 text-purple-800 border-purple-300', icon: '👀', label: 'Aguardando Aprovação' },
+      aguardando_aprovacao: { color: 'bg-medical-100 text-medical-800 border-medical-300', icon: '👀', label: 'Aguardando Aprovação' },
       aprovado_pagamento: { color: 'bg-blue-100 text-blue-800 border-blue-300', icon: '💰', label: 'Aprovado e Pago' },
       em_ajustes: { color: 'bg-orange-100 text-orange-800 border-orange-300', icon: '🔧', label: 'Em Ajustes' },
       aprovacao_final: { color: 'bg-pink-100 text-pink-800 border-pink-300', icon: '✨', label: 'Aprovação Final' },
@@ -256,7 +256,7 @@ const LeadDetails = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Carregando detalhes...</p>
         </div>
       </div>
@@ -312,7 +312,7 @@ const LeadDetails = () => {
                 className="hidden md:flex"
               >
                 {downloading ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600 mr-2" />
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-medical-600 mr-2" />
                 ) : (
                   <FileText className="w-4 h-4 mr-2" />
                 )}
@@ -327,7 +327,7 @@ const LeadDetails = () => {
                 className="hidden md:flex"
               >
                 {downloading ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600 mr-2" />
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-medical-600 mr-2" />
                 ) : (
                   <FileImage className="w-4 h-4 mr-2" />
                 )}
@@ -365,7 +365,7 @@ const LeadDetails = () => {
         {/* Alterar Status */}
         <div className="bg-white rounded-xl border-2 border-gray-200 p-6 mb-6 shadow-sm">
           <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Briefcase className="w-5 h-5 text-purple-600" />
+            <Briefcase className="w-5 h-5 text-medical-600" />
             Alterar Status
           </h3>
           <div className="flex flex-wrap gap-3">
@@ -377,8 +377,8 @@ const LeadDetails = () => {
                 variant={lead.status === status ? 'default' : 'outline'}
                 className={`${
                   lead.status === status
-                    ? 'bg-purple-600 text-white'
-                    : 'hover:bg-purple-50 hover:border-purple-400'
+                    ? 'bg-medical-600 text-white'
+                    : 'hover:bg-medical-50 hover:border-medical-400'
                 }`}
               >
                 {getStatusBadge(status)}
@@ -601,7 +601,7 @@ const LeadDetails = () => {
                   onClick={() => setSelectedTab(tab)}
                   className={`px-6 py-4 font-semibold transition-colors whitespace-nowrap ${
                     selectedTab === tab
-                      ? 'bg-purple-50 text-purple-700 border-b-4 border-purple-600'
+                      ? 'bg-medical-50 text-medical-700 border-b-4 border-medical-600'
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >

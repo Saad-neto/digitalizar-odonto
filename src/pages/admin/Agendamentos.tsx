@@ -81,7 +81,7 @@ const Agendamentos = () => {
     const styles = {
       agendado: 'bg-blue-100 text-blue-800',
       confirmado: 'bg-green-100 text-green-800',
-      realizado: 'bg-purple-100 text-purple-800',
+      realizado: 'bg-medical-100 text-medical-800',
       cancelado: 'bg-red-100 text-red-800',
       remarcado: 'bg-orange-100 text-orange-800',
     };
@@ -148,9 +148,9 @@ const Agendamentos = () => {
             <h3 className="text-green-600 text-sm font-semibold mb-1">Confirmados</h3>
             <p className="text-3xl font-bold text-green-600">{stats.confirmados}</p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-400">
-            <h3 className="text-purple-600 text-sm font-semibold mb-1">Realizados</h3>
-            <p className="text-3xl font-bold text-purple-600">{stats.realizados}</p>
+          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-medical-400">
+            <h3 className="text-medical-600 text-sm font-semibold mb-1">Realizados</h3>
+            <p className="text-3xl font-bold text-medical-600">{stats.realizados}</p>
           </div>
           <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-400">
             <h3 className="text-red-600 text-sm font-semibold mb-1">Cancelados</h3>
@@ -172,7 +172,7 @@ const Agendamentos = () => {
                 placeholder="Buscar por nome, email, telefone..."
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent"
               />
             </div>
 
@@ -185,7 +185,7 @@ const Agendamentos = () => {
               <select
                 value={filtroStatus}
                 onChange={(e) => setFiltroStatus(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent"
               >
                 <option value="">Todos os status</option>
                 <option value="agendado">Agendados</option>
@@ -200,7 +200,7 @@ const Agendamentos = () => {
         {/* Agendamentos List */}
         {loading ? (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Carregando agendamentos...</p>
           </div>
         ) : agendamentosFiltrados.length === 0 ? (
@@ -226,7 +226,7 @@ const Agendamentos = () => {
                         {agendamento.nome}
                       </h3>
                       {getStatusBadge(agendamento.status)}
-                      <span className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-semibold">
+                      <span className="px-3 py-1 bg-medical-50 text-medical-700 rounded-full text-xs font-semibold">
                         {getTipoLabel(agendamento.tipo)}
                       </span>
                     </div>
@@ -321,7 +321,7 @@ const Agendamentos = () => {
                       <Button
                         size="sm"
                         onClick={() => handleStatusChange(agendamento.id, 'realizado')}
-                        className="gap-2 bg-purple-600 hover:bg-purple-700"
+                        className="gap-2 bg-medical-600 hover:bg-medical-700"
                       >
                         <CheckCircle size={16} />
                         Realizado

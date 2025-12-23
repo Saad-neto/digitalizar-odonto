@@ -1,4 +1,4 @@
-import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Index from "../pages/Index";
 import IndexNew from "../pages/IndexNew";
@@ -16,8 +16,18 @@ import LeadDetails from "../pages/admin/LeadDetails";
 import Reports from "../pages/admin/Reports";
 import Agendamentos from "../pages/admin/Agendamentos";
 import Configuracoes from "../pages/admin/Configuracoes";
+import BlogPosts from "../pages/admin/BlogPosts";
+import BlogPostEditor from "../pages/admin/BlogPostEditor";
+import BlogCategories from "../pages/admin/BlogCategories";
+import BlogTags from "../pages/admin/BlogTags";
 import PrivateRoute from "../components/admin/PrivateRoute";
 import { getRouterType } from "../utils/router";
+
+// Redirect component for routes with params
+const LeadRedirect = () => {
+  const { id } = useParams();
+  return <Navigate to={`/admin/leads/${id}`} replace />;
+};
 
 const RouterProvider = () => {
   const [routerType, setRouterType] = useState<'browser' | 'hash'>('browser');
@@ -52,12 +62,27 @@ const RouterProvider = () => {
 
       {/* Admin Routes */}
       <Route path="/admin/login" element={<Login />} />
-      <Route path="/admin/dashboard" element={<PrivateRoute><DashboardOverview /></PrivateRoute>} />
-      <Route path="/admin/leads" element={<PrivateRoute><Leads /></PrivateRoute>} />
-      <Route path="/admin/leads/:id" element={<PrivateRoute><LeadDetails /></PrivateRoute>} />
-      <Route path="/admin/agendamentos" element={<PrivateRoute><Agendamentos /></PrivateRoute>} />
-      <Route path="/admin/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
-      <Route path="/admin/configuracoes" element={<PrivateRoute><Configuracoes /></PrivateRoute>} />
+      <Route path="/admin/dashboard" element={<DashboardOverview />} />
+      <Route path="/admin/leads" element={<Leads />} />
+      <Route path="/admin/leads/:id" element={<LeadDetails />} />
+      <Route path="/admin/agendamentos" element={<Agendamentos />} />
+      <Route path="/admin/reports" element={<Reports />} />
+      <Route path="/admin/configuracoes" element={<Configuracoes />} />
+
+      {/* Blog Admin Routes */}
+      <Route path="/admin/blog" element={<BlogPosts />} />
+      <Route path="/admin/blog/novo" element={<BlogPostEditor />} />
+      <Route path="/admin/blog/editar/:id" element={<BlogPostEditor />} />
+      <Route path="/admin/blog/categorias" element={<BlogCategories />} />
+      <Route path="/admin/blog/tags" element={<BlogTags />} />
+
+      {/* Redirect old routes without /admin prefix to /admin/* */}
+      <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="/leads" element={<Navigate to="/admin/leads" replace />} />
+      <Route path="/leads/:id" element={<LeadRedirect />} />
+      <Route path="/agendamentos" element={<Navigate to="/admin/agendamentos" replace />} />
+      <Route path="/reports" element={<Navigate to="/admin/reports" replace />} />
+      <Route path="/configuracoes" element={<Navigate to="/admin/configuracoes" replace />} />
 
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />

@@ -24,7 +24,7 @@ interface KanbanBoardProps {
 const columns: { id: Lead['status']; title: string; color: string; icon: string }[] = [
   { id: 'novo', title: 'Novo', color: 'bg-green-500', icon: '🆕' },
   { id: 'em_producao', title: 'Em Produção', color: 'bg-yellow-500', icon: '🔨' },
-  { id: 'aguardando_aprovacao', title: 'Aguardando Aprovação', color: 'bg-purple-500', icon: '👀' },
+  { id: 'aguardando_aprovacao', title: 'Aguardando Aprovação', color: 'bg-medical-500', icon: '👀' },
   { id: 'aprovado_pagamento', title: 'Aprovado e Pago', color: 'bg-blue-500', icon: '💰' },
   { id: 'em_ajustes', title: 'Em Ajustes', color: 'bg-orange-500', icon: '🔧' },
   { id: 'aprovacao_final', title: 'Aprovação Final', color: 'bg-pink-500', icon: '✨' },
@@ -161,7 +161,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ leads, onLeadClick, onRefresh
       {updating && (
         <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 shadow-xl">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Atualizando status...</p>
           </div>
         </div>

@@ -82,7 +82,7 @@ const KanbanCard: React.FC<KanbanCardProps> = ({ lead, onClick }) => {
           </span>
         </div>
 
-        <div className="text-xs font-bold text-purple-600">
+        <div className="text-xs font-bold text-medical-600">
           R$ {(lead.valor_total / 100).toFixed(0)}
         </div>
       </div>

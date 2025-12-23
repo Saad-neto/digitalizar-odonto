@@ -181,7 +181,7 @@ const Configuracoes = () => {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600"></div>
         </div>
       </AdminLayout>
     );
@@ -203,7 +203,7 @@ const Configuracoes = () => {
         {/* Disponibilidade por Dia */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <Calendar className="text-purple-600" size={24} />
+            <Calendar className="text-medical-600" size={24} />
             Disponibilidade por Dia da Semana
           </h2>
 
@@ -252,7 +252,7 @@ const Configuracoes = () => {
                           }`}
                         >
                           <div className="flex items-center gap-2">
-                            <Clock size={16} className="text-purple-600" />
+                            <Clock size={16} className="text-medical-600" />
                             <span className="text-sm font-medium">
                               {horario.horario_inicio} - {horario.horario_fim}
                             </span>
@@ -286,7 +286,7 @@ const Configuracoes = () => {
                     size="sm"
                     onClick={() => adicionarHorario(dia.id)}
                     variant="outline"
-                    className="w-full text-purple-600 border-purple-300 hover:bg-purple-50"
+                    className="w-full text-medical-600 border-medical-300 hover:bg-medical-50"
                   >
                     <Plus size={16} className="mr-2" />
                     Adicionar Horário

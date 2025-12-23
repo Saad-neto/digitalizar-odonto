@@ -119,7 +119,7 @@ const Reports = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Carregando relatórios...</p>
         </div>
       </div>
@@ -135,10 +135,10 @@ const Reports = () => {
       </div>
         {/* KPIs Principais */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl border-2 border-purple-200 p-6 shadow-sm">
+          <div className="bg-white rounded-xl border-2 border-medical-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm font-medium text-gray-600">Total de Leads</p>
-              <Users className="w-5 h-5 text-purple-600" />
+              <Users className="w-5 h-5 text-medical-600" />
             </div>
             <p className="text-3xl font-bold text-gray-900">{totalLeads}</p>
             <div className="flex items-center mt-2 text-sm text-green-600">

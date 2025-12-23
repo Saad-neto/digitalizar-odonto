@@ -36,18 +36,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-medical-50 via-white to-medical-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo/Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-2">
             Sites Odonto 24H
           </h1>
           <p className="text-gray-600">Painel Administrativo</p>
         </div>
 
         {/* Card de Login */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-purple-100">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-medical-100">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Entrar</h2>
 
           {error && (
@@ -68,7 +68,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
                 required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
               />
             </div>
 
@@ -82,14 +82,14 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
               />
             </div>
 
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-6 rounded-xl font-semibold text-lg transition-all shadow-lg hover:shadow-xl disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-medical-600 to-medical-700 hover:from-medical-700 hover:to-medical-800 text-white py-6 rounded-xl font-semibold text-lg transition-all shadow-lg hover:shadow-xl disabled:opacity-50"
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
@@ -98,7 +98,7 @@ const Login = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => navigate('/')}
-              className="text-purple-600 hover:text-purple-700 text-sm font-medium transition-colors"
+              className="text-medical-600 hover:text-medical-700 text-sm font-medium transition-colors"
             >
               ← Voltar para o site
             </button>

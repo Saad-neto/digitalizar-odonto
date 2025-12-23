@@ -35,7 +35,7 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ id, title, color, icon, cou
         <div
           ref={setNodeRef}
           className={`flex-1 p-4 overflow-y-auto transition-colors ${
-            isOver ? 'bg-purple-50 border-2 border-dashed border-purple-400' : ''
+            isOver ? 'bg-medical-50 border-2 border-dashed border-medical-400' : ''
           }`}
           style={{ minHeight: '500px', maxHeight: 'calc(100vh - 300px)' }}
         >

@@ -80,7 +80,7 @@ const DashboardOverview = () => {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600"></div>
         </div>
       </AdminLayout>
     );
@@ -105,7 +105,7 @@ const DashboardOverview = () => {
           <Button
             onClick={() => navigate('/admin/leads')}
             variant="outline"
-            className="text-purple-600 hover:text-purple-700"
+            className="text-medical-600 hover:text-medical-700"
           >
             Ver todos os leads
             <ArrowRight className="ml-2" size={16} />
@@ -135,7 +135,7 @@ const DashboardOverview = () => {
             <div className="text-sm opacity-90">Em produção/ajustes</div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+          <div className="bg-gradient-to-br from-medical-500 to-medical-600 rounded-xl p-6 text-white shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <AlertCircle size={24} className="opacity-80" />
               <div className="bg-white/20 rounded-full px-3 py-1 text-xs">
@@ -168,7 +168,7 @@ const DashboardOverview = () => {
           <Button
             onClick={() => navigate('/admin/agendamentos')}
             variant="outline"
-            className="text-purple-600 hover:text-purple-700"
+            className="text-medical-600 hover:text-medical-700"
           >
             Ver todos os agendamentos
             <ArrowRight className="ml-2" size={16} />
@@ -219,10 +219,10 @@ const DashboardOverview = () => {
             <div className="text-sm text-gray-500">A confirmar</div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 border-2 border-purple-200 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-xl p-6 border-2 border-medical-200 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3 mb-3">
-              <div className="bg-purple-100 rounded-lg p-2">
-                <CheckCircle size={24} className="text-purple-600" />
+              <div className="bg-medical-100 rounded-lg p-2">
+                <CheckCircle size={24} className="text-medical-600" />
               </div>
               <div className="text-sm font-semibold text-gray-600">
                 Confirmados
@@ -239,7 +239,7 @@ const DashboardOverview = () => {
       {/* Próximas Reuniões */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-          <Calendar className="text-purple-600" size={24} />
+          <Calendar className="text-medical-600" size={24} />
           Próximas Reuniões
         </h2>
 
@@ -263,7 +263,7 @@ const DashboardOverview = () => {
                   key={agendamento.id}
                   className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all hover:shadow-md ${
                     hoje
-                      ? 'border-purple-300 bg-purple-50'
+                      ? 'border-medical-300 bg-medical-50'
                       : 'border-gray-200 bg-gray-50'
                   }`}
                 >
@@ -271,7 +271,7 @@ const DashboardOverview = () => {
                     <div
                       className={`w-16 h-16 rounded-lg flex flex-col items-center justify-center ${
                         hoje
-                          ? 'bg-purple-600 text-white'
+                          ? 'bg-medical-600 text-white'
                           : 'bg-white border-2 border-gray-300 text-gray-700'
                       }`}
                     >
@@ -291,7 +291,7 @@ const DashboardOverview = () => {
                           {agendamento.nome}
                         </h3>
                         {hoje && (
-                          <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">
+                          <span className="bg-medical-600 text-white text-xs px-2 py-1 rounded-full">
                             Hoje
                           </span>
                         )}

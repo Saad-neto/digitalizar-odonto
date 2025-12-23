@@ -105,7 +105,7 @@ const Leads = () => {
     const badges = {
       novo: { color: 'bg-green-100 text-green-800 border-green-200', icon: '🆕', label: 'Novo' },
       em_producao: { color: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: '🔨', label: 'Em Produção' },
-      aguardando_aprovacao: { color: 'bg-purple-100 text-purple-800 border-purple-200', icon: '👀', label: 'Aguardando Aprovação' },
+      aguardando_aprovacao: { color: 'bg-medical-100 text-medical-800 border-medical-200', icon: '👀', label: 'Aguardando Aprovação' },
       aprovado_pagamento: { color: 'bg-blue-100 text-blue-800 border-blue-200', icon: '💰', label: 'Aprovado e Pago' },
       em_ajustes: { color: 'bg-orange-100 text-orange-800 border-orange-200', icon: '🔧', label: 'Em Ajustes' },
       aprovacao_final: { color: 'bg-pink-100 text-pink-800 border-pink-200', icon: '✨', label: 'Aprovação Final' },
@@ -213,7 +213,7 @@ const Leads = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border-2 border-purple-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-xl border-2 border-medical-200 p-6 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Mês</p>
@@ -221,8 +221,8 @@ const Leads = () => {
                   R$ {metrics.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </p>
               </div>
-              <div className="bg-purple-100 p-3 rounded-lg">
-                <DollarSign className="w-6 h-6 text-purple-600" />
+              <div className="bg-medical-100 p-3 rounded-lg">
+                <DollarSign className="w-6 h-6 text-medical-600" />
               </div>
             </div>
           </div>
@@ -239,7 +239,7 @@ const Leads = () => {
                 placeholder="Buscar por nome, email, telefone ou clínica..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
               />
             </div>
 
@@ -252,7 +252,7 @@ const Leads = () => {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all bg-white text-sm"
+                    className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all bg-white text-sm"
                   >
                     <option value="all">Todos os Status</option>
                     <option value="novo">Novo</option>
@@ -270,7 +270,7 @@ const Leads = () => {
                   <select
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value as DateFilter)}
-                    className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all bg-white text-sm"
+                    className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all bg-white text-sm"
                   >
                     <option value="all">Todas as Datas</option>
                     <option value="today">Hoje</option>
@@ -296,7 +296,7 @@ const Leads = () => {
                     onClick={() => setViewMode('list')}
                     className={`px-4 py-2 transition-colors ${
                       viewMode === 'list'
-                        ? 'bg-purple-600 text-white'
+                        ? 'bg-medical-600 text-white'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                     title="Visualização em Lista"
@@ -307,7 +307,7 @@ const Leads = () => {
                     onClick={() => setViewMode('kanban')}
                     className={`px-4 py-2 transition-colors ${
                       viewMode === 'kanban'
-                        ? 'bg-purple-600 text-white'
+                        ? 'bg-medical-600 text-white'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                     title="Visualização Kanban"
@@ -323,7 +323,7 @@ const Leads = () => {
         {/* Conteúdo - Lista ou Kanban */}
         {loading ? (
           <div className="p-12 text-center bg-white rounded-xl border-2 border-gray-200">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-medical-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Carregando leads...</p>
           </div>
         ) : filteredLeads.length === 0 ? (
@@ -374,7 +374,7 @@ const Leads = () => {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                      className="text-medical-600 hover:text-medical-700 hover:bg-medical-50"
                     >
                       <Eye className="w-4 h-4 mr-2" />
                       Ver Detalhes

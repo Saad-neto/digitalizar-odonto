@@ -71,7 +71,7 @@ const Notes: React.FC<NotesProps> = ({ leadId }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-medical-600"></div>
       </div>
     );
   }
@@ -89,7 +89,7 @@ const Notes: React.FC<NotesProps> = ({ leadId }) => {
           onChange={(e) => setNewNote(e.target.value)}
           placeholder="Digite sua nota aqui..."
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-medical-500 focus:border-transparent"
           disabled={submitting}
         />
 
@@ -104,7 +104,7 @@ const Notes: React.FC<NotesProps> = ({ leadId }) => {
           <Button
             type="submit"
             disabled={submitting || !newNote.trim()}
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-medical-600 hover:bg-medical-700"
           >
             {submitting ? (
               <>
