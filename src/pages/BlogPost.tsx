@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useEffect } from 'react';
+import { SEO, generateBlogPostStructuredData } from '@/components/blog/SEO';
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -87,6 +88,23 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={post.meta_title || post.title}
+        description={
+          post.meta_description || post.excerpt || post.title
+        }
+        image={post.featured_image}
+        url={`/blog/${post.slug}`}
+        type="article"
+        article={{
+          publishedTime: post.published_at || post.created_at,
+          modifiedTime: post.updated_at,
+          author: post.author_name,
+          section: post.category?.name,
+          tags: post.tags?.map((t: any) => t.tag?.name).filter(Boolean),
+        }}
+        structuredData={generateBlogPostStructuredData(post)}
+      />
       {/* Header */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">

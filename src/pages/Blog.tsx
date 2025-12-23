@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { Search, Calendar, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { SEO, generateBlogListStructuredData } from '@/components/blog/SEO';
 
 export default function Blog() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,8 +55,25 @@ export default function Blog() {
 
   const selectedCategory = categories.find((c: any) => c.slug === categorySlug);
 
+  const pageTitle = selectedCategory
+    ? `${selectedCategory.name} - Blog`
+    : searchQuery
+    ? `Busca: ${searchQuery} - Blog`
+    : 'Blog';
+
+  const pageDescription = selectedCategory
+    ? selectedCategory.description ||
+      `Artigos sobre ${selectedCategory.name.toLowerCase()}`
+    : 'Dicas, tendências e insights sobre marketing digital, gestão de clínicas odontológicas e tecnologia';
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={pageTitle}
+        description={pageDescription}
+        url="/blog"
+        structuredData={generateBlogListStructuredData()}
+      />
       {/* Header */}
       <div className="bg-primary text-white py-16">
         <div className="container mx-auto px-4">
