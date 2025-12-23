@@ -449,34 +449,36 @@ const BriefingOdonto = () => {
   };
 
   const handleNext = async () => {
-    if (validateCurrentSection()) {
-      // Captura automática de lead após página 1 (seção 0)
-      if (currentSection === 0) {
-        // Verificar se já existe um lead parcial salvo
-        const existingLeadId = localStorage.getItem('partial_lead_id');
+    // VALIDAÇÃO DESABILITADA TEMPORARIAMENTE PARA DESENVOLVIMENTO
+    // if (validateCurrentSection()) {
 
-        if (!existingLeadId) {
-          // Criar lead parcial silenciosamente
-          const partialLead = await createPartialLead({
-            nome: formData.nome,
-            email: formData.email,
-            whatsapp: formData.whatsapp,
-            nome_consultorio: formData.nome_consultorio,
-          });
+    // Captura automática de lead após página 1 (seção 0)
+    if (currentSection === 0) {
+      // Verificar se já existe um lead parcial salvo
+      const existingLeadId = localStorage.getItem('partial_lead_id');
 
-          if (partialLead) {
-            // Salvar leadId no localStorage
-            localStorage.setItem('partial_lead_id', partialLead.id);
-            console.log('✅ Lead parcial capturado:', partialLead.id);
-          }
+      if (!existingLeadId) {
+        // Criar lead parcial silenciosamente
+        const partialLead = await createPartialLead({
+          nome: formData.nome,
+          email: formData.email,
+          whatsapp: formData.whatsapp,
+          nome_consultorio: formData.nome_consultorio,
+        });
+
+        if (partialLead) {
+          // Salvar leadId no localStorage
+          localStorage.setItem('partial_lead_id', partialLead.id);
+          console.log('✅ Lead parcial capturado:', partialLead.id);
         }
       }
-
-      if (currentSection < sections.length - 1) {
-        setCurrentSection(prev => prev + 1);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
     }
+
+    if (currentSection < sections.length - 1) {
+      setCurrentSection(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // }
   };
 
   const handlePrevious = () => {
