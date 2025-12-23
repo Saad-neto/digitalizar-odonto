@@ -14,7 +14,7 @@ interface PostContentProps {
  * Componente para renderizar conteúdo rico do blog (read-only)
  * Usa Tiptap em modo visualização (não-editável)
  */
-export default function PostContent({ content, className = '' }: PostContentProps) {
+export function PostContent({ content, className = '' }: PostContentProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({

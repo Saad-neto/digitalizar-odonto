@@ -43,7 +43,7 @@ interface RichTextEditorProps {
   postId?: string; // Para organizar imagens por post
 }
 
-export default function RichTextEditor({
+export function RichTextEditor({
   content,
   onChange,
   placeholder = 'Escreva seu post aqui...',
