@@ -23,7 +23,16 @@ interface UploadedFile {
 const BriefingOdonto = () => {
   const navigate = useNavigate();
   const [currentSection, setCurrentSection] = useState(0);
-  const [formData, setFormData] = useState<FormData>({});
+  const [formData, setFormData] = useState<FormData>({
+    profissionais: [{
+      nome: '',
+      registro: '',
+      especialidade: '',
+      descricao: '',
+      foto: null,
+      redesSociais: []
+    }]
+  });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [uploadedFiles, setUploadedFiles] = useState<{[key: string]: UploadedFile[]}>({});
   const [loadingCep, setLoadingCep] = useState(false);
@@ -203,12 +212,132 @@ const BriefingOdonto = () => {
     updateFormData(fieldName, fileArray);
   };
 
+  // Funções para gerenciar array de profissionais
+  const updateProfissional = (index: number, field: string, value: any) => {
+    setFormData((prev: any) => {
+      const profissionais = [...(prev.profissionais || [])];
+      profissionais[index] = {
+        ...profissionais[index],
+        [field]: value
+      };
+      return { ...prev, profissionais };
+    });
+
+    // Limpar erro do campo se existir
+    const errorKey = `profissional_${index}_${field}`;
+    if (errors[errorKey]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[errorKey];
+        return newErrors;
+      });
+    }
+  };
+
+  const adicionarProfissional = () => {
+    setFormData((prev: any) => ({
+      ...prev,
+      profissionais: [
+        ...(prev.profissionais || []),
+        {
+          nome: '',
+          registro: '',
+          especialidade: '',
+          descricao: '',
+          foto: null,
+          redesSociais: []
+        }
+      ]
+    }));
+  };
+
+  const removerProfissional = (index: number) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      profissionais: prev.profissionais.filter((_: any, i: number) => i !== index)
+    }));
+
+    // Limpar erros relacionados ao profissional removido
+    setErrors((prev: any) => {
+      const newErrors = { ...prev };
+      Object.keys(newErrors).forEach(key => {
+        if (key.startsWith(`profissional_${index}_`)) {
+          delete newErrors[key];
+        }
+      });
+      return newErrors;
+    });
+  };
+
+  const handleProfissionalFoto = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validação
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor, selecione uma imagem válida');
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      alert('A imagem deve ter no máximo 5MB');
+      return;
+    }
+
+    try {
+      // Comprimir usando função já existente
+      const compressedBase64 = await compressImage(file);
+
+      updateProfissional(index, 'foto', {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        data: compressedBase64
+      });
+    } catch (error) {
+      console.error('Erro ao processar imagem:', error);
+      alert('Erro ao processar imagem. Tente novamente.');
+    }
+  };
+
+  const adicionarRedeSocial = (profIndex: number) => {
+    setFormData((prev: any) => {
+      const profissionais = [...prev.profissionais];
+      profissionais[profIndex].redesSociais = [
+        ...(profissionais[profIndex].redesSociais || []),
+        { tipo: 'instagram', url: '' }
+      ];
+      return { ...prev, profissionais };
+    });
+  };
+
+  const removerRedeSocial = (profIndex: number, redeIndex: number) => {
+    setFormData((prev: any) => {
+      const profissionais = [...prev.profissionais];
+      profissionais[profIndex].redesSociais = profissionais[profIndex].redesSociais.filter(
+        (_: any, i: number) => i !== redeIndex
+      );
+      return { ...prev, profissionais };
+    });
+  };
+
+  const updateRedeSocial = (profIndex: number, redeIndex: number, field: string, value: any) => {
+    setFormData((prev: any) => {
+      const profissionais = [...prev.profissionais];
+      profissionais[profIndex].redesSociais[redeIndex] = {
+        ...profissionais[profIndex].redesSociais[redeIndex],
+        [field]: value
+      };
+      return { ...prev, profissionais };
+    });
+  };
+
   const validateCurrentSection = (): boolean => {
     const newErrors: {[key: string]: string} = {};
 
     switch(currentSection) {
       case 0: // Informações Essenciais
-        if (!formData.tipo_negocio) newErrors.tipo_negocio = 'Selecione o tipo de negócio';
         if (!formData.nome_consultorio || formData.nome_consultorio.length < 3) {
           newErrors.nome_consultorio = 'Nome do consultório é obrigatório (mín. 3 caracteres)';
         }
@@ -231,46 +360,23 @@ const BriefingOdonto = () => {
         break;
 
       case 1: // Profissionais
-        // Validação condicional baseada no tipo de negócio
-        if (formData.tipo_negocio === 'individual' || formData.tipo_negocio === 'parceria') {
-          if (!formData.profissional1_nome) newErrors.profissional1_nome = 'Nome completo é obrigatório';
-          if (!formData.profissional1_apresentacao) newErrors.profissional1_apresentacao = 'Como quer ser apresentado é obrigatório';
-          if (!formData.profissional1_cro) newErrors.profissional1_cro = 'CRO é obrigatório';
-          if (!formData.profissional1_uf) newErrors.profissional1_uf = 'UF é obrigatório';
-          if (!formData.profissional1_especialidade) newErrors.profissional1_especialidade = 'Especialidade é obrigatória';
-          if (!formData.profissional1_formacao) newErrors.profissional1_formacao = 'Formação é obrigatória';
-        }
-        if (formData.tipo_negocio === 'parceria') {
-          if (!formData.profissional2_nome) newErrors.profissional2_nome = 'Nome do 2º profissional é obrigatório';
-          if (!formData.profissional2_apresentacao) newErrors.profissional2_apresentacao = 'Apresentação do 2º profissional é obrigatória';
-          if (!formData.profissional2_cro) newErrors.profissional2_cro = 'CRO do 2º profissional é obrigatório';
-          if (!formData.profissional2_uf) newErrors.profissional2_uf = 'UF do 2º profissional é obrigatória';
-          if (!formData.profissional2_especialidade) newErrors.profissional2_especialidade = 'Especialidade do 2º profissional é obrigatória';
-          if (!formData.profissional2_formacao) newErrors.profissional2_formacao = 'Formação do 2º profissional é obrigatória';
-        }
-        if (formData.tipo_negocio === 'clinica') {
-          if (!formData.diretor_nome) newErrors.diretor_nome = 'Nome do diretor técnico é obrigatório';
-          if (!formData.diretor_cro) newErrors.diretor_cro = 'CRO do diretor é obrigatório';
-          if (!formData.diretor_uf) newErrors.diretor_uf = 'UF do diretor é obrigatória';
-          if (!formData.num_profissionais) newErrors.num_profissionais = 'Número de profissionais é obrigatório';
-
-          // Validação dinâmica para profissionais destacados
-          if (formData.destacar_profissionais === 'sim') {
-            if (!formData.num_profissionais_destacar) {
-              newErrors.num_profissionais_destacar = 'Selecione quantos profissionais quer destacar';
-            } else {
-              const numProf = parseInt(formData.num_profissionais_destacar);
-              for (let i = 1; i <= numProf; i++) {
-                const prefix = `profissional${i}`;
-                if (!formData[`${prefix}_nome`]) newErrors[`${prefix}_nome`] = 'Nome completo é obrigatório';
-                if (!formData[`${prefix}_apresentacao`]) newErrors[`${prefix}_apresentacao`] = 'Como quer ser apresentado é obrigatório';
-                if (!formData[`${prefix}_cro`]) newErrors[`${prefix}_cro`] = 'CRO é obrigatório';
-                if (!formData[`${prefix}_uf`]) newErrors[`${prefix}_uf`] = 'UF é obrigatório';
-                if (!formData[`${prefix}_especialidade`]) newErrors[`${prefix}_especialidade`] = 'Especialidade é obrigatória';
-                if (!formData[`${prefix}_formacao`]) newErrors[`${prefix}_formacao`] = 'Formação é obrigatória';
-              }
+        // Validar array de profissionais
+        if (!formData.profissionais || formData.profissionais.length === 0) {
+          newErrors.profissionais = 'Adicione pelo menos um profissional';
+        } else {
+          formData.profissionais.forEach((prof: any, index: number) => {
+            if (!prof.nome?.trim()) {
+              newErrors[`profissional_${index}_nome`] = 'Digite o nome do profissional';
             }
-          }
+            if (!prof.registro?.trim()) {
+              newErrors[`profissional_${index}_registro`] = 'Digite o número do CRO';
+            }
+            if (!prof.descricao?.trim()) {
+              newErrors[`profissional_${index}_descricao`] = 'Escreva uma mini biografia';
+            } else if (prof.descricao.trim().length < 50) {
+              newErrors[`profissional_${index}_descricao`] = 'A biografia deve ter pelo menos 50 caracteres';
+            }
+          });
         }
         break;
 
@@ -424,50 +530,6 @@ const BriefingOdonto = () => {
             </div>
 
             <div className="space-y-6">
-              {/* Tipo de Negócio */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                  Qual o tipo do seu negócio odontológico? *
-                </label>
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
-                    <input
-                      type="radio"
-                      name="tipo_negocio"
-                      value="individual"
-                      checked={formData.tipo_negocio === 'individual'}
-                      onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
-                      className="w-4 h-4 text-medical-600"
-                    />
-                    <span className="ml-3 text-gray-700">Consultório individual - trabalho sozinho(a)</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
-                    <input
-                      type="radio"
-                      name="tipo_negocio"
-                      value="parceria"
-                      checked={formData.tipo_negocio === 'parceria'}
-                      onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
-                      className="w-4 h-4 text-medical-600"
-                    />
-                    <span className="ml-3 text-gray-700">Consultório em parceria - somos 2 dentistas dividindo o espaço</span>
-                  </label>
-                  <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
-                    <input
-                      type="radio"
-                      name="tipo_negocio"
-                      value="clinica"
-                      checked={formData.tipo_negocio === 'clinica'}
-                      onChange={(e) => updateFormData('tipo_negocio', e.target.value)}
-                      className="w-4 h-4 text-medical-600"
-                    />
-                    <span className="ml-3 text-gray-700">Clínica odontológica - equipe com 3 ou mais profissionais</span>
-                  </label>
-                </div>
-                {errors.tipo_negocio && <p className="text-red-500 text-sm mt-2">{errors.tipo_negocio}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Isso nos ajuda a personalizar o conteúdo do seu site</p>
-              </div>
-
               {/* Nome do Consultório */}
               <div>
                 <label className="block text-sm font-semibold text-neutral-900 mb-3">
@@ -708,9 +770,10 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 1: // PÁGINA 2: Profissionais (Condicional)
+      case 1: // Profissionais
         return (
           <div className="space-y-8">
+            {/* Header */}
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[1].title}
@@ -718,576 +781,195 @@ const BriefingOdonto = () => {
               <p className="text-medical-600/70 text-lg">{sections[1].subtitle}</p>
             </div>
 
-            <div className="space-y-8">
-              {/* Mensagem informativa baseada no tipo */}
-              {formData.tipo_negocio === 'parceria' && (
-                <div className="bg-neutral-50 border-2 border-medical-200 rounded-xl p-4">
-                  <p className="text-neutral-900 text-sm">
-                    Você informou que são <strong>2 dentistas em parceria</strong>. Vamos coletar os dados de cada profissional para mostrar no site.
-                  </p>
-                </div>
-              )}
-              {formData.tipo_negocio === 'clinica' && (
-                <div className="bg-neutral-50 border-2 border-medical-200 rounded-xl p-4">
-                  <p className="text-neutral-900 text-sm">
-                    Sua clínica tem uma <strong>equipe de profissionais</strong>. Vamos coletar os dados do diretor técnico e decidir quais profissionais destacar no site.
-                  </p>
-                </div>
-              )}
-
-              {/* CONSULTÓRIO INDIVIDUAL OU PARCERIA - PROFISSIONAL 1 */}
-              {(formData.tipo_negocio === 'individual' || formData.tipo_negocio === 'parceria') && (
-                <div className="space-y-6">
-                  {formData.tipo_negocio === 'parceria' && (
-                    <div className="border-t-4 border-medical-400 pt-6">
-                      <h3 className="text-xl font-bold text-neutral-900 mb-4">Profissional 1</h3>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Qual seu nome completo? *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Carlos Eduardo Silva"
-                      value={formData.profissional1_nome || ''}
-                      onChange={(e) => updateFormData('profissional1_nome', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional1_nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                      }`}
-                    />
-                    {errors.profissional1_nome && <p className="text-red-500 text-sm mt-2">{errors.profissional1_nome}</p>}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Como gostaria de ser apresentado no site? *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Dr. Carlos Eduardo  OU  Dra. Ana Silva"
-                      value={formData.profissional1_apresentacao || ''}
-                      onChange={(e) => updateFormData('profissional1_apresentacao', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional1_apresentacao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                      }`}
-                    />
-                    {errors.profissional1_apresentacao && <p className="text-red-500 text-sm mt-2">{errors.profissional1_apresentacao}</p>}
-                    <p className="text-medical-600/60 text-xs mt-2">Este nome aparecerá em destaque na seção 'Sobre' do site</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                        CRO *
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="12345"
-                        value={formData.profissional1_cro || ''}
-                        onChange={(e) => updateFormData('profissional1_cro', e.target.value)}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.profissional1_cro ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                        }`}
-                      />
-                      {errors.profissional1_cro && <p className="text-red-500 text-sm mt-2">{errors.profissional1_cro}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                        UF *
-                      </label>
-                      <select
-                        value={formData.profissional1_uf || ''}
-                        onChange={(e) => updateFormData('profissional1_uf', e.target.value)}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.profissional1_uf ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                        }`}
-                      >
-                        <option value="">Selecione</option>
-                        {['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'].map(uf => (
-                          <option key={uf} value={uf}>{uf}</option>
-                        ))}
-                      </select>
-                      {errors.profissional1_uf && <p className="text-red-500 text-sm mt-2">{errors.profissional1_uf}</p>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Qual sua principal especialidade? *
-                    </label>
-                    <select
-                      value={formData.profissional1_especialidade || ''}
-                      onChange={(e) => updateFormData('profissional1_especialidade', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional1_especialidade ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                      }`}
-                    >
-                      <option value="">Selecione...</option>
-                      <option value="clinica_geral">Clínica Geral</option>
-                      <option value="implantodontia">Implantodontia</option>
-                      <option value="ortodontia">Ortodontia</option>
-                      <option value="endodontia">Endodontia (Canal)</option>
-                      <option value="periodontia">Periodontia (Gengiva)</option>
-                      <option value="odontopediatria">Odontopediatria</option>
-                      <option value="protese">Prótese Dentária</option>
-                      <option value="bucomaxilo">Cirurgia Bucomaxilofacial</option>
-                      <option value="estetica">Odontologia Estética</option>
-                      <option value="harmonizacao">Harmonização Orofacial</option>
-                      <option value="outras">Outras</option>
-                    </select>
-                    {errors.profissional1_especialidade && <p className="text-red-500 text-sm mt-2">{errors.profissional1_especialidade}</p>}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Resumo da sua formação *
-                    </label>
-                    <textarea
-                      placeholder="Ex: Graduado pela USP (2010), Especialista em Implantodontia pela APCD (2015)"
-                      value={formData.profissional1_formacao || ''}
-                      onChange={(e) => updateFormData('profissional1_formacao', e.target.value)}
-                      maxLength={200}
-                      rows={3}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional1_formacao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                      }`}
-                    />
-                    {errors.profissional1_formacao && <p className="text-red-500 text-sm mt-2">{errors.profissional1_formacao}</p>}
-                    <p className="text-medical-600/60 text-xs mt-2">Graduação + principal especialização. Seja breve. (máx. 200 caracteres)</p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Breve apresentação pessoal (opcional)
-                    </label>
-                    <textarea
-                      placeholder="Ex: Com mais de 15 anos de experiência, dedico-me a oferecer tratamentos odontológicos de excelência..."
-                      value={formData.profissional1_bio || ''}
-                      onChange={(e) => updateFormData('profissional1_bio', e.target.value)}
-                      maxLength={400}
-                      rows={4}
-                      className="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all border-medical-200 focus:border-medical-400"
-                    />
-                    <p className="text-medical-600/60 text-xs mt-2">Opcional, mas recomendado. Conte um pouco sobre você e sua missão. (máx. 400 caracteres)</p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Sua foto profissional *
-                    </label>
-                    <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 text-center hover:border-medical-400 transition-all">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileUpload('profissional1_foto', e.target.files)}
-                        className="hidden"
-                        id="profissional1_foto"
-                      />
-                      <label htmlFor="profissional1_foto" className="cursor-pointer">
-                        <Upload className="w-8 h-8 mx-auto mb-2 text-medical-400" />
-                        <p className="text-neutral-900 font-medium">Clique para fazer upload</p>
-                        <p className="text-medical-600/60 text-xs mt-1">JPG ou PNG (máx. 5MB)</p>
-                      </label>
-                      {uploadedFiles.profissional1_foto && uploadedFiles.profissional1_foto.length > 0 && (
-                        <div className="mt-3 text-sm text-green-600">
-                          ✓ {uploadedFiles.profissional1_foto[0].name}
-                        </div>
-                      )}
-                    </div>
-                    <div className="mt-2 text-xs text-medical-600/70 space-y-1">
-                      <p>✅ Foto de boa qualidade (não use selfie)</p>
-                      <p>✅ Fundo neutro ou do consultório</p>
-                      <p>✅ Roupa profissional (jaleco de preferência)</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* PARCERIA - PROFISSIONAL 2 */}
-              {formData.tipo_negocio === 'parceria' && (
-                <div className="space-y-6 border-t-4 border-medical-400 pt-8">
-                  <h3 className="text-xl font-bold text-neutral-900 mb-4">Profissional 2</h3>
-
-                  {/* Campos idênticos ao Profissional 1, mas com profissional2_* */}
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Nome completo do 2º profissional *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ana Paula Santos"
-                      value={formData.profissional2_nome || ''}
-                      onChange={(e) => updateFormData('profissional2_nome', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional2_nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                      }`}
-                    />
-                    {errors.profissional2_nome && <p className="text-red-500 text-sm mt-2">{errors.profissional2_nome}</p>}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Como gostaria de ser apresentado(a) no site? *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Dra. Ana Paula"
-                      value={formData.profissional2_apresentacao || ''}
-                      onChange={(e) => updateFormData('profissional2_apresentacao', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional2_apresentacao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                      }`}
-                    />
-                    {errors.profissional2_apresentacao && <p className="text-red-500 text-sm mt-2">{errors.profissional2_apresentacao}</p>}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                        CRO *
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="54321"
-                        value={formData.profissional2_cro || ''}
-                        onChange={(e) => updateFormData('profissional2_cro', e.target.value)}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.profissional2_cro ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                        }`}
-                      />
-                      {errors.profissional2_cro && <p className="text-red-500 text-sm mt-2">{errors.profissional2_cro}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                        UF *
-                      </label>
-                      <select
-                        value={formData.profissional2_uf || ''}
-                        onChange={(e) => updateFormData('profissional2_uf', e.target.value)}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.profissional2_uf ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                        }`}
-                      >
-                        <option value="">Selecione</option>
-                        {['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'].map(uf => (
-                          <option key={uf} value={uf}>{uf}</option>
-                        ))}
-                      </select>
-                      {errors.profissional2_uf && <p className="text-red-500 text-sm mt-2">{errors.profissional2_uf}</p>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Especialidade principal *
-                    </label>
-                    <select
-                      value={formData.profissional2_especialidade || ''}
-                      onChange={(e) => updateFormData('profissional2_especialidade', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional2_especialidade ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                      }`}
-                    >
-                      <option value="">Selecione...</option>
-                      <option value="clinica_geral">Clínica Geral</option>
-                      <option value="implantodontia">Implantodontia</option>
-                      <option value="ortodontia">Ortodontia</option>
-                      <option value="endodontia">Endodontia (Canal)</option>
-                      <option value="periodontia">Periodontia (Gengiva)</option>
-                      <option value="odontopediatria">Odontopediatria</option>
-                      <option value="protese">Prótese Dentária</option>
-                      <option value="bucomaxilo">Cirurgia Bucomaxilofacial</option>
-                      <option value="estetica">Odontologia Estética</option>
-                      <option value="harmonizacao">Harmonização Orofacial</option>
-                      <option value="outras">Outras</option>
-                    </select>
-                    {errors.profissional2_especialidade && <p className="text-red-500 text-sm mt-2">{errors.profissional2_especialidade}</p>}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Resumo da formação *
-                    </label>
-                    <textarea
-                      placeholder="Ex: Graduada pela UFRJ (2012), Especialista em Ortodontia..."
-                      value={formData.profissional2_formacao || ''}
-                      onChange={(e) => updateFormData('profissional2_formacao', e.target.value)}
-                      maxLength={200}
-                      rows={3}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                        errors.profissional2_formacao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                      }`}
-                    />
-                    {errors.profissional2_formacao && <p className="text-red-500 text-sm mt-2">{errors.profissional2_formacao}</p>}
-                    <p className="text-medical-600/60 text-xs mt-2">máx. 200 caracteres</p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                      Foto profissional *
-                    </label>
-                    <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 text-center hover:border-medical-400 transition-all">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileUpload('profissional2_foto', e.target.files)}
-                        className="hidden"
-                        id="profissional2_foto"
-                      />
-                      <label htmlFor="profissional2_foto" className="cursor-pointer">
-                        <Upload className="w-8 h-8 mx-auto mb-2 text-medical-400" />
-                        <p className="text-neutral-900 font-medium">Clique para fazer upload</p>
-                        <p className="text-medical-600/60 text-xs mt-1">JPG ou PNG (máx. 5MB)</p>
-                      </label>
-                      {uploadedFiles.profissional2_foto && uploadedFiles.profissional2_foto.length > 0 && (
-                        <div className="mt-3 text-sm text-green-600">
-                          ✓ {uploadedFiles.profissional2_foto[0].name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* CLÍNICA - DIRETOR TÉCNICO + OPÇÃO DE DESTACAR */}
-              {formData.tipo_negocio === 'clinica' && (
-                <div className="space-y-8">
-                  <div className="space-y-6">
-                    <h3 className="text-xl font-bold text-neutral-900">Diretor Técnico (Obrigatório por lei)</h3>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                          Nome completo *
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Dr. Roberto Silva"
-                          value={formData.diretor_nome || ''}
-                          onChange={(e) => updateFormData('diretor_nome', e.target.value)}
-                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                            errors.diretor_nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                          }`}
-                        />
-                        {errors.diretor_nome && <p className="text-red-500 text-sm mt-2">{errors.diretor_nome}</p>}
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                            CRO *
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="12345"
-                            value={formData.diretor_cro || ''}
-                            onChange={(e) => updateFormData('diretor_cro', e.target.value)}
-                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                              errors.diretor_cro ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                            }`}
-                          />
-                          {errors.diretor_cro && <p className="text-red-500 text-sm mt-2">{errors.diretor_cro}</p>}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                            UF *
-                          </label>
-                          <select
-                            value={formData.diretor_uf || ''}
-                            onChange={(e) => updateFormData('diretor_uf', e.target.value)}
-                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                              errors.diretor_uf ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                            }`}
-                          >
-                            <option value="">UF</option>
-                            {['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'].map(uf => (
-                              <option key={uf} value={uf}>{uf}</option>
-                            ))}
-                          </select>
-                          {errors.diretor_uf && <p className="text-red-500 text-sm mt-2">{errors.diretor_uf}</p>}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                        Quantos profissionais trabalham na clínica? *
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="Ex: 8"
-                        min="3"
-                        value={formData.num_profissionais || ''}
-                        onChange={(e) => updateFormData('num_profissionais', parseInt(e.target.value))}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                          errors.num_profissionais ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                        }`}
-                      />
-                      {errors.num_profissionais && <p className="text-red-500 text-sm mt-2">{errors.num_profissionais}</p>}
-                      <p className="text-medical-600/60 text-xs mt-2">Mostraremos no site: 'Equipe com X especialistas'</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <label className="block text-sm font-semibold text-neutral-900">
-                      Deseja destacar alguns profissionais no site?
-                    </label>
-                    <div className="space-y-3">
-                      <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
-                        <input
-                          type="radio"
-                          name="destacar_profissionais"
-                          value="nao"
-                          checked={formData.destacar_profissionais === 'nao'}
-                          onChange={(e) => updateFormData('destacar_profissionais', e.target.value)}
-                          className="w-4 h-4 text-medical-600"
-                        />
-                        <span className="ml-3 text-gray-700">Não, apenas mencionar que temos equipe especializada</span>
-                      </label>
-                      <label className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all hover:border-medical-400 hover:bg-neutral-50/50">
-                        <input
-                          type="radio"
-                          name="destacar_profissionais"
-                          value="sim"
-                          checked={formData.destacar_profissionais === 'sim'}
-                          onChange={(e) => updateFormData('destacar_profissionais', e.target.value)}
-                          className="w-4 h-4 text-medical-600"
-                        />
-                        <span className="ml-3 text-gray-700">Sim, quero destacar profissionais específicos</span>
-                      </label>
-                    </div>
-                    <p className="text-medical-600/60 text-xs">Destacar profissionais principais aumenta a confiança. Recomendamos mostrar pelo menos 2-3.</p>
-                  </div>
-
-                  {formData.destacar_profissionais === 'sim' && (
-                    <div className="space-y-6">
-                      {/* Checkbox: Diretor é um dos destacados */}
-                      <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-4">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.diretor_destacado === true}
-                            onChange={(e) => {
-                              updateFormData('diretor_destacado', e.target.checked);
-                              // Se marcar, pré-preencher Profissional 1 com dados do diretor
-                              if (e.target.checked) {
-                                updateFormData('profissional1_nome', formData.diretor_nome);
-                                updateFormData('profissional1_cro', formData.diretor_cro);
-                                updateFormData('profissional1_uf', formData.diretor_uf);
-                              } else {
-                                // Se desmarcar, limpar Profissional 1
-                                updateFormData('profissional1_nome', '');
-                                updateFormData('profissional1_cro', '');
-                                updateFormData('profissional1_uf', '');
-                                updateFormData('profissional1_apresentacao', '');
-                                updateFormData('profissional1_especialidade', '');
-                                updateFormData('profissional1_formacao', '');
-                                updateFormData('profissional1_biografia', '');
-                              }
-                            }}
-                            className="mt-1 w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                          />
-                          <div>
-                            <p className="text-blue-900 font-semibold text-sm">
-                              ✅ O diretor técnico é um dos profissionais destacados
-                            </p>
-                            <p className="text-blue-700 text-xs mt-1">
-                              Marque esta opção se o diretor ({formData.diretor_nome || 'Dr. Roberto Silva'}) for aparecer com foto e biografia no site.
-                              Seus dados já cadastrados serão reaproveitados!
-                            </p>
-                          </div>
-                        </label>
-                      </div>
-
-                      <div className="bg-neutral-50 border-2 border-medical-300 rounded-xl p-4">
-                        <p className="text-neutral-900 text-sm font-semibold mb-2">
-                          Quantos profissionais você quer destacar no site? *
-                        </p>
-                        <select
-                          value={formData.num_profissionais_destacar || ''}
-                          onChange={(e) => updateFormData('num_profissionais_destacar', e.target.value)}
-                          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                            errors.num_profissionais_destacar ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                          }`}
-                        >
-                          <option value="">Selecione...</option>
-                          <option value="2">2 profissionais</option>
-                          <option value="3">3 profissionais</option>
-                          <option value="4">4 profissionais</option>
-                          <option value="5">5 profissionais</option>
-                        </select>
-                        {errors.num_profissionais_destacar && (
-                          <p className="text-red-500 text-sm mt-2">{errors.num_profissionais_destacar}</p>
-                        )}
-                        <p className="text-medical-600/70 text-xs mt-2">
-                          {formData.diretor_destacado
-                            ? '💡 O diretor já conta como 1 profissional'
-                            : 'Recomendamos destacar 2-3 profissionais principais para não sobrecarregar o site'}
-                        </p>
-                      </div>
-
-                      {formData.num_profissionais_destacar && (
-                        <div className="space-y-6">
-                          {/* Profissional 1 (pode ser o diretor) */}
-                          <ProfessionalForm
-                            key={1}
-                            index={1}
-                            data={{
-                              nome: formData.profissional1_nome,
-                              apresentacao: formData.profissional1_apresentacao,
-                              cro: formData.profissional1_cro,
-                              uf: formData.profissional1_uf,
-                              especialidade: formData.profissional1_especialidade,
-                              formacao: formData.profissional1_formacao,
-                              biografia: formData.profissional1_biografia
-                            }}
-                            foto={uploadedFiles[`foto_profissional_1`]}
-                            errors={errors}
-                            onChange={(field, value) => updateFormData(field, value)}
-                            onFileUpload={(files) => handleFileUpload(`foto_profissional_1`, files)}
-                            onRemoveFile={() => setUploadedFiles(prev => {
-                              const newFiles = { ...prev };
-                              delete newFiles[`foto_profissional_1`];
-                              return newFiles;
-                            })}
-                            isDiretor={formData.diretor_destacado === true}
-                          />
-
-                          {/* Demais profissionais */}
-                          {Array.from({
-                            length: parseInt(formData.num_profissionais_destacar) - 1
-                          }, (_, i) => i + 2).map((index) => (
-                            <ProfessionalForm
-                              key={index}
-                              index={index}
-                              data={{
-                                nome: formData[`profissional${index}_nome`],
-                                apresentacao: formData[`profissional${index}_apresentacao`],
-                                cro: formData[`profissional${index}_cro`],
-                                uf: formData[`profissional${index}_uf`],
-                                especialidade: formData[`profissional${index}_especialidade`],
-                                formacao: formData[`profissional${index}_formacao`],
-                                biografia: formData[`profissional${index}_biografia`]
-                              }}
-                              foto={uploadedFiles[`foto_profissional_${index}`]}
-                              errors={errors}
-                              onChange={(field, value) => updateFormData(field, value)}
-                              onFileUpload={(files) => handleFileUpload(`foto_profissional_${index}`, files)}
-                              onRemoveFile={() => setUploadedFiles(prev => {
-                                const newFiles = { ...prev };
-                                delete newFiles[`foto_profissional_${index}`];
-                                return newFiles;
-                              })}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
+            {/* Helper */}
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+              <p className="text-sm text-gray-700">
+                💡 Adicione os dentistas/profissionais que aparecerão na página "Nossa Equipe" do site. Você pode adicionar quantos quiser!
+              </p>
             </div>
+
+            {/* Lista de Profissionais */}
+            <div className="space-y-6">
+              {(formData.profissionais || []).map((profissional: any, index: number) => (
+                <div key={index} className="border-2 border-medical-200 rounded-xl p-6 space-y-6 relative">
+                  {/* Badge de número */}
+                  <div className="absolute -top-3 -left-3 bg-medical-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
+                    {index + 1}
+                  </div>
+
+                  {/* Botão remover (só se tiver 2+) */}
+                  {(formData.profissionais?.length || 1) > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removerProfissional(index)}
+                      className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-red-600 transition shadow-lg font-bold text-lg"
+                      title="Remover profissional"
+                    >
+                      ×
+                    </button>
+                  )}
+
+                  <h3 className="text-xl font-bold text-gray-900 mt-2">
+                    Profissional {index + 1}
+                  </h3>
+
+                  {/* Nome */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Nome completo *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ex: Dr. Carlos Eduardo Silva"
+                      value={profissional.nome || ''}
+                      onChange={(e) => updateProfissional(index, 'nome', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors[`profissional_${index}_nome`] ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    {errors[`profissional_${index}_nome`] && (
+                      <p className="text-red-500 text-sm mt-2">{errors[`profissional_${index}_nome`]}</p>
+                    )}
+                  </div>
+
+                  {/* Registro CRO */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Número do registro (CRO) *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ex: CRO-SP 12345"
+                      value={profissional.registro || ''}
+                      onChange={(e) => updateProfissional(index, 'registro', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors[`profissional_${index}_registro`] ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    {errors[`profissional_${index}_registro`] && (
+                      <p className="text-red-500 text-sm mt-2">{errors[`profissional_${index}_registro`]}</p>
+                    )}
+                  </div>
+
+                  {/* Especialidade */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Especialidade principal
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ex: Implantodontia, Ortodontia, Clínico Geral..."
+                      value={profissional.especialidade || ''}
+                      onChange={(e) => updateProfissional(index, 'especialidade', e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                    />
+                  </div>
+
+                  {/* Mini biografia */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Mini biografia (2-3 linhas) *
+                    </label>
+                    <textarea
+                      rows={4}
+                      placeholder="Ex: Graduado pela USP, especialista em Implantodontia com mais de 10 anos de experiência. Apaixonado por devolver sorrisos e autoestima aos pacientes."
+                      value={profissional.descricao || ''}
+                      onChange={(e) => updateProfissional(index, 'descricao', e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all resize-none ${
+                        errors[`profissional_${index}_descricao`] ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    {errors[`profissional_${index}_descricao`] && (
+                      <p className="text-red-500 text-sm mt-2">{errors[`profissional_${index}_descricao`]}</p>
+                    )}
+                    <p className="text-xs text-gray-500 mt-2">
+                      Aparecerá na página "Nossa Equipe" abaixo da foto
+                    </p>
+                  </div>
+
+                  {/* Foto */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      Foto profissional
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleProfissionalFoto(index, e)}
+                      className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-medical-50 file:text-medical-700 hover:file:bg-medical-100"
+                    />
+                    {profissional.foto && (
+                      <div className="mt-3 flex items-center gap-3 text-sm text-gray-600">
+                        <span>✓ {profissional.foto.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => updateProfissional(index, 'foto', null)}
+                          className="text-red-500 hover:underline"
+                        >
+                          Remover
+                        </button>
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-500 mt-2">
+                      Preferencialmente foto com fundo branco ou neutro. Máx. 5MB.
+                    </p>
+                  </div>
+
+                  {/* Redes Sociais */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-3">
+                      Redes sociais (opcional)
+                    </label>
+
+                    {(profissional.redesSociais || []).map((rede: any, redeIndex: number) => (
+                      <div key={redeIndex} className="flex gap-3 mb-3">
+                        <select
+                          value={rede.tipo || 'instagram'}
+                          onChange={(e) => updateRedeSocial(index, redeIndex, 'tipo', e.target.value)}
+                          className="px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-400"
+                        >
+                          <option value="instagram">Instagram</option>
+                          <option value="facebook">Facebook</option>
+                          <option value="linkedin">LinkedIn</option>
+                        </select>
+                        <input
+                          type="url"
+                          placeholder="https://instagram.com/..."
+                          value={rede.url || ''}
+                          onChange={(e) => updateRedeSocial(index, redeIndex, 'url', e.target.value)}
+                          className="flex-1 px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removerRedeSocial(index, redeIndex)}
+                          className="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition font-semibold"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={() => adicionarRedeSocial(index)}
+                      className="text-sm text-medical-600 hover:text-medical-700 font-medium"
+                    >
+                      + Adicionar rede social
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Botão Adicionar Profissional */}
+            <button
+              type="button"
+              onClick={adicionarProfissional}
+              className="w-full py-4 border-2 border-dashed border-medical-400 rounded-xl text-medical-600 font-semibold hover:bg-medical-50 transition-all flex items-center justify-center gap-2"
+            >
+              <span className="text-2xl">+</span>
+              Adicionar outro profissional
+            </button>
           </div>
         );
 
