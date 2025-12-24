@@ -40,13 +40,14 @@ const BriefingOdonto = () => {
 
   const sections = [
     { id: 'informacoes-essenciais', title: 'Informações Essenciais', subtitle: 'Vamos começar! Informações Básicas', required: true },
-    { id: 'profissionais', title: 'Sobre o(s) Profissional(is)', subtitle: 'Vamos apresentar você (ou sua equipe) no site', required: true },
+    { id: 'hero-banner', title: 'Hero / Banner Principal', subtitle: 'Vamos criar o banner principal do seu site', required: true },
+    { id: 'sobre-clinica', title: 'Sobre a Clínica', subtitle: 'Apresente sua clínica', required: true },
+    { id: 'profissionais', title: 'Equipe', subtitle: 'Apresente os profissionais', required: true },
     { id: 'servicos-diferenciais', title: 'Serviços e Diferenciais', subtitle: 'O que você oferece e o que te torna único', required: true },
+    { id: 'depoimentos', title: 'Depoimentos', subtitle: 'Prova social e avaliações', required: false },
+    { id: 'materiais-visuais', title: 'Galeria e Cores', subtitle: 'Identidade visual do site', required: true },
     { id: 'localizacao-contato', title: 'Localização e Contato', subtitle: 'Onde você está?', required: true },
-    { id: 'materiais-visuais', title: 'Materiais Visuais', subtitle: 'Imagens e identidade visual do site', required: false },
-    { id: 'rastreamento', title: 'Rastreamento e Integrações', subtitle: 'Configure suas tags de análise (Opcional)', required: false },
-    { id: 'depoimentos', title: 'Depoimentos e Avaliações', subtitle: 'Construa confiança com seus pacientes', required: true },
-    { id: 'revisao', title: 'Revisão Final', subtitle: 'Confira todas as informações', required: false }
+    { id: 'revisao-rastreamento', title: 'Revisão e Rastreamento', subtitle: 'Confira tudo e configure tags (opcional)', required: false }
   ];
 
   const progressPercentage = ((currentSection + 1) / sections.length) * 100;
@@ -649,13 +650,300 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 1: // Profissionais
+      case 1: // PÁGINA 2: Hero / Banner Principal
         return (
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[1].title}
+              </h2>
+              <p className="text-medical-600/70 text-lg">{sections[1].subtitle}</p>
+            </div>
+
+            <div className="space-y-8">
+              {/* Título Principal */}
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                  Título Principal do Banner *
+                </label>
+                <select
+                  value={formData.hero_titulo_tipo || ''}
+                  onChange={(e) => {
+                    updateFormData('hero_titulo_tipo', e.target.value);
+                    if (e.target.value !== 'custom') {
+                      updateFormData('hero_titulo', e.target.value);
+                    } else {
+                      updateFormData('hero_titulo', '');
+                    }
+                  }}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                    errors.hero_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  }`}
+                >
+                  <option value="">Escolha uma sugestão ou customize</option>
+                  <option value="Cuidando do seu sorriso há anos">Cuidando do seu sorriso há anos</option>
+                  <option value="Seu sorriso perfeito começa aqui">Seu sorriso perfeito começa aqui</option>
+                  <option value="Transforme seu sorriso com tecnologia de ponta">Transforme seu sorriso com tecnologia de ponta</option>
+                  <option value="Odontologia com Excelência">Odontologia com Excelência</option>
+                  <option value="Atendimento odontológico humanizado">Atendimento odontológico humanizado</option>
+                  <option value="custom">✏️ Personalizar título</option>
+                </select>
+
+                {formData.hero_titulo_tipo === 'custom' && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      placeholder="Digite seu título personalizado"
+                      value={formData.hero_titulo || ''}
+                      onChange={(e) => updateFormData('hero_titulo', e.target.value)}
+                      maxLength={60}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors.hero_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    <p className="text-medical-600/60 text-xs mt-2">{(formData.hero_titulo || '').length}/60 caracteres</p>
+                  </div>
+                )}
+
+                {errors.hero_titulo && <p className="text-red-500 text-sm mt-2">{errors.hero_titulo}</p>}
+                <p className="text-medical-600/60 text-xs mt-2">Este será o primeiro texto que seus pacientes verão no site</p>
+              </div>
+
+              {/* Subtítulo */}
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                  Subtítulo *
+                </label>
+                <select
+                  value={formData.hero_subtitulo_tipo || ''}
+                  onChange={(e) => {
+                    updateFormData('hero_subtitulo_tipo', e.target.value);
+                    if (e.target.value !== 'custom') {
+                      updateFormData('hero_subtitulo', e.target.value);
+                    } else {
+                      updateFormData('hero_subtitulo', '');
+                    }
+                  }}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                    errors.hero_subtitulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  }`}
+                >
+                  <option value="">Escolha uma sugestão ou customize</option>
+                  <option value="Atendimento odontológico de excelência com tecnologia e cuidado">Atendimento odontológico de excelência</option>
+                  <option value="Transformando sorrisos com experiência e dedicação">Transformando sorrisos com experiência</option>
+                  <option value="Sua saúde bucal é nossa prioridade">Sua saúde bucal é nossa prioridade</option>
+                  <option value="Tecnologia avançada para o seu sorriso perfeito">Tecnologia avançada para seu sorriso</option>
+                  <option value="custom">✏️ Personalizar subtítulo</option>
+                </select>
+
+                {formData.hero_subtitulo_tipo === 'custom' && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      placeholder="Digite seu subtítulo personalizado"
+                      value={formData.hero_subtitulo || ''}
+                      onChange={(e) => updateFormData('hero_subtitulo', e.target.value)}
+                      maxLength={120}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors.hero_subtitulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    <p className="text-medical-600/60 text-xs mt-2">{(formData.hero_subtitulo || '').length}/120 caracteres</p>
+                  </div>
+                )}
+
+                {errors.hero_subtitulo && <p className="text-red-500 text-sm mt-2">{errors.hero_subtitulo}</p>}
+              </div>
+
+              {/* Botão CTA */}
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                  Texto do Botão Principal *
+                </label>
+                <select
+                  value={formData.hero_cta_texto || ''}
+                  onChange={(e) => updateFormData('hero_cta_texto', e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                    errors.hero_cta_texto ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  }`}
+                >
+                  <option value="">Escolha o texto do botão</option>
+                  <option value="Agende sua consulta">Agende sua consulta</option>
+                  <option value="Fale conosco no WhatsApp">Fale conosco no WhatsApp</option>
+                  <option value="Agendar avaliação gratuita">Agendar avaliação gratuita</option>
+                  <option value="Entre em contato">Entre em contato</option>
+                  <option value="Quero agendar">Quero agendar</option>
+                </select>
+                {errors.hero_cta_texto && <p className="text-red-500 text-sm mt-2">{errors.hero_cta_texto}</p>}
+                <p className="text-medical-600/60 text-xs mt-2">Este botão levará para seu WhatsApp</p>
+              </div>
+
+              {/* Imagem do Banner */}
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                  Imagem do Banner (Opcional)
+                </label>
+                <p className="text-medical-600/60 text-sm mb-3">
+                  Envie uma foto que represente sua clínica ou equipe. Tamanho recomendado: 1920x1080px
+                </p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload('hero_imagem', e.target.files)}
+                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
+                />
+                {uploadedFiles.hero_imagem && uploadedFiles.hero_imagem.length > 0 && (
+                  <div className="mt-3 flex items-center gap-2 text-green-600">
+                    <Check className="w-4 h-4" />
+                    <span className="text-sm">Imagem enviada: {uploadedFiles.hero_imagem[0].name}</span>
+                  </div>
+                )}
+                <p className="text-medical-600/60 text-xs mt-2">
+                  Se não enviar agora, usaremos uma imagem da nossa biblioteca
+                </p>
+              </div>
+
+              {/* Widgets de Números */}
+              <div className="border-t-2 border-medical-100 pt-6 mt-6">
+                <h3 className="text-lg font-semibold text-neutral-900 mb-4">Widgets de Números (Opcional)</h3>
+                <p className="text-medical-600/60 text-sm mb-6">
+                  Adicione até 4 métricas para destacar no banner (ex: "15 Anos", "5.000+ Pacientes")
+                </p>
+
+                <div className="space-y-4">
+                  {/* Widget 1 */}
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-neutral-700 mb-2">Número</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: 15"
+                        value={formData.widget1_numero || ''}
+                        onChange={(e) => updateFormData('widget1_numero', e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-neutral-700 mb-2">Descrição</label>
+                      <select
+                        value={formData.widget1_label || ''}
+                        onChange={(e) => updateFormData('widget1_label', e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Anos de experiência">Anos de experiência</option>
+                        <option value="Anos no mercado">Anos no mercado</option>
+                        <option value="Anos de tradição">Anos de tradição</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Widget 2 */}
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-neutral-700 mb-2">Número</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: 5000+"
+                        value={formData.widget2_numero || ''}
+                        onChange={(e) => updateFormData('widget2_numero', e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-neutral-700 mb-2">Descrição</label>
+                      <select
+                        value={formData.widget2_label || ''}
+                        onChange={(e) => updateFormData('widget2_label', e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Pacientes atendidos">Pacientes atendidos</option>
+                        <option value="Sorrisos transformados">Sorrisos transformados</option>
+                        <option value="Famílias atendidas">Famílias atendidas</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Widget 3 */}
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-neutral-700 mb-2">Número (%)</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: 98"
+                        value={formData.widget3_numero || ''}
+                        onChange={(e) => updateFormData('widget3_numero', e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-neutral-700 mb-2">Descrição</label>
+                      <select
+                        value={formData.widget3_label || ''}
+                        onChange={(e) => updateFormData('widget3_label', e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Taxa de satisfação">Taxa de satisfação</option>
+                        <option value="Pacientes satisfeitos">Pacientes satisfeitos</option>
+                        <option value="Aprovação">Aprovação</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Widget 4 */}
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-neutral-700 mb-2">Número</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: 500+"
+                        value={formData.widget4_numero || ''}
+                        onChange={(e) => updateFormData('widget4_numero', e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-neutral-700 mb-2">Descrição</label>
+                      <select
+                        value={formData.widget4_label || ''}
+                        onChange={(e) => updateFormData('widget4_label', e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Procedimentos realizados">Procedimentos realizados</option>
+                        <option value="Implantes realizados">Implantes realizados</option>
+                        <option value="Casos de sucesso">Casos de sucesso</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.ocultar_widgets || false}
+                      onChange={(e) => updateFormData('ocultar_widgets', e.target.checked)}
+                      className="w-4 h-4 text-medical-600 border-medical-300 rounded focus:ring-medical-500"
+                    />
+                    <span className="text-sm text-neutral-700">Não quero exibir widgets de números</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 2: // Profissionais (agora é case 2)
+        return (
+          <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+                {sections[3].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[1].subtitle}</p>
             </div>
