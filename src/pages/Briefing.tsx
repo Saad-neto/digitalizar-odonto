@@ -1271,71 +1271,134 @@ const BriefingOdonto = () => {
                 Quais serviços/tratamentos você oferece? *
               </label>
               <p className="text-sm text-medical-600/70 mb-3">
-                Selecione de 3 a 6 serviços principais (Ctrl/Cmd + clique para múltipla seleção):
+                Selecione de 3 a 6 serviços principais:
               </p>
 
-              <select
-                multiple
-                size={10}
-                value={formData.servicos || []}
-                onChange={(e) => {
-                  const options = Array.from(e.target.selectedOptions);
-                  const values = options.map(opt => opt.value);
-
-                  // Limitar a 6 serviços
-                  if (values.length <= 6) {
-                    setFormData({...formData, servicos: values});
-                    // Se desmarcar "outro", limpar o campo
-                    if (!values.includes('outro')) {
-                      setFormData({...formData, servicos: values, servico_outro: ''});
-                    }
-                  }
-                }}
-                className={`w-full px-3 py-2 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                  errors.servicos ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                }`}
-                style={{ height: '320px' }}
-              >
-                <option value="limpeza">✨ Limpeza e profilaxia</option>
-                <option value="clareamento">⚡ Clareamento dental</option>
-                <option value="restauracoes">🦷 Restaurações em resina</option>
-                <option value="canal">🔧 Tratamento de canal (endodontia)</option>
-                <option value="implantes">💎 Implantes dentários</option>
-                <option value="proteses">👄 Próteses dentárias</option>
-                <option value="ortodontia_fixa">📐 Ortodontia (aparelho fixo)</option>
-                <option value="ortodontia_invisivel">🔍 Ortodontia invisível (alinhadores)</option>
-                <option value="extracao">🩺 Extração de dentes/sisos</option>
-                <option value="periodontia">🌿 Periodontia (tratamento de gengiva)</option>
-                <option value="odontopediatria">👶 Odontopediatria (dentista infantil)</option>
-                <option value="harmonizacao">💉 Harmonização facial</option>
-                <option value="bichectomia">✂️ Bichectomia</option>
-                <option value="lentes">💫 Lentes de contato dental</option>
-                <option value="facetas">🎨 Facetas de porcelana</option>
-                <option value="cirurgia">🏥 Cirurgia bucomaxilofacial</option>
-                <option value="dtm">😴 DTM e bruxismo</option>
-                <option value="emergencia">🚨 Emergências 24h</option>
-                <option value="outro">➕ Outro</option>
-              </select>
-
-              {/* Contador de serviços selecionados */}
-              <div className="mt-3 text-center">
-                <span className={`text-sm font-semibold ${
-                  (formData.servicos?.length || 0) < 3 ? 'text-red-600' :
-                  (formData.servicos?.length || 0) > 6 ? 'text-red-600' :
-                  'text-medical-600'
-                }`}>
-                  {formData.servicos?.length || 0} de 3-6 serviços selecionados
-                </span>
+              {/* Checkboxes Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                {[
+                  { value: 'limpeza', label: 'Limpeza e profilaxia', icon: '✨' },
+                  { value: 'clareamento', label: 'Clareamento dental', icon: '⚡' },
+                  { value: 'restauracoes', label: 'Restaurações em resina', icon: '🦷' },
+                  { value: 'canal', label: 'Tratamento de canal (endodontia)', icon: '🔧' },
+                  { value: 'implantes', label: 'Implantes dentários', icon: '💎' },
+                  { value: 'proteses', label: 'Próteses dentárias', icon: '👄' },
+                  { value: 'ortodontia_fixa', label: 'Ortodontia (aparelho fixo)', icon: '📐' },
+                  { value: 'ortodontia_invisivel', label: 'Ortodontia invisível (alinhadores)', icon: '🔍' },
+                  { value: 'extracao', label: 'Extração de dentes/sisos', icon: '🩺' },
+                  { value: 'periodontia', label: 'Periodontia (tratamento de gengiva)', icon: '🌿' },
+                  { value: 'odontopediatria', label: 'Odontopediatria (dentista infantil)', icon: '👶' },
+                  { value: 'harmonizacao', label: 'Harmonização facial', icon: '💉' },
+                  { value: 'bichectomia', label: 'Bichectomia', icon: '✂️' },
+                  { value: 'lentes', label: 'Lentes de contato dental', icon: '💫' },
+                  { value: 'facetas', label: 'Facetas de porcelana', icon: '🎨' },
+                  { value: 'cirurgia', label: 'Cirurgia bucomaxilofacial', icon: '🏥' },
+                  { value: 'dtm', label: 'DTM e bruxismo', icon: '😴' },
+                  { value: 'emergencia', label: 'Emergências 24h', icon: '🚨' },
+                  { value: 'outro', label: 'Outro', icon: '➕' }
+                ].map((servico) => (
+                  <label
+                    key={servico.value}
+                    className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                      formData.servicos?.includes(servico.value)
+                        ? 'border-medical-500 bg-medical-50'
+                        : 'border-gray-200 hover:border-medical-300 bg-white'
+                    } ${
+                      !formData.servicos?.includes(servico.value) && (formData.servicos?.length || 0) >= 6
+                        ? 'opacity-50 cursor-not-allowed'
+                        : ''
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.servicos?.includes(servico.value) || false}
+                      onChange={(e) => {
+                        const current = formData.servicos || [];
+                        if (e.target.checked) {
+                          if (current.length < 6) {
+                            setFormData({...formData, servicos: [...current, servico.value]});
+                          }
+                        } else {
+                          setFormData({...formData, servicos: current.filter(s => s !== servico.value)});
+                          if (servico.value === 'outro') {
+                            setFormData({...formData, servicos: current.filter(s => s !== servico.value), servico_outro: ''});
+                          }
+                        }
+                      }}
+                      disabled={!formData.servicos?.includes(servico.value) && (formData.servicos?.length || 0) >= 6}
+                      className="mr-3 accent-medical-600 w-4 h-4"
+                    />
+                    <span className="text-sm">
+                      <span className="mr-2">{servico.icon}</span>
+                      {servico.label}
+                    </span>
+                  </label>
+                ))}
               </div>
+
+              {/* Caixa de Tags dos Selecionados */}
+              {(formData.servicos?.length || 0) > 0 && (
+                <div className="p-4 bg-gradient-to-r from-medical-50 to-blue-50 border-2 border-medical-200 rounded-xl">
+                  <p className="text-xs font-semibold text-medical-700 mb-2">SERVIÇOS SELECIONADOS:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.servicos?.map((servicoValue) => {
+                      const servicoObj = [
+                        { value: 'limpeza', label: 'Limpeza e profilaxia', icon: '✨' },
+                        { value: 'clareamento', label: 'Clareamento dental', icon: '⚡' },
+                        { value: 'restauracoes', label: 'Restaurações em resina', icon: '🦷' },
+                        { value: 'canal', label: 'Tratamento de canal', icon: '🔧' },
+                        { value: 'implantes', label: 'Implantes dentários', icon: '💎' },
+                        { value: 'proteses', label: 'Próteses dentárias', icon: '👄' },
+                        { value: 'ortodontia_fixa', label: 'Ortodontia (fixo)', icon: '📐' },
+                        { value: 'ortodontia_invisivel', label: 'Ortodontia invisível', icon: '🔍' },
+                        { value: 'extracao', label: 'Extração', icon: '🩺' },
+                        { value: 'periodontia', label: 'Periodontia', icon: '🌿' },
+                        { value: 'odontopediatria', label: 'Odontopediatria', icon: '👶' },
+                        { value: 'harmonizacao', label: 'Harmonização facial', icon: '💉' },
+                        { value: 'bichectomia', label: 'Bichectomia', icon: '✂️' },
+                        { value: 'lentes', label: 'Lentes de contato', icon: '💫' },
+                        { value: 'facetas', label: 'Facetas de porcelana', icon: '🎨' },
+                        { value: 'cirurgia', label: 'Cirurgia bucomaxilofacial', icon: '🏥' },
+                        { value: 'dtm', label: 'DTM e bruxismo', icon: '😴' },
+                        { value: 'emergencia', label: 'Emergências 24h', icon: '🚨' },
+                        { value: 'outro', label: 'Outro', icon: '➕' }
+                      ].find(s => s.value === servicoValue);
+
+                      return (
+                        <span
+                          key={servicoValue}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-medical-400 rounded-full text-sm font-medium text-medical-700 shadow-sm"
+                        >
+                          <span>{servicoObj?.icon}</span>
+                          <span>{servicoObj?.label}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newServicos = formData.servicos?.filter(s => s !== servicoValue) || [];
+                              setFormData({...formData, servicos: newServicos});
+                              if (servicoValue === 'outro') {
+                                setFormData({...formData, servicos: newServicos, servico_outro: ''});
+                              }
+                            }}
+                            className="text-red-500 hover:text-red-700 font-bold text-lg leading-none"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
+                  <p className={`text-xs font-semibold mt-2 ${
+                    (formData.servicos?.length || 0) < 3 ? 'text-red-600' :
+                    (formData.servicos?.length || 0) > 6 ? 'text-red-600' :
+                    'text-medical-600'
+                  }`}>
+                    {formData.servicos?.length || 0} de 3-6 serviços
+                  </p>
+                </div>
+              )}
 
               {errors.servicos && <p className="text-red-500 text-sm mt-2">{errors.servicos}</p>}
-
-              {/* Dica de uso */}
-              <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-xs text-blue-800">
-                  💡 <strong>Como selecionar vários:</strong> Segure Ctrl (Windows) ou Cmd (Mac) e clique nos serviços
-                </p>
-              </div>
 
               {/* Campo "Outro" condicional */}
               {formData.servicos?.includes('outro') && (
@@ -1467,50 +1530,100 @@ const BriefingOdonto = () => {
                 Quais são os principais diferenciais da sua clínica? (Opcional)
               </label>
               <p className="text-sm text-medical-600/70 mb-3">
-                Selecione até 4 diferenciais (Ctrl/Cmd + clique para múltipla seleção):
+                Selecione até 4 diferenciais:
               </p>
 
-              <select
-                multiple
-                size={8}
-                value={formData.diferenciais || []}
-                onChange={(e) => {
-                  const options = Array.from(e.target.selectedOptions);
-                  const values = options.map(opt => opt.value);
+              {/* Checkboxes Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                {[
+                  { value: 'emergencia_24h', label: 'Atendimento 24 horas', icon: '🚨' },
+                  { value: 'tecnologia', label: 'Tecnologia de ponta', icon: '💎' },
+                  { value: 'sem_dor', label: 'Tratamento sem dor', icon: '💉' },
+                  { value: 'estacionamento', label: 'Estacionamento', icon: '🅿️' },
+                  { value: 'acessibilidade', label: 'Acessibilidade', icon: '♿' },
+                  { value: 'atendimento_rapido', label: 'Atendimento rápido', icon: '⚡' },
+                  { value: 'wifi_gratis', label: 'Wi-Fi grátis', icon: '📶' },
+                  { value: 'ambiente_kids', label: 'Ambiente kids', icon: '👶' }
+                ].map((diferencial) => (
+                  <label
+                    key={diferencial.value}
+                    className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                      formData.diferenciais?.includes(diferencial.value)
+                        ? 'border-medical-500 bg-medical-50'
+                        : 'border-gray-200 hover:border-medical-300 bg-white'
+                    } ${
+                      !formData.diferenciais?.includes(diferencial.value) && (formData.diferenciais?.length || 0) >= 4
+                        ? 'opacity-50 cursor-not-allowed'
+                        : ''
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.diferenciais?.includes(diferencial.value) || false}
+                      onChange={(e) => {
+                        const current = formData.diferenciais || [];
+                        if (e.target.checked) {
+                          if (current.length < 4) {
+                            setFormData({...formData, diferenciais: [...current, diferencial.value]});
+                          }
+                        } else {
+                          setFormData({...formData, diferenciais: current.filter(d => d !== diferencial.value)});
+                        }
+                      }}
+                      disabled={!formData.diferenciais?.includes(diferencial.value) && (formData.diferenciais?.length || 0) >= 4}
+                      className="mr-3 accent-medical-600 w-4 h-4"
+                    />
+                    <span className="text-sm">
+                      <span className="mr-2">{diferencial.icon}</span>
+                      {diferencial.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
 
-                  // Limitar a 4 diferenciais
-                  if (values.length <= 4) {
-                    setFormData({...formData, diferenciais: values});
-                  }
-                }}
-                className="w-full px-3 py-2 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
-                style={{ height: '240px' }}
-              >
-                <option value="emergencia_24h">🚨 Atendimento 24 horas</option>
-                <option value="tecnologia">💎 Tecnologia de ponta</option>
-                <option value="sem_dor">💉 Tratamento sem dor</option>
-                <option value="estacionamento">🅿️ Estacionamento</option>
-                <option value="acessibilidade">♿ Acessibilidade</option>
-                <option value="atendimento_rapido">⚡ Atendimento rápido</option>
-                <option value="wifi_gratis">📶 Wi-Fi grátis</option>
-                <option value="ambiente_kids">👶 Ambiente kids</option>
-              </select>
-
-              {/* Contador de diferenciais */}
+              {/* Caixa de Tags dos Selecionados */}
               {(formData.diferenciais?.length || 0) > 0 && (
-                <div className="mt-3 text-center">
-                  <span className="text-sm font-semibold text-medical-600">
-                    {formData.diferenciais?.length || 0} de 4 diferenciais selecionados
-                  </span>
+                <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl">
+                  <p className="text-xs font-semibold text-purple-700 mb-2">DIFERENCIAIS SELECIONADOS:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.diferenciais?.map((diferencialValue) => {
+                      const diferencialObj = [
+                        { value: 'emergencia_24h', label: 'Atendimento 24h', icon: '🚨' },
+                        { value: 'tecnologia', label: 'Tecnologia de ponta', icon: '💎' },
+                        { value: 'sem_dor', label: 'Tratamento sem dor', icon: '💉' },
+                        { value: 'estacionamento', label: 'Estacionamento', icon: '🅿️' },
+                        { value: 'acessibilidade', label: 'Acessibilidade', icon: '♿' },
+                        { value: 'atendimento_rapido', label: 'Atendimento rápido', icon: '⚡' },
+                        { value: 'wifi_gratis', label: 'Wi-Fi grátis', icon: '📶' },
+                        { value: 'ambiente_kids', label: 'Ambiente kids', icon: '👶' }
+                      ].find(d => d.value === diferencialValue);
+
+                      return (
+                        <span
+                          key={diferencialValue}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-purple-400 rounded-full text-sm font-medium text-purple-700 shadow-sm"
+                        >
+                          <span>{diferencialObj?.icon}</span>
+                          <span>{diferencialObj?.label}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newDiferenciais = formData.diferenciais?.filter(d => d !== diferencialValue) || [];
+                              setFormData({...formData, diferenciais: newDiferenciais});
+                            }}
+                            className="text-red-500 hover:text-red-700 font-bold text-lg leading-none"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs font-semibold text-purple-600 mt-2">
+                    {formData.diferenciais?.length || 0} de 4 diferenciais
+                  </p>
                 </div>
               )}
-
-              {/* Dica de uso */}
-              <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-xs text-blue-800">
-                  💡 <strong>Dica:</strong> Segure Ctrl (Windows) ou Cmd (Mac) e clique para selecionar vários
-                </p>
-              </div>
             </div>
           </div>
         );
