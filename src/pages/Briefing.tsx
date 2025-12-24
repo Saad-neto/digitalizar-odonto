@@ -1122,13 +1122,23 @@ const BriefingOdonto = () => {
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       Especialidade principal
                     </label>
-                    <input
-                      type="text"
-                      placeholder="Ex: Implantodontia, Ortodontia, Clínico Geral..."
+                    <select
                       value={profissional.especialidade || ''}
                       onChange={(e) => updateProfissional(index, 'especialidade', e.target.value)}
                       className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
-                    />
+                    >
+                      <option value="">Selecione a especialidade</option>
+                      <option value="Clínico Geral">Clínico Geral</option>
+                      <option value="Ortodontia">Ortodontia</option>
+                      <option value="Implantodontia">Implantodontia</option>
+                      <option value="Endodontia">Endodontia (Tratamento de Canal)</option>
+                      <option value="Periodontia">Periodontia (Gengiva)</option>
+                      <option value="Odontopediatria">Odontopediatria (Crianças)</option>
+                      <option value="Prótese Dentária">Prótese Dentária</option>
+                      <option value="Estética/Harmonização">Estética/Harmonização Orofacial</option>
+                      <option value="Cirurgia Bucomaxilofacial">Cirurgia Bucomaxilofacial</option>
+                      <option value="Radiologia">Radiologia Odontológica</option>
+                    </select>
                   </div>
 
                   {/* Mini biografia */}
@@ -1388,27 +1398,18 @@ const BriefingOdonto = () => {
                 <label className="block text-neutral-900 font-semibold mb-4 text-lg">
                   Quais convênios você aceita? *
                 </label>
-                <p className="text-sm text-medical-600/70 mb-4">
-                  Selecione todos os convênios que você aceita:
+                <p className="text-sm text-medical-600/70 mb-3">
+                  Selecione os principais ou especifique outros:
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { value: 'odontoprev', label: 'OdontoPrev (líder do mercado)', icon: '👑' },
-                    { value: 'bradesco', label: 'Bradesco Dental', icon: '🏦' },
-                    { value: 'amil', label: 'Amil Dental', icon: '🩺' },
-                    { value: 'sulamerica', label: 'SulAmérica Odonto', icon: '💼' },
-                    { value: 'unimed', label: 'Unimed Odonto', icon: '🏥' },
-                    { value: 'porto_seguro', label: 'Porto Seguro Dental', icon: '🛡️' },
-                    { value: 'metlife', label: 'MetLife Dental', icon: '💳' },
-                    { value: 'interodonto', label: 'Interodonto', icon: '🦷' },
-                    { value: 'hapvida', label: 'Hapvida Odonto', icon: '💚' },
-                    { value: 'notredame', label: 'NotreDame Intermédica', icon: '⚕️' },
-                    { value: 'dental_uni', label: 'Dental Uni', icon: '🏢' },
-                    { value: 'golden_cross', label: 'Golden Cross', icon: '✨' },
-                    { value: 'sompo', label: 'Sompo Dental', icon: '🔷' },
-                    { value: 'caixa_seguradora', label: 'Caixa Seguradora', icon: '🏛️' },
-                    { value: 'outro_convenio', label: 'Outro', icon: '➕' }
+                    { value: 'odontoprev', label: '👑 OdontoPrev' },
+                    { value: 'bradesco', label: '🏦 Bradesco Dental' },
+                    { value: 'unimed', label: '🏥 Unimed Odonto' },
+                    { value: 'sulamerica', label: '💼 SulAmérica' },
+                    { value: 'amil', label: '🩺 Amil Dental' },
+                    { value: 'outros', label: '➕ Outros' }
                   ].map((convenio) => (
                     <label key={convenio.value} className="flex items-center p-3 rounded-lg border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
                       <input
@@ -1420,153 +1421,97 @@ const BriefingOdonto = () => {
                             setFormData({...formData, lista_convenios_array: [...current, convenio.value]});
                           } else {
                             setFormData({...formData, lista_convenios_array: current.filter(c => c !== convenio.value)});
-                            // Se desmarcar "outro", limpar o campo
-                            if (convenio.value === 'outro_convenio') {
-                              setFormData({...formData, lista_convenios_array: current.filter(c => c !== convenio.value), outro_convenio: ''});
+                            // Se desmarcar "outros", limpar o campo
+                            if (convenio.value === 'outros') {
+                              setFormData({...formData, lista_convenios_array: current.filter(c => c !== convenio.value), outros_convenios: ''});
                             }
                           }
                         }}
                         className="mr-3 accent-medical-600 w-5 h-5"
                       />
-                      <span className="text-neutral-900">
-                        <span className="mr-2">{convenio.icon}</span>
-                        {convenio.label}
-                      </span>
+                      <span className="text-neutral-900 font-medium">{convenio.label}</span>
                     </label>
                   ))}
                 </div>
 
                 {errors.lista_convenios && <p className="text-red-500 text-sm mt-3">{errors.lista_convenios}</p>}
 
-                {/* Campo "Outro convênio" condicional */}
-                {formData.lista_convenios_array?.includes('outro_convenio') && (
+                {/* Campo "Outros convênios" condicional */}
+                {formData.lista_convenios_array?.includes('outros') && (
                   <div className="mt-4">
                     <label className="block text-neutral-900 font-semibold mb-2">
-                      Qual outro convênio? *
+                      Especifique outros convênios *
                     </label>
                     <input
                       type="text"
-                      value={formData.outro_convenio || ''}
-                      onChange={(e) => setFormData({...formData, outro_convenio: e.target.value})}
+                      value={formData.outros_convenios || ''}
+                      onChange={(e) => setFormData({...formData, outros_convenios: e.target.value})}
                       className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                        errors.outro_convenio ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                        errors.outros_convenios ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
                       } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                      placeholder="Digite o nome do convênio"
+                      placeholder="Ex: Porto Seguro, MetLife, Hapvida"
                     />
-                    {errors.outro_convenio && <p className="text-red-500 text-sm mt-1">{errors.outro_convenio}</p>}
+                    <p className="text-xs text-medical-600/60 mt-1">Separe múltiplos convênios por vírgula</p>
+                    {errors.outros_convenios && <p className="text-red-500 text-sm mt-1">{errors.outros_convenios}</p>}
                   </div>
                 )}
               </div>
             )}
 
-            {/* Atendimento de Emergência */}
+            {/* Diferenciais da Clínica */}
             <div>
               <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Tem atendimento de emergência, fora? *
-              </label>
-              <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="atende_emergencia"
-                    value="sim_24h"
-                    checked={formData.atende_emergencia === 'sim_24h'}
-                    onChange={(e) => setFormData({...formData, atende_emergencia: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div className="font-semibold text-neutral-900">Sim, 24 horas</div>
-                </label>
-
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="atende_emergencia"
-                    value="nao_horario"
-                    checked={formData.atende_emergencia === 'nao_horario'}
-                    onChange={(e) => setFormData({...formData, atende_emergencia: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div className="font-semibold text-neutral-900">Não, apenas horário comercial</div>
-                </label>
-              </div>
-              {errors.atende_emergencia && <p className="text-red-500 text-sm mt-2">{errors.atende_emergencia}</p>}
-            </div>
-
-            {/* Equipamentos/Tecnologia */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Quais equipamentos/tecnologias disponíveis? *
+                Quais são os principais diferenciais da sua clínica? (Opcional)
               </label>
               <p className="text-sm text-medical-600/70 mb-4">
-                Marque todos que se aplicam:
+                Selecione até 4 diferenciais que destacam sua clínica:
               </p>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {[
-                  { value: 'tomografia', label: 'Tomografia computadorizada' },
-                  { value: 'anestesia', label: 'Anestesia computadorizada' },
-                  { value: 'microscopia', label: 'Microscopia odontológica' },
-                  { value: 'scanner', label: 'Scanner intraoral' },
-                  { value: 'radiografia', label: 'Radiografia digital' },
-                  { value: 'laser', label: 'Laser odontológico' },
-                  { value: 'implante', label: 'Implante com cóleo clínico' },
-                  { value: 'camera', label: 'Câmera intraoral' },
-                  { value: 'impressao', label: 'Impressora guarda em Google' },
-                  { value: 'sedacao', label: 'Sedação com óxido nitroso' },
-                  { value: 'piezocirurgia', label: 'Piezocirurgia' },
-                  { value: 'tecnologia_ponta', label: 'Tecnologia de ponta' }
-                ].map((tech) => (
-                  <label key={tech.value} className="flex items-center p-3 rounded-lg border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
+                  { value: 'emergencia_24h', label: '🚨 Atendimento 24 horas', desc: 'Emergências a qualquer hora' },
+                  { value: 'tecnologia', label: '💎 Tecnologia de ponta', desc: 'Equipamentos modernos' },
+                  { value: 'sem_dor', label: '💉 Tratamento sem dor', desc: 'Anestesia computadorizada' },
+                  { value: 'estacionamento', label: '🅿️ Estacionamento', desc: 'Vagas próprias ou conveniadas' },
+                  { value: 'acessibilidade', label: '♿ Acessibilidade', desc: 'Rampa e elevador' },
+                  { value: 'atendimento_rapido', label: '⚡ Atendimento rápido', desc: 'Pontualidade garantida' },
+                  { value: 'wifi_gratis', label: '📶 Wi-Fi grátis', desc: 'Internet na sala de espera' },
+                  { value: 'ambiente_kids', label: '👶 Ambiente kids', desc: 'Brinquedoteca e entretenimento' }
+                ].map((diferencial) => (
+                  <label key={diferencial.value} className="flex items-start p-3 rounded-lg border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
                     <input
                       type="checkbox"
-                      checked={formData.tecnologias?.includes(tech.value) || false}
+                      checked={formData.diferenciais?.includes(diferencial.value) || false}
                       onChange={(e) => {
-                        const current = formData.tecnologias || [];
+                        const current = formData.diferenciais || [];
                         if (e.target.checked) {
-                          setFormData({...formData, tecnologias: [...current, tech.value]});
+                          // Limitar a 4 diferenciais
+                          if (current.length < 4) {
+                            setFormData({...formData, diferenciais: [...current, diferencial.value]});
+                          }
                         } else {
-                          setFormData({...formData, tecnologias: current.filter(t => t !== tech.value)});
+                          setFormData({...formData, diferenciais: current.filter(d => d !== diferencial.value)});
                         }
                       }}
-                      className="mr-3 accent-medical-600 w-5 h-5"
+                      className="mr-3 mt-1 accent-medical-600 w-5 h-5"
+                      disabled={!formData.diferenciais?.includes(diferencial.value) && (formData.diferenciais?.length || 0) >= 4}
                     />
-                    <span className="text-neutral-900">{tech.label}</span>
+                    <div>
+                      <div className="text-neutral-900 font-medium">{diferencial.label}</div>
+                      <div className="text-xs text-medical-600/60">{diferencial.desc}</div>
+                    </div>
                   </label>
                 ))}
               </div>
-              {errors.tecnologias && <p className="text-red-500 text-sm mt-2">{errors.tecnologias}</p>}
-            </div>
 
-            {/* Oferece Sessão? */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Oferece sedação consciente? *
-              </label>
-              <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="oferece_sedacao"
-                    value="sim"
-                    checked={formData.oferece_sedacao === 'sim'}
-                    onChange={(e) => setFormData({...formData, oferece_sedacao: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div className="font-semibold text-neutral-900">Sim, oferecemos sedação consciente</div>
-                </label>
-
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="oferece_sedacao"
-                    value="nao"
-                    checked={formData.oferece_sedacao === 'nao'}
-                    onChange={(e) => setFormData({...formData, oferece_sedacao: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div className="font-semibold text-neutral-900">Não oferecemos</div>
-                </label>
-              </div>
-              {errors.oferece_sedacao && <p className="text-red-500 text-sm mt-2">{errors.oferece_sedacao}</p>}
+              {/* Contador de diferenciais */}
+              {(formData.diferenciais?.length || 0) > 0 && (
+                <div className="mt-3 text-center">
+                  <span className="text-sm font-semibold text-medical-600">
+                    {formData.diferenciais?.length || 0} de 4 diferenciais selecionados
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -1738,38 +1683,42 @@ const BriefingOdonto = () => {
             {/* Horários de Atendimento */}
             <div>
               <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Quais horários de atendimento? *
+                Horários de atendimento *
               </label>
-              <p className="text-sm text-medical-600/70 mb-4">
-                Marque todos os horários que você atende:
-              </p>
-              <div className="space-y-3">
-                {[
-                  { value: 'manha', label: '☀️ Manhã' },
-                  { value: 'tarde', label: '🌤️ Tarde' },
-                  { value: 'noite', label: '🌙 Noite' },
-                  { value: 'sabado', label: '📅 Sábado' },
-                  { value: 'domingo', label: '🗓️ Domingo e feriados' }
-                ].map((horario) => (
-                  <label key={horario.value} className="flex items-center p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                    <input
-                      type="checkbox"
-                      checked={formData.horarios_atendimento?.includes(horario.value) || false}
-                      onChange={(e) => {
-                        const current = formData.horarios_atendimento || [];
-                        if (e.target.checked) {
-                          setFormData({...formData, horarios_atendimento: [...current, horario.value]});
-                        } else {
-                          setFormData({...formData, horarios_atendimento: current.filter(h => h !== horario.value)});
-                        }
-                      }}
-                      className="mr-3 accent-medical-600 w-5 h-5"
-                    />
-                    <span className="font-semibold text-neutral-900">{horario.label}</span>
+              <select
+                value={formData.horario_padrao || ''}
+                onChange={(e) => updateFormData('horario_padrao', e.target.value)}
+                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  errors.horario_padrao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                }`}
+              >
+                <option value="">Escolha um padrão de horário</option>
+                <option value="seg_sex_8_18_sab_8_12">Segunda a Sexta: 8h-18h | Sábado: 8h-12h</option>
+                <option value="seg_sex_9_19_sab_fechado">Segunda a Sexta: 9h-19h | Sábado: Fechado</option>
+                <option value="seg_sex_8_17_sab_8_12">Segunda a Sexta: 8h-17h | Sábado: 8h-12h</option>
+                <option value="seg_sex_8_18_sab_fechado">Segunda a Sexta: 8h-18h | Sábado: Fechado</option>
+                <option value="seg_sab_8_18">Segunda a Sábado: 8h-18h</option>
+                <option value="seg_sex_14_22">Segunda a Sexta: 14h-22h (Noturno)</option>
+                <option value="custom">Personalizado (especificar abaixo)</option>
+              </select>
+
+              {formData.horario_padrao === 'custom' && (
+                <div className="mt-4">
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    Descreva seus horários personalizados
                   </label>
-                ))}
-              </div>
-              {errors.horarios_atendimento && <p className="text-red-500 text-sm mt-2">{errors.horarios_atendimento}</p>}
+                  <input
+                    type="text"
+                    placeholder="Ex: Segunda, Quarta e Sexta: 8h-12h e 14h-18h"
+                    value={formData.horario_customizado || ''}
+                    onChange={(e) => updateFormData('horario_customizado', e.target.value)}
+                    className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  />
+                </div>
+              )}
+
+              {errors.horario_padrao && <p className="text-red-500 text-sm mt-2">{errors.horario_padrao}</p>}
+              <p className="text-medical-600/60 text-xs mt-2">Escolha o padrão que mais se aproxima do seu horário</p>
             </div>
 
             {/* Quer exibir o mapa do Google Maps? */}
