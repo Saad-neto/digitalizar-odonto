@@ -12,11 +12,11 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-3 mb-6">
               <img
                 src="/logo.png"
-                alt="Digitalizar Odonto"
+                alt="Sites Odonto"
                 className="h-14 w-auto object-contain"
               />
               <div>
-                <h3 className="text-2xl font-bold">Digitalizar Odonto</h3>
+                <h3 className="text-2xl font-bold">Sites Odonto</h3>
                 <p className="text-white/70">Especialistas em Sites Odontológicos</p>
               </div>
             </div>
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <Award size={20} className="text-success-light" />
-                <span className="text-white/80">Digitalizar Odonto</span>
+                <span className="text-white/80">Sites Odonto</span>
               </div>
               <div className="flex items-center gap-3">
                 <Shield size={20} className="text-success-light" />
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="border-t border-white/20 pt-8 text-center text-white/70">
           <p className="mb-4">
-            © 2024 Digitalizar Odonto. Todos os direitos reservados.
+            © 2024 Sites Odonto. Todos os direitos reservados.
           </p>
           
           <div className="flex flex-wrap justify-center gap-6 text-sm">
