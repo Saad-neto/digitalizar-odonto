@@ -10,9 +10,11 @@ const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-success rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">24H</span>
-              </div>
+              <img
+                src="/logo.png"
+                alt="Sites Odonto 24H"
+                className="h-14 w-auto object-contain"
+              />
               <div>
                 <h3 className="text-2xl font-bold">Sites Odonto 24H</h3>
                 <p className="text-white/70">Especialistas em Sites Odontológicos</p>

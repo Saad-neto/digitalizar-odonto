@@ -35,15 +35,17 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-success rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">24H</span>
-              </div>
+            <Link to="/" className="flex items-center gap-3">
+              <img
+                src="/logo.png"
+                alt="Sites Odonto 24H"
+                className="h-12 w-auto object-contain"
+              />
               <div>
                 <h2 className="text-xl font-bold text-primary">Sites Odonto</h2>
                 <p className="text-xs text-text-secondary">Profissionais em 24h</p>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
