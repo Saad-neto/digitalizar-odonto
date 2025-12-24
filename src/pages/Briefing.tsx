@@ -1008,28 +1008,33 @@ const BriefingOdonto = () => {
                 </div>
               </div>
 
-              {/* Foto da Clínica */}
+              {/* Fotos da Clínica */}
               <div>
                 <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                  Foto da Clínica (Opcional)
+                  Fotos da Clínica (Opcional)
                 </label>
                 <p className="text-medical-600/60 text-sm mb-3">
-                  Envie uma foto da fachada ou do ambiente interno da sua clínica
+                  Envie de 1 a 4 fotos da sua clínica (fachada, recepção, consultórios, etc.)
                 </p>
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => handleFileUpload('sobre_foto', e.target.files)}
+                  multiple
+                  onChange={(e) => handleFileUpload('sobre_fotos', e.target.files)}
                   className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
                 />
-                {uploadedFiles.sobre_foto && uploadedFiles.sobre_foto.length > 0 && (
-                  <div className="mt-3 flex items-center gap-2 text-green-600">
-                    <Check className="w-4 h-4" />
-                    <span className="text-sm">Foto enviada: {uploadedFiles.sobre_foto[0].name}</span>
+                {uploadedFiles.sobre_fotos && uploadedFiles.sobre_fotos.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {uploadedFiles.sobre_fotos.map((file: File, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2 text-green-600">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">Foto {idx + 1}: {file.name}</span>
+                      </div>
+                    ))}
                   </div>
                 )}
                 <p className="text-medical-600/60 text-xs mt-2">
-                  Se não enviar, usaremos uma imagem genérica ou não exibiremos foto nesta seção
+                  💡 Recomendado: fotos profissionais, bem iluminadas, em alta resolução (máx. 5MB cada)
                 </p>
               </div>
             </div>
@@ -1909,118 +1914,6 @@ const BriefingOdonto = () => {
               </div>
             </div>
 
-            {/* Imagem Hero Desktop */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
-                🖥️ Imagem Principal do Site (Hero - Desktop)
-              </label>
-              <p className="text-sm text-medical-600/70 mb-3">
-                Esta é a <strong>primeira imagem que o visitante vê</strong> ao acessar seu site no computador.
-                Ela aparece no topo da página inicial e causa a primeira impressão. Escolha uma imagem profissional
-                do seu consultório, equipe ou um sorriso bonito.
-              </p>
-              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
-                <input
-                  type="file"
-                  accept=".jpg,.jpeg,.png,.webp"
-                  onChange={(e) => handleFileUpload('hero_desktop', e.target.files)}
-                  className="hidden"
-                  id="upload_hero_desktop"
-                />
-                <label htmlFor="upload_hero_desktop" className="cursor-pointer flex flex-col items-center">
-                  <div className="text-5xl mb-3">🖼️</div>
-                  <p className="text-neutral-900 font-medium">Clique para fazer upload (Desktop)</p>
-                  <p className="text-sm text-medical-600/70 mt-1">(JPG, PNG ou WEBP - máx. 8MB)</p>
-                </label>
-                {uploadedFiles.hero_desktop && uploadedFiles.hero_desktop.length > 0 && (
-                  <div className="mt-4 text-center text-green-700 font-semibold">
-                    ✓ {uploadedFiles.hero_desktop[0].name}
-                  </div>
-                )}
-              </div>
-              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <p className="text-xs text-gray-600">
-                  <strong>💡 Formato ideal:</strong> 1920x1080px (proporção 16:9) - paisagem (horizontal).
-                  Evite imagens muito escuras ou com texto sobreposto.
-                </p>
-              </div>
-            </div>
-
-            {/* Imagem Hero Mobile */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
-                📱 Imagem Principal do Site (Hero - Mobile)
-              </label>
-              <p className="text-sm text-medical-600/70 mb-3">
-                Esta é a versão <strong>para celular</strong> da imagem principal. Como as telas de celular são
-                verticais, precisamos de uma imagem diferente para garantir boa visualização. Pode ser um recorte
-                da imagem desktop ou uma foto diferente.
-              </p>
-              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
-                <input
-                  type="file"
-                  accept=".jpg,.jpeg,.png,.webp"
-                  onChange={(e) => handleFileUpload('hero_mobile', e.target.files)}
-                  className="hidden"
-                  id="upload_hero_mobile"
-                />
-                <label htmlFor="upload_hero_mobile" className="cursor-pointer flex flex-col items-center">
-                  <div className="text-5xl mb-3">📱</div>
-                  <p className="text-neutral-900 font-medium">Clique para fazer upload (Mobile)</p>
-                  <p className="text-sm text-medical-600/70 mt-1">(JPG, PNG ou WEBP - máx. 5MB)</p>
-                </label>
-                {uploadedFiles.hero_mobile && uploadedFiles.hero_mobile.length > 0 && (
-                  <div className="mt-4 text-center text-green-700 font-semibold">
-                    ✓ {uploadedFiles.hero_mobile[0].name}
-                  </div>
-                )}
-              </div>
-              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <p className="text-xs text-gray-600">
-                  <strong>💡 Formato ideal:</strong> 1080x1920px (proporção 9:16) - retrato (vertical).
-                  Ideal focar em rostos ou elementos centrais.
-                </p>
-              </div>
-            </div>
-
-            {/* Fotos da Clínica/Espaço */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
-                🏥 Fotos da Clínica/Consultório (Galeria)
-              </label>
-              <p className="text-sm text-medical-600/70 mb-3">
-                Fotos do seu espaço ajudam a gerar <strong>confiança e credibilidade</strong>. Mostram ao paciente
-                que você tem um ambiente profissional. Inclua: recepção, consultório, equipamentos modernos,
-                sala de espera, etc.
-              </p>
-              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
-                <input
-                  type="file"
-                  accept=".jpg,.jpeg,.png,.webp"
-                  multiple
-                  onChange={(e) => handleFileUpload('fotos_espaco', e.target.files)}
-                  className="hidden"
-                  id="upload_fotos_espaco"
-                />
-                <label htmlFor="upload_fotos_espaco" className="cursor-pointer flex flex-col items-center">
-                  <div className="text-5xl mb-3">📸</div>
-                  <p className="text-neutral-900 font-medium">Clique para fazer upload (múltiplas fotos)</p>
-                  <p className="text-sm text-medical-600/70 mt-1">(JPG, PNG ou WEBP - máx. 5MB cada)</p>
-                </label>
-                {uploadedFiles.fotos_espaco && uploadedFiles.fotos_espaco.length > 0 && (
-                  <div className="mt-4 text-center text-green-700 font-semibold">
-                    ✓ {uploadedFiles.fotos_espaco.length} foto(s) selecionada(s)
-                  </div>
-                )}
-              </div>
-              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <p className="text-xs text-gray-600">
-                  <strong>💡 Dica:</strong> Ideal ter entre 4-8 fotos do espaço. Fotos bem iluminadas e organizadas
-                  transmitem profissionalismo.
-                </p>
-              </div>
-            </div>
-
             {/* Cor Preferida */}
             <div>
               <label className="block text-neutral-900 font-semibold mb-2 text-lg">
@@ -2097,46 +1990,6 @@ const BriefingOdonto = () => {
                 className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
                 placeholder="Ex:&#10;https://exemplodentista1.com&#10;https://exemplodentista2.com&#10;&#10;Você pode colar vários links, um por linha."
               />
-            </div>
-
-            {/* Prazo Desejado */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                ⏱️ Prazo de Entrega Desejado
-              </label>
-              <p className="text-sm text-medical-600/70 mb-4">
-                Quando você precisa do site pronto?
-              </p>
-              <div className="space-y-3">
-                {[
-                  { value: 'urgente', label: '⚡ 24 horas (Urgente)', desc: 'Taxa adicional de R$ 200' },
-                  { value: 'rapido', label: '🚀 3-5 dias', desc: 'Entrega rápida' },
-                  { value: 'normal', label: '📅 1-2 semanas', desc: 'Prazo padrão' },
-                  { value: 'flexivel', label: '🕐 Flexível (mais de 2 semanas)', desc: 'Sem pressa' }
-                ].map((prazo) => (
-                  <label
-                    key={prazo.value}
-                    className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                      formData.prazo_desejado === prazo.value
-                        ? 'border-medical-500 bg-neutral-50'
-                        : 'border-medical-200 hover:border-medical-400 bg-white'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="prazo_desejado"
-                      value={prazo.value}
-                      checked={formData.prazo_desejado === prazo.value}
-                      onChange={(e) => setFormData({...formData, prazo_desejado: e.target.value})}
-                      className="mr-3 mt-1 accent-medical-600"
-                    />
-                    <div>
-                      <div className="font-semibold text-neutral-900">{prazo.label}</div>
-                      <div className="text-sm text-medical-600/70">{prazo.desc}</div>
-                    </div>
-                  </label>
-                ))}
-              </div>
             </div>
           </div>
         );
