@@ -1407,6 +1407,14 @@ const BriefingOdonto = () => {
       case 4: // PÁGINA 5: Serviços e Diferenciais
         return (
           <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+                {sections[4].title}
+              </h2>
+              <p className="text-medical-600/70 text-lg">{sections[4].subtitle}</p>
+            </div>
+
             {/* Serviços Oferecidos */}
             <div>
               <label className="block text-neutral-900 font-semibold mb-4 text-lg">
@@ -1731,6 +1739,14 @@ const BriefingOdonto = () => {
       case 7: // PÁGINA 8: Localização e Contato
         return (
           <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+                {sections[7].title}
+              </h2>
+              <p className="text-medical-600/70 text-lg">{sections[7].subtitle}</p>
+            </div>
+
             {/* CEP */}
             <div>
               <label className="block text-neutral-900 font-semibold mb-2">
@@ -2049,6 +2065,14 @@ const BriefingOdonto = () => {
       case 6: // PÁGINA 7: Galeria e Cores
         return (
           <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+                {sections[6].title}
+              </h2>
+              <p className="text-medical-600/70 text-lg">{sections[6].subtitle}</p>
+            </div>
+
             {/* Aviso Importante */}
             <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-300">
               <div className="flex items-start">
@@ -2475,6 +2499,14 @@ const BriefingOdonto = () => {
       case 5: // PÁGINA 6: Depoimentos
         return (
           <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+                {sections[5].title}
+              </h2>
+              <p className="text-medical-600/70 text-lg">{sections[5].subtitle}</p>
+            </div>
+
             {/* Como você quer mostrar depoimentos no site? */}
             <div>
               <label className="block text-neutral-900 font-semibold mb-4 text-lg">
