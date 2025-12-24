@@ -1969,28 +1969,6 @@ const BriefingOdonto = () => {
               <p className="text-medical-600/70 text-lg">{sections[6].subtitle}</p>
             </div>
 
-            {/* Aviso Importante */}
-            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-300">
-              <div className="flex items-start">
-                <div className="text-3xl mr-4">ℹ️</div>
-                <div>
-                  <h3 className="text-xl font-bold text-blue-800 mb-2">
-                    Imagens e Materiais Visuais
-                  </h3>
-                  <p className="text-blue-700 mb-3">
-                    Esta seção é <strong>opcional</strong>. Se você não tiver todas as imagens agora, não tem problema!
-                  </p>
-                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-                    <p className="text-yellow-800 text-sm">
-                      <strong>⏱️ Atenção quanto ao prazo:</strong> Se você não enviar as imagens agora, nossa equipe entrará
-                      em contato para solicitá-las. Porém, <strong>o prazo de entrega de 24h pode não ser cumprido</strong>
-                      enquanto aguardamos os materiais. Quanto mais completo você enviar, mais rápido ficará pronto!
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Logo da Clínica */}
             <div>
               <label className="block text-neutral-900 font-semibold mb-2 text-lg">
