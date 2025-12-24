@@ -12,11 +12,11 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-3 mb-6">
               <img
                 src="/logo.png"
-                alt="Sites Odonto 24H"
+                alt="Digitalizar Odonto"
                 className="h-14 w-auto object-contain"
               />
               <div>
-                <h3 className="text-2xl font-bold">Sites Odonto 24H</h3>
+                <h3 className="text-2xl font-bold">Digitalizar Odonto</h3>
                 <p className="text-white/70">Especialistas em Sites Odontológicos</p>
               </div>
             </div>
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
               <div className="flex items-start gap-3">
                 <Clock size={20} className="text-success-light mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold">24h</p>
+                  <p className="font-semibold">Segunda a Sexta</p>
                   <p className="text-white/70 text-sm">Atendimento online</p>
                 </div>
               </div>
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="border-t border-white/20 pt-8 text-center text-white/70">
           <p className="mb-4">
-            © 2024 Sites Odonto 24H - Digitalizar Odonto. Todos os direitos reservados.
+            © 2024 Digitalizar Odonto. Todos os direitos reservados.
           </p>
           
           <div className="flex flex-wrap justify-center gap-6 text-sm">
