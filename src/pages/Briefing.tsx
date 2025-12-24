@@ -937,7 +937,106 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 2: // Profissionais (agora é case 2)
+      case 2: // PÁGINA 3: Sobre a Clínica
+        return (
+          <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+                {sections[2].title}
+              </h2>
+              <p className="text-medical-600/70 text-lg">{sections[2].subtitle}</p>
+            </div>
+
+            <div className="space-y-8">
+              {/* Título da Seção */}
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                  Título da Seção "Sobre" *
+                </label>
+                <select
+                  value={formData.sobre_titulo || ''}
+                  onChange={(e) => updateFormData('sobre_titulo', e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                    errors.sobre_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  }`}
+                >
+                  <option value="">Escolha um título</option>
+                  <option value="Sobre Nossa Clínica">Sobre Nossa Clínica</option>
+                  <option value="Quem Somos">Quem Somos</option>
+                  <option value="Nossa História">Nossa História</option>
+                  <option value="Conheça Nossa Clínica">Conheça Nossa Clínica</option>
+                  <option value="Sua Satisfação é Nossa Prioridade">Sua Satisfação é Nossa Prioridade</option>
+                </select>
+                {errors.sobre_titulo && <p className="text-red-500 text-sm mt-2">{errors.sobre_titulo}</p>}
+                <p className="text-medical-600/60 text-xs mt-2">Este será o título da seção "Sobre" no seu site</p>
+              </div>
+
+              {/* Texto Institucional */}
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                  Texto Institucional *
+                </label>
+                <p className="text-medical-600/60 text-sm mb-3">
+                  Conte a história da sua clínica, sua missão, valores e o que torna seu atendimento especial:
+                </p>
+                <ul className="text-medical-600/60 text-xs mb-3 space-y-1 list-disc list-inside">
+                  <li>Como e quando a clínica foi fundada</li>
+                  <li>Missão e valores da clínica</li>
+                  <li>Filosofia de atendimento</li>
+                  <li>Diferenciais e compromisso com os pacientes</li>
+                </ul>
+                <textarea
+                  value={formData.sobre_texto || ''}
+                  onChange={(e) => updateFormData('sobre_texto', e.target.value)}
+                  placeholder="Ex: Na Clínica Sorriso Perfeito, acreditamos que cada sorriso conta uma história única. Fundada em 2010, nossa missão é proporcionar um atendimento odontológico de excelência, combinando tecnologia de ponta com cuidado humanizado..."
+                  rows={10}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all resize-y ${
+                    errors.sobre_texto ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                  }`}
+                />
+                <div className="flex justify-between items-center mt-2">
+                  {errors.sobre_texto && <p className="text-red-500 text-sm">{errors.sobre_texto}</p>}
+                  <p className={`text-xs ml-auto ${
+                    (formData.sobre_texto || '').length < 100 ? 'text-red-500' :
+                    (formData.sobre_texto || '').length < 300 ? 'text-orange-500' :
+                    'text-green-600'
+                  }`}>
+                    {(formData.sobre_texto || '').length} caracteres
+                    {(formData.sobre_texto || '').length < 300 && ' (recomendado: 300-800)'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Foto da Clínica */}
+              <div>
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                  Foto da Clínica (Opcional)
+                </label>
+                <p className="text-medical-600/60 text-sm mb-3">
+                  Envie uma foto da fachada ou do ambiente interno da sua clínica
+                </p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload('sobre_foto', e.target.files)}
+                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
+                />
+                {uploadedFiles.sobre_foto && uploadedFiles.sobre_foto.length > 0 && (
+                  <div className="mt-3 flex items-center gap-2 text-green-600">
+                    <Check className="w-4 h-4" />
+                    <span className="text-sm">Foto enviada: {uploadedFiles.sobre_foto[0].name}</span>
+                  </div>
+                )}
+                <p className="text-medical-600/60 text-xs mt-2">
+                  Se não enviar, usaremos uma imagem genérica ou não exibiremos foto nesta seção
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 3: // PÁGINA 4: Equipe (era case 2 - Profissionais)
         return (
           <div className="space-y-8">
             {/* Header */}
@@ -945,7 +1044,7 @@ const BriefingOdonto = () => {
               <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[3].title}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[1].subtitle}</p>
+              <p className="text-medical-600/70 text-lg">{sections[3].subtitle}</p>
             </div>
 
             {/* Helper */}
@@ -1305,7 +1404,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 2: // PÁGINA 3: Serviços/Tratamentos + Tecnologia/Diferenciais
+      case 4: // PÁGINA 5: Serviços e Diferenciais
         return (
           <div className="space-y-8">
             {/* Serviços Oferecidos */}
@@ -1629,7 +1728,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 3: // PÁGINA 4: Localização/Contato
+      case 7: // PÁGINA 8: Localização e Contato
         return (
           <div className="space-y-8">
             {/* CEP */}
@@ -1947,7 +2046,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 4: // PÁGINA 5: Materiais Visuais
+      case 6: // PÁGINA 7: Galeria e Cores
         return (
           <div className="space-y-8">
             {/* Aviso Importante */}
@@ -2240,7 +2339,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 5: // PÁGINA 6: Rastreamento e Integrações (Opcional)
+      case 98: // TEMP: Rastreamento (será mesclado com case 8)
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
@@ -2373,7 +2472,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 6: // PÁGINA 7: Depoimentos/Cases + Link do Google Maps
+      case 5: // PÁGINA 6: Depoimentos
         return (
           <div className="space-y-8">
             {/* Como você quer mostrar depoimentos no site? */}
@@ -2537,7 +2636,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 7: // PÁGINA 8: Revisão Final
+      case 8: // PÁGINA 9: Revisão e Rastreamento
         return (
           <ReviewStep
             formData={formData}
