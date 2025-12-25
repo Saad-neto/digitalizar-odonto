@@ -353,7 +353,33 @@ const BriefingOdonto = () => {
         }
         break;
 
-      case 1: // Profissionais
+      case 1: // Hero / Banner Principal
+        // Validar questões do Hero
+        if (!formData.slogan_opcao) newErrors.slogan_opcao = 'Escolha uma opção de slogan';
+        if (formData.slogan_opcao === 'custom' && !formData.slogan_custom) {
+          newErrors.slogan_custom = 'Digite seu slogan personalizado';
+        }
+        if (!formData.ano_inicio || formData.ano_inicio < 1970 || formData.ano_inicio > 2025) {
+          newErrors.ano_inicio = 'Ano inválido';
+        }
+        if (!formData.tipo_consultorio) {
+          newErrors.tipo_consultorio = 'Escolha o tipo de consultório';
+        }
+        break;
+
+      case 2: // Sobre a Clínica
+        if (!formData.sobre_titulo) {
+          newErrors.sobre_titulo = 'Escolha um título para a seção';
+        }
+        if (formData.sobre_titulo === 'Personalizado' && !formData.sobre_titulo_personalizado?.trim()) {
+          newErrors.sobre_titulo_personalizado = 'Digite o título personalizado';
+        }
+        if (!formData.texto_institucional || formData.texto_institucional.length < 100) {
+          newErrors.texto_institucional = 'O texto institucional deve ter pelo menos 100 caracteres';
+        }
+        break;
+
+      case 3: // Profissionais
         // Validar array de profissionais
         if (!formData.profissionais || formData.profissionais.length === 0) {
           newErrors.profissionais = 'Adicione pelo menos um profissional';
@@ -372,17 +398,9 @@ const BriefingOdonto = () => {
             }
           });
         }
-        // Validar questões transferidas da página 1
-        if (!formData.slogan_opcao) newErrors.slogan_opcao = 'Escolha uma opção de slogan';
-        if (formData.slogan_opcao === 'custom' && !formData.slogan_custom) {
-          newErrors.slogan_custom = 'Digite seu slogan personalizado';
-        }
-        if (!formData.ano_inicio || formData.ano_inicio < 1970 || formData.ano_inicio > 2025) {
-          newErrors.ano_inicio = 'Ano inválido';
-        }
         break;
 
-      case 2: // Serviços e Diferenciais
+      case 4: // Serviços e Diferenciais
         if (!formData.servicos || formData.servicos.length < 3) {
           newErrors.servicos = 'Selecione pelo menos 3 serviços';
         }
@@ -406,7 +424,23 @@ const BriefingOdonto = () => {
         if (!formData.oferece_sedacao) newErrors.oferece_sedacao = 'Informe se oferece sedação';
         break;
 
-      case 3: // Localização e Contato
+      case 5: // Depoimentos
+        if (!formData.estrategia_depoimentos) {
+          newErrors.estrategia_depoimentos = 'Escolha como quer mostrar depoimentos';
+        }
+        if (formData.estrategia_depoimentos === 'google' && !formData.link_google_maps) {
+          newErrors.link_google_maps = 'Link do Google Maps é obrigatório';
+        }
+        if (formData.estrategia_depoimentos === 'texto' && !formData.depoimentos_texto) {
+          newErrors.depoimentos_texto = 'Cole pelo menos 2 depoimentos';
+        }
+        break;
+
+      case 6: // Materiais Visuais (Galeria e Cores) - Opcional
+        // Sem validações obrigatórias - cliente pode enviar depois
+        break;
+
+      case 7: // Localização e Contato
         if (!formData.cep) newErrors.cep = 'CEP é obrigatório';
         if (!formData.rua) newErrors.rua = 'Rua é obrigatória';
         if (!formData.numero) newErrors.numero = 'Número é obrigatório';
@@ -421,27 +455,8 @@ const BriefingOdonto = () => {
         if (!formData.tem_redes_sociais) newErrors.tem_redes_sociais = 'Informe se tem redes sociais';
         break;
 
-      case 4: // Materiais Visuais - Opcional
-        // Sem validações obrigatórias - cliente pode enviar depois
-        break;
-
-      case 5: // Rastreamento e Integrações - Opcional
+      case 8: // Revisão e Rastreamento - Sem validações necessárias
         // Sem validações obrigatórias - tudo é opcional
-        break;
-
-      case 6: // Depoimentos
-        if (!formData.estrategia_depoimentos) {
-          newErrors.estrategia_depoimentos = 'Escolha como quer mostrar depoimentos';
-        }
-        if (formData.estrategia_depoimentos === 'google' && !formData.link_google_maps) {
-          newErrors.link_google_maps = 'Link do Google Maps é obrigatório';
-        }
-        if (formData.estrategia_depoimentos === 'texto' && !formData.depoimentos_texto) {
-          newErrors.depoimentos_texto = 'Cole pelo menos 2 depoimentos';
-        }
-        break;
-
-      case 7: // Revisão Final - Sem validações necessárias
         break;
     }
 
@@ -933,19 +948,79 @@ const BriefingOdonto = () => {
                   </label>
                 </div>
               </div>
+
+              {/* Tipo de Consultório */}
+              <div className="border-t-2 border-medical-100 pt-6 mt-6">
+                <h3 className="text-lg font-semibold text-neutral-900 mb-3">Tipo de Consultório *</h3>
+                <p className="text-medical-600/60 text-sm mb-4">
+                  Isso nos ajudará a personalizar as próximas etapas do formulário
+                </p>
+
+                <div className="space-y-3">
+                  <label className={`flex items-start gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                    formData.tipo_consultorio === 'individual'
+                      ? 'border-medical-500 bg-medical-50'
+                      : 'border-medical-200 hover:border-medical-300'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="tipo_consultorio"
+                      value="individual"
+                      checked={formData.tipo_consultorio === 'individual'}
+                      onChange={(e) => updateFormData('tipo_consultorio', e.target.value)}
+                      className="mt-1 w-4 h-4 text-medical-600 border-medical-300 focus:ring-medical-500"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-neutral-900">Consultório Individual</div>
+                      <div className="text-sm text-medical-600/70 mt-1">
+                        Apenas você como profissional. O site terá foco no seu perfil e experiência.
+                      </div>
+                    </div>
+                  </label>
+
+                  <label className={`flex items-start gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                    formData.tipo_consultorio === 'clinica'
+                      ? 'border-medical-500 bg-medical-50'
+                      : 'border-medical-200 hover:border-medical-300'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="tipo_consultorio"
+                      value="clinica"
+                      checked={formData.tipo_consultorio === 'clinica'}
+                      onChange={(e) => updateFormData('tipo_consultorio', e.target.value)}
+                      className="mt-1 w-4 h-4 text-medical-600 border-medical-300 focus:ring-medical-500"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-neutral-900">Clínica com Equipe</div>
+                      <div className="text-sm text-medical-600/70 mt-1">
+                        2 ou mais profissionais. O site terá uma seção dedicada para apresentar sua equipe.
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                {errors.tipo_consultorio && (
+                  <p className="text-red-500 text-sm mt-2">{errors.tipo_consultorio}</p>
+                )}
+              </div>
             </div>
           </div>
         );
 
-      case 2: // PÁGINA 3: Sobre a Clínica
+      case 2: // PÁGINA 3: Sobre a Clínica / Sobre Você
+        const isIndividual = formData.tipo_consultorio === 'individual';
+        const sobreTitulo = isIndividual ? 'Sobre Você' : 'Sobre a Clínica';
+        const sobreSubtitulo = isIndividual ? 'Conte sua história e experiência' : 'Apresente sua clínica';
+
         return (
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
-                {sections[2].title}
+                {sobreTitulo}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[2].subtitle}</p>
+              <p className="text-medical-600/70 text-lg">{sobreSubtitulo}</p>
             </div>
 
             <div className="space-y-8">
@@ -962,34 +1037,83 @@ const BriefingOdonto = () => {
                   }`}
                 >
                   <option value="">Escolha um título</option>
-                  <option value="Sobre Nossa Clínica">Sobre Nossa Clínica</option>
-                  <option value="Quem Somos">Quem Somos</option>
-                  <option value="Nossa História">Nossa História</option>
-                  <option value="Conheça Nossa Clínica">Conheça Nossa Clínica</option>
-                  <option value="Sua Satisfação é Nossa Prioridade">Sua Satisfação é Nossa Prioridade</option>
+                  {isIndividual ? (
+                    <>
+                      <option value="Sobre Mim">Sobre Mim</option>
+                      <option value="Minha História">Minha História</option>
+                      <option value="Conheça o Profissional">Conheça o Profissional</option>
+                      <option value="Minha Experiência">Minha Experiência</option>
+                      <option value="Quem Sou">Quem Sou</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="Sobre Nossa Clínica">Sobre Nossa Clínica</option>
+                      <option value="Quem Somos">Quem Somos</option>
+                      <option value="Nossa História">Nossa História</option>
+                      <option value="Conheça Nossa Clínica">Conheça Nossa Clínica</option>
+                      <option value="Sua Satisfação é Nossa Prioridade">Sua Satisfação é Nossa Prioridade</option>
+                    </>
+                  )}
+                  <option value="Personalizado">Personalizado</option>
                 </select>
                 {errors.sobre_titulo && <p className="text-red-500 text-sm mt-2">{errors.sobre_titulo}</p>}
                 <p className="text-medical-600/60 text-xs mt-2">Este será o título da seção "Sobre" no seu site</p>
+
+                {/* Campo de título personalizado */}
+                {formData.sobre_titulo === 'Personalizado' && (
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                      Digite seu título personalizado *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.sobre_titulo_personalizado || ''}
+                      onChange={(e) => updateFormData('sobre_titulo_personalizado', e.target.value)}
+                      placeholder={isIndividual ? "Ex: Minha Trajetória Profissional" : "Ex: Nossa Missão e Valores"}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors.sobre_titulo_personalizado ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    {errors.sobre_titulo_personalizado && (
+                      <p className="text-red-500 text-sm mt-2">{errors.sobre_titulo_personalizado}</p>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Texto Institucional */}
               <div>
                 <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                  Texto Institucional *
+                  {isIndividual ? 'Sobre Você e sua Prática Profissional *' : 'Texto Institucional *'}
                 </label>
                 <p className="text-medical-600/60 text-sm mb-3">
-                  Conte a história da sua clínica, sua missão, valores e o que torna seu atendimento especial:
+                  {isIndividual
+                    ? 'Conte sua história, formação, experiência e o que te torna um profissional único:'
+                    : 'Conte a história da sua clínica, sua missão, valores e o que torna seu atendimento especial:'}
                 </p>
                 <ul className="text-medical-600/60 text-xs mb-3 space-y-1 list-disc list-inside">
-                  <li>Como e quando a clínica foi fundada</li>
-                  <li>Missão e valores da clínica</li>
-                  <li>Filosofia de atendimento</li>
-                  <li>Diferenciais e compromisso com os pacientes</li>
+                  {isIndividual ? (
+                    <>
+                      <li>Sua formação acadêmica e especializações</li>
+                      <li>Anos de experiência e principais conquistas</li>
+                      <li>Sua filosofia de atendimento e cuidado com pacientes</li>
+                      <li>Diferenciais e abordagem profissional</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>Como e quando a clínica foi fundada</li>
+                      <li>Missão e valores da clínica</li>
+                      <li>Filosofia de atendimento</li>
+                      <li>Diferenciais e compromisso com os pacientes</li>
+                    </>
+                  )}
                 </ul>
                 <textarea
                   value={formData.sobre_texto || ''}
                   onChange={(e) => updateFormData('sobre_texto', e.target.value)}
-                  placeholder="Ex: Na Clínica Sorriso Perfeito, acreditamos que cada sorriso conta uma história única. Fundada em 2010, nossa missão é proporcionar um atendimento odontológico de excelência, combinando tecnologia de ponta com cuidado humanizado..."
+                  placeholder={isIndividual
+                    ? "Ex: Formado pela USP em 2010 com especialização em Implantodontia, dedico minha carreira a proporcionar sorrisos saudáveis com um atendimento humanizado e tecnologia de ponta. Com mais de 1000 procedimentos realizados..."
+                    : "Ex: Na Clínica Sorriso Perfeito, acreditamos que cada sorriso conta uma história única. Fundada em 2010, nossa missão é proporcionar um atendimento odontológico de excelência, combinando tecnologia de ponta com cuidado humanizado..."}
                   rows={10}
                   className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all resize-y ${
                     errors.sobre_texto ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
@@ -1011,10 +1135,12 @@ const BriefingOdonto = () => {
               {/* Fotos da Clínica */}
               <div>
                 <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                  Fotos da Clínica (Opcional)
+                  {isIndividual ? 'Fotos do Consultório (Opcional)' : 'Fotos da Clínica (Opcional)'}
                 </label>
                 <p className="text-medical-600/60 text-sm mb-3">
-                  Envie de 1 a 4 fotos da sua clínica (fachada, recepção, consultórios, etc.)
+                  {isIndividual
+                    ? 'Envie de 1 a 4 fotos do seu consultório (fachada, sala de atendimento, equipamentos, etc.)'
+                    : 'Envie de 1 a 4 fotos da sua clínica (fachada, recepção, consultórios, etc.)'}
                 </p>
                 <input
                   type="file"
@@ -1042,20 +1168,38 @@ const BriefingOdonto = () => {
         );
 
       case 3: // PÁGINA 4: Equipe (era case 2 - Profissionais)
+        const isConsultorioIndividual = formData.tipo_consultorio === 'individual';
+        const equipeTitulo = isConsultorioIndividual ? 'Seus Dados Profissionais' : 'Nossa Equipe';
+        const equipeSubtitulo = isConsultorioIndividual ? 'Complete suas informações profissionais' : 'Apresente os profissionais';
+
+        // Garantir que há pelo menos 1 profissional se for consultório individual
+        if (isConsultorioIndividual && (!formData.profissionais || formData.profissionais.length === 0)) {
+          updateFormData('profissionais', [{
+            nome: '',
+            registro: '',
+            especialidade: '',
+            descricao: '',
+            foto: null,
+            redesSociais: []
+          }]);
+        }
+
         return (
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
-                {sections[3].title}
+                {equipeTitulo}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[3].subtitle}</p>
+              <p className="text-medical-600/70 text-lg">{equipeSubtitulo}</p>
             </div>
 
             {/* Helper */}
             <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
               <p className="text-sm text-gray-700">
-                💡 Adicione os dentistas/profissionais que aparecerão na página "Nossa Equipe" do site. Você pode adicionar quantos quiser!
+                {isConsultorioIndividual
+                  ? '💡 Preencha suas informações profissionais que aparecerão na seção "Sobre" do seu site.'
+                  : '💡 Adicione os dentistas/profissionais que aparecerão na página "Nossa Equipe" do site. Você pode adicionar quantos quiser!'}
               </p>
             </div>
 
@@ -1081,13 +1225,13 @@ const BriefingOdonto = () => {
                   )}
 
                   <h3 className="text-xl font-bold text-gray-900 mt-2">
-                    Profissional {index + 1}
+                    {isConsultorioIndividual ? 'Seus Dados' : `Profissional ${index + 1}`}
                   </h3>
 
                   {/* Nome */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Nome completo *
+                      {isConsultorioIndividual ? 'Seu nome completo *' : 'Nome completo *'}
                     </label>
                     <input
                       type="text"
@@ -1106,7 +1250,7 @@ const BriefingOdonto = () => {
                   {/* Registro CRO */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Número do registro (CRO) *
+                      {isConsultorioIndividual ? 'Seu CRO *' : 'Número do registro (CRO) *'}
                     </label>
                     <input
                       type="text"
@@ -1125,7 +1269,7 @@ const BriefingOdonto = () => {
                   {/* Especialidade */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Especialidade principal
+                      {isConsultorioIndividual ? 'Sua especialidade principal' : 'Especialidade principal'}
                     </label>
                     <select
                       value={profissional.especialidade || ''}
@@ -1149,7 +1293,7 @@ const BriefingOdonto = () => {
                   {/* Mini biografia */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Mini biografia (2-3 linhas) *
+                      {isConsultorioIndividual ? 'Sua mini biografia (2-3 linhas) *' : 'Mini biografia (2-3 linhas) *'}
                     </label>
                     <textarea
                       rows={4}
@@ -1164,14 +1308,16 @@ const BriefingOdonto = () => {
                       <p className="text-red-500 text-sm mt-2">{errors[`profissional_${index}_descricao`]}</p>
                     )}
                     <p className="text-xs text-gray-500 mt-2">
-                      Aparecerá na página "Nossa Equipe" abaixo da foto
+                      {isConsultorioIndividual
+                        ? 'Aparecerá na seção "Sobre" do seu site'
+                        : 'Aparecerá na página "Nossa Equipe" abaixo da foto'}
                     </p>
                   </div>
 
                   {/* Foto */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Foto profissional
+                      {isConsultorioIndividual ? 'Sua foto profissional' : 'Foto profissional'}
                     </label>
                     <input
                       type="file"
@@ -1199,7 +1345,7 @@ const BriefingOdonto = () => {
                   {/* Redes Sociais */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-3">
-                      Redes sociais (opcional)
+                      {isConsultorioIndividual ? 'Suas redes sociais (opcional)' : 'Redes sociais (opcional)'}
                     </label>
 
                     {(profissional.redesSociais || []).map((rede: any, redeIndex: number) => (
@@ -1242,15 +1388,17 @@ const BriefingOdonto = () => {
               ))}
             </div>
 
-            {/* Botão Adicionar Profissional */}
-            <button
-              type="button"
-              onClick={adicionarProfissional}
-              className="w-full py-4 border-2 border-dashed border-medical-400 rounded-xl text-medical-600 font-semibold hover:bg-medical-50 transition-all flex items-center justify-center gap-2"
-            >
-              <span className="text-2xl">+</span>
-              Adicionar outro profissional
-            </button>
+            {/* Botão Adicionar Profissional - só aparece se for clínica */}
+            {!isConsultorioIndividual && (
+              <button
+                type="button"
+                onClick={adicionarProfissional}
+                className="w-full py-4 border-2 border-dashed border-medical-400 rounded-xl text-medical-600 font-semibold hover:bg-medical-50 transition-all flex items-center justify-center gap-2"
+              >
+                <span className="text-2xl">+</span>
+                Adicionar outro profissional
+              </button>
+            )}
           </div>
         );
 
