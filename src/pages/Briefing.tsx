@@ -2292,119 +2292,122 @@ const BriefingOdonto = () => {
                   Opção 2: Criar Paleta Personalizada
                 </label>
                 <p className="text-sm text-medical-600/70 mb-4">
-                  Defina cada cor do seu design system. Deixe em branco as que não tiver definidas.
+                  Adicione as cores do seu design system uma por uma.
                 </p>
 
                 <div className="space-y-4">
-                  {[
-                    {
-                      key: 'cor_primaria',
-                      label: 'Cor Primária (Primary)',
-                      desc: 'Cor principal da marca, usada em botões e destaques',
-                      default: '#8B5CF6'
-                    },
-                    {
-                      key: 'cor_secundaria',
-                      label: 'Cor Secundária (Secondary)',
-                      desc: 'Cor complementar, usada em elementos secundários',
-                      default: '#06B6D4'
-                    },
-                    {
-                      key: 'cor_accent',
-                      label: 'Cor de Destaque (Accent)',
-                      desc: 'Para chamar atenção em CTAs e elementos importantes',
-                      default: '#F59E0B'
-                    },
-                    {
-                      key: 'cor_background',
-                      label: 'Cor de Fundo (Background)',
-                      desc: 'Cor de fundo principal das seções',
-                      default: '#F9FAFB'
-                    },
-                    {
-                      key: 'cor_texto',
-                      label: 'Cor do Texto (Text)',
-                      desc: 'Cor principal dos textos',
-                      default: '#1F2937'
-                    }
-                  ].map((cor) => {
-                    const paleta = formData.paleta_personalizada || {};
-                    const corData = paleta[cor.key] || {};
+                  {(formData.cores_personalizadas || []).map((cor: any, index: number) => (
+                    <div key={index} className="bg-white border-2 border-medical-200 rounded-xl p-4 sm:p-6">
+                      <div className="space-y-4">
+                        {/* Header com botão remover */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                              {index + 1}
+                            </span>
+                            <span className="font-semibold text-neutral-900">Cor {index + 1}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const novasCores = (formData.cores_personalizadas || []).filter((_: any, i: number) => i !== index);
+                              setFormData({...formData, cores_personalizadas: novasCores});
+                            }}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                            title="Remover cor"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
 
-                    return (
-                      <div key={cor.key} className="bg-white border-2 border-medical-200 rounded-xl p-4 sm:p-6">
-                        <div className="space-y-3">
-                          <label className="block text-sm sm:text-base font-semibold text-neutral-900">
-                            {cor.label}
+                        {/* Nome da cor */}
+                        <div>
+                          <label className="block text-sm font-medium text-neutral-700 mb-1">
+                            Nome da cor *
                           </label>
-                          <p className="text-xs sm:text-sm text-medical-600/70">
-                            {cor.desc}
-                          </p>
+                          <input
+                            type="text"
+                            placeholder="Ex: Cor Primária, Azul Principal, Verde Destaque"
+                            value={cor.nome || ''}
+                            onChange={(e) => {
+                              const novasCores = [...(formData.cores_personalizadas || [])];
+                              novasCores[index] = { ...novasCores[index], nome: e.target.value };
+                              setFormData({...formData, cores_personalizadas: novasCores});
+                            }}
+                            className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                          />
+                        </div>
+
+                        {/* Descrição da cor (opcional) */}
+                        <div>
+                          <label className="block text-sm font-medium text-neutral-700 mb-1">
+                            Onde será usada? (opcional)
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Ex: Botões, títulos, fundo das seções"
+                            value={cor.descricao || ''}
+                            onChange={(e) => {
+                              const novasCores = [...(formData.cores_personalizadas || [])];
+                              novasCores[index] = { ...novasCores[index], descricao: e.target.value };
+                              setFormData({...formData, cores_personalizadas: novasCores});
+                            }}
+                            className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                          />
+                        </div>
+
+                        {/* Seletor de cor */}
+                        <div>
+                          <label className="block text-sm font-medium text-neutral-700 mb-2">
+                            Código da cor *
+                          </label>
                           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                             <input
                               type="color"
-                              value={corData.valor || cor.default}
+                              value={cor.valor || '#8B5CF6'}
                               onChange={(e) => {
-                                const novaPaleta = {
-                                  ...formData.paleta_personalizada,
-                                  [cor.key]: {
-                                    ...corData,
-                                    valor: e.target.value,
-                                    formato: corData.formato || 'hex'
-                                  }
-                                };
-                                setFormData({...formData, paleta_personalizada: novaPaleta});
+                                const novasCores = [...(formData.cores_personalizadas || [])];
+                                novasCores[index] = { ...novasCores[index], valor: e.target.value };
+                                setFormData({...formData, cores_personalizadas: novasCores});
                               }}
                               className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 border-medical-300 cursor-pointer flex-shrink-0"
                             />
-                            <div className="flex-1 flex flex-col xs:flex-row gap-3 w-full">
-                              <select
-                                value={corData.formato || 'hex'}
-                                onChange={(e) => {
-                                  const novaPaleta = {
-                                    ...formData.paleta_personalizada,
-                                    [cor.key]: {
-                                      ...corData,
-                                      formato: e.target.value
-                                    }
-                                  };
-                                  setFormData({...formData, paleta_personalizada: novaPaleta});
-                                }}
-                                className="w-full xs:w-32 px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
-                              >
-                                <option value="hex">HEX</option>
-                                <option value="rgb">RGB</option>
-                                <option value="hsl">HSL</option>
-                              </select>
-                              <input
-                                type="text"
-                                value={corData.valor || cor.default}
-                                onChange={(e) => {
-                                  const novaPaleta = {
-                                    ...formData.paleta_personalizada,
-                                    [cor.key]: {
-                                      ...corData,
-                                      valor: e.target.value
-                                    }
-                                  };
-                                  setFormData({...formData, paleta_personalizada: novaPaleta});
-                                }}
-                                placeholder={cor.default}
-                                className="flex-1 font-mono px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
-                              />
-                            </div>
+                            <input
+                              type="text"
+                              value={cor.valor || ''}
+                              onChange={(e) => {
+                                const novasCores = [...(formData.cores_personalizadas || [])];
+                                novasCores[index] = { ...novasCores[index], valor: e.target.value };
+                                setFormData({...formData, cores_personalizadas: novasCores});
+                              }}
+                              placeholder="#8B5CF6"
+                              className="flex-1 font-mono px-3 py-3 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                            />
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
+
+                {/* Botão Adicionar Cor */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const novasCores = [...(formData.cores_personalizadas || []), { nome: '', descricao: '', valor: '#8B5CF6' }];
+                    setFormData({...formData, cores_personalizadas: novasCores});
+                  }}
+                  className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                >
+                  <Plus className="w-5 h-5" />
+                  Adicionar cor
+                </button>
 
                 <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
                   <p className="text-sm text-blue-800">
-                    💡 <strong>Dica:</strong> Se você não tiver todas as cores definidas, não tem problema!
-                    Pelo menos defina a <strong>Cor Primária</strong> (a cor principal da sua marca).
-                    Nosso designer pode criar as demais cores complementares baseado nela.
+                    💡 <strong>Dica:</strong> Adicione pelo menos a <strong>cor principal da sua marca</strong>.
+                    Nosso designer pode criar as demais cores complementares baseado nela. Exemplos de cores comuns:
+                    <strong> Cor Primária, Cor Secundária, Cor de Destaque, Cor de Fundo, Cor do Texto</strong>.
                   </p>
                 </div>
               </div>
