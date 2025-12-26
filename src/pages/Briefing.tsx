@@ -2409,42 +2409,6 @@ const BriefingOdonto = () => {
                 </div>
               </div>
             </div>
-
-            {/* Logo da Clínica */}
-            <div className="border-t-4 border-medical-100 pt-8">
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
-                📱 Logo da Clínica/Consultório
-              </label>
-              <p className="text-sm text-medical-600/70 mb-3">
-                Sua logo aparecerá no <strong>cabeçalho do site</strong>, <strong>rodapé</strong> e em outros locais estratégicos.
-                Prefira PNG com fundo transparente para melhor resultado.
-              </p>
-              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
-                <input
-                  type="file"
-                  accept=".jpg,.jpeg,.png,.webp"
-                  onChange={(e) => handleFileUpload('logo', e.target.files)}
-                  className="hidden"
-                  id="upload_logo"
-                />
-                <label htmlFor="upload_logo" className="cursor-pointer flex flex-col items-center">
-                  <div className="text-5xl mb-3">🎨</div>
-                  <p className="text-neutral-900 font-medium">Clique para fazer upload da logo</p>
-                  <p className="text-sm text-medical-600/70 mt-1">(PNG, JPG ou WEBP - máx. 5MB)</p>
-                </label>
-                {uploadedFiles.logo && uploadedFiles.logo.length > 0 && (
-                  <div className="mt-4 text-center text-green-700 font-semibold">
-                    ✓ {uploadedFiles.logo[0].name}
-                  </div>
-                )}
-              </div>
-              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <p className="text-xs text-gray-600">
-                  <strong>💡 Dica:</strong> A logo deve ter boa qualidade e ser legível em tamanhos pequenos.
-                  Formatos ideais: 500x500px ou 1000x300px (depende do formato da sua logo).
-                </p>
-              </div>
-            </div>
           </div>
         );
 
