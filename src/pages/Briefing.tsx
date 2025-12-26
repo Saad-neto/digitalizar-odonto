@@ -538,7 +538,7 @@ const BriefingOdonto = () => {
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[0].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[0].subtitle}</p>
@@ -555,7 +555,7 @@ const BriefingOdonto = () => {
                   placeholder="Ex: Clínica Odontológica Dr. Carlos Silva"
                   value={formData.nome_consultorio || ''}
                   onChange={(e) => updateFormData('nome_consultorio', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.nome_consultorio ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 />
@@ -572,12 +572,12 @@ const BriefingOdonto = () => {
                   placeholder="Ex: Dr. Carlos Eduardo Silva"
                   value={formData.nome || ''}
                   onChange={(e) => updateFormData('nome', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 />
                 {errors.nome && <p className="text-red-500 text-sm mt-2">{errors.nome}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Nome completo para nossa comunicação durante o projeto</p>
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Nome completo para nossa comunicação durante o projeto</p>
               </div>
 
               {/* WhatsApp */}
@@ -594,12 +594,12 @@ const BriefingOdonto = () => {
                     updateFormData('whatsapp', formatted);
                   }}
                   maxLength={15}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.whatsapp ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 />
                 {errors.whatsapp && <p className="text-red-500 text-sm mt-2">{errors.whatsapp}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Este número aparecerá no site para os pacientes agendarem consultas</p>
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Este número aparecerá no site para os pacientes agendarem consultas</p>
               </div>
 
               {/* E-mail */}
@@ -612,12 +612,12 @@ const BriefingOdonto = () => {
                   placeholder="contato@clinica.com.br"
                   value={formData.email || ''}
                   onChange={(e) => updateFormData('email', e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.email ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 />
                 {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Enviaremos o site pronto neste e-mail em até 24 horas</p>
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Enviaremos o site pronto neste e-mail em até 24 horas</p>
               </div>
             </div>
           </div>
@@ -628,7 +628,7 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[1].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[1].subtitle}</p>
@@ -650,7 +650,7 @@ const BriefingOdonto = () => {
                       updateFormData('hero_titulo', '');
                     }
                   }}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.hero_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 >
@@ -671,16 +671,16 @@ const BriefingOdonto = () => {
                       value={formData.hero_titulo || ''}
                       onChange={(e) => updateFormData('hero_titulo', e.target.value)}
                       maxLength={60}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                         errors.hero_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                       }`}
                     />
-                    <p className="text-medical-600/60 text-xs mt-2">{(formData.hero_titulo || '').length}/60 caracteres</p>
+                    <p className="text-medical-600/70 text-xs sm:text-sm mt-2">{(formData.hero_titulo || '').length}/60 caracteres</p>
                   </div>
                 )}
 
                 {errors.hero_titulo && <p className="text-red-500 text-sm mt-2">{errors.hero_titulo}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Este será o primeiro texto que seus pacientes verão no site</p>
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Este será o primeiro texto que seus pacientes verão no site</p>
               </div>
 
               {/* Subtítulo */}
@@ -698,7 +698,7 @@ const BriefingOdonto = () => {
                       updateFormData('hero_subtitulo', '');
                     }
                   }}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.hero_subtitulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 >
@@ -718,11 +718,11 @@ const BriefingOdonto = () => {
                       value={formData.hero_subtitulo || ''}
                       onChange={(e) => updateFormData('hero_subtitulo', e.target.value)}
                       maxLength={120}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                         errors.hero_subtitulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                       }`}
                     />
-                    <p className="text-medical-600/60 text-xs mt-2">{(formData.hero_subtitulo || '').length}/120 caracteres</p>
+                    <p className="text-medical-600/70 text-xs sm:text-sm mt-2">{(formData.hero_subtitulo || '').length}/120 caracteres</p>
                   </div>
                 )}
 
@@ -744,7 +744,7 @@ const BriefingOdonto = () => {
                       updateFormData('hero_cta_texto', '');
                     }
                   }}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.hero_cta_texto ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 >
@@ -765,16 +765,16 @@ const BriefingOdonto = () => {
                       value={formData.hero_cta_texto || ''}
                       onChange={(e) => updateFormData('hero_cta_texto', e.target.value)}
                       maxLength={40}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                         errors.hero_cta_texto ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                       }`}
                     />
-                    <p className="text-medical-600/60 text-xs mt-2">{(formData.hero_cta_texto || '').length}/40 caracteres</p>
+                    <p className="text-medical-600/70 text-xs sm:text-sm mt-2">{(formData.hero_cta_texto || '').length}/40 caracteres</p>
                   </div>
                 )}
 
                 {errors.hero_cta_texto && <p className="text-red-500 text-sm mt-2">{errors.hero_cta_texto}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Este botão levará para seu WhatsApp</p>
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Este botão levará para seu WhatsApp</p>
               </div>
 
               {/* Imagem do Banner */}
@@ -789,7 +789,7 @@ const BriefingOdonto = () => {
                   type="file"
                   accept="image/*"
                   onChange={(e) => handleFileUpload('hero_imagem', e.target.files)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
+                  className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
                 />
                 {uploadedFiles.hero_imagem && uploadedFiles.hero_imagem.length > 0 && (
                   <div className="mt-3 flex items-center gap-2 text-green-600">
@@ -797,7 +797,7 @@ const BriefingOdonto = () => {
                     <span className="text-sm">Imagem enviada: {uploadedFiles.hero_imagem[0].name}</span>
                   </div>
                 )}
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
                   Se não enviar agora, usaremos uma imagem da nossa biblioteca
                 </p>
               </div>
@@ -811,23 +811,23 @@ const BriefingOdonto = () => {
 
                 <div className="space-y-4">
                   {/* Widget 1 */}
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-700 mb-2">Número</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-900 mb-2">Número</label>
                       <input
                         type="text"
                         placeholder="Ex: 15"
                         value={formData.widget1_numero || ''}
                         onChange={(e) => updateFormData('widget1_numero', e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
                       />
                     </div>
-                    <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-700 mb-2">Descrição</label>
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-900 mb-2">Descrição</label>
                       <select
                         value={formData.widget1_label || ''}
                         onChange={(e) => updateFormData('widget1_label', e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
                       >
                         <option value="">Selecione</option>
                         <option value="Anos de experiência">Anos de experiência</option>
@@ -838,23 +838,23 @@ const BriefingOdonto = () => {
                   </div>
 
                   {/* Widget 2 */}
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-700 mb-2">Número</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-900 mb-2">Número</label>
                       <input
                         type="text"
                         placeholder="Ex: 5000+"
                         value={formData.widget2_numero || ''}
                         onChange={(e) => updateFormData('widget2_numero', e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
                       />
                     </div>
-                    <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-700 mb-2">Descrição</label>
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-900 mb-2">Descrição</label>
                       <select
                         value={formData.widget2_label || ''}
                         onChange={(e) => updateFormData('widget2_label', e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
                       >
                         <option value="">Selecione</option>
                         <option value="Pacientes atendidos">Pacientes atendidos</option>
@@ -865,23 +865,23 @@ const BriefingOdonto = () => {
                   </div>
 
                   {/* Widget 3 */}
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-700 mb-2">Número (%)</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-900 mb-2">Número (%)</label>
                       <input
                         type="text"
                         placeholder="Ex: 98"
                         value={formData.widget3_numero || ''}
                         onChange={(e) => updateFormData('widget3_numero', e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
                       />
                     </div>
-                    <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-700 mb-2">Descrição</label>
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-900 mb-2">Descrição</label>
                       <select
                         value={formData.widget3_label || ''}
                         onChange={(e) => updateFormData('widget3_label', e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
                       >
                         <option value="">Selecione</option>
                         <option value="Taxa de satisfação">Taxa de satisfação</option>
@@ -892,23 +892,23 @@ const BriefingOdonto = () => {
                   </div>
 
                   {/* Widget 4 */}
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-700 mb-2">Número</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-900 mb-2">Número</label>
                       <input
                         type="text"
                         placeholder="Ex: 500+"
                         value={formData.widget4_numero || ''}
                         onChange={(e) => updateFormData('widget4_numero', e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
                       />
                     </div>
-                    <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-700 mb-2">Descrição</label>
+                    <div>
+                      <label className="block text-sm font-semibold text-neutral-900 mb-2">Descrição</label>
                       <select
                         value={formData.widget4_label || ''}
                         onChange={(e) => updateFormData('widget4_label', e.target.value)}
-                        className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
                       >
                         <option value="">Selecione</option>
                         <option value="Procedimentos realizados">Procedimentos realizados</option>
@@ -940,7 +940,7 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[2].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[2].subtitle}</p>
@@ -962,7 +962,7 @@ const BriefingOdonto = () => {
                       updateFormData('sobre_titulo', '');
                     }
                   }}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.sobre_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 >
@@ -983,16 +983,16 @@ const BriefingOdonto = () => {
                       value={formData.sobre_titulo || ''}
                       onChange={(e) => updateFormData('sobre_titulo', e.target.value)}
                       maxLength={60}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                         errors.sobre_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                       }`}
                     />
-                    <p className="text-medical-600/60 text-xs mt-2">{(formData.sobre_titulo || '').length}/60 caracteres</p>
+                    <p className="text-medical-600/70 text-xs sm:text-sm mt-2">{(formData.sobre_titulo || '').length}/60 caracteres</p>
                   </div>
                 )}
 
                 {errors.sobre_titulo && <p className="text-red-500 text-sm mt-2">{errors.sobre_titulo}</p>}
-                <p className="text-medical-600/60 text-xs mt-2">Este será o título da seção "Sobre" no seu site</p>
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Este será o título da seção "Sobre" no seu site</p>
               </div>
 
               {/* Texto Institucional */}
@@ -1003,7 +1003,7 @@ const BriefingOdonto = () => {
                 <p className="text-medical-600/60 text-sm mb-3">
                   Conte a história da sua clínica, sua missão, valores e o que torna seu atendimento especial:
                 </p>
-                <ul className="text-medical-600/60 text-xs mb-3 space-y-1 list-disc list-inside">
+                <ul className="text-medical-600/70 text-xs sm:text-sm mb-3 space-y-1 list-disc list-inside">
                   <li>Como e quando a clínica foi fundada</li>
                   <li>Missão e valores da clínica</li>
                   <li>Filosofia de atendimento</li>
@@ -1014,13 +1014,13 @@ const BriefingOdonto = () => {
                   onChange={(e) => updateFormData('sobre_texto', e.target.value)}
                   placeholder="Ex: Na Clínica Sorriso Perfeito, acreditamos que cada sorriso conta uma história única. Fundada em 2010, nossa missão é proporcionar um atendimento odontológico de excelência, combinando tecnologia de ponta com cuidado humanizado..."
                   rows={10}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all resize-y ${
+                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all resize-y ${
                     errors.sobre_texto ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 />
                 <div className="flex justify-between items-center mt-2">
                   {errors.sobre_texto && <p className="text-red-500 text-sm">{errors.sobre_texto}</p>}
-                  <p className={`text-xs ml-auto ${
+                  <p className={`text-xs sm:text-sm font-mono ml-auto ${
                     (formData.sobre_texto || '').length < 100 ? 'text-red-500' :
                     (formData.sobre_texto || '').length < 300 ? 'text-orange-500' :
                     'text-green-600'
@@ -1044,7 +1044,7 @@ const BriefingOdonto = () => {
                   accept="image/*"
                   multiple
                   onChange={(e) => handleFileUpload('sobre_fotos', e.target.files)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
+                  className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
                 />
                 {uploadedFiles.sobre_fotos && uploadedFiles.sobre_fotos.length > 0 && (
                   <div className="mt-3 space-y-2">
@@ -1056,7 +1056,7 @@ const BriefingOdonto = () => {
                     ))}
                   </div>
                 )}
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
                   💡 Recomendado: fotos profissionais, bem iluminadas, em alta resolução (máx. 5MB cada)
                 </p>
               </div>
@@ -1072,50 +1072,46 @@ const BriefingOdonto = () => {
 
                 <div className="space-y-4">
                   {(formData.redes_sociais || []).map((rede: any, index: number) => (
-                    <div key={index} className="flex gap-3 items-start">
-                      <div className="flex-1">
-                        <select
-                          value={rede.tipo || ''}
-                          onChange={(e) => {
-                            const novasRedes = [...(formData.redes_sociais || [])];
-                            novasRedes[index] = { ...novasRedes[index], tipo: e.target.value };
-                            updateFormData('redes_sociais', novasRedes);
-                          }}
-                          className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
-                        >
-                          <option value="">Selecione a rede</option>
-                          <option value="instagram">Instagram</option>
-                          <option value="facebook">Facebook</option>
-                          <option value="tiktok">TikTok</option>
-                          <option value="youtube">YouTube</option>
-                          <option value="kwai">Kwai</option>
-                          <option value="linkedin">LinkedIn</option>
-                          <option value="twitter">Twitter/X</option>
-                          <option value="whatsapp">WhatsApp Business</option>
-                          <option value="telegram">Telegram</option>
-                          <option value="pinterest">Pinterest</option>
-                        </select>
-                      </div>
-                      <div className="flex-[2]">
-                        <input
-                          type="url"
-                          placeholder="https://..."
-                          value={rede.url || ''}
-                          onChange={(e) => {
-                            const novasRedes = [...(formData.redes_sociais || [])];
-                            novasRedes[index] = { ...novasRedes[index], url: e.target.value };
-                            updateFormData('redes_sociais', novasRedes);
-                          }}
-                          className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
-                        />
-                      </div>
+                    <div key={index} className="grid grid-cols-1 sm:grid-cols-[160px_1fr_auto] gap-3">
+                      <select
+                        value={rede.tipo || ''}
+                        onChange={(e) => {
+                          const novasRedes = [...(formData.redes_sociais || [])];
+                          novasRedes[index] = { ...novasRedes[index], tipo: e.target.value };
+                          updateFormData('redes_sociais', novasRedes);
+                        }}
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      >
+                        <option value="">Selecione a rede</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="kwai">Kwai</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="twitter">Twitter/X</option>
+                        <option value="whatsapp">WhatsApp Business</option>
+                        <option value="telegram">Telegram</option>
+                        <option value="pinterest">Pinterest</option>
+                      </select>
+                      <input
+                        type="url"
+                        placeholder="https://..."
+                        value={rede.url || ''}
+                        onChange={(e) => {
+                          const novasRedes = [...(formData.redes_sociais || [])];
+                          novasRedes[index] = { ...novasRedes[index], url: e.target.value };
+                          updateFormData('redes_sociais', novasRedes);
+                        }}
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                      />
                       <button
                         type="button"
                         onClick={() => {
                           const novasRedes = (formData.redes_sociais || []).filter((_: any, i: number) => i !== index);
                           updateFormData('redes_sociais', novasRedes);
                         }}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-3 min-h-[44px] w-full sm:w-auto flex items-center justify-center text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -1144,7 +1140,7 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[3].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[3].subtitle}</p>
@@ -1192,7 +1188,7 @@ const BriefingOdonto = () => {
                       placeholder="Ex: Dr. Carlos Eduardo Silva"
                       value={profissional.nome || ''}
                       onChange={(e) => updateProfissional(index, 'nome', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                         errors[`profissional_${index}_nome`] ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                       }`}
                     />
@@ -1211,7 +1207,7 @@ const BriefingOdonto = () => {
                       placeholder="Ex: CRO-SP 12345"
                       value={profissional.registro || ''}
                       onChange={(e) => updateProfissional(index, 'registro', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                         errors[`profissional_${index}_registro`] ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                       }`}
                     />
@@ -1235,7 +1231,7 @@ const BriefingOdonto = () => {
                           updateProfissional(index, 'especialidade', '');
                         }
                       }}
-                      className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                      className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                     >
                       <option value="">Selecione a especialidade ou customize</option>
                       <option value="Clínico Geral">Clínico Geral</option>
@@ -1259,9 +1255,9 @@ const BriefingOdonto = () => {
                           value={profissional.especialidade || ''}
                           onChange={(e) => updateProfissional(index, 'especialidade', e.target.value)}
                           maxLength={60}
-                          className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                          className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                         />
-                        <p className="text-medical-600/60 text-xs mt-2">{(profissional.especialidade || '').length}/60 caracteres</p>
+                        <p className="text-medical-600/70 text-xs sm:text-sm mt-2">{(profissional.especialidade || '').length}/60 caracteres</p>
                       </div>
                     )}
                   </div>
@@ -1276,7 +1272,7 @@ const BriefingOdonto = () => {
                       placeholder="Ex: Graduado pela USP, especialista em Implantodontia com mais de 10 anos de experiência. Apaixonado por devolver sorrisos e autoestima aos pacientes."
                       value={profissional.descricao || ''}
                       onChange={(e) => updateProfissional(index, 'descricao', e.target.value)}
-                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all resize-none ${
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all resize-none ${
                         errors[`profissional_${index}_descricao`] ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                       }`}
                     />
@@ -1297,7 +1293,7 @@ const BriefingOdonto = () => {
                       type="file"
                       accept="image/*"
                       onChange={(e) => handleProfissionalFoto(index, e)}
-                      className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-medical-50 file:text-medical-700 hover:file:bg-medical-100"
+                      className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-medical-50 file:text-medical-700 hover:file:bg-medical-100"
                     />
                     {profissional.foto && (
                       <div className="mt-3 flex items-center gap-3 text-sm text-gray-600">
@@ -1379,7 +1375,7 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[4].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[4].subtitle}</p>
@@ -1432,7 +1428,7 @@ const BriefingOdonto = () => {
                 <label className="block text-neutral-900 font-semibold mb-2">
                   ✏️ Personalizar serviço
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-col xs:flex-row gap-2">
                   <input
                     type="text"
                     value={formData.servico_outro_temp || ''}
@@ -1451,7 +1447,7 @@ const BriefingOdonto = () => {
                         }
                       }
                     }}
-                    className="flex-1 px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
+                    className="flex-1 px-3 py-3 sm:px-4 min-h-[44px] rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
                     placeholder="Digite o serviço e pressione Enter ou clique em Adicionar"
                   />
                   <button
@@ -1468,7 +1464,7 @@ const BriefingOdonto = () => {
                       }
                     }}
                     disabled={!formData.servico_outro_temp?.trim()}
-                    className="px-6 py-3 bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-3 sm:px-6 min-h-[44px] whitespace-nowrap bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Adicionar
                   </button>
@@ -1660,7 +1656,7 @@ const BriefingOdonto = () => {
                 <label className="block text-neutral-900 font-semibold mb-2">
                   ✏️ Personalizar diferencial
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-col xs:flex-row gap-2">
                   <input
                     type="text"
                     value={formData.diferencial_outro_temp || ''}
@@ -1679,7 +1675,7 @@ const BriefingOdonto = () => {
                         }
                       }
                     }}
-                    className="flex-1 px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
+                    className="flex-1 px-3 py-3 sm:px-4 min-h-[44px] rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
                     placeholder="Digite o diferencial e pressione Enter ou clique em Adicionar"
                   />
                   <button
@@ -1696,7 +1692,7 @@ const BriefingOdonto = () => {
                       }
                     }}
                     disabled={!formData.diferencial_outro_temp?.trim()}
-                    className="px-6 py-3 bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-3 sm:px-6 min-h-[44px] whitespace-nowrap bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Adicionar
                   </button>
@@ -1761,7 +1757,7 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[6].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[6].subtitle}</p>
@@ -1962,7 +1958,7 @@ const BriefingOdonto = () => {
               <select
                 value={formData.horario_padrao || ''}
                 onChange={(e) => updateFormData('horario_padrao', e.target.value)}
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                   errors.horario_padrao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                 }`}
               >
@@ -1986,13 +1982,13 @@ const BriefingOdonto = () => {
                     placeholder="Ex: Segunda, Quarta e Sexta: 8h-12h e 14h-18h"
                     value={formData.horario_customizado || ''}
                     onChange={(e) => updateFormData('horario_customizado', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                    className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                   />
                 </div>
               )}
 
               {errors.horario_padrao && <p className="text-red-500 text-sm mt-2">{errors.horario_padrao}</p>}
-              <p className="text-medical-600/60 text-xs mt-2">Escolha o padrão que mais se aproxima do seu horário</p>
+              <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Escolha o padrão que mais se aproxima do seu horário</p>
             </div>
 
             {/* Quer exibir o mapa do Google Maps? */}
@@ -2064,7 +2060,7 @@ const BriefingOdonto = () => {
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[5].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[5].subtitle}</p>
@@ -2115,7 +2111,7 @@ const BriefingOdonto = () => {
                             novasSites[index] = { ...novasSites[index], url: e.target.value };
                             setFormData({...formData, sites_referencia: novasSites});
                           }}
-                          className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                          className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
                         />
                       </div>
 
@@ -2125,7 +2121,7 @@ const BriefingOdonto = () => {
                             <label className="block text-sm font-medium text-neutral-700 mb-2">
                               O que você mais gostou neste site?
                             </label>
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
                               {[
                                 { value: 'layout', label: 'Layout/organização' },
                                 { value: 'cores', label: 'Cores e estilo' },
@@ -2177,7 +2173,7 @@ const BriefingOdonto = () => {
                                 novasSites[index] = { ...novasSites[index], observacao: e.target.value };
                                 setFormData({...formData, sites_referencia: novasSites});
                               }}
-                              className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                              className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
                             />
                           </div>
                         </>
@@ -2360,10 +2356,15 @@ const BriefingOdonto = () => {
                     const corData = paleta[cor.key] || {};
 
                     return (
-                      <div key={cor.key} className="bg-white border-2 border-medical-200 rounded-xl p-4">
-                        <div className="flex items-start gap-4">
-                          {/* Color Picker */}
-                          <div className="flex-shrink-0">
+                      <div key={cor.key} className="bg-white border-2 border-medical-200 rounded-xl p-4 sm:p-6">
+                        <div className="space-y-3">
+                          <label className="block text-sm sm:text-base font-semibold text-neutral-900">
+                            {cor.label}
+                          </label>
+                          <p className="text-xs sm:text-sm text-medical-600/70">
+                            {cor.desc}
+                          </p>
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                             <input
                               type="color"
                               value={corData.valor || cor.default}
@@ -2378,21 +2379,9 @@ const BriefingOdonto = () => {
                                 };
                                 setFormData({...formData, paleta_personalizada: novaPaleta});
                               }}
-                              className="w-20 h-20 rounded-lg border-2 border-medical-300 cursor-pointer"
+                              className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg border-2 border-medical-300 cursor-pointer flex-shrink-0"
                             />
-                          </div>
-
-                          {/* Informações */}
-                          <div className="flex-1">
-                            <label className="block text-sm font-semibold text-neutral-900 mb-1">
-                              {cor.label}
-                            </label>
-                            <p className="text-xs text-medical-600/70 mb-3">
-                              {cor.desc}
-                            </p>
-
-                            <div className="flex gap-2">
-                              {/* Formato */}
+                            <div className="flex-1 flex flex-col xs:flex-row gap-3 w-full">
                               <select
                                 value={corData.formato || 'hex'}
                                 onChange={(e) => {
@@ -2405,14 +2394,12 @@ const BriefingOdonto = () => {
                                   };
                                   setFormData({...formData, paleta_personalizada: novaPaleta});
                                 }}
-                                className="px-3 py-1.5 text-sm border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
+                                className="w-full xs:w-32 px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
                               >
                                 <option value="hex">HEX</option>
                                 <option value="rgb">RGB</option>
                                 <option value="hsl">HSL</option>
                               </select>
-
-                              {/* Valor da Cor */}
                               <input
                                 type="text"
                                 value={corData.valor || cor.default}
@@ -2427,7 +2414,7 @@ const BriefingOdonto = () => {
                                   setFormData({...formData, paleta_personalizada: novaPaleta});
                                 }}
                                 placeholder={cor.default}
-                                className="flex-1 px-3 py-1.5 text-sm border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200 font-mono"
+                                className="flex-1 font-mono px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
                               />
                             </div>
                           </div>
@@ -2489,7 +2476,7 @@ const BriefingOdonto = () => {
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[7].title}
               </h2>
               <p className="text-medical-600/70 text-lg">{sections[7].subtitle}</p>
@@ -2523,9 +2510,9 @@ const BriefingOdonto = () => {
                   placeholder="G-XXXXXXXXXX"
                   value={formData.ga4_id || ''}
                   onChange={(e) => updateFormData('ga4_id', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
                   📊 <strong>O que é:</strong> Ferramenta do Google para acompanhar visitas, origem dos visitantes e comportamento no site.<br/>
                   💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie gratuitamente em analytics.google.com
                 </p>
@@ -2541,9 +2528,9 @@ const BriefingOdonto = () => {
                   placeholder="123456789012345"
                   value={formData.meta_pixel_id || ''}
                   onChange={(e) => updateFormData('meta_pixel_id', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
                   🎯 <strong>O que é:</strong> Código do Facebook para rastrear conversões de anúncios no Facebook/Instagram.<br/>
                   💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie em business.facebook.com
                 </p>
@@ -2559,9 +2546,9 @@ const BriefingOdonto = () => {
                   placeholder="GTM-XXXXXXX"
                   value={formData.gtm_id || ''}
                   onChange={(e) => updateFormData('gtm_id', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
                   🔧 <strong>O que é:</strong> Container para gerenciar múltiplas tags de rastreamento em um só lugar.<br/>
                   💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou crie em tagmanager.google.com
                 </p>
@@ -2577,9 +2564,9 @@ const BriefingOdonto = () => {
                   placeholder="AW-XXXXXXXXX/XXXXXXX"
                   value={formData.google_ads_conversion || ''}
                   onChange={(e) => updateFormData('google_ads_conversion', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                  className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
                   💰 <strong>O que é:</strong> Código para rastrear conversões (agendamentos, contatos) vindas de anúncios do Google.<br/>
                   💡 <strong>Como obter:</strong> Solicite ao seu gestor de tráfego ou acesse ads.google.com
                 </p>
@@ -2595,9 +2582,9 @@ const BriefingOdonto = () => {
                   value={formData.outras_tags || ''}
                   onChange={(e) => updateFormData('outras_tags', e.target.value)}
                   rows={6}
-                  className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all font-mono text-sm"
+                  className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all font-mono text-sm"
                 />
-                <p className="text-medical-600/60 text-xs mt-2">
+                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
                   📝 <strong>Exemplos:</strong> HotJar, RD Station, outros pixels de remarketing, etc.<br/>
                   ⚠️ Cole apenas códigos fornecidos por plataformas confiáveis
                 </p>
@@ -2676,30 +2663,30 @@ const BriefingOdonto = () => {
           </div>
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
             <Button
               onClick={handlePrevious}
               disabled={currentSection === 0}
               variant="outline"
-              className="flex items-center gap-2 px-6 py-3 border-neutral-300 text-neutral-700 hover:bg-neutral-50"
+              className="w-full sm:w-auto order-2 sm:order-1 flex items-center justify-center gap-2 px-6 py-3 border-neutral-300 text-neutral-700 hover:bg-neutral-50"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-5 h-5" />
               Anterior
             </Button>
 
             {currentSection < sections.length - 1 ? (
               <Button
                 onClick={handleNext}
-                className="flex items-center gap-2 px-6 py-3 bg-medical-500 hover:bg-medical-600 text-white"
+                className="w-full sm:w-auto order-1 sm:order-2 flex items-center justify-center gap-2 px-6 py-3 bg-medical-500 hover:bg-medical-600 text-white"
               >
                 Próximo
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-5 h-5" />
               </Button>
             ) : (
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-8 py-3 bg-mint-600 hover:bg-mint-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto order-1 sm:order-2 flex items-center justify-center gap-2 px-8 py-3 bg-mint-600 hover:bg-mint-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

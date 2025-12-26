@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      screens: {
+        'xs': '475px',  // Mobile landscape / Small tablets
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
