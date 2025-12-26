@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Edit2, CheckCircle2, MapPin, Briefcase, Star, Mail, Phone, Globe, Instagram, AlertCircle, Users } from 'lucide-react';
+import { Edit2, CheckCircle2, MapPin, Briefcase, Star, Mail, Phone, Globe, Instagram, AlertCircle, Users, Image, Palette, Monitor } from 'lucide-react';
 
 interface FormData {
   [key: string]: any;
@@ -21,6 +21,8 @@ interface ReviewStepProps {
 }
 
 const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit }) => {
+  const [observacoes, setObservacoes] = useState(formData.observacoes_revisao || '');
+
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -65,17 +67,6 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
     'outro': 'Outro'
   };
 
-  // Mapa de slogans para labels legíveis
-  const sloganMap: { [key: string]: string } = {
-    'sorriso_perfeito': 'Seu sorriso perfeito começa aqui',
-    'sorriso_confiante': 'Sorrisos com confiança e segurança',
-    'qualidade_atendimento': 'Odontologia de qualidade com atendimento humanizado',
-    'tecnologia_avancada': 'Tecnologia avançada para cuidar do seu sorriso',
-    'tratamento_odontologico': 'Tratamento odontológico com cuidado',
-    'tenho_slogan': 'Tenho meu próprio slogan',
-    'anos_experiencia': 'Cuidando do seu sorriso há [X] anos'
-  };
-
   const renderServicos = () => {
     if (!formData.servicos || formData.servicos.length === 0) {
       return <span className="text-gray-400 italic">Não informado</span>;
@@ -110,19 +101,6 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
       );
     }
 
-    // Formato antigo (fallback)
-    if (formData.horarios_atendimento && formData.horarios_atendimento.length > 0) {
-      const horariosMap: { [key: string]: string } = {
-        'manha': 'Manhã',
-        'tarde': 'Tarde',
-        'noite': 'Noite',
-        'sabado': 'Sábado',
-        'domingo_feriados': 'Domingos e feriados'
-      };
-      const labels = formData.horarios_atendimento.map((h: string) => horariosMap[h] || h);
-      return labels.join(', ');
-    }
-
     return <span className="text-gray-400 italic">Não informado</span>;
   };
 
@@ -140,14 +118,14 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
         </p>
       </div>
 
-      {/* Seção 1: Informações Essenciais */}
+      {/* SEÇÃO 1: Informações Essenciais */}
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-purple-600" />
-                Informações Essenciais
+                1. Informações Essenciais
               </h3>
               <p className="text-sm text-gray-500">Dados básicos do consultório</p>
             </div>
@@ -185,49 +163,134 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               </label>
               <p className="text-gray-900 mt-1">{renderValue(formData.email)}</p>
             </div>
-            {formData.slogan_opcao && (
+            {formData.especialidade_principal && (
               <div className="md:col-span-2">
-                <label className="text-sm font-medium text-gray-500">Slogan</label>
-                <p className="text-gray-900 mt-1">
-                  {formData.slogan_opcao === 'custom' ? formData.slogan_custom : (sloganMap[formData.slogan_opcao] || formData.slogan_opcao)}
-                </p>
-              </div>
-            )}
-            {formData.ano_inicio && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Ano de Início</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.ano_inicio)}</p>
-              </div>
-            )}
-            {formData.num_pacientes && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Número de Pacientes Atendidos</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.num_pacientes)}</p>
-              </div>
-            )}
-            {formData.tem_google_negocio && (
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-gray-500">Tem Perfil no Google Meu Negócio?</label>
-                <p className="text-gray-900 mt-1">{formData.tem_google_negocio === 'sim' ? 'Sim' : 'Não'}</p>
-                {formData.link_google_negocio && (
-                  <p className="text-gray-600 mt-1 text-sm">Link: {formData.link_google_negocio}</p>
-                )}
+                <label className="text-sm font-medium text-gray-500">Especialidade Principal</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.especialidade_principal)}</p>
               </div>
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Seção 2: Profissionais */}
+      {/* SEÇÃO 2: Hero / Banner Principal */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Monitor className="w-5 h-5 text-purple-600" />
+                2. Hero / Banner Principal
+              </h3>
+              <p className="text-sm text-gray-500">Banner de destaque do site</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(1)}
+              className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+            >
+              <Edit2 className="w-4 h-4 mr-2" />
+              Editar
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            {formData.titulo_hero && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Título do Banner</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.titulo_hero)}</p>
+              </div>
+            )}
+            {formData.subtitulo_hero && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Subtítulo do Banner</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.subtitulo_hero)}</p>
+              </div>
+            )}
+            {formData.chamada_acao_hero && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Texto do Botão Principal</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.chamada_acao_hero)}</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* SEÇÃO 3: Sobre a Clínica */}
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <Star className="w-5 h-5 text-purple-600" />
-                Sobre o(s) Profissional(is)
+                3. Sobre a Clínica
               </h3>
-              <p className="text-sm text-gray-500">Informações da equipe</p>
+              <p className="text-sm text-gray-500">Apresentação da clínica</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(2)}
+              className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+            >
+              <Edit2 className="w-4 h-4 mr-2" />
+              Editar
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            {formData.titulo_sobre && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Título da Seção Sobre</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.titulo_sobre)}</p>
+              </div>
+            )}
+            {formData.texto_sobre && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Texto Sobre a Clínica</label>
+                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.texto_sobre)}</p>
+              </div>
+            )}
+            {formData.missao && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Missão</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.missao)}</p>
+              </div>
+            )}
+            {formData.visao && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Visão</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.visao)}</p>
+              </div>
+            )}
+            {formData.valores && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Valores</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.valores)}</p>
+              </div>
+            )}
+            {formData.anos_experiencia && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Anos de Experiência</label>
+                <p className="text-gray-900 mt-1">{renderValue(formData.anos_experiencia)}</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* SEÇÃO 4: Equipe / Profissionais */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Users className="w-5 h-5 text-purple-600" />
+                4. Equipe
+              </h3>
+              <p className="text-sm text-gray-500">Profissionais da clínica</p>
             </div>
             <Button
               variant="ghost"
@@ -241,250 +304,61 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
           </div>
 
           <div className="space-y-6">
-            {/* Profissional 1 */}
-            {formData.profissional1_nome && (
-              <div className="border-l-4 border-purple-300 pl-4">
-                <h4 className="font-semibold text-gray-900 mb-3">Profissional 1</h4>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Nome</label>
-                    <p className="text-gray-900 mt-1">{renderValue(formData.profissional1_nome)}</p>
-                  </div>
-                  {formData.profissional1_apresentacao && (
+            {formData.profissionais && formData.profissionais.length > 0 ? (
+              formData.profissionais.map((prof: any, index: number) => (
+                <div key={index} className="border-l-4 border-purple-300 pl-4 bg-purple-50/30 p-3 rounded-r-lg">
+                  <h4 className="font-semibold text-gray-900 mb-3">Profissional {index + 1}</h4>
+                  <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-gray-500">Apresentação</label>
-                      <p className="text-gray-900 mt-1">{renderValue(formData.profissional1_apresentacao)}</p>
+                      <label className="text-sm font-medium text-gray-500">Nome</label>
+                      <p className="text-gray-900 mt-1">{renderValue(prof.nome)}</p>
                     </div>
-                  )}
-                  {formData.profissional1_cro && (
-                    <div className="grid grid-cols-2 gap-2">
+                    {prof.registro && (
                       <div>
                         <label className="text-sm font-medium text-gray-500">CRO</label>
-                        <p className="text-gray-900 mt-1">{renderValue(formData.profissional1_cro)}</p>
+                        <p className="text-gray-900 mt-1">{renderValue(prof.registro)}</p>
                       </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-500">UF</label>
-                        <p className="text-gray-900 mt-1">{renderValue(formData.profissional1_uf)}</p>
-                      </div>
-                    </div>
-                  )}
-                  {formData.profissional1_especialidade && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Especialidade</label>
-                      <p className="text-gray-900 mt-1">{renderValue(formData.profissional1_especialidade)}</p>
-                    </div>
-                  )}
-                  {formData.profissional1_formacao && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Formação</label>
-                      <p className="text-gray-900 mt-1">{renderValue(formData.profissional1_formacao)}</p>
-                    </div>
-                  )}
-                  {formData.profissional1_bio && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Mini Biografia</label>
-                      <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.profissional1_bio)}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Profissional 2 */}
-            {formData.profissional2_nome && (
-              <div className="border-l-4 border-purple-300 pl-4">
-                <h4 className="font-semibold text-gray-900 mb-3">Profissional 2</h4>
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Nome</label>
-                    <p className="text-gray-900 mt-1">{renderValue(formData.profissional2_nome)}</p>
-                  </div>
-                  {formData.profissional2_apresentacao && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Apresentação</label>
-                      <p className="text-gray-900 mt-1">{renderValue(formData.profissional2_apresentacao)}</p>
-                    </div>
-                  )}
-                  {formData.profissional2_cro && (
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="text-sm font-medium text-gray-500">CRO</label>
-                        <p className="text-gray-900 mt-1">{renderValue(formData.profissional2_cro)}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-500">UF</label>
-                        <p className="text-gray-900 mt-1">{renderValue(formData.profissional2_uf)}</p>
-                      </div>
-                    </div>
-                  )}
-                  {formData.profissional2_especialidade && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Especialidade</label>
-                      <p className="text-gray-900 mt-1">{renderValue(formData.profissional2_especialidade)}</p>
-                    </div>
-                  )}
-                  {formData.profissional2_formacao && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Formação</label>
-                      <p className="text-gray-900 mt-1">{renderValue(formData.profissional2_formacao)}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Diretor Técnico */}
-            {formData.diretor_nome && (
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Diretor Técnico
-                </h4>
-                <div className="space-y-2">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Nome</label>
-                    <p className="text-gray-900 mt-1">{renderValue(formData.diretor_nome)}</p>
-                  </div>
-                  {formData.diretor_cro && (
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="text-sm font-medium text-gray-500">CRO</label>
-                        <p className="text-gray-900 mt-1">{renderValue(formData.diretor_cro)}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-500">UF</label>
-                        <p className="text-gray-900 mt-1">{renderValue(formData.diretor_uf)}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Número de profissionais */}
-            {formData.num_profissionais && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Número de Profissionais na Equipe</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.num_profissionais)}</p>
-              </div>
-            )}
-
-            {/* Profissionais Destacados (Dinâmico) */}
-            {formData.destacar_profissionais === 'sim' && formData.num_profissionais_destacar && (
-              <div className="space-y-4">
-                <div className="bg-purple-50 p-3 rounded-lg">
-                  <h4 className="font-semibold text-purple-900 text-sm">
-                    Profissionais em Destaque ({formData.num_profissionais_destacar} selecionados)
-                    {formData.diretor_destacado && (
-                      <span className="ml-2 text-xs font-normal text-blue-600">
-                        • Diretor técnico incluído
-                      </span>
                     )}
-                  </h4>
-                </div>
-                {Array.from({ length: parseInt(formData.num_profissionais_destacar) }, (_, i) => i + 1).map((index) => {
-                  const prefix = `profissional${index}`;
-                  const nome = formData[`${prefix}_nome`];
-                  if (!nome) return null;
-
-                  return (
-                    <div key={index} className="border-l-4 border-purple-400 pl-4 bg-purple-50/30 p-3 rounded-r-lg">
-                      <h4 className="font-semibold text-gray-900 mb-3">
-                        Profissional {index}
-                        {index === 1 && formData.diretor_destacado && (
-                          <span className="ml-2 text-sm font-normal text-blue-600">(Diretor Técnico)</span>
-                        )}
-                      </h4>
-                      <div className="space-y-3">
-                        <div>
-                          <label className="text-sm font-medium text-gray-500">Nome</label>
-                          <p className="text-gray-900 mt-1">{renderValue(nome)}</p>
-                        </div>
-                        {formData[`${prefix}_apresentacao`] && (
-                          <div>
-                            <label className="text-sm font-medium text-gray-500">Apresentação</label>
-                            <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_apresentacao`])}</p>
-                          </div>
-                        )}
-                        {formData[`${prefix}_cro`] && (
-                          <div className="grid grid-cols-2 gap-2">
-                            <div>
-                              <label className="text-sm font-medium text-gray-500">CRO</label>
-                              <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_cro`])}</p>
-                            </div>
-                            <div>
-                              <label className="text-sm font-medium text-gray-500">UF</label>
-                              <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_uf`])}</p>
-                            </div>
-                          </div>
-                        )}
-                        {formData[`${prefix}_especialidade`] && (
-                          <div>
-                            <label className="text-sm font-medium text-gray-500">Especialidade</label>
-                            <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_especialidade`])}</p>
-                          </div>
-                        )}
-                        {formData[`${prefix}_formacao`] && (
-                          <div>
-                            <label className="text-sm font-medium text-gray-500">Formação</label>
-                            <p className="text-gray-900 mt-1">{renderValue(formData[`${prefix}_formacao`])}</p>
-                          </div>
-                        )}
-                        {formData[`${prefix}_biografia`] && (
-                          <div>
-                            <label className="text-sm font-medium text-gray-500">Mini Biografia</label>
-                            <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData[`${prefix}_biografia`])}</p>
-                          </div>
-                        )}
-                        {uploadedFiles[`foto_profissional_${index}`] && uploadedFiles[`foto_profissional_${index}`].length > 0 && (
-                          <div>
-                            <label className="text-sm font-medium text-gray-500 block mb-2">Foto</label>
-                            <img
-                              src={uploadedFiles[`foto_profissional_${index}`][0].data}
-                              alt={`Profissional ${index}`}
-                              className="w-32 h-32 object-cover rounded-lg border-2 border-purple-200"
-                            />
-                          </div>
-                        )}
+                    {prof.especialidade && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Especialidade</label>
+                        <p className="text-gray-900 mt-1">{renderValue(prof.especialidade)}</p>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Fotos dos profissionais */}
-            {uploadedFiles.fotos_profissionais && uploadedFiles.fotos_profissionais.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-gray-500 block mb-2">Fotos dos Profissionais</label>
-                <div className="flex flex-wrap gap-2">
-                  {uploadedFiles.fotos_profissionais.map((file, idx) => (
-                    <div key={idx} className="relative group">
-                      <img
-                        src={file.data}
-                        alt={file.name}
-                        className="w-24 h-24 object-cover rounded-lg border-2 border-gray-200"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                        <span className="text-white text-xs text-center px-2">{file.name}</span>
+                    )}
+                    {prof.descricao && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Descrição</label>
+                        <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(prof.descricao)}</p>
                       </div>
-                    </div>
-                  ))}
+                    )}
+                    {prof.foto && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500 block mb-2">Foto</label>
+                        <img
+                          src={prof.foto}
+                          alt={prof.nome}
+                          className="w-32 h-32 object-cover rounded-lg border-2 border-purple-200"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ))
+            ) : (
+              <p className="text-gray-400 italic">Nenhum profissional cadastrado</p>
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Seção 3: Serviços e Diferenciais */}
+      {/* SEÇÃO 5: Serviços e Diferenciais */}
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <Star className="w-5 h-5 text-purple-600" />
-                Serviços e Diferenciais
+                5. Serviços e Diferenciais
               </h3>
               <p className="text-sm text-gray-500">O que você oferece</p>
             </div>
@@ -504,7 +378,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               <label className="text-sm font-medium text-gray-500">Serviços Oferecidos</label>
               <p className="text-gray-900 mt-1">{renderServicos()}</p>
               {formData.servico_outro && (
-                <p className="text-gray-600 mt-1 text-sm">Outro: {formData.servico_outro}</p>
+                <p className="text-gray-600 mt-1 text-sm">Personalizado: {formData.servico_outro}</p>
               )}
             </div>
 
@@ -512,30 +386,8 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               <div>
                 <label className="text-sm font-medium text-gray-500">Aceita Convênios?</label>
                 <p className="text-gray-900 mt-1">{formData.aceita_convenios === 'sim' ? 'Sim' : 'Não'}</p>
-                {formData.lista_convenios_array && formData.lista_convenios_array.length > 0 && formData.aceita_convenios === 'sim' && (
-                  <p className="text-gray-600 mt-1 text-sm">
-                    Convênios: {formData.lista_convenios_array.filter((c: string) => c !== 'outro_convenio').join(', ')}
-                    {formData.outro_convenio && `, ${formData.outro_convenio}`}
-                  </p>
-                )}
-              </div>
-            )}
-
-            {formData.atende_emergencia && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Atendimento de Emergência</label>
-                <p className="text-gray-900 mt-1">
-                  {formData.atende_emergencia === 'sim_24h' ? 'Sim, 24 horas' : 'Não, apenas horário comercial'}
-                </p>
-              </div>
-            )}
-
-            {formData.tecnologias && formData.tecnologias.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Tecnologias e Equipamentos</label>
-                <p className="text-gray-900 mt-1">{Array.isArray(formData.tecnologias) ? formData.tecnologias.join(', ') : formData.tecnologias}</p>
-                {formData.tecnologia_outro && (
-                  <p className="text-gray-600 mt-1 text-sm">Outro: {formData.tecnologia_outro}</p>
+                {formData.lista_convenios && formData.aceita_convenios === 'sim' && (
+                  <p className="text-gray-600 mt-1 text-sm">Convênios: {formData.lista_convenios}</p>
                 )}
               </div>
             )}
@@ -545,29 +397,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                 <label className="text-sm font-medium text-gray-500">Diferenciais</label>
                 <p className="text-gray-900 mt-1">{Array.isArray(formData.diferenciais) ? formData.diferenciais.join(', ') : formData.diferenciais}</p>
                 {formData.diferencial_outro && (
-                  <p className="text-gray-600 mt-1 text-sm">Outro: {formData.diferencial_outro}</p>
-                )}
-              </div>
-            )}
-
-            {formData.publico_alvo && formData.publico_alvo.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Público-Alvo</label>
-                <p className="text-gray-900 mt-1">{Array.isArray(formData.publico_alvo) ? formData.publico_alvo.join(', ') : formData.publico_alvo}</p>
-                {formData.publico_outro && (
-                  <p className="text-gray-600 mt-1 text-sm">Outro: {formData.publico_outro}</p>
-                )}
-              </div>
-            )}
-
-            {formData.tem_depoimentos && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Tem Depoimentos?</label>
-                <p className="text-gray-900 mt-1">{formData.tem_depoimentos === 'sim' ? 'Sim' : 'Não'}</p>
-                {formData.depoimentos_texto && formData.tem_depoimentos === 'sim' && (
-                  <div className="mt-2 bg-gray-50 p-3 rounded-lg">
-                    <p className="text-gray-700 text-sm whitespace-pre-wrap">{formData.depoimentos_texto}</p>
-                  </div>
+                  <p className="text-gray-600 mt-1 text-sm">Personalizado: {formData.diferencial_outro}</p>
                 )}
               </div>
             )}
@@ -575,122 +405,16 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
         </CardContent>
       </Card>
 
-      {/* Seção 4: Localização e Contato */}
+      {/* SEÇÃO 6: Identidade Visual */}
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-purple-600" />
-                Localização e Contato
+                <Palette className="w-5 h-5 text-purple-600" />
+                6. Identidade Visual
               </h3>
-              <p className="text-sm text-gray-500">Como encontrar você</p>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onEdit(6)}
-              className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-            >
-              <Edit2 className="w-4 h-4 mr-2" />
-              Editar
-            </Button>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-gray-500">Endereço Completo</label>
-              <p className="text-gray-900 mt-1">
-                {formData.rua && `${formData.rua}, `}
-                {formData.numero}
-                {formData.complemento && `, ${formData.complemento}`}
-                {formData.bairro && ` - ${formData.bairro}`}
-                {formData.cidade && ` - ${formData.cidade}`}
-                {formData.estado && `/${formData.estado}`}
-                {formData.cep && ` - CEP: ${formData.cep}`}
-              </p>
-            </div>
-
-            {formData.tem_redes_sociais && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Redes Sociais</label>
-                <div className="mt-2 space-y-2">
-                  {formData.instagram && (
-                    <div className="flex items-center gap-2">
-                      <Instagram className="w-4 h-4 text-purple-600" />
-                      <span className="text-gray-900">Instagram: {formData.instagram}</span>
-                    </div>
-                  )}
-                  {formData.facebook && (
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-purple-600" />
-                      <span className="text-gray-900">Facebook: {formData.facebook}</span>
-                    </div>
-                  )}
-                  {formData.tiktok && (
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-purple-600" />
-                      <span className="text-gray-900">TikTok: {formData.tiktok}</span>
-                    </div>
-                  )}
-                  {formData.linkedin && (
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-purple-600" />
-                      <span className="text-gray-900">LinkedIn: {formData.linkedin}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {formData.horarios_atendimento && formData.horarios_atendimento.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Horários de Atendimento</label>
-                <p className="text-gray-900 mt-1">{renderHorarios()}</p>
-              </div>
-            )}
-
-            {formData.estacionamento && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Estacionamento</label>
-                <p className="text-gray-900 mt-1">{formData.estacionamento === 'sim' ? 'Sim' : 'Não'}</p>
-              </div>
-            )}
-
-            {formData.acessibilidade && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Acessibilidade</label>
-                <p className="text-gray-900 mt-1">{formData.acessibilidade === 'sim' ? 'Sim' : 'Não'}</p>
-              </div>
-            )}
-
-            {formData.exibir_mapa && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Exibir Mapa do Google no Site</label>
-                <p className="text-gray-900 mt-1">{formData.exibir_mapa === 'sim' ? 'Sim' : 'Não'}</p>
-              </div>
-            )}
-
-            {formData.outras_redes && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Outras Redes Sociais</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.outras_redes)}</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Seção 5: Materiais Visuais */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-purple-600" />
-                Materiais Visuais
-              </h3>
-              <p className="text-sm text-gray-500">Imagens e identidade visual</p>
+              <p className="text-sm text-gray-500">Logo, cores e referências</p>
             </div>
             <Button
               variant="ghost"
@@ -724,84 +448,9 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               </div>
             )}
 
-            {uploadedFiles.hero_desktop && uploadedFiles.hero_desktop.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-gray-500 block mb-2">Imagem Hero (Desktop)</label>
-                <div className="flex flex-wrap gap-2">
-                  {uploadedFiles.hero_desktop.map((file, idx) => (
-                    <div key={idx} className="relative group">
-                      <img
-                        src={file.data}
-                        alt={file.name}
-                        className="w-48 h-28 object-cover rounded-lg border-2 border-gray-200"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                        <span className="text-white text-xs text-center px-2">{file.name}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-gray-500 mt-1">Primeira imagem vista no computador</p>
-              </div>
-            )}
-
-            {uploadedFiles.hero_mobile && uploadedFiles.hero_mobile.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-gray-500 block mb-2">Imagem Hero (Mobile)</label>
-                <div className="flex flex-wrap gap-2">
-                  {uploadedFiles.hero_mobile.map((file, idx) => (
-                    <div key={idx} className="relative group">
-                      <img
-                        src={file.data}
-                        alt={file.name}
-                        className="w-24 h-40 object-cover rounded-lg border-2 border-gray-200"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                        <span className="text-white text-xs text-center px-2">{file.name}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-gray-500 mt-1">Versão para celular (vertical)</p>
-              </div>
-            )}
-
-            {uploadedFiles.fotos_espaco && uploadedFiles.fotos_espaco.length > 0 && (
-              <div>
-                <label className="text-sm font-medium text-gray-500 block mb-2">Fotos do Espaço</label>
-                <div className="flex flex-wrap gap-2">
-                  {uploadedFiles.fotos_espaco.map((file, idx) => (
-                    <div key={idx} className="relative group">
-                      <img
-                        src={file.data}
-                        alt={file.name}
-                        className="w-24 h-24 object-cover rounded-lg border-2 border-gray-200"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                        <span className="text-white text-xs text-center px-2">{file.name}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {formData.cor_preferida && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Cor Preferida</label>
-                <div className="flex items-center gap-3 mt-1">
-                  <div
-                    className="w-10 h-10 rounded-lg border-2 border-gray-300"
-                    style={{ backgroundColor: formData.cor_preferida }}
-                  ></div>
-                  <span className="text-gray-900">{formData.cor_preferida}</span>
-                </div>
-              </div>
-            )}
-
             {formData.cores_personalizadas && formData.cores_personalizadas.length > 0 && (
               <div>
-                <label className="text-sm font-medium text-gray-500 block mb-3">Paleta de Cores Personalizada</label>
+                <label className="text-sm font-medium text-gray-500 block mb-3">Paleta de Cores</label>
                 <div className="space-y-2">
                   {formData.cores_personalizadas.map((cor: any, index: number) => {
                     const tipoLabels: { [key: string]: string } = {
@@ -828,49 +477,142 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               </div>
             )}
 
-            {formData.estilo_site && (
+            {formData.sites_referencia_array && formData.sites_referencia_array.length > 0 && (
               <div>
-                <label className="text-sm font-medium text-gray-500">Estilo do Site</label>
-                <p className="text-gray-900 mt-1">
-                  {formData.estilo_site === 'moderno' && 'Moderno e Minimalista'}
-                  {formData.estilo_site === 'profissional' && 'Profissional e Corporativo'}
-                  {formData.estilo_site === 'acolhedor' && 'Acolhedor e Humano'}
-                  {formData.estilo_site === 'inovador' && 'Inovador e Tecnológico'}
-                  {!['moderno', 'profissional', 'acolhedor', 'inovador'].includes(formData.estilo_site) && renderValue(formData.estilo_site)}
-                </p>
+                <label className="text-sm font-medium text-gray-500 block mb-2">Sites de Referência</label>
+                <div className="space-y-2">
+                  {formData.sites_referencia_array.map((site: any, index: number) => (
+                    <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                      <a href={site.url} target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline font-medium">
+                        {site.url}
+                      </a>
+                      {site.motivo && (
+                        <p className="text-sm text-gray-600 mt-1">{site.motivo}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {formData.sites_referencia && (
+            {uploadedFiles.fotos_espaco && uploadedFiles.fotos_espaco.length > 0 && (
               <div>
-                <label className="text-sm font-medium text-gray-500">Sites de Referência</label>
-                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.sites_referencia)}</p>
-              </div>
-            )}
-
-            {formData.prazo_desejado && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Prazo Desejado</label>
-                <p className="text-gray-900 mt-1">
-                  {formData.prazo_desejado === 'urgente' && '⚡ 24 horas (Urgente) - Taxa adicional'}
-                  {formData.prazo_desejado === 'rapido' && '🚀 3-5 dias'}
-                  {formData.prazo_desejado === 'normal' && '📅 1-2 semanas'}
-                  {formData.prazo_desejado === 'flexivel' && '🕐 Flexível (mais de 2 semanas)'}
-                </p>
+                <label className="text-sm font-medium text-gray-500 block mb-2">Fotos do Espaço</label>
+                <div className="flex flex-wrap gap-2">
+                  {uploadedFiles.fotos_espaco.map((file, idx) => (
+                    <div key={idx} className="relative group">
+                      <img
+                        src={file.data}
+                        alt={file.name}
+                        className="w-24 h-24 object-cover rounded-lg border-2 border-gray-200"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Seção 6: Rastreamento e Integrações */}
+      {/* SEÇÃO 7: Depoimentos, Localização e Contato */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-purple-600" />
+                7. Localização e Contato
+              </h3>
+              <p className="text-sm text-gray-500">Endereço e horários</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(6)}
+              className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+            >
+              <Edit2 className="w-4 h-4 mr-2" />
+              Editar
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            {/* Depoimentos */}
+            {formData.estrategia_depoimentos && (
+              <div className="mb-6">
+                <label className="text-sm font-medium text-gray-500">Estratégia de Depoimentos</label>
+                <p className="text-gray-900 mt-1">
+                  {formData.estrategia_depoimentos === 'google' && '⭐ Usar avaliações do Google (automático)'}
+                  {formData.estrategia_depoimentos === 'texto' && '💬 Vou enviar depoimentos que já tenho'}
+                  {formData.estrategia_depoimentos === 'nao' && '⏭️ Não quero seção de depoimentos por enquanto'}
+                </p>
+                {formData.estrategia_depoimentos === 'google' && formData.link_google_maps && (
+                  <p className="text-gray-600 mt-1 text-sm">Link: {formData.link_google_maps}</p>
+                )}
+                {formData.estrategia_depoimentos === 'texto' && formData.depoimentos_texto && (
+                  <div className="mt-2 bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm font-medium text-gray-500 mb-1">Depoimentos:</p>
+                    <p className="text-gray-700 text-sm whitespace-pre-wrap">{formData.depoimentos_texto}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Endereço */}
+            <div>
+              <label className="text-sm font-medium text-gray-500">Endereço Completo</label>
+              <p className="text-gray-900 mt-1">
+                {formData.rua && `${formData.rua}, `}
+                {formData.numero}
+                {formData.complemento && `, ${formData.complemento}`}
+                {formData.bairro && ` - ${formData.bairro}`}
+                {formData.cidade && ` - ${formData.cidade}`}
+                {formData.estado && `/${formData.estado}`}
+                {formData.cep && ` - CEP: ${formData.cep}`}
+              </p>
+            </div>
+
+            {/* Horários de Atendimento */}
+            <div>
+              <label className="text-sm font-medium text-gray-500">Horários de Atendimento</label>
+              {renderHorarios()}
+            </div>
+
+            {/* Facilidades */}
+            {(formData.tem_estacionamento || formData.tem_acessibilidade) && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Facilidades</label>
+                <div className="mt-2 space-y-1">
+                  {formData.tem_estacionamento === 'sim' && (
+                    <p className="text-gray-900">✓ Estacionamento disponível</p>
+                  )}
+                  {formData.tem_acessibilidade === 'sim' && (
+                    <p className="text-gray-900">✓ Acessibilidade para cadeirantes</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Mapa */}
+            {formData.exibir_mapa && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Exibir Mapa no Site</label>
+                <p className="text-gray-900 mt-1">{formData.exibir_mapa === 'sim' ? 'Sim' : 'Não'}</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* SEÇÃO 8: Rastreamento e Integrações */}
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <Globe className="w-5 h-5 text-purple-600" />
-                Rastreamento e Integrações
+                8. Rastreamento e Integrações
               </h3>
               <p className="text-sm text-gray-500">Tags de análise e remarketing (Opcional)</p>
             </div>
@@ -930,59 +672,37 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
         </CardContent>
       </Card>
 
-      {/* Seção 7: Depoimentos e Observações */}
-      <Card>
+      {/* CAMPO DE OBSERVAÇÕES FINAIS */}
+      <Card className="border-2 border-purple-200">
         <CardContent className="p-6">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Star className="w-5 h-5 text-purple-600" />
-                Depoimentos e Observações
-              </h3>
-              <p className="text-sm text-gray-500">Avaliações e informações extras</p>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onEdit(6)}
-              className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-            >
-              <Edit2 className="w-4 h-4 mr-2" />
-              Editar
-            </Button>
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-2">
+              <AlertCircle className="w-5 h-5 text-purple-600" />
+              Observações Finais (Opcional)
+            </h3>
+            <p className="text-sm text-gray-500">
+              Se houver alguma informação adicional, pedido especial ou observação que você gostaria de nos passar, escreva aqui.
+            </p>
           </div>
 
-          <div className="space-y-4">
-            {formData.estrategia_depoimentos && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Estratégia de Depoimentos</label>
-                <p className="text-gray-900 mt-1">
-                  {formData.estrategia_depoimentos === 'google' && '⭐ Usar avaliações do Google (automático)'}
-                  {formData.estrategia_depoimentos === 'texto' && '💬 Vou enviar depoimentos que já tenho'}
-                  {formData.estrategia_depoimentos === 'nao' && '⏭️ Não quero seção de depoimentos por enquanto'}
-                </p>
-                {formData.estrategia_depoimentos === 'google' && formData.link_google_maps && (
-                  <p className="text-gray-600 mt-1 text-sm">Link: {formData.link_google_maps}</p>
-                )}
-                {formData.estrategia_depoimentos === 'texto' && formData.depoimentos_texto && (
-                  <div className="mt-2 bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500 mb-1">Depoimentos:</p>
-                    <p className="text-gray-700 text-sm whitespace-pre-wrap">{formData.depoimentos_texto}</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {formData.observacoes_finais && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Observações Finais</label>
-                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.observacoes_finais)}</p>
-              </div>
-            )}
-          </div>
+          <textarea
+            value={observacoes}
+            onChange={(e) => {
+              setObservacoes(e.target.value);
+              // Atualizar formData diretamente
+              formData.observacoes_revisao = e.target.value;
+            }}
+            placeholder="Ex: Gostaria de enfatizar nosso diferencial em implantes... / Preciso do site com urgência para uma campanha... / etc."
+            rows={5}
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all resize-none"
+          />
+          <p className="text-xs text-gray-500 mt-2">
+            {observacoes.length} caracteres
+          </p>
         </CardContent>
       </Card>
 
+      {/* AVISO FINAL */}
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <div className="flex gap-3">
           <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
