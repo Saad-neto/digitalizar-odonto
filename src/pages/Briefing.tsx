@@ -2385,46 +2385,10 @@ const BriefingOdonto = () => {
                           </button>
                         </div>
 
-                        {/* Nome da cor */}
-                        <div>
-                          <label className="block text-sm font-medium text-neutral-700 mb-1">
-                            Nome da cor *
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="Ex: Cor Primária, Azul Principal, Verde Destaque"
-                            value={cor.nome || ''}
-                            onChange={(e) => {
-                              const novasCores = [...(formData.cores_personalizadas || [])];
-                              novasCores[index] = { ...novasCores[index], nome: e.target.value };
-                              setFormData({...formData, cores_personalizadas: novasCores});
-                            }}
-                            className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                          />
-                        </div>
-
-                        {/* Descrição da cor (opcional) */}
-                        <div>
-                          <label className="block text-sm font-medium text-neutral-700 mb-1">
-                            Onde será usada? (opcional)
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="Ex: Botões, títulos, fundo das seções"
-                            value={cor.descricao || ''}
-                            onChange={(e) => {
-                              const novasCores = [...(formData.cores_personalizadas || [])];
-                              novasCores[index] = { ...novasCores[index], descricao: e.target.value };
-                              setFormData({...formData, cores_personalizadas: novasCores});
-                            }}
-                            className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                          />
-                        </div>
-
                         {/* Seletor de cor */}
                         <div>
                           <label className="block text-sm font-medium text-neutral-700 mb-2">
-                            Código da cor *
+                            Escolha a cor *
                           </label>
                           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                             <input
@@ -2450,6 +2414,36 @@ const BriefingOdonto = () => {
                             />
                           </div>
                         </div>
+
+                        {/* Tipo de cor */}
+                        <div>
+                          <label className="block text-sm font-medium text-neutral-700 mb-2">
+                            Tipo de cor *
+                          </label>
+                          <select
+                            value={cor.tipo || ''}
+                            onChange={(e) => {
+                              const novasCores = [...(formData.cores_personalizadas || [])];
+                              novasCores[index] = { ...novasCores[index], tipo: e.target.value };
+                              setFormData({...formData, cores_personalizadas: novasCores});
+                            }}
+                            className="w-full px-3 py-3 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                          >
+                            <option value="">Selecione o tipo</option>
+                            <option value="primaria">Cor Primária</option>
+                            <option value="secundaria">Cor Secundária</option>
+                            <option value="texto">Cor de Texto</option>
+                            <option value="fundo">Cor de Fundo</option>
+                            <option value="destaque">Cor de Destaque/Accent</option>
+                          </select>
+                          <p className="text-xs text-neutral-600 mt-1">
+                            {cor.tipo === 'primaria' && 'Cor principal da marca, usada em botões e elementos importantes'}
+                            {cor.tipo === 'secundaria' && 'Cor complementar, usada em elementos secundários'}
+                            {cor.tipo === 'texto' && 'Cor principal dos textos e conteúdo'}
+                            {cor.tipo === 'fundo' && 'Cor de fundo das seções e páginas'}
+                            {cor.tipo === 'destaque' && 'Cor para chamar atenção em CTAs e destaques'}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -2459,7 +2453,7 @@ const BriefingOdonto = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    const novasCores = [...(formData.cores_personalizadas || []), { nome: '', descricao: '', valor: '#8B5CF6' }];
+                    const novasCores = [...(formData.cores_personalizadas || []), { tipo: '', valor: '#8B5CF6' }];
                     setFormData({...formData, cores_personalizadas: novasCores});
                   }}
                   className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
@@ -2470,9 +2464,8 @@ const BriefingOdonto = () => {
 
                 <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
                   <p className="text-sm text-blue-800">
-                    💡 <strong>Dica:</strong> Adicione pelo menos a <strong>cor principal da sua marca</strong>.
-                    Nosso designer pode criar as demais cores complementares baseado nela. Exemplos de cores comuns:
-                    <strong> Cor Primária, Cor Secundária, Cor de Destaque, Cor de Fundo, Cor do Texto</strong>.
+                    💡 <strong>Dica:</strong> Adicione pelo menos a <strong>Cor Primária</strong> (cor principal da sua marca).
+                    Nosso designer pode criar as demais cores complementares baseado nela.
                   </p>
                 </div>
               </div>
