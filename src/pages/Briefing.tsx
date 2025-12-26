@@ -435,8 +435,15 @@ const BriefingOdonto = () => {
   };
 
   const handleNext = async () => {
-    // VALIDAÇÃO DESABILITADA TEMPORARIAMENTE PARA DESENVOLVIMENTO
-    // if (validateCurrentSection()) {
+    // Validar seção atual antes de avançar
+    if (!validateCurrentSection()) {
+      // Scroll para o primeiro erro
+      const firstError = document.querySelector('.border-red-500');
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
 
     // Captura automática de lead após página 1 (seção 0)
     if (currentSection === 0) {
