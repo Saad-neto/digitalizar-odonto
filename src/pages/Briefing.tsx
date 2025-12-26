@@ -386,6 +386,12 @@ const BriefingOdonto = () => {
         if (!formData.servicos || formData.servicos.length === 0) {
           newErrors.servicos = 'Selecione pelo menos 1 serviço';
         }
+        if (!formData.aceita_convenios) {
+          newErrors.aceita_convenios = 'Informe se aceita convênios';
+        }
+        if (formData.aceita_convenios === 'sim' && !formData.lista_convenios?.trim()) {
+          newErrors.lista_convenios = 'Liste os convênios que você aceita';
+        }
         break;
 
       case 5: // Galeria e Cores - Opcional
@@ -1549,73 +1555,27 @@ const BriefingOdonto = () => {
                 <option value="nao">Não, apenas particular</option>
               </select>
               {errors.aceita_convenios && <p className="text-red-500 text-sm mt-2">{errors.aceita_convenios}</p>}
-            </div>
 
-            {/* Lista de Convênios (condicional) */}
-            {formData.aceita_convenios === 'sim' && (
-              <div>
-                <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                  Quais convênios você aceita? *
-                </label>
-                <p className="text-sm text-medical-600/70 mb-3">
-                  Selecione os principais ou especifique outros:
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {[
-                    { value: 'odontoprev', label: 'OdontoPrev' },
-                    { value: 'bradesco', label: 'Bradesco Dental' },
-                    { value: 'unimed', label: 'Unimed Odonto' },
-                    { value: 'sulamerica', label: 'SulAmérica' },
-                    { value: 'amil', label: 'Amil Dental' },
-                    { value: 'outros', label: 'Outros' }
-                  ].map((convenio) => (
-                    <label key={convenio.value} className="flex items-center p-3 rounded-lg border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                      <input
-                        type="checkbox"
-                        checked={formData.lista_convenios_array?.includes(convenio.value) || false}
-                        onChange={(e) => {
-                          const current = formData.lista_convenios_array || [];
-                          if (e.target.checked) {
-                            setFormData({...formData, lista_convenios_array: [...current, convenio.value]});
-                          } else {
-                            setFormData({...formData, lista_convenios_array: current.filter(c => c !== convenio.value)});
-                            // Se desmarcar "outros", limpar o campo
-                            if (convenio.value === 'outros') {
-                              setFormData({...formData, lista_convenios_array: current.filter(c => c !== convenio.value), outros_convenios: ''});
-                            }
-                          }
-                        }}
-                        className="mr-3 accent-medical-600 w-5 h-5"
-                      />
-                      <span className="text-neutral-900 font-medium">{convenio.label}</span>
-                    </label>
-                  ))}
+              {/* Campo de texto para lista de convênios (aparece quando seleciona "Sim") */}
+              {formData.aceita_convenios === 'sim' && (
+                <div className="mt-4">
+                  <label className="block text-neutral-900 font-semibold mb-2">
+                    Quais convênios você aceita? *
+                  </label>
+                  <textarea
+                    value={formData.lista_convenios || ''}
+                    onChange={(e) => setFormData({...formData, lista_convenios: e.target.value})}
+                    rows={3}
+                    className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all resize-y ${
+                      errors.lista_convenios ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                    }`}
+                    placeholder="Ex: OdontoPrev, Bradesco Dental, Unimed Odonto, SulAmérica, Amil Dental"
+                  />
+                  <p className="text-xs text-medical-600/60 mt-1">Separe múltiplos convênios por vírgula</p>
+                  {errors.lista_convenios && <p className="text-red-500 text-sm mt-2">{errors.lista_convenios}</p>}
                 </div>
-
-                {errors.lista_convenios && <p className="text-red-500 text-sm mt-3">{errors.lista_convenios}</p>}
-
-                {/* Campo "Outros convênios" condicional */}
-                {formData.lista_convenios_array?.includes('outros') && (
-                  <div className="mt-4">
-                    <label className="block text-neutral-900 font-semibold mb-2">
-                      Especifique outros convênios *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.outros_convenios || ''}
-                      onChange={(e) => setFormData({...formData, outros_convenios: e.target.value})}
-                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                        errors.outros_convenios ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                      } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                      placeholder="Ex: Porto Seguro, MetLife, Hapvida"
-                    />
-                    <p className="text-xs text-medical-600/60 mt-1">Separe múltiplos convênios por vírgula</p>
-                    {errors.outros_convenios && <p className="text-red-500 text-sm mt-1">{errors.outros_convenios}</p>}
-                  </div>
-                )}
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Diferenciais da Clínica */}
             <div>
