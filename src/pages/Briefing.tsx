@@ -1270,32 +1270,22 @@ const BriefingOdonto = () => {
               <label className="block text-neutral-900 font-semibold mb-3 text-lg">
                 Quais serviços/tratamentos você oferece? *
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
+              <p className="text-sm text-medical-600/70 mb-4">
                 Selecione de 3 a 6 serviços principais:
               </p>
 
-              {/* Checkboxes Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+              {/* Lista Simplificada */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 {[
-                  { value: 'limpeza', label: 'Limpeza e profilaxia', icon: '✨' },
-                  { value: 'clareamento', label: 'Clareamento dental', icon: '⚡' },
-                  { value: 'restauracoes', label: 'Restaurações em resina', icon: '🦷' },
-                  { value: 'canal', label: 'Tratamento de canal (endodontia)', icon: '🔧' },
-                  { value: 'implantes', label: 'Implantes dentários', icon: '💎' },
-                  { value: 'proteses', label: 'Próteses dentárias', icon: '👄' },
-                  { value: 'ortodontia_fixa', label: 'Ortodontia (aparelho fixo)', icon: '📐' },
-                  { value: 'ortodontia_invisivel', label: 'Ortodontia invisível (alinhadores)', icon: '🔍' },
-                  { value: 'extracao', label: 'Extração de dentes/sisos', icon: '🩺' },
-                  { value: 'periodontia', label: 'Periodontia (tratamento de gengiva)', icon: '🌿' },
-                  { value: 'odontopediatria', label: 'Odontopediatria (dentista infantil)', icon: '👶' },
-                  { value: 'harmonizacao', label: 'Harmonização facial', icon: '💉' },
-                  { value: 'bichectomia', label: 'Bichectomia', icon: '✂️' },
-                  { value: 'lentes', label: 'Lentes de contato dental', icon: '💫' },
-                  { value: 'facetas', label: 'Facetas de porcelana', icon: '🎨' },
-                  { value: 'cirurgia', label: 'Cirurgia bucomaxilofacial', icon: '🏥' },
-                  { value: 'dtm', label: 'DTM e bruxismo', icon: '😴' },
-                  { value: 'emergencia', label: 'Emergências 24h', icon: '🚨' },
-                  { value: 'outro', label: 'Outro', icon: '➕' }
+                  { value: 'clinica_geral', label: 'Clínica geral' },
+                  { value: 'ortodontia', label: 'Ortodontia' },
+                  { value: 'implantes', label: 'Implantes' },
+                  { value: 'estetica', label: 'Estética (clareamento, facetas, lentes)' },
+                  { value: 'proteses', label: 'Próteses' },
+                  { value: 'odontopediatria', label: 'Odontopediatria' },
+                  { value: 'periodontia', label: 'Periodontia' },
+                  { value: 'endodontia', label: 'Endodontia (canal)' },
+                  { value: 'outro', label: 'Outro (descreva)' }
                 ].map((servico) => (
                   <label
                     key={servico.value}
@@ -1328,10 +1318,7 @@ const BriefingOdonto = () => {
                       disabled={!formData.servicos?.includes(servico.value) && (formData.servicos?.length || 0) >= 6}
                       className="mr-3 accent-medical-600 w-4 h-4"
                     />
-                    <span className="text-sm">
-                      <span className="mr-2">{servico.icon}</span>
-                      {servico.label}
-                    </span>
+                    <span className="text-sm font-medium">{servico.label}</span>
                   </label>
                 ))}
               </div>
@@ -1343,25 +1330,15 @@ const BriefingOdonto = () => {
                   <div className="flex flex-wrap gap-2">
                     {formData.servicos?.map((servicoValue) => {
                       const servicoObj = [
-                        { value: 'limpeza', label: 'Limpeza e profilaxia', icon: '✨' },
-                        { value: 'clareamento', label: 'Clareamento dental', icon: '⚡' },
-                        { value: 'restauracoes', label: 'Restaurações em resina', icon: '🦷' },
-                        { value: 'canal', label: 'Tratamento de canal', icon: '🔧' },
-                        { value: 'implantes', label: 'Implantes dentários', icon: '💎' },
-                        { value: 'proteses', label: 'Próteses dentárias', icon: '👄' },
-                        { value: 'ortodontia_fixa', label: 'Ortodontia (fixo)', icon: '📐' },
-                        { value: 'ortodontia_invisivel', label: 'Ortodontia invisível', icon: '🔍' },
-                        { value: 'extracao', label: 'Extração', icon: '🩺' },
-                        { value: 'periodontia', label: 'Periodontia', icon: '🌿' },
-                        { value: 'odontopediatria', label: 'Odontopediatria', icon: '👶' },
-                        { value: 'harmonizacao', label: 'Harmonização facial', icon: '💉' },
-                        { value: 'bichectomia', label: 'Bichectomia', icon: '✂️' },
-                        { value: 'lentes', label: 'Lentes de contato', icon: '💫' },
-                        { value: 'facetas', label: 'Facetas de porcelana', icon: '🎨' },
-                        { value: 'cirurgia', label: 'Cirurgia bucomaxilofacial', icon: '🏥' },
-                        { value: 'dtm', label: 'DTM e bruxismo', icon: '😴' },
-                        { value: 'emergencia', label: 'Emergências 24h', icon: '🚨' },
-                        { value: 'outro', label: 'Outro', icon: '➕' }
+                        { value: 'clinica_geral', label: 'Clínica geral' },
+                        { value: 'ortodontia', label: 'Ortodontia' },
+                        { value: 'implantes', label: 'Implantes' },
+                        { value: 'estetica', label: 'Estética' },
+                        { value: 'proteses', label: 'Próteses' },
+                        { value: 'odontopediatria', label: 'Odontopediatria' },
+                        { value: 'periodontia', label: 'Periodontia' },
+                        { value: 'endodontia', label: 'Endodontia' },
+                        { value: 'outro', label: 'Outro' }
                       ].find(s => s.value === servicoValue);
 
                       return (
@@ -1369,7 +1346,6 @@ const BriefingOdonto = () => {
                           key={servicoValue}
                           className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-medical-400 rounded-full text-sm font-medium text-medical-700 shadow-sm"
                         >
-                          <span>{servicoObj?.icon}</span>
                           <span>{servicoObj?.label}</span>
                           <button
                             type="button"
