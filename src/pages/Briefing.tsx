@@ -2074,114 +2074,134 @@ const BriefingOdonto = () => {
             <div className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-2xl p-6">
               <h3 className="text-xl font-bold text-neutral-900 mb-3">🌟 Sites de Referência (Recomendado)</h3>
               <p className="text-sm text-medical-600/70 mb-4">
-                Mostre até 3 sites que você gosta para nos inspirarmos no design do seu site.
+                Mostre sites que você gosta para nos inspirarmos no design do seu site.
                 <strong> Uma imagem vale mais que mil palavras!</strong>
               </p>
 
-              <div className="space-y-6">
-                {[1, 2, 3].map((num) => {
-                  const sitesRef = formData.sites_referencia || [];
-                  const siteAtual = sitesRef[num - 1] || {};
-
-                  return (
-                    <div key={num} className="bg-white rounded-xl p-4 border-2 border-purple-100">
-                      <div className="flex items-center gap-2 mb-3">
+              <div className="space-y-4">
+                {(formData.sites_referencia || []).map((site: any, index: number) => (
+                  <div key={index} className="bg-white rounded-xl p-4 border-2 border-purple-100">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
                         <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                          {num}
+                          {index + 1}
                         </span>
-                        <span className="font-semibold text-neutral-900">Site de Referência {num}</span>
+                        <span className="font-semibold text-neutral-900">Site de Referência {index + 1}</span>
                       </div>
-
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-sm font-medium text-neutral-700 mb-1">
-                            Link do site
-                          </label>
-                          <input
-                            type="url"
-                            placeholder="https://exemplo.com"
-                            value={siteAtual.url || ''}
-                            onChange={(e) => {
-                              const novasSites = [...(formData.sites_referencia || [])];
-                              novasSites[num - 1] = { ...novasSites[num - 1], url: e.target.value };
-                              setFormData({...formData, sites_referencia: novasSites});
-                            }}
-                            className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                          />
-                        </div>
-
-                        {siteAtual.url && (
-                          <>
-                            <div>
-                              <label className="block text-sm font-medium text-neutral-700 mb-2">
-                                O que você mais gostou neste site?
-                              </label>
-                              <div className="grid grid-cols-2 gap-2">
-                                {[
-                                  { value: 'layout', label: 'Layout/organização' },
-                                  { value: 'cores', label: 'Cores e estilo' },
-                                  { value: 'fotos', label: 'Tipo de fotos' },
-                                  { value: 'animacoes', label: 'Animações/efeitos' }
-                                ].map((opcao) => {
-                                  const aspectos = siteAtual.aspectos || [];
-                                  return (
-                                    <label key={opcao.value} className="flex items-center gap-2 text-sm cursor-pointer">
-                                      <input
-                                        type="checkbox"
-                                        checked={aspectos.includes(opcao.value)}
-                                        onChange={(e) => {
-                                          const novasSites = [...(formData.sites_referencia || [])];
-                                          const aspectosAtuais = novasSites[num - 1]?.aspectos || [];
-
-                                          if (e.target.checked) {
-                                            novasSites[num - 1] = {
-                                              ...novasSites[num - 1],
-                                              aspectos: [...aspectosAtuais, opcao.value]
-                                            };
-                                          } else {
-                                            novasSites[num - 1] = {
-                                              ...novasSites[num - 1],
-                                              aspectos: aspectosAtuais.filter((a: string) => a !== opcao.value)
-                                            };
-                                          }
-                                          setFormData({...formData, sites_referencia: novasSites});
-                                        }}
-                                        className="w-4 h-4 text-purple-600 border-medical-300 rounded focus:ring-purple-500"
-                                      />
-                                      <span className="text-neutral-700">{opcao.label}</span>
-                                    </label>
-                                  );
-                                })}
-                              </div>
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium text-neutral-700 mb-1">
-                                Observações adicionais (opcional)
-                              </label>
-                              <input
-                                type="text"
-                                placeholder="Ex: Gostei da forma como apresentam os serviços"
-                                value={siteAtual.observacao || ''}
-                                onChange={(e) => {
-                                  const novasSites = [...(formData.sites_referencia || [])];
-                                  novasSites[num - 1] = { ...novasSites[num - 1], observacao: e.target.value };
-                                  setFormData({...formData, sites_referencia: novasSites});
-                                }}
-                                className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
-                              />
-                            </div>
-                          </>
-                        )}
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const novasSites = (formData.sites_referencia || []).filter((_: any, i: number) => i !== index);
+                          setFormData({...formData, sites_referencia: novasSites});
+                        }}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                        title="Remover site"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
-                  );
-                })}
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">
+                          Link do site
+                        </label>
+                        <input
+                          type="url"
+                          placeholder="https://exemplo.com"
+                          value={site.url || ''}
+                          onChange={(e) => {
+                            const novasSites = [...(formData.sites_referencia || [])];
+                            novasSites[index] = { ...novasSites[index], url: e.target.value };
+                            setFormData({...formData, sites_referencia: novasSites});
+                          }}
+                          className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                        />
+                      </div>
+
+                      {site.url && (
+                        <>
+                          <div>
+                            <label className="block text-sm font-medium text-neutral-700 mb-2">
+                              O que você mais gostou neste site?
+                            </label>
+                            <div className="grid grid-cols-2 gap-2">
+                              {[
+                                { value: 'layout', label: 'Layout/organização' },
+                                { value: 'cores', label: 'Cores e estilo' },
+                                { value: 'fotos', label: 'Tipo de fotos' },
+                                { value: 'animacoes', label: 'Animações/efeitos' }
+                              ].map((opcao) => {
+                                const aspectos = site.aspectos || [];
+                                return (
+                                  <label key={opcao.value} className="flex items-center gap-2 text-sm cursor-pointer">
+                                    <input
+                                      type="checkbox"
+                                      checked={aspectos.includes(opcao.value)}
+                                      onChange={(e) => {
+                                        const novasSites = [...(formData.sites_referencia || [])];
+                                        const aspectosAtuais = novasSites[index]?.aspectos || [];
+
+                                        if (e.target.checked) {
+                                          novasSites[index] = {
+                                            ...novasSites[index],
+                                            aspectos: [...aspectosAtuais, opcao.value]
+                                          };
+                                        } else {
+                                          novasSites[index] = {
+                                            ...novasSites[index],
+                                            aspectos: aspectosAtuais.filter((a: string) => a !== opcao.value)
+                                          };
+                                        }
+                                        setFormData({...formData, sites_referencia: novasSites});
+                                      }}
+                                      className="w-4 h-4 text-purple-600 border-medical-300 rounded focus:ring-purple-500"
+                                    />
+                                    <span className="text-neutral-700">{opcao.label}</span>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-neutral-700 mb-1">
+                              Observações adicionais (opcional)
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Ex: Gostei da forma como apresentam os serviços"
+                              value={site.observacao || ''}
+                              onChange={(e) => {
+                                const novasSites = [...(formData.sites_referencia || [])];
+                                novasSites[index] = { ...novasSites[index], observacao: e.target.value };
+                                setFormData({...formData, sites_referencia: novasSites});
+                              }}
+                              className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const novasSites = [...(formData.sites_referencia || []), { url: '', aspectos: [], observacao: '' }];
+                  setFormData({...formData, sites_referencia: novasSites});
+                }}
+                className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+              >
+                <Plus className="w-5 h-5" />
+                Adicionar site de referência
+              </button>
 
               <div className="mt-4 p-3 bg-purple-100 rounded-lg border border-purple-300">
                 <p className="text-sm text-purple-800">
-                  💡 <strong>Dica:</strong> Não precisa preencher os 3 sites. Mesmo 1 referência já ajuda muito!
+                  💡 <strong>Dica:</strong> Mesmo 1 referência já ajuda muito!
                   Pode ser site de dentista, clínica médica ou qualquer site que você ache bonito.
                 </p>
               </div>
