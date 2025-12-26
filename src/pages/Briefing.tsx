@@ -409,10 +409,9 @@ const BriefingOdonto = () => {
         if (!formData.tem_estacionamento) newErrors.tem_estacionamento = 'Informe sobre estacionamento';
 
         // Validar horários de atendimento
-        const horarios = formData.horarios_atendimento || {};
-        const diasAbertos = Object.values(horarios).filter((dia: any) => dia?.aberto);
-        if (diasAbertos.length === 0) {
-          newErrors.horario_padrao = 'Marque pelo menos um dia de atendimento';
+        const horariosArray = formData.horarios_atendimento_array || [];
+        if (horariosArray.length === 0) {
+          newErrors.horario_padrao = 'Adicione pelo menos um horário de atendimento';
         }
 
         if (!formData.exibir_mapa) newErrors.exibir_mapa = 'Informe se quer exibir o mapa';
@@ -1939,93 +1938,115 @@ const BriefingOdonto = () => {
                 Horários de atendimento *
               </label>
               <p className="text-sm text-medical-600/70 mb-4">
-                Defina os horários de funcionamento para cada dia da semana
+                Adicione os dias e horários de funcionamento
               </p>
 
               <div className="space-y-3">
-                {[
-                  { dia: 'segunda', label: 'Segunda-feira' },
-                  { dia: 'terca', label: 'Terça-feira' },
-                  { dia: 'quarta', label: 'Quarta-feira' },
-                  { dia: 'quinta', label: 'Quinta-feira' },
-                  { dia: 'sexta', label: 'Sexta-feira' },
-                  { dia: 'sabado', label: 'Sábado' },
-                  { dia: 'domingo', label: 'Domingo' }
-                ].map(({ dia, label }) => {
-                  const horarios = formData.horarios_atendimento || {};
-                  const diaData = horarios[dia] || { aberto: true, inicio: '08:00', fim: '18:00' };
+                {(formData.horarios_atendimento_array || []).map((horario: any, index: number) => (
+                  <div key={index} className="bg-white border-2 border-medical-200 rounded-xl p-4">
+                    <div className="space-y-3">
+                      {/* Header com botão remover */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="bg-medical-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                            {index + 1}
+                          </span>
+                          <span className="font-semibold text-neutral-900">Horário {index + 1}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const novosHorarios = (formData.horarios_atendimento_array || []).filter((_: any, i: number) => i !== index);
+                            setFormData({...formData, horarios_atendimento_array: novosHorarios});
+                          }}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                          title="Remover horário"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
 
-                  return (
-                    <div key={dia} className="bg-white border-2 border-medical-200 rounded-xl p-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                        {/* Nome do dia + Toggle Aberto/Fechado */}
-                        <div className="flex items-center gap-3 min-w-[180px]">
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={diaData.aberto}
-                              onChange={(e) => {
-                                const novosHorarios = {
-                                  ...horarios,
-                                  [dia]: { ...diaData, aberto: e.target.checked }
-                                };
-                                setFormData({...formData, horarios_atendimento: novosHorarios});
-                              }}
-                              className="w-5 h-5 text-medical-600 border-medical-300 rounded focus:ring-medical-500"
-                            />
-                            <span className={`font-semibold ${diaData.aberto ? 'text-neutral-900' : 'text-neutral-400'}`}>
-                              {label}
-                            </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {/* Dia da semana */}
+                        <div>
+                          <label className="block text-sm font-medium text-neutral-700 mb-1">
+                            Dia da semana *
                           </label>
+                          <select
+                            value={horario.dia || ''}
+                            onChange={(e) => {
+                              const novosHorarios = [...(formData.horarios_atendimento_array || [])];
+                              novosHorarios[index] = { ...novosHorarios[index], dia: e.target.value };
+                              setFormData({...formData, horarios_atendimento_array: novosHorarios});
+                            }}
+                            className="w-full px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
+                          >
+                            <option value="">Selecione</option>
+                            <option value="segunda">Segunda-feira</option>
+                            <option value="terca">Terça-feira</option>
+                            <option value="quarta">Quarta-feira</option>
+                            <option value="quinta">Quinta-feira</option>
+                            <option value="sexta">Sexta-feira</option>
+                            <option value="sabado">Sábado</option>
+                            <option value="domingo">Domingo</option>
+                          </select>
                         </div>
 
-                        {/* Horários (só aparece se aberto) */}
-                        {diaData.aberto && (
-                          <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 flex-1">
-                            <div className="flex items-center gap-2 w-full xs:w-auto">
-                              <input
-                                type="time"
-                                value={diaData.inicio || '08:00'}
-                                onChange={(e) => {
-                                  const novosHorarios = {
-                                    ...horarios,
-                                    [dia]: { ...diaData, inicio: e.target.value }
-                                  };
-                                  setFormData({...formData, horarios_atendimento: novosHorarios});
-                                }}
-                                className="flex-1 px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
-                              />
-                              <span className="text-neutral-600">às</span>
-                              <input
-                                type="time"
-                                value={diaData.fim || '18:00'}
-                                onChange={(e) => {
-                                  const novosHorarios = {
-                                    ...horarios,
-                                    [dia]: { ...diaData, fim: e.target.value }
-                                  };
-                                  setFormData({...formData, horarios_atendimento: novosHorarios});
-                                }}
-                                className="flex-1 px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
-                              />
-                            </div>
-                          </div>
-                        )}
+                        {/* Horário de início */}
+                        <div>
+                          <label className="block text-sm font-medium text-neutral-700 mb-1">
+                            Abertura *
+                          </label>
+                          <input
+                            type="time"
+                            value={horario.inicio || '08:00'}
+                            onChange={(e) => {
+                              const novosHorarios = [...(formData.horarios_atendimento_array || [])];
+                              novosHorarios[index] = { ...novosHorarios[index], inicio: e.target.value };
+                              setFormData({...formData, horarios_atendimento_array: novosHorarios});
+                            }}
+                            className="w-full px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
+                          />
+                        </div>
 
-                        {/* Label "Fechado" quando não está aberto */}
-                        {!diaData.aberto && (
-                          <span className="text-neutral-400 italic">Fechado</span>
-                        )}
+                        {/* Horário de fim */}
+                        <div>
+                          <label className="block text-sm font-medium text-neutral-700 mb-1">
+                            Fechamento *
+                          </label>
+                          <input
+                            type="time"
+                            value={horario.fim || '18:00'}
+                            onChange={(e) => {
+                              const novosHorarios = [...(formData.horarios_atendimento_array || [])];
+                              novosHorarios[index] = { ...novosHorarios[index], fim: e.target.value };
+                              setFormData({...formData, horarios_atendimento_array: novosHorarios});
+                            }}
+                            className="w-full px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
+                          />
+                        </div>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
+
+              {/* Botão Adicionar Horário */}
+              <button
+                type="button"
+                onClick={() => {
+                  const novosHorarios = [...(formData.horarios_atendimento_array || []), { dia: '', inicio: '08:00', fim: '18:00' }];
+                  setFormData({...formData, horarios_atendimento_array: novosHorarios});
+                }}
+                className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 bg-medical-600 text-white rounded-lg hover:bg-medical-700 transition-colors font-medium"
+              >
+                <Plus className="w-5 h-5" />
+                Adicionar horário
+              </button>
 
               <div className="mt-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-xl">
                 <p className="text-sm text-blue-800">
-                  💡 <strong>Dica:</strong> Marque apenas os dias que você atende.
-                  Para horários com intervalo (ex: 8h-12h e 14h-18h), escolha o horário contínuo mais próximo.
+                  💡 <strong>Dica:</strong> Adicione pelo menos um dia de atendimento. Se você atende com o mesmo horário em vários dias (ex: Segunda a Sexta), adicione um horário para cada dia.
                 </p>
               </div>
 
