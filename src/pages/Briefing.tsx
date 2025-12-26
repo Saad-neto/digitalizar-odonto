@@ -1398,39 +1398,20 @@ const BriefingOdonto = () => {
 
             {/* Aceita Convênios */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
+              <label className="block text-neutral-900 font-semibold mb-3 text-lg">
                 Aceita convênios? *
               </label>
-              <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="aceita_convenios"
-                    value="sim"
-                    checked={formData.aceita_convenios === 'sim'}
-                    onChange={(e) => setFormData({...formData, aceita_convenios: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div>
-                    <div className="font-semibold text-neutral-900">✅ Sim, aceito convênios</div>
-                    <div className="text-sm text-medical-600/70">(Unimed, Bradesco Dental, SulAmérica, etc.)</div>
-                  </div>
-                </label>
-
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="aceita_convenios"
-                    value="nao"
-                    checked={formData.aceita_convenios === 'nao'}
-                    onChange={(e) => setFormData({...formData, aceita_convenios: e.target.value, lista_convenios: ''})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div>
-                    <div className="font-semibold text-neutral-900">❌ Não, apenas particular</div>
-                  </div>
-                </label>
-              </div>
+              <select
+                value={formData.aceita_convenios || ''}
+                onChange={(e) => setFormData({...formData, aceita_convenios: e.target.value, lista_convenios: e.target.value === 'nao' ? '' : formData.lista_convenios})}
+                className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                  errors.aceita_convenios ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+              >
+                <option value="">Selecione uma opção</option>
+                <option value="sim">Sim, aceito convênios</option>
+                <option value="nao">Não, apenas particular</option>
+              </select>
               {errors.aceita_convenios && <p className="text-red-500 text-sm mt-2">{errors.aceita_convenios}</p>}
             </div>
 
@@ -1446,12 +1427,12 @@ const BriefingOdonto = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { value: 'odontoprev', label: '👑 OdontoPrev' },
-                    { value: 'bradesco', label: '🏦 Bradesco Dental' },
-                    { value: 'unimed', label: '🏥 Unimed Odonto' },
-                    { value: 'sulamerica', label: '💼 SulAmérica' },
-                    { value: 'amil', label: '🩺 Amil Dental' },
-                    { value: 'outros', label: '➕ Outros' }
+                    { value: 'odontoprev', label: 'OdontoPrev' },
+                    { value: 'bradesco', label: 'Bradesco Dental' },
+                    { value: 'unimed', label: 'Unimed Odonto' },
+                    { value: 'sulamerica', label: 'SulAmérica' },
+                    { value: 'amil', label: 'Amil Dental' },
+                    { value: 'outros', label: 'Outros' }
                   ].map((convenio) => (
                     <label key={convenio.value} className="flex items-center p-3 rounded-lg border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
                       <input
@@ -1510,23 +1491,23 @@ const BriefingOdonto = () => {
               </p>
 
               {/* Checkboxes Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 {[
-                  { value: 'emergencia_24h', label: 'Atendimento 24 horas', icon: '🚨' },
-                  { value: 'tecnologia', label: 'Tecnologia de ponta', icon: '💎' },
-                  { value: 'sem_dor', label: 'Tratamento sem dor', icon: '💉' },
-                  { value: 'estacionamento', label: 'Estacionamento', icon: '🅿️' },
-                  { value: 'acessibilidade', label: 'Acessibilidade', icon: '♿' },
-                  { value: 'atendimento_rapido', label: 'Atendimento rápido', icon: '⚡' },
-                  { value: 'wifi_gratis', label: 'Wi-Fi grátis', icon: '📶' },
-                  { value: 'ambiente_kids', label: 'Ambiente kids', icon: '👶' }
+                  { value: 'emergencia_24h', label: 'Atendimento 24 horas' },
+                  { value: 'tecnologia', label: 'Tecnologia de ponta' },
+                  { value: 'sem_dor', label: 'Tratamento sem dor' },
+                  { value: 'estacionamento', label: 'Estacionamento' },
+                  { value: 'acessibilidade', label: 'Acessibilidade' },
+                  { value: 'atendimento_rapido', label: 'Atendimento rápido' },
+                  { value: 'wifi_gratis', label: 'Wi-Fi grátis' },
+                  { value: 'ambiente_kids', label: 'Ambiente kids' }
                 ].map((diferencial) => (
                   <label
                     key={diferencial.value}
                     className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
                       formData.diferenciais?.includes(diferencial.value)
                         ? 'border-medical-500 bg-medical-50'
-                        : 'border-gray-200 hover:border-medical-300 bg-white'
+                        : 'border-medical-200 hover:border-medical-400 bg-white'
                     } ${
                       !formData.diferenciais?.includes(diferencial.value) && (formData.diferenciais?.length || 0) >= 4
                         ? 'opacity-50 cursor-not-allowed'
@@ -1547,10 +1528,9 @@ const BriefingOdonto = () => {
                         }
                       }}
                       disabled={!formData.diferenciais?.includes(diferencial.value) && (formData.diferenciais?.length || 0) >= 4}
-                      className="mr-3 accent-medical-600 w-4 h-4"
+                      className="mr-3 accent-medical-600 w-5 h-5"
                     />
-                    <span className="text-sm">
-                      <span className="mr-2">{diferencial.icon}</span>
+                    <span className="text-neutral-900 font-medium">
                       {diferencial.label}
                     </span>
                   </label>
@@ -1559,27 +1539,26 @@ const BriefingOdonto = () => {
 
               {/* Caixa de Tags dos Selecionados */}
               {(formData.diferenciais?.length || 0) > 0 && (
-                <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl">
-                  <p className="text-xs font-semibold text-purple-700 mb-2">DIFERENCIAIS SELECIONADOS:</p>
+                <div className="p-4 bg-medical-50 border-2 border-medical-200 rounded-xl">
+                  <p className="text-xs font-semibold text-medical-700 mb-2">DIFERENCIAIS SELECIONADOS:</p>
                   <div className="flex flex-wrap gap-2">
                     {formData.diferenciais?.map((diferencialValue) => {
                       const diferencialObj = [
-                        { value: 'emergencia_24h', label: 'Atendimento 24h', icon: '🚨' },
-                        { value: 'tecnologia', label: 'Tecnologia de ponta', icon: '💎' },
-                        { value: 'sem_dor', label: 'Tratamento sem dor', icon: '💉' },
-                        { value: 'estacionamento', label: 'Estacionamento', icon: '🅿️' },
-                        { value: 'acessibilidade', label: 'Acessibilidade', icon: '♿' },
-                        { value: 'atendimento_rapido', label: 'Atendimento rápido', icon: '⚡' },
-                        { value: 'wifi_gratis', label: 'Wi-Fi grátis', icon: '📶' },
-                        { value: 'ambiente_kids', label: 'Ambiente kids', icon: '👶' }
+                        { value: 'emergencia_24h', label: 'Atendimento 24h' },
+                        { value: 'tecnologia', label: 'Tecnologia de ponta' },
+                        { value: 'sem_dor', label: 'Tratamento sem dor' },
+                        { value: 'estacionamento', label: 'Estacionamento' },
+                        { value: 'acessibilidade', label: 'Acessibilidade' },
+                        { value: 'atendimento_rapido', label: 'Atendimento rápido' },
+                        { value: 'wifi_gratis', label: 'Wi-Fi grátis' },
+                        { value: 'ambiente_kids', label: 'Ambiente kids' }
                       ].find(d => d.value === diferencialValue);
 
                       return (
                         <span
                           key={diferencialValue}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-purple-400 rounded-full text-sm font-medium text-purple-700 shadow-sm"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-medical-400 rounded-full text-sm font-medium text-medical-700 shadow-sm"
                         >
-                          <span>{diferencialObj?.icon}</span>
                           <span>{diferencialObj?.label}</span>
                           <button
                             type="button"
