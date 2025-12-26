@@ -196,22 +196,53 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
           </div>
 
           <div className="space-y-4">
-            {formData.titulo_hero && (
+            {formData.hero_titulo && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Título do Banner</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.titulo_hero)}</p>
+                <p className="text-gray-900 mt-1">{renderValue(formData.hero_titulo)}</p>
               </div>
             )}
-            {formData.subtitulo_hero && (
+            {formData.hero_subtitulo && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Subtítulo do Banner</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.subtitulo_hero)}</p>
+                <p className="text-gray-900 mt-1">{renderValue(formData.hero_subtitulo)}</p>
               </div>
             )}
-            {formData.chamada_acao_hero && (
+            {formData.hero_cta_texto && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Texto do Botão Principal</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.chamada_acao_hero)}</p>
+                <p className="text-gray-900 mt-1">{renderValue(formData.hero_cta_texto)}</p>
+              </div>
+            )}
+            {(formData.widget1_numero || formData.widget2_numero || formData.widget3_numero || formData.widget4_numero) && !formData.ocultar_widgets && (
+              <div>
+                <label className="text-sm font-medium text-gray-500 block mb-2">Widgets de Estatísticas</label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {formData.widget1_numero && (
+                    <div className="bg-purple-50 p-3 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-purple-600">{formData.widget1_numero}</p>
+                      <p className="text-xs text-gray-600 mt-1">{formData.widget1_label}</p>
+                    </div>
+                  )}
+                  {formData.widget2_numero && (
+                    <div className="bg-purple-50 p-3 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-purple-600">{formData.widget2_numero}</p>
+                      <p className="text-xs text-gray-600 mt-1">{formData.widget2_label}</p>
+                    </div>
+                  )}
+                  {formData.widget3_numero && (
+                    <div className="bg-purple-50 p-3 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-purple-600">{formData.widget3_numero}</p>
+                      <p className="text-xs text-gray-600 mt-1">{formData.widget3_label}</p>
+                    </div>
+                  )}
+                  {formData.widget4_numero && (
+                    <div className="bg-purple-50 p-3 rounded-lg text-center">
+                      <p className="text-2xl font-bold text-purple-600">{formData.widget4_numero}</p>
+                      <p className="text-xs text-gray-600 mt-1">{formData.widget4_label}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -241,16 +272,32 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
           </div>
 
           <div className="space-y-4">
-            {formData.titulo_sobre && (
+            {formData.sobre_titulo && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Título da Seção Sobre</label>
-                <p className="text-gray-900 mt-1">{renderValue(formData.titulo_sobre)}</p>
+                <p className="text-gray-900 mt-1">{renderValue(formData.sobre_titulo)}</p>
               </div>
             )}
-            {formData.texto_sobre && (
+            {formData.sobre_texto && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Texto Sobre a Clínica</label>
-                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.texto_sobre)}</p>
+                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.sobre_texto)}</p>
+              </div>
+            )}
+            {formData.redes_sociais && formData.redes_sociais.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-500 block mb-2">Redes Sociais</label>
+                <div className="space-y-2">
+                  {formData.redes_sociais.map((rede: any, index: number) => (
+                    <div key={index} className="bg-purple-50 p-3 rounded-lg flex items-center gap-3">
+                      <Instagram className="w-4 h-4 text-purple-600" />
+                      <div>
+                        <p className="font-medium text-gray-900">{rede.tipo}</p>
+                        <p className="text-sm text-gray-600">{rede.usuario || rede.url}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {formData.missao && (
@@ -333,12 +380,25 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                     )}
                     {prof.foto && (
                       <div>
-                        <label className="text-sm font-medium text-gray-500 block mb-2">Foto</label>
-                        <img
-                          src={prof.foto}
-                          alt={prof.nome}
-                          className="w-32 h-32 object-cover rounded-lg border-2 border-purple-200"
-                        />
+                        <label className="text-sm font-medium text-gray-500 block mb-2">Foto do Profissional</label>
+                        <div className="w-48 h-48 overflow-hidden rounded-lg border-2 border-purple-200 bg-gray-100 flex items-center justify-center">
+                          <img
+                            src={prof.foto}
+                            alt={prof.nome || 'Profissional'}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.innerHTML = '<div class="text-gray-400 text-sm text-center p-4">Imagem não disponível</div>';
+                              }
+                            }}
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Tamanho: {prof.foto ? Math.round(prof.foto.length / 1024) : 0} KB
+                        </p>
                       </div>
                     )}
                   </div>
