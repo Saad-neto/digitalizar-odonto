@@ -1394,14 +1394,17 @@ const BriefingOdonto = () => {
               <select
                 value=""
                 onChange={(e) => {
-                  if (e.target.value) {
+                  const value = e.target.value;
+                  if (value === 'custom') {
+                    setFormData({...formData, servico_customizando: true});
+                  } else if (value) {
                     const current = formData.servicos || [];
-                    if (!current.includes(e.target.value)) {
-                      setFormData({...formData, servicos: [...current, e.target.value]});
+                    if (!current.includes(value)) {
+                      setFormData({...formData, servicos: [...current, value]});
                     }
                   }
                 }}
-                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all mb-4"
+                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
               >
                 <option value="">Selecione um serviço para adicionar</option>
                 {[
@@ -1421,58 +1424,63 @@ const BriefingOdonto = () => {
                     </option>
                   ))
                 }
+                <option value="custom">✏️ Personalizar serviço</option>
               </select>
 
-              {/* Campo Personalizado */}
-              <div className="mb-4">
-                <label className="block text-neutral-900 font-semibold mb-2">
-                  ✏️ Personalizar serviço
-                </label>
-                <div className="flex flex-col xs:flex-row gap-2">
-                  <input
-                    type="text"
-                    value={formData.servico_outro_temp || ''}
-                    onChange={(e) => setFormData({...formData, servico_outro_temp: e.target.value})}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
+              {/* Campo Personalizado - Mostra quando selecionar "Personalizar" */}
+              {formData.servico_customizando && (
+                <div className="mt-3 mb-4">
+                  <div className="flex flex-col xs:flex-row gap-2">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={formData.servico_outro_temp || ''}
+                        onChange={(e) => setFormData({...formData, servico_outro_temp: e.target.value})}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const valor = formData.servico_outro_temp?.trim();
+                            if (valor) {
+                              const current = formData.servicos || [];
+                              setFormData({
+                                ...formData,
+                                servicos: [...current, `outro:${valor}`],
+                                servico_outro_temp: '',
+                                servico_customizando: false
+                              });
+                            }
+                          }
+                        }}
+                        maxLength={60}
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
+                        placeholder="Digite o serviço personalizado"
+                      />
+                      <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
+                        {(formData.servico_outro_temp || '').length}/60 caracteres
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
                         const valor = formData.servico_outro_temp?.trim();
                         if (valor) {
                           const current = formData.servicos || [];
                           setFormData({
                             ...formData,
                             servicos: [...current, `outro:${valor}`],
-                            servico_outro_temp: ''
+                            servico_outro_temp: '',
+                            servico_customizando: false
                           });
                         }
-                      }
-                    }}
-                    className="flex-1 px-3 py-3 sm:px-4 min-h-[44px] rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
-                    placeholder="Digite o serviço e pressione Enter ou clique em Adicionar"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const valor = formData.servico_outro_temp?.trim();
-                      if (valor) {
-                        const current = formData.servicos || [];
-                        setFormData({
-                          ...formData,
-                          servicos: [...current, `outro:${valor}`],
-                          servico_outro_temp: ''
-                        });
-                      }
-                    }}
-                    disabled={!formData.servico_outro_temp?.trim()}
-                    className="px-4 py-3 sm:px-6 min-h-[44px] whitespace-nowrap bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Adicionar
-                  </button>
+                      }}
+                      disabled={!formData.servico_outro_temp?.trim()}
+                      className="px-4 py-3 sm:px-6 min-h-[44px] whitespace-nowrap bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Adicionar
+                    </button>
+                  </div>
                 </div>
-                <p className="text-xs text-medical-600/60 mt-1">
-                  Digite o nome do serviço e clique em "Adicionar" para incluir
-                </p>
-              </div>
+              )}
 
               {/* Caixa de Tags dos Selecionados */}
               {(formData.servicos?.length || 0) > 0 && (
@@ -1622,14 +1630,17 @@ const BriefingOdonto = () => {
               <select
                 value=""
                 onChange={(e) => {
-                  if (e.target.value) {
+                  const value = e.target.value;
+                  if (value === 'custom') {
+                    setFormData({...formData, diferencial_customizando: true});
+                  } else if (value) {
                     const current = formData.diferenciais || [];
-                    if (!current.includes(e.target.value)) {
-                      setFormData({...formData, diferenciais: [...current, e.target.value]});
+                    if (!current.includes(value)) {
+                      setFormData({...formData, diferenciais: [...current, value]});
                     }
                   }
                 }}
-                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all mb-4"
+                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
               >
                 <option value="">Selecione um diferencial para adicionar</option>
                 {[
@@ -1649,58 +1660,63 @@ const BriefingOdonto = () => {
                     </option>
                   ))
                 }
+                <option value="custom">✏️ Personalizar diferencial</option>
               </select>
 
-              {/* Campo Personalizado */}
-              <div className="mb-4">
-                <label className="block text-neutral-900 font-semibold mb-2">
-                  ✏️ Personalizar diferencial
-                </label>
-                <div className="flex flex-col xs:flex-row gap-2">
-                  <input
-                    type="text"
-                    value={formData.diferencial_outro_temp || ''}
-                    onChange={(e) => setFormData({...formData, diferencial_outro_temp: e.target.value})}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
+              {/* Campo Personalizado - Mostra quando selecionar "Personalizar" */}
+              {formData.diferencial_customizando && (
+                <div className="mt-3 mb-4">
+                  <div className="flex flex-col xs:flex-row gap-2">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={formData.diferencial_outro_temp || ''}
+                        onChange={(e) => setFormData({...formData, diferencial_outro_temp: e.target.value})}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const valor = formData.diferencial_outro_temp?.trim();
+                            if (valor) {
+                              const current = formData.diferenciais || [];
+                              setFormData({
+                                ...formData,
+                                diferenciais: [...current, `outro:${valor}`],
+                                diferencial_outro_temp: '',
+                                diferencial_customizando: false
+                              });
+                            }
+                          }
+                        }}
+                        maxLength={60}
+                        className="w-full px-3 py-3 sm:px-4 min-h-[44px] rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
+                        placeholder="Digite o diferencial personalizado"
+                      />
+                      <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
+                        {(formData.diferencial_outro_temp || '').length}/60 caracteres
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
                         const valor = formData.diferencial_outro_temp?.trim();
                         if (valor) {
                           const current = formData.diferenciais || [];
                           setFormData({
                             ...formData,
                             diferenciais: [...current, `outro:${valor}`],
-                            diferencial_outro_temp: ''
+                            diferencial_outro_temp: '',
+                            diferencial_customizando: false
                           });
                         }
-                      }
-                    }}
-                    className="flex-1 px-3 py-3 sm:px-4 min-h-[44px] rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
-                    placeholder="Digite o diferencial e pressione Enter ou clique em Adicionar"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const valor = formData.diferencial_outro_temp?.trim();
-                      if (valor) {
-                        const current = formData.diferenciais || [];
-                        setFormData({
-                          ...formData,
-                          diferenciais: [...current, `outro:${valor}`],
-                          diferencial_outro_temp: ''
-                        });
-                      }
-                    }}
-                    disabled={!formData.diferencial_outro_temp?.trim()}
-                    className="px-4 py-3 sm:px-6 min-h-[44px] whitespace-nowrap bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Adicionar
-                  </button>
+                      }}
+                      disabled={!formData.diferencial_outro_temp?.trim()}
+                      className="px-4 py-3 sm:px-6 min-h-[44px] whitespace-nowrap bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Adicionar
+                    </button>
+                  </div>
                 </div>
-                <p className="text-xs text-medical-600/60 mt-1">
-                  Digite o nome do diferencial e clique em "Adicionar" para incluir
-                </p>
-              </div>
+              )}
 
               {/* Caixa de Tags dos Selecionados */}
               {(formData.diferenciais?.length || 0) > 0 && (
