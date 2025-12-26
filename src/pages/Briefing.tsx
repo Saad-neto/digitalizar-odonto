@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { compressImage, getPayloadSize, formatFileSize } from '@/utils/imageCompression';
 import { createLead, createPartialLead, updateLeadToComplete } from '@/lib/supabase';
@@ -44,10 +44,10 @@ const BriefingOdonto = () => {
     { id: 'sobre-clinica', title: 'Sobre a Clínica', subtitle: 'Apresente sua clínica', required: true },
     { id: 'profissionais', title: 'Equipe', subtitle: 'Apresente os profissionais', required: true },
     { id: 'servicos-diferenciais', title: 'Serviços e Diferenciais', subtitle: 'O que você oferece e o que te torna único', required: true },
-    { id: 'depoimentos', title: 'Depoimentos', subtitle: 'Prova social e avaliações', required: false },
-    { id: 'materiais-visuais', title: 'Galeria e Cores', subtitle: 'Identidade visual do site', required: true },
-    { id: 'localizacao-contato', title: 'Localização e Contato', subtitle: 'Onde você está?', required: true },
-    { id: 'revisao-rastreamento', title: 'Revisão e Rastreamento', subtitle: 'Confira tudo e configure tags (opcional)', required: false }
+    { id: 'identidade-visual', title: 'Identidade Visual', subtitle: 'Referências, logo e estilo que você quer para o site', required: true },
+    { id: 'localizacao-contato', title: 'Depoimentos, Localização e Contato', subtitle: 'Depoimentos, onde você está e como te encontrar', required: true },
+    { id: 'rastreamento-integracoes', title: 'Rastreamento e Integrações', subtitle: 'Configure pixels e tags de analytics (opcional)', required: false },
+    { id: 'revisao-final', title: 'Revisão Final', subtitle: 'Confira tudo antes de enviar', required: false }
   ];
 
   const progressPercentage = ((currentSection + 1) / sections.length) * 100;
@@ -353,7 +353,15 @@ const BriefingOdonto = () => {
         }
         break;
 
-      case 1: // Profissionais
+      case 1: // Hero / Banner Principal
+        // Validações opcionais
+        break;
+
+      case 2: // Sobre a Clínica
+        // Validações opcionais
+        break;
+
+      case 3: // Equipe
         // Validar array de profissionais
         if (!formData.profissionais || formData.profissionais.length === 0) {
           newErrors.profissionais = 'Adicione pelo menos um profissional';
@@ -372,35 +380,20 @@ const BriefingOdonto = () => {
             }
           });
         }
-        // Validar questões transferidas da página 1
-        if (!formData.slogan_opcao) newErrors.slogan_opcao = 'Escolha uma opção de slogan';
-        if (formData.slogan_opcao === 'custom' && !formData.slogan_custom) {
-          newErrors.slogan_custom = 'Digite seu slogan personalizado';
-        }
-        if (!formData.ano_inicio || formData.ano_inicio < 1970 || formData.ano_inicio > 2025) {
-          newErrors.ano_inicio = 'Ano inválido';
-        }
         break;
 
-      case 2: // Serviços e Diferenciais
+      case 4: // Serviços e Diferenciais
         if (!formData.servicos || formData.servicos.length === 0) {
           newErrors.servicos = 'Selecione pelo menos 1 serviço';
         }
-        if (!formData.aceita_convenios) newErrors.aceita_convenios = 'Informe se aceita convênios';
-        if (formData.aceita_convenios === 'sim' && (!formData.lista_convenios_array || formData.lista_convenios_array.length === 0)) {
-          newErrors.lista_convenios = 'Selecione pelo menos um convênio';
-        }
-        if (formData.lista_convenios_array?.includes('outro_convenio') && !formData.outro_convenio) {
-          newErrors.outro_convenio = 'Especifique qual outro convênio';
-        }
-        if (!formData.atende_emergencia) newErrors.atende_emergencia = 'Informe sobre atendimento de emergência';
-        if (!formData.tecnologias || formData.tecnologias.length === 0) {
-          newErrors.tecnologias = 'Selecione pelo menos uma tecnologia';
-        }
-        if (!formData.oferece_sedacao) newErrors.oferece_sedacao = 'Informe se oferece sedação';
         break;
 
-      case 3: // Localização e Contato
+      case 5: // Galeria e Cores - Opcional
+        // Sem validações obrigatórias - cliente pode enviar depois
+        break;
+
+      case 6: // Depoimentos, Localização e Contato
+        // Validações de Localização
         if (!formData.cep) newErrors.cep = 'CEP é obrigatório';
         if (!formData.rua) newErrors.rua = 'Rua é obrigatória';
         if (!formData.numero) newErrors.numero = 'Número é obrigatório';
@@ -408,34 +401,20 @@ const BriefingOdonto = () => {
         if (!formData.cidade) newErrors.cidade = 'Cidade é obrigatória';
         if (!formData.estado) newErrors.estado = 'Estado é obrigatório';
         if (!formData.tem_estacionamento) newErrors.tem_estacionamento = 'Informe sobre estacionamento';
-        if (!formData.horarios_atendimento || formData.horarios_atendimento.length === 0) {
-          newErrors.horarios_atendimento = 'Selecione pelo menos um horário de atendimento';
-        }
+        if (!formData.horario_padrao) newErrors.horario_padrao = 'Selecione um horário de atendimento';
         if (!formData.exibir_mapa) newErrors.exibir_mapa = 'Informe se quer exibir o mapa';
-        if (!formData.tem_redes_sociais) newErrors.tem_redes_sociais = 'Informe se tem redes sociais';
+        // Validação condicional do link do mapa
+        if (formData.exibir_mapa === 'sim' && !formData.link_mapa_embed) {
+          newErrors.link_mapa_embed = 'Link do Google Maps é obrigatório quando você escolhe exibir o mapa';
+        }
+        // Depoimentos do Google é opcional
         break;
 
-      case 4: // Materiais Visuais - Opcional
-        // Sem validações obrigatórias - cliente pode enviar depois
-        break;
-
-      case 5: // Rastreamento e Integrações - Opcional
+      case 7: // Rastreamento e Integrações - Opcional
         // Sem validações obrigatórias - tudo é opcional
         break;
 
-      case 6: // Depoimentos
-        if (!formData.estrategia_depoimentos) {
-          newErrors.estrategia_depoimentos = 'Escolha como quer mostrar depoimentos';
-        }
-        if (formData.estrategia_depoimentos === 'google' && !formData.link_google_maps) {
-          newErrors.link_google_maps = 'Link do Google Maps é obrigatório';
-        }
-        if (formData.estrategia_depoimentos === 'texto' && !formData.depoimentos_texto) {
-          newErrors.depoimentos_texto = 'Cole pelo menos 2 depoimentos';
-        }
-        break;
-
-      case 7: // Revisão Final - Sem validações necessárias
+      case 8: // Revisão Final - Sem validações necessárias
         break;
     }
 
@@ -756,19 +735,44 @@ const BriefingOdonto = () => {
                   Texto do Botão Principal *
                 </label>
                 <select
-                  value={formData.hero_cta_texto || ''}
-                  onChange={(e) => updateFormData('hero_cta_texto', e.target.value)}
+                  value={formData.hero_cta_tipo || ''}
+                  onChange={(e) => {
+                    updateFormData('hero_cta_tipo', e.target.value);
+                    if (e.target.value !== 'custom') {
+                      updateFormData('hero_cta_texto', e.target.value);
+                    } else {
+                      updateFormData('hero_cta_texto', '');
+                    }
+                  }}
                   className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.hero_cta_texto ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 >
-                  <option value="">Escolha o texto do botão</option>
+                  <option value="">Escolha o texto do botão ou customize</option>
                   <option value="Agende sua consulta">Agende sua consulta</option>
                   <option value="Fale conosco no WhatsApp">Fale conosco no WhatsApp</option>
                   <option value="Agendar avaliação gratuita">Agendar avaliação gratuita</option>
                   <option value="Entre em contato">Entre em contato</option>
                   <option value="Quero agendar">Quero agendar</option>
+                  <option value="custom">✏️ Personalizar texto</option>
                 </select>
+
+                {formData.hero_cta_tipo === 'custom' && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      placeholder="Digite o texto personalizado do botão"
+                      value={formData.hero_cta_texto || ''}
+                      onChange={(e) => updateFormData('hero_cta_texto', e.target.value)}
+                      maxLength={40}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors.hero_cta_texto ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    <p className="text-medical-600/60 text-xs mt-2">{(formData.hero_cta_texto || '').length}/40 caracteres</p>
+                  </div>
+                )}
+
                 {errors.hero_cta_texto && <p className="text-red-500 text-sm mt-2">{errors.hero_cta_texto}</p>}
                 <p className="text-medical-600/60 text-xs mt-2">Este botão levará para seu WhatsApp</p>
               </div>
@@ -949,19 +953,44 @@ const BriefingOdonto = () => {
                   Título da Seção "Sobre" *
                 </label>
                 <select
-                  value={formData.sobre_titulo || ''}
-                  onChange={(e) => updateFormData('sobre_titulo', e.target.value)}
+                  value={formData.sobre_titulo_tipo || ''}
+                  onChange={(e) => {
+                    updateFormData('sobre_titulo_tipo', e.target.value);
+                    if (e.target.value !== 'custom') {
+                      updateFormData('sobre_titulo', e.target.value);
+                    } else {
+                      updateFormData('sobre_titulo', '');
+                    }
+                  }}
                   className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
                     errors.sobre_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
                   }`}
                 >
-                  <option value="">Escolha um título</option>
+                  <option value="">Escolha um título ou customize</option>
                   <option value="Sobre Nossa Clínica">Sobre Nossa Clínica</option>
                   <option value="Quem Somos">Quem Somos</option>
                   <option value="Nossa História">Nossa História</option>
                   <option value="Conheça Nossa Clínica">Conheça Nossa Clínica</option>
                   <option value="Sua Satisfação é Nossa Prioridade">Sua Satisfação é Nossa Prioridade</option>
+                  <option value="custom">✏️ Personalizar título</option>
                 </select>
+
+                {formData.sobre_titulo_tipo === 'custom' && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      placeholder="Digite o título personalizado da seção"
+                      value={formData.sobre_titulo || ''}
+                      onChange={(e) => updateFormData('sobre_titulo', e.target.value)}
+                      maxLength={60}
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors.sobre_titulo ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    <p className="text-medical-600/60 text-xs mt-2">{(formData.sobre_titulo || '').length}/60 caracteres</p>
+                  </div>
+                )}
+
                 {errors.sobre_titulo && <p className="text-red-500 text-sm mt-2">{errors.sobre_titulo}</p>}
                 <p className="text-medical-600/60 text-xs mt-2">Este será o título da seção "Sobre" no seu site</p>
               </div>
@@ -1030,6 +1059,81 @@ const BriefingOdonto = () => {
                 <p className="text-medical-600/60 text-xs mt-2">
                   💡 Recomendado: fotos profissionais, bem iluminadas, em alta resolução (máx. 5MB cada)
                 </p>
+              </div>
+
+              {/* Redes Sociais */}
+              <div className="border-t-2 border-medical-100 pt-6 mt-6">
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                  Redes Sociais (Opcional)
+                </label>
+                <p className="text-medical-600/60 text-sm mb-4">
+                  Adicione os links das redes sociais da sua clínica para exibir no site
+                </p>
+
+                <div className="space-y-4">
+                  {(formData.redes_sociais || []).map((rede: any, index: number) => (
+                    <div key={index} className="flex gap-3 items-start">
+                      <div className="flex-1">
+                        <select
+                          value={rede.tipo || ''}
+                          onChange={(e) => {
+                            const novasRedes = [...(formData.redes_sociais || [])];
+                            novasRedes[index] = { ...novasRedes[index], tipo: e.target.value };
+                            updateFormData('redes_sociais', novasRedes);
+                          }}
+                          className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        >
+                          <option value="">Selecione a rede</option>
+                          <option value="instagram">Instagram</option>
+                          <option value="facebook">Facebook</option>
+                          <option value="tiktok">TikTok</option>
+                          <option value="youtube">YouTube</option>
+                          <option value="kwai">Kwai</option>
+                          <option value="linkedin">LinkedIn</option>
+                          <option value="twitter">Twitter/X</option>
+                          <option value="whatsapp">WhatsApp Business</option>
+                          <option value="telegram">Telegram</option>
+                          <option value="pinterest">Pinterest</option>
+                        </select>
+                      </div>
+                      <div className="flex-[2]">
+                        <input
+                          type="url"
+                          placeholder="https://..."
+                          value={rede.url || ''}
+                          onChange={(e) => {
+                            const novasRedes = [...(formData.redes_sociais || [])];
+                            novasRedes[index] = { ...novasRedes[index], url: e.target.value };
+                            updateFormData('redes_sociais', novasRedes);
+                          }}
+                          className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-100"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const novasRedes = (formData.redes_sociais || []).filter((_: any, i: number) => i !== index);
+                          updateFormData('redes_sociais', novasRedes);
+                        }}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const novasRedes = [...(formData.redes_sociais || []), { tipo: '', url: '' }];
+                    updateFormData('redes_sociais', novasRedes);
+                  }}
+                  className="mt-4 flex items-center gap-2 px-4 py-2 text-medical-600 hover:bg-medical-50 border-2 border-medical-200 rounded-lg transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Adicionar rede social
+                </button>
               </div>
             </div>
           </div>
@@ -1122,11 +1226,18 @@ const BriefingOdonto = () => {
                       Especialidade principal
                     </label>
                     <select
-                      value={profissional.especialidade || ''}
-                      onChange={(e) => updateProfissional(index, 'especialidade', e.target.value)}
+                      value={profissional.especialidade_tipo || ''}
+                      onChange={(e) => {
+                        updateProfissional(index, 'especialidade_tipo', e.target.value);
+                        if (e.target.value !== 'custom') {
+                          updateProfissional(index, 'especialidade', e.target.value);
+                        } else {
+                          updateProfissional(index, 'especialidade', '');
+                        }
+                      }}
                       className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                     >
-                      <option value="">Selecione a especialidade</option>
+                      <option value="">Selecione a especialidade ou customize</option>
                       <option value="Clínico Geral">Clínico Geral</option>
                       <option value="Ortodontia">Ortodontia</option>
                       <option value="Implantodontia">Implantodontia</option>
@@ -1137,7 +1248,22 @@ const BriefingOdonto = () => {
                       <option value="Estética/Harmonização">Estética/Harmonização Orofacial</option>
                       <option value="Cirurgia Bucomaxilofacial">Cirurgia Bucomaxilofacial</option>
                       <option value="Radiologia">Radiologia Odontológica</option>
+                      <option value="custom">✏️ Personalizar especialidade</option>
                     </select>
+
+                    {profissional.especialidade_tipo === 'custom' && (
+                      <div className="mt-3">
+                        <input
+                          type="text"
+                          placeholder="Digite a especialidade personalizada"
+                          value={profissional.especialidade || ''}
+                          onChange={(e) => updateProfissional(index, 'especialidade', e.target.value)}
+                          maxLength={60}
+                          className="w-full px-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                        />
+                        <p className="text-medical-600/60 text-xs mt-2">{(profissional.especialidade || '').length}/60 caracteres</p>
+                      </div>
+                    )}
                   </div>
 
                   {/* Mini biografia */}
@@ -1274,11 +1400,6 @@ const BriefingOdonto = () => {
                 onChange={(e) => {
                   if (e.target.value) {
                     const current = formData.servicos || [];
-                    // "outro" não vai pro array, só mostra o campo
-                    if (e.target.value === 'outro') {
-                      // Apenas mostra o campo, não adiciona ao array
-                      return;
-                    }
                     if (!current.includes(e.target.value)) {
                       setFormData({...formData, servicos: [...current, e.target.value]});
                     }
@@ -1295,10 +1416,9 @@ const BriefingOdonto = () => {
                   { value: 'proteses', label: 'Próteses' },
                   { value: 'odontopediatria', label: 'Odontopediatria' },
                   { value: 'periodontia', label: 'Periodontia' },
-                  { value: 'endodontia', label: 'Endodontia (canal)' },
-                  { value: 'outro', label: 'Outro (descreva)' }
+                  { value: 'endodontia', label: 'Endodontia (canal)' }
                 ]
-                  .filter(servico => servico.value === 'outro' || !formData.servicos?.includes(servico.value))
+                  .filter(servico => !formData.servicos?.includes(servico.value))
                   .map((servico) => (
                     <option key={servico.value} value={servico.value}>
                       {servico.label}
@@ -1307,10 +1427,10 @@ const BriefingOdonto = () => {
                 }
               </select>
 
-              {/* Campo "Outro" - sempre disponível quando dropdown tem valor "outro" */}
+              {/* Campo Personalizado */}
               <div className="mb-4">
                 <label className="block text-neutral-900 font-semibold mb-2">
-                  Outro serviço (personalizado)
+                  ✏️ Personalizar serviço
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -1508,9 +1628,6 @@ const BriefingOdonto = () => {
                 onChange={(e) => {
                   if (e.target.value) {
                     const current = formData.diferenciais || [];
-                    if (e.target.value === 'outro') {
-                      return;
-                    }
                     if (!current.includes(e.target.value)) {
                       setFormData({...formData, diferenciais: [...current, e.target.value]});
                     }
@@ -1527,10 +1644,9 @@ const BriefingOdonto = () => {
                   { value: 'acessibilidade', label: 'Acessibilidade' },
                   { value: 'atendimento_rapido', label: 'Atendimento rápido' },
                   { value: 'wifi_gratis', label: 'Wi-Fi grátis' },
-                  { value: 'ambiente_kids', label: 'Ambiente kids' },
-                  { value: 'outro', label: 'Outro (descreva)' }
+                  { value: 'ambiente_kids', label: 'Ambiente kids' }
                 ]
-                  .filter(diferencial => diferencial.value === 'outro' || !formData.diferenciais?.includes(diferencial.value))
+                  .filter(diferencial => !formData.diferenciais?.includes(diferencial.value))
                   .map((diferencial) => (
                     <option key={diferencial.value} value={diferencial.value}>
                       {diferencial.label}
@@ -1539,10 +1655,10 @@ const BriefingOdonto = () => {
                 }
               </select>
 
-              {/* Campo "Outro" diferencial - sempre disponível */}
+              {/* Campo Personalizado */}
               <div className="mb-4">
                 <label className="block text-neutral-900 font-semibold mb-2">
-                  Outro diferencial (personalizado)
+                  ✏️ Personalizar diferencial
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -1640,16 +1756,50 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 7: // PÁGINA 8: Localização e Contato
+      case 6: // PÁGINA 7: Depoimentos, Localização e Contato
         return (
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
-                {sections[7].title}
+                {sections[6].title}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[7].subtitle}</p>
+              <p className="text-medical-600/70 text-lg">{sections[6].subtitle}</p>
             </div>
+
+            {/* Depoimentos do Google Review */}
+            <div className="border-2 border-medical-300 rounded-2xl p-6 bg-gradient-to-br from-blue-50 to-purple-50">
+              <h3 className="text-xl font-bold text-neutral-900 mb-4">⭐ Depoimentos do Google</h3>
+              <p className="text-sm text-medical-600/70 mb-4">
+                Cole o link do seu Google Meu Negócio para exibirmos suas avaliações automaticamente no site.
+              </p>
+
+              <div>
+                <label className="block text-neutral-900 font-semibold mb-2">
+                  Link do Google Meu Negócio (Opcional)
+                </label>
+                <p className="text-sm text-medical-600/70 mb-3">
+                  Para encontrar: acesse google.com/maps, pesquise seu consultório e copie o link da barra de endereços.
+                </p>
+                <input
+                  type="url"
+                  value={formData.link_google_maps || ''}
+                  onChange={(e) => setFormData({...formData, link_google_maps: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                  placeholder="https://maps.google.com/..."
+                />
+                <div className="mt-3 p-3 bg-white/70 rounded-lg border border-medical-200">
+                  <p className="text-sm text-medical-700">
+                    💡 <strong>Dica:</strong> Suas avaliações do Google aparecerão automaticamente no site com estrelas e comentários dos pacientes. Se não tiver Google Meu Negócio, deixe em branco.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Separador Visual */}
+            <div className="border-t-4 border-medical-100 my-8"></div>
+
+            <h3 className="text-2xl font-bold text-neutral-900 mb-6">📍 Localização e Contato</h3>
 
             {/* CEP */}
             <div>
@@ -1869,116 +2019,172 @@ const BriefingOdonto = () => {
                     name="exibir_mapa"
                     value="nao"
                     checked={formData.exibir_mapa === 'nao'}
-                    onChange={(e) => setFormData({...formData, exibir_mapa: e.target.value})}
+                    onChange={(e) => setFormData({...formData, exibir_mapa: e.target.value, link_mapa_embed: ''})}
                     className="mt-1 mr-3 accent-medical-600"
                   />
                   <div className="font-semibold text-neutral-900">❌ Não, apenas o endereço de texto</div>
                 </label>
               </div>
               {errors.exibir_mapa && <p className="text-red-500 text-sm mt-2">{errors.exibir_mapa}</p>}
+
+              {/* Campo condicional: Link do Google Maps para Embed */}
+              {formData.exibir_mapa === 'sim' && (
+                <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
+                  <label className="block text-neutral-900 font-semibold mb-2">
+                    Link do Google Maps *
+                  </label>
+                  <p className="text-sm text-medical-600/70 mb-3">
+                    Cole o link do seu Google Maps aqui. Para obter: pesquise sua clínica no Google Maps, clique em "Compartilhar" e copie o link.
+                  </p>
+                  <input
+                    type="url"
+                    value={formData.link_mapa_embed || ''}
+                    onChange={(e) => setFormData({...formData, link_mapa_embed: e.target.value})}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                      errors.link_mapa_embed ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                    } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    placeholder="https://maps.google.com/..."
+                  />
+                  {errors.link_mapa_embed && <p className="text-red-500 text-sm mt-1">{errors.link_mapa_embed}</p>}
+
+                  <div className="mt-3 p-3 bg-white rounded-lg border border-blue-200">
+                    <p className="text-sm text-blue-700">
+                      💡 <strong>Dica:</strong> O mapa interativo do Google aparecerá no rodapé do seu site, permitindo que pacientes vejam sua localização e obtenham rotas facilmente.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Tem redes sociais ativas? */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Tem redes sociais ativas? *
-              </label>
-              <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="tem_redes_sociais"
-                    value="sim"
-                    checked={formData.tem_redes_sociais === 'sim'}
-                    onChange={(e) => setFormData({...formData, tem_redes_sociais: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div className="font-semibold text-neutral-900">✅ Sim, tenho Instagram e/ou Facebook</div>
-                </label>
-
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="tem_redes_sociais"
-                    value="nao"
-                    checked={formData.tem_redes_sociais === 'nao'}
-                    onChange={(e) => setFormData({...formData, tem_redes_sociais: e.target.value, instagram: '', facebook: ''})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div className="font-semibold text-neutral-900">❌ Não tenho redes sociais</div>
-                </label>
-              </div>
-              {errors.tem_redes_sociais && <p className="text-red-500 text-sm mt-2">{errors.tem_redes_sociais}</p>}
-            </div>
-
-            {/* Links das Redes Sociais (condicional) */}
-            {formData.tem_redes_sociais === 'sim' && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-neutral-900 font-semibold mb-2">
-                    Instagram (opcional)
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.instagram || ''}
-                    onChange={(e) => setFormData({...formData, instagram: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
-                    placeholder="https://instagram.com/seu_usuario"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-neutral-900 font-semibold mb-2">
-                    Facebook (opcional)
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.facebook || ''}
-                    onChange={(e) => setFormData({...formData, facebook: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
-                    placeholder="https://facebook.com/sua_pagina"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-neutral-900 font-semibold mb-2">
-                    LinkedIn (opcional)
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.linkedin || ''}
-                    onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
-                    placeholder="https://linkedin.com/in/seu_perfil"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-neutral-900 font-semibold mb-2">
-                    Outras redes (opcional)
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.outras_redes || ''}
-                    onChange={(e) => setFormData({...formData, outras_redes: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
-                    placeholder="https://..."
-                  />
-                </div>
-              </div>
-            )}
           </div>
         );
 
-      case 6: // PÁGINA 7: Galeria e Cores
+      case 5: // PÁGINA 6: Identidade Visual
         return (
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
-                {sections[6].title}
+                {sections[5].title}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[6].subtitle}</p>
+              <p className="text-medical-600/70 text-lg">{sections[5].subtitle}</p>
+            </div>
+
+            {/* Sites de Referência */}
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-neutral-900 mb-3">🌟 Sites de Referência (Recomendado)</h3>
+              <p className="text-sm text-medical-600/70 mb-4">
+                Mostre até 3 sites que você gosta para nos inspirarmos no design do seu site.
+                <strong> Uma imagem vale mais que mil palavras!</strong>
+              </p>
+
+              <div className="space-y-6">
+                {[1, 2, 3].map((num) => {
+                  const sitesRef = formData.sites_referencia || [];
+                  const siteAtual = sitesRef[num - 1] || {};
+
+                  return (
+                    <div key={num} className="bg-white rounded-xl p-4 border-2 border-purple-100">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                          {num}
+                        </span>
+                        <span className="font-semibold text-neutral-900">Site de Referência {num}</span>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm font-medium text-neutral-700 mb-1">
+                            Link do site
+                          </label>
+                          <input
+                            type="url"
+                            placeholder="https://exemplo.com"
+                            value={siteAtual.url || ''}
+                            onChange={(e) => {
+                              const novasSites = [...(formData.sites_referencia || [])];
+                              novasSites[num - 1] = { ...novasSites[num - 1], url: e.target.value };
+                              setFormData({...formData, sites_referencia: novasSites});
+                            }}
+                            className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                          />
+                        </div>
+
+                        {siteAtual.url && (
+                          <>
+                            <div>
+                              <label className="block text-sm font-medium text-neutral-700 mb-2">
+                                O que você mais gostou neste site?
+                              </label>
+                              <div className="grid grid-cols-2 gap-2">
+                                {[
+                                  { value: 'layout', label: 'Layout/organização' },
+                                  { value: 'cores', label: 'Cores e estilo' },
+                                  { value: 'fotos', label: 'Tipo de fotos' },
+                                  { value: 'animacoes', label: 'Animações/efeitos' }
+                                ].map((opcao) => {
+                                  const aspectos = siteAtual.aspectos || [];
+                                  return (
+                                    <label key={opcao.value} className="flex items-center gap-2 text-sm cursor-pointer">
+                                      <input
+                                        type="checkbox"
+                                        checked={aspectos.includes(opcao.value)}
+                                        onChange={(e) => {
+                                          const novasSites = [...(formData.sites_referencia || [])];
+                                          const aspectosAtuais = novasSites[num - 1]?.aspectos || [];
+
+                                          if (e.target.checked) {
+                                            novasSites[num - 1] = {
+                                              ...novasSites[num - 1],
+                                              aspectos: [...aspectosAtuais, opcao.value]
+                                            };
+                                          } else {
+                                            novasSites[num - 1] = {
+                                              ...novasSites[num - 1],
+                                              aspectos: aspectosAtuais.filter((a: string) => a !== opcao.value)
+                                            };
+                                          }
+                                          setFormData({...formData, sites_referencia: novasSites});
+                                        }}
+                                        className="w-4 h-4 text-purple-600 border-medical-300 rounded focus:ring-purple-500"
+                                      />
+                                      <span className="text-neutral-700">{opcao.label}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-neutral-700 mb-1">
+                                Observações adicionais (opcional)
+                              </label>
+                              <input
+                                type="text"
+                                placeholder="Ex: Gostei da forma como apresentam os serviços"
+                                value={siteAtual.observacao || ''}
+                                onChange={(e) => {
+                                  const novasSites = [...(formData.sites_referencia || [])];
+                                  novasSites[num - 1] = { ...novasSites[num - 1], observacao: e.target.value };
+                                  setFormData({...formData, sites_referencia: novasSites});
+                                }}
+                                className="w-full px-3 py-2 border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 p-3 bg-purple-100 rounded-lg border border-purple-300">
+                <p className="text-sm text-purple-800">
+                  💡 <strong>Dica:</strong> Não precisa preencher os 3 sites. Mesmo 1 referência já ajuda muito!
+                  Pode ser site de dentista, clínica médica ou qualquer site que você ache bonito.
+                </p>
+              </div>
             </div>
 
             {/* Logo da Clínica */}
@@ -2017,94 +2223,256 @@ const BriefingOdonto = () => {
               </div>
             </div>
 
-            {/* Cor Preferida */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
-                🎨 Cor Preferida para o Site
-              </label>
-              <p className="text-sm text-medical-600/70 mb-3">
-                Escolha a cor principal do seu site. Ela será usada em botões, destaques e elementos importantes.
-                Geralmente é a cor da sua marca/logo.
+            {/* Paleta de Cores */}
+            <div className="border-t-4 border-medical-100 pt-8">
+              <h3 className="text-2xl font-bold text-neutral-900 mb-4">🎨 Paleta de Cores</h3>
+              <p className="text-sm text-medical-600/70 mb-6">
+                Defina as cores que serão usadas no seu site. Você pode enviar uma paleta pronta ou criar uma personalizada.
               </p>
-              <input
-                type="color"
-                value={formData.cor_preferida || '#8B5CF6'}
-                onChange={(e) => setFormData({...formData, cor_preferida: e.target.value})}
-                className="w-full h-16 rounded-xl border-2 border-medical-300 cursor-pointer"
-              />
-              <p className="text-sm text-gray-600 mt-2">
-                Cor selecionada: <strong>{formData.cor_preferida || '#8B5CF6'}</strong>
-              </p>
-            </div>
 
-            {/* Estilo do Site */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                💅 Estilo Visual do Site *
-              </label>
-              <p className="text-sm text-medical-600/70 mb-4">
-                Que estilo você prefere para o seu site?
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { value: 'moderno', label: 'Moderno e Minimalista', desc: 'Design limpo, espaçado, com muitos espaços em branco' },
-                  { value: 'profissional', label: 'Profissional e Corporativo', desc: 'Sério, confiável, cores sóbrias' },
-                  { value: 'acolhedor', label: 'Acolhedor e Humano', desc: 'Cores suaves, imagens de pessoas, tom próximo' },
-                  { value: 'inovador', label: 'Inovador e Tecnológico', desc: 'Destaque para tecnologia, equipamentos de ponta' }
-                ].map((estilo) => (
-                  <label
-                    key={estilo.value}
-                    className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                      formData.estilo_site === estilo.value
-                        ? 'border-medical-500 bg-neutral-50'
-                        : 'border-medical-200 hover:border-medical-400 bg-white'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="estilo_site"
-                      value={estilo.value}
-                      checked={formData.estilo_site === estilo.value}
-                      onChange={(e) => setFormData({...formData, estilo_site: e.target.value})}
-                      className="mr-3 mt-1 accent-medical-600"
-                    />
-                    <div>
-                      <div className="font-semibold text-neutral-900">{estilo.label}</div>
-                      <div className="text-sm text-medical-600/70 mt-1">{estilo.desc}</div>
-                    </div>
+              {/* Opção: Upload de Paleta */}
+              <div className="mb-6">
+                <label className="block text-neutral-900 font-semibold mb-3">
+                  Opção 1: Enviar Paleta de Cores (Imagem)
+                </label>
+                <p className="text-sm text-medical-600/70 mb-3">
+                  Já tem uma paleta definida? Envie uma imagem com suas cores.
+                </p>
+                <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-50 transition-colors cursor-pointer">
+                  <input
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    onChange={(e) => handleFileUpload('paleta_cores', e.target.files)}
+                    className="hidden"
+                    id="upload_paleta"
+                  />
+                  <label htmlFor="upload_paleta" className="cursor-pointer flex flex-col items-center">
+                    <div className="text-4xl mb-2">🎨</div>
+                    <p className="text-neutral-900 font-medium">Clique para enviar sua paleta</p>
+                    <p className="text-sm text-medical-600/70 mt-1">(PNG, JPG ou WEBP - máx. 5MB)</p>
                   </label>
-                ))}
+                  {uploadedFiles.paleta_cores && uploadedFiles.paleta_cores.length > 0 && (
+                    <div className="mt-4 text-center text-green-700 font-semibold">
+                      ✓ {uploadedFiles.paleta_cores[0].name}
+                    </div>
+                  )}
+                </div>
               </div>
-              {errors.estilo_site && <p className="text-red-500 text-sm mt-2">{errors.estilo_site}</p>}
+
+              {/* Divisor */}
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-medical-200"></div>
+                <span className="text-sm text-medical-600 font-medium">OU</span>
+                <div className="flex-1 h-px bg-medical-200"></div>
+              </div>
+
+              {/* Opção: Seguir Padrão da Logo */}
+              <div className="mb-6">
+                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 cursor-pointer bg-white transition-all">
+                  <input
+                    type="checkbox"
+                    checked={formData.usar_cores_logo || false}
+                    onChange={(e) => setFormData({...formData, usar_cores_logo: e.target.checked})}
+                    className="mt-1 mr-3 w-5 h-5 text-medical-600 border-medical-300 rounded focus:ring-medical-500"
+                  />
+                  <div>
+                    <div className="font-semibold text-neutral-900 mb-1">
+                      ✨ Extrair cores automaticamente da logo
+                    </div>
+                    <div className="text-sm text-medical-600/70">
+                      Nosso designer irá extrair e criar uma paleta de cores harmoniosa baseada nas cores da sua logo.
+                      Marque esta opção se você quer que as cores do site sigam exatamente as cores da sua marca.
+                    </div>
+                  </div>
+                </label>
+              </div>
+
+              {/* Divisor */}
+              <div className="flex items-center gap-4 my-6">
+                <div className="flex-1 h-px bg-medical-200"></div>
+                <span className="text-sm text-medical-600 font-medium">OU</span>
+                <div className="flex-1 h-px bg-medical-200"></div>
+              </div>
+
+              {/* Opção: Criar Paleta Manualmente */}
+              <div>
+                <label className="block text-neutral-900 font-semibold mb-3">
+                  Opção 2: Criar Paleta Personalizada
+                </label>
+                <p className="text-sm text-medical-600/70 mb-4">
+                  Defina cada cor do seu design system. Deixe em branco as que não tiver definidas.
+                </p>
+
+                <div className="space-y-4">
+                  {[
+                    {
+                      key: 'cor_primaria',
+                      label: 'Cor Primária (Primary)',
+                      desc: 'Cor principal da marca, usada em botões e destaques',
+                      default: '#8B5CF6'
+                    },
+                    {
+                      key: 'cor_secundaria',
+                      label: 'Cor Secundária (Secondary)',
+                      desc: 'Cor complementar, usada em elementos secundários',
+                      default: '#06B6D4'
+                    },
+                    {
+                      key: 'cor_accent',
+                      label: 'Cor de Destaque (Accent)',
+                      desc: 'Para chamar atenção em CTAs e elementos importantes',
+                      default: '#F59E0B'
+                    },
+                    {
+                      key: 'cor_background',
+                      label: 'Cor de Fundo (Background)',
+                      desc: 'Cor de fundo principal das seções',
+                      default: '#F9FAFB'
+                    },
+                    {
+                      key: 'cor_texto',
+                      label: 'Cor do Texto (Text)',
+                      desc: 'Cor principal dos textos',
+                      default: '#1F2937'
+                    }
+                  ].map((cor) => {
+                    const paleta = formData.paleta_personalizada || {};
+                    const corData = paleta[cor.key] || {};
+
+                    return (
+                      <div key={cor.key} className="bg-white border-2 border-medical-200 rounded-xl p-4">
+                        <div className="flex items-start gap-4">
+                          {/* Color Picker */}
+                          <div className="flex-shrink-0">
+                            <input
+                              type="color"
+                              value={corData.valor || cor.default}
+                              onChange={(e) => {
+                                const novaPaleta = {
+                                  ...formData.paleta_personalizada,
+                                  [cor.key]: {
+                                    ...corData,
+                                    valor: e.target.value,
+                                    formato: corData.formato || 'hex'
+                                  }
+                                };
+                                setFormData({...formData, paleta_personalizada: novaPaleta});
+                              }}
+                              className="w-20 h-20 rounded-lg border-2 border-medical-300 cursor-pointer"
+                            />
+                          </div>
+
+                          {/* Informações */}
+                          <div className="flex-1">
+                            <label className="block text-sm font-semibold text-neutral-900 mb-1">
+                              {cor.label}
+                            </label>
+                            <p className="text-xs text-medical-600/70 mb-3">
+                              {cor.desc}
+                            </p>
+
+                            <div className="flex gap-2">
+                              {/* Formato */}
+                              <select
+                                value={corData.formato || 'hex'}
+                                onChange={(e) => {
+                                  const novaPaleta = {
+                                    ...formData.paleta_personalizada,
+                                    [cor.key]: {
+                                      ...corData,
+                                      formato: e.target.value
+                                    }
+                                  };
+                                  setFormData({...formData, paleta_personalizada: novaPaleta});
+                                }}
+                                className="px-3 py-1.5 text-sm border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
+                              >
+                                <option value="hex">HEX</option>
+                                <option value="rgb">RGB</option>
+                                <option value="hsl">HSL</option>
+                              </select>
+
+                              {/* Valor da Cor */}
+                              <input
+                                type="text"
+                                value={corData.valor || cor.default}
+                                onChange={(e) => {
+                                  const novaPaleta = {
+                                    ...formData.paleta_personalizada,
+                                    [cor.key]: {
+                                      ...corData,
+                                      valor: e.target.value
+                                    }
+                                  };
+                                  setFormData({...formData, paleta_personalizada: novaPaleta});
+                                }}
+                                placeholder={cor.default}
+                                className="flex-1 px-3 py-1.5 text-sm border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200 font-mono"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
+                  <p className="text-sm text-blue-800">
+                    💡 <strong>Dica:</strong> Se você não tiver todas as cores definidas, não tem problema!
+                    Pelo menos defina a <strong>Cor Primária</strong> (a cor principal da sua marca).
+                    Nosso designer pode criar as demais cores complementares baseado nela.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* Sites de Referência */}
-            <div>
+            {/* Logo da Clínica */}
+            <div className="border-t-4 border-medical-100 pt-8">
               <label className="block text-neutral-900 font-semibold mb-2 text-lg">
-                🔗 Sites de Referência (Opcional)
+                📱 Logo da Clínica/Consultório
               </label>
               <p className="text-sm text-medical-600/70 mb-3">
-                Tem algum site odontológico que você gosta? Cole os links aqui para nos inspirarmos no design!
+                Sua logo aparecerá no <strong>cabeçalho do site</strong>, <strong>rodapé</strong> e em outros locais estratégicos.
+                Prefira PNG com fundo transparente para melhor resultado.
               </p>
-              <textarea
-                value={formData.sites_referencia || ''}
-                onChange={(e) => setFormData({...formData, sites_referencia: e.target.value})}
-                rows={4}
-                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
-                placeholder="Ex:&#10;https://exemplodentista1.com&#10;https://exemplodentista2.com&#10;&#10;Você pode colar vários links, um por linha."
-              />
+              <div className="border-2 border-dashed border-medical-300 rounded-xl p-6 bg-neutral-50 hover:bg-medical-100 transition-colors cursor-pointer">
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={(e) => handleFileUpload('logo', e.target.files)}
+                  className="hidden"
+                  id="upload_logo"
+                />
+                <label htmlFor="upload_logo" className="cursor-pointer flex flex-col items-center">
+                  <div className="text-5xl mb-3">🎨</div>
+                  <p className="text-neutral-900 font-medium">Clique para fazer upload da logo</p>
+                  <p className="text-sm text-medical-600/70 mt-1">(PNG, JPG ou WEBP - máx. 5MB)</p>
+                </label>
+                {uploadedFiles.logo && uploadedFiles.logo.length > 0 && (
+                  <div className="mt-4 text-center text-green-700 font-semibold">
+                    ✓ {uploadedFiles.logo[0].name}
+                  </div>
+                )}
+              </div>
+              <div className="mt-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <p className="text-xs text-gray-600">
+                  <strong>💡 Dica:</strong> A logo deve ter boa qualidade e ser legível em tamanhos pequenos.
+                  Formatos ideais: 500x500px ou 1000x300px (depende do formato da sua logo).
+                </p>
+              </div>
             </div>
           </div>
         );
 
-      case 98: // TEMP: Rastreamento (será mesclado com case 8)
+      case 7: // PÁGINA 8: Rastreamento e Integrações
         return (
           <div className="space-y-8">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
-                {sections[5].title}
+                {sections[7].title}
               </h2>
-              <p className="text-medical-600/70 text-lg">{sections[5].subtitle}</p>
+              <p className="text-medical-600/70 text-lg">{sections[7].subtitle}</p>
             </div>
 
             <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8">
@@ -2230,179 +2598,7 @@ const BriefingOdonto = () => {
           </div>
         );
 
-      case 5: // PÁGINA 6: Depoimentos
-        return (
-          <div className="space-y-8">
-            {/* Header */}
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
-                {sections[5].title}
-              </h2>
-              <p className="text-medical-600/70 text-lg">{sections[5].subtitle}</p>
-            </div>
-
-            {/* Como você quer mostrar depoimentos no site? */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Como você quer mostrar depoimentos no site? *
-              </label>
-              <p className="text-sm text-medical-600/70 mb-4">
-                Depoimentos são essenciais para gerar confiança. Escolha a melhor opção para você:
-              </p>
-              <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="estrategia_depoimentos"
-                    value="google"
-                    checked={formData.estrategia_depoimentos === 'google'}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      estrategia_depoimentos: e.target.value,
-                      depoimentos_texto: '' // Limpar campo de texto se mudar
-                    })}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div>
-                    <div className="font-semibold text-neutral-900">⭐ Usar minhas avaliações do Google (automático)</div>
-                    <div className="text-sm text-medical-600/70 mt-1">Exibiremos suas avaliações do Google Meu Negócio no site</div>
-                  </div>
-                </label>
-
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="estrategia_depoimentos"
-                    value="texto"
-                    checked={formData.estrategia_depoimentos === 'texto'}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      estrategia_depoimentos: e.target.value,
-                      link_google_maps: '' // Limpar link se mudar
-                    })}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div>
-                    <div className="font-semibold text-neutral-900">💬 Vou enviar depoimentos que já tenho</div>
-                    <div className="text-sm text-medical-600/70 mt-1">Depoimentos salvos de WhatsApp, mensagens ou outros canais</div>
-                  </div>
-                </label>
-
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="estrategia_depoimentos"
-                    value="nao"
-                    checked={formData.estrategia_depoimentos === 'nao'}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      estrategia_depoimentos: e.target.value,
-                      link_google_maps: '',
-                      depoimentos_texto: ''
-                    })}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div>
-                    <div className="font-semibold text-neutral-900">⏭️ Não quero seção de depoimentos por enquanto</div>
-                    <div className="text-sm text-medical-600/70 mt-1">Podemos adicionar depois se necessário</div>
-                  </div>
-                </label>
-              </div>
-              {errors.estrategia_depoimentos && <p className="text-red-500 text-sm mt-2">{errors.estrategia_depoimentos}</p>}
-            </div>
-
-            {/* Link do Google Maps (se escolheu Google) */}
-            {formData.estrategia_depoimentos === 'google' && (
-              <div>
-                <label className="block text-neutral-900 font-semibold mb-2">
-                  Link do Google Maps *
-                </label>
-                <p className="text-sm text-medical-600/70 mb-3">
-                  Cole o link do seu Google Meu Negócio. Para encontrar: acesse google.com/maps, pesquise seu consultório e copie o link da barra de endereços.
-                </p>
-                <input
-                  type="url"
-                  value={formData.link_google_maps || ''}
-                  onChange={(e) => setFormData({...formData, link_google_maps: e.target.value})}
-                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.link_google_maps ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                  placeholder="https://maps.google.com/..."
-                />
-                {errors.link_google_maps && <p className="text-red-500 text-sm mt-1">{errors.link_google_maps}</p>}
-
-                <div className="mt-3 p-3 bg-neutral-50 rounded-lg border border-medical-200">
-                  <p className="text-sm text-medical-700">
-                    ℹ️ <strong>Dica:</strong> Suas avaliações do Google aparecerão automaticamente no site com estrelas e comentários dos pacientes.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Depoimentos em Texto (se escolheu texto) */}
-            {formData.estrategia_depoimentos === 'texto' && (
-              <div>
-                <label className="block text-neutral-900 font-semibold mb-2">
-                  Cole aqui 2-3 depoimentos *
-                </label>
-                <p className="text-sm text-medical-600/70 mb-3">
-                  Cole depoimentos reais de pacientes. Um por linha. Inclua o nome do paciente se possível.
-                </p>
-                <textarea
-                  value={formData.depoimentos_texto || ''}
-                  onChange={(e) => setFormData({...formData, depoimentos_texto: e.target.value})}
-                  rows={8}
-                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.depoimentos_texto ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                  placeholder={`Exemplo:\n\n"Excelente profissional! Fiz um implante e o resultado ficou perfeito. Recomendo muito!" - Maria Silva\n\n"Melhor dentista da região. Atendimento impecável e preço justo." - João Santos\n\n"Meu filho tinha medo de dentista, mas adorou a consulta. Super recomendo!" - Ana Paula`}
-                />
-                {errors.depoimentos_texto && <p className="text-red-500 text-sm mt-1">{errors.depoimentos_texto}</p>}
-
-                <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-700">
-                    💡 <strong>Dica:</strong> Depoimentos específicos convertem mais! Exemplo: "Fiz clareamento e ficou incrível" é melhor que "Ótimo dentista".
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Observações Finais */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-2 text-lg">
-                Observações finais ou algo que não perguntamos?
-              </label>
-              <p className="text-sm text-medical-600/70 mb-3">
-                Use este espaço para nos contar qualquer informação adicional que você acha importante para o site.
-              </p>
-              <textarea
-                value={formData.observacoes_finais || ''}
-                onChange={(e) => setFormData({...formData, observacoes_finais: e.target.value})}
-                rows={5}
-                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
-                placeholder="Ex: Tenho um diferencial específico, atendo um público especial, quero destacar algo em especial..."
-              />
-            </div>
-
-            {/* Mensagem de Conclusão */}
-            <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl p-6 border-2 border-medical-300">
-              <div className="flex items-start">
-                <div className="text-3xl mr-4">🎉</div>
-                <div>
-                  <h3 className="text-xl font-bold text-neutral-900 mb-2">
-                    Quase lá! Revise suas informações
-                  </h3>
-                  <p className="text-medical-700">
-                    Você está na última etapa. Revise todas as informações preenchidas antes de enviar.
-                    Use o botão "Anterior" para voltar e corrigir algo se necessário.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 8: // PÁGINA 9: Revisão e Rastreamento
+      case 8: // PÁGINA 9: Revisão Final
         return (
           <ReviewStep
             formData={formData}
