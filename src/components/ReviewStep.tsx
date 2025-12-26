@@ -85,18 +85,45 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
   };
 
   const renderHorarios = () => {
-    if (!formData.horarios_atendimento || formData.horarios_atendimento.length === 0) {
-      return <span className="text-gray-400 italic">Não informado</span>;
+    // Novo formato de array dinâmico
+    if (formData.horarios_atendimento_array && formData.horarios_atendimento_array.length > 0) {
+      const diasMap: { [key: string]: string } = {
+        'segunda': 'Segunda-feira',
+        'terca': 'Terça-feira',
+        'quarta': 'Quarta-feira',
+        'quinta': 'Quinta-feira',
+        'sexta': 'Sexta-feira',
+        'sabado': 'Sábado',
+        'domingo': 'Domingo'
+      };
+      return (
+        <div className="space-y-2 mt-2">
+          {formData.horarios_atendimento_array.map((horario: any, index: number) => (
+            <div key={index} className="bg-purple-50 p-3 rounded-lg">
+              <span className="font-medium text-gray-900">{diasMap[horario.dia] || horario.dia}</span>
+              <span className="text-gray-600 ml-2">
+                {horario.inicio || '00:00'} às {horario.fim || '00:00'}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
     }
-    const horariosMap: { [key: string]: string } = {
-      'manha': 'Manhã',
-      'tarde': 'Tarde',
-      'noite': 'Noite',
-      'sabado': 'Sábado',
-      'domingo_feriados': 'Domingos e feriados'
-    };
-    const labels = formData.horarios_atendimento.map((h: string) => horariosMap[h] || h);
-    return labels.join(', ');
+
+    // Formato antigo (fallback)
+    if (formData.horarios_atendimento && formData.horarios_atendimento.length > 0) {
+      const horariosMap: { [key: string]: string } = {
+        'manha': 'Manhã',
+        'tarde': 'Tarde',
+        'noite': 'Noite',
+        'sabado': 'Sábado',
+        'domingo_feriados': 'Domingos e feriados'
+      };
+      const labels = formData.horarios_atendimento.map((h: string) => horariosMap[h] || h);
+      return labels.join(', ');
+    }
+
+    return <span className="text-gray-400 italic">Não informado</span>;
   };
 
   return (
@@ -205,7 +232,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onEdit(1)}
+              onClick={() => onEdit(3)}
               className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
             >
               <Edit2 className="w-4 h-4 mr-2" />
@@ -464,7 +491,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onEdit(2)}
+              onClick={() => onEdit(4)}
               className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
             >
               <Edit2 className="w-4 h-4 mr-2" />
@@ -562,7 +589,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onEdit(3)}
+              onClick={() => onEdit(6)}
               className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
             >
               <Edit2 className="w-4 h-4 mr-2" />
@@ -668,7 +695,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onEdit(4)}
+              onClick={() => onEdit(5)}
               className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
             >
               <Edit2 className="w-4 h-4 mr-2" />
@@ -772,6 +799,35 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
               </div>
             )}
 
+            {formData.cores_personalizadas && formData.cores_personalizadas.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-500 block mb-3">Paleta de Cores Personalizada</label>
+                <div className="space-y-2">
+                  {formData.cores_personalizadas.map((cor: any, index: number) => {
+                    const tipoLabels: { [key: string]: string } = {
+                      'primaria': 'Cor Primária',
+                      'secundaria': 'Cor Secundária',
+                      'texto': 'Cor de Texto',
+                      'fundo': 'Cor de Fundo',
+                      'destaque': 'Cor de Destaque/Accent'
+                    };
+                    return (
+                      <div key={index} className="bg-purple-50 p-3 rounded-lg flex items-center gap-3">
+                        <div
+                          className="w-10 h-10 rounded-lg border-2 border-gray-300 flex-shrink-0"
+                          style={{ backgroundColor: cor.valor || '#8B5CF6' }}
+                        ></div>
+                        <div>
+                          <p className="font-medium text-gray-900">{tipoLabels[cor.tipo] || cor.tipo || 'Tipo não definido'}</p>
+                          <p className="text-sm text-gray-600">{cor.valor || '#8B5CF6'}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {formData.estilo_site && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Estilo do Site</label>
@@ -821,7 +877,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onEdit(5)}
+              onClick={() => onEdit(7)}
               className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
             >
               <Edit2 className="w-4 h-4 mr-2" />
