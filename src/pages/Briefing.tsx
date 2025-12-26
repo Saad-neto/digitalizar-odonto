@@ -383,14 +383,8 @@ const BriefingOdonto = () => {
         break;
 
       case 2: // Serviços e Diferenciais
-        if (!formData.servicos || formData.servicos.length < 3) {
-          newErrors.servicos = 'Selecione pelo menos 3 serviços';
-        }
-        if (formData.servicos && formData.servicos.length > 6) {
-          newErrors.servicos = 'Selecione no máximo 6 serviços';
-        }
-        if (formData.servicos?.includes('outro') && !formData.servico_outro) {
-          newErrors.servico_outro = 'Especifique qual outro serviço';
+        if (!formData.servicos || formData.servicos.length === 0) {
+          newErrors.servicos = 'Selecione pelo menos 1 serviço';
         }
         if (!formData.aceita_convenios) newErrors.aceita_convenios = 'Informe se aceita convênios';
         if (formData.aceita_convenios === 'sim' && (!formData.lista_convenios_array || formData.lista_convenios_array.length === 0)) {
@@ -1271,7 +1265,7 @@ const BriefingOdonto = () => {
                 Quais serviços/tratamentos você oferece? *
               </label>
               <p className="text-sm text-medical-600/70 mb-4">
-                Selecione de 3 a 6 serviços principais:
+                Selecione os serviços que você oferece:
               </p>
 
               {/* Dropdown de Serviços */}
@@ -1280,19 +1274,19 @@ const BriefingOdonto = () => {
                 onChange={(e) => {
                   if (e.target.value) {
                     const current = formData.servicos || [];
-                    if (!current.includes(e.target.value) && current.length < 6) {
+                    // "outro" não vai pro array, só mostra o campo
+                    if (e.target.value === 'outro') {
+                      // Apenas mostra o campo, não adiciona ao array
+                      return;
+                    }
+                    if (!current.includes(e.target.value)) {
                       setFormData({...formData, servicos: [...current, e.target.value]});
                     }
                   }
                 }}
                 className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all mb-4"
-                disabled={(formData.servicos?.length || 0) >= 6}
               >
-                <option value="">
-                  {(formData.servicos?.length || 0) >= 6
-                    ? 'Máximo de 6 serviços atingido'
-                    : 'Selecione um serviço para adicionar'}
-                </option>
+                <option value="">Selecione um serviço para adicionar</option>
                 {[
                   { value: 'clinica_geral', label: 'Clínica geral' },
                   { value: 'ortodontia', label: 'Ortodontia' },
@@ -1304,7 +1298,7 @@ const BriefingOdonto = () => {
                   { value: 'endodontia', label: 'Endodontia (canal)' },
                   { value: 'outro', label: 'Outro (descreva)' }
                 ]
-                  .filter(servico => !formData.servicos?.includes(servico.value))
+                  .filter(servico => servico.value === 'outro' || !formData.servicos?.includes(servico.value))
                   .map((servico) => (
                     <option key={servico.value} value={servico.value}>
                       {servico.label}
@@ -1313,38 +1307,89 @@ const BriefingOdonto = () => {
                 }
               </select>
 
+              {/* Campo "Outro" - sempre disponível quando dropdown tem valor "outro" */}
+              <div className="mb-4">
+                <label className="block text-neutral-900 font-semibold mb-2">
+                  Outro serviço (personalizado)
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={formData.servico_outro_temp || ''}
+                    onChange={(e) => setFormData({...formData, servico_outro_temp: e.target.value})}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const valor = formData.servico_outro_temp?.trim();
+                        if (valor) {
+                          const current = formData.servicos || [];
+                          setFormData({
+                            ...formData,
+                            servicos: [...current, `outro:${valor}`],
+                            servico_outro_temp: ''
+                          });
+                        }
+                      }
+                    }}
+                    className="flex-1 px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
+                    placeholder="Digite o serviço e pressione Enter ou clique em Adicionar"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const valor = formData.servico_outro_temp?.trim();
+                      if (valor) {
+                        const current = formData.servicos || [];
+                        setFormData({
+                          ...formData,
+                          servicos: [...current, `outro:${valor}`],
+                          servico_outro_temp: ''
+                        });
+                      }
+                    }}
+                    disabled={!formData.servico_outro_temp?.trim()}
+                    className="px-6 py-3 bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Adicionar
+                  </button>
+                </div>
+                <p className="text-xs text-medical-600/60 mt-1">
+                  Digite o nome do serviço e clique em "Adicionar" para incluir
+                </p>
+              </div>
+
               {/* Caixa de Tags dos Selecionados */}
               {(formData.servicos?.length || 0) > 0 && (
                 <div className="p-4 bg-gradient-to-r from-medical-50 to-blue-50 border-2 border-medical-200 rounded-xl">
                   <p className="text-xs font-semibold text-medical-700 mb-2">SERVIÇOS SELECIONADOS:</p>
                   <div className="flex flex-wrap gap-2">
-                    {formData.servicos?.map((servicoValue) => {
-                      const servicoObj = [
-                        { value: 'clinica_geral', label: 'Clínica geral' },
-                        { value: 'ortodontia', label: 'Ortodontia' },
-                        { value: 'implantes', label: 'Implantes' },
-                        { value: 'estetica', label: 'Estética' },
-                        { value: 'proteses', label: 'Próteses' },
-                        { value: 'odontopediatria', label: 'Odontopediatria' },
-                        { value: 'periodontia', label: 'Periodontia' },
-                        { value: 'endodontia', label: 'Endodontia' },
-                        { value: 'outro', label: 'Outro' }
-                      ].find(s => s.value === servicoValue);
+                    {formData.servicos?.map((servicoValue, index) => {
+                      // Verifica se é um serviço personalizado (formato "outro:Nome")
+                      const isCustom = servicoValue.startsWith('outro:');
+                      const displayLabel = isCustom
+                        ? servicoValue.replace('outro:', '')
+                        : [
+                            { value: 'clinica_geral', label: 'Clínica geral' },
+                            { value: 'ortodontia', label: 'Ortodontia' },
+                            { value: 'implantes', label: 'Implantes' },
+                            { value: 'estetica', label: 'Estética' },
+                            { value: 'proteses', label: 'Próteses' },
+                            { value: 'odontopediatria', label: 'Odontopediatria' },
+                            { value: 'periodontia', label: 'Periodontia' },
+                            { value: 'endodontia', label: 'Endodontia' }
+                          ].find(s => s.value === servicoValue)?.label || servicoValue;
 
                       return (
                         <span
-                          key={servicoValue}
+                          key={`${servicoValue}-${index}`}
                           className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-medical-400 rounded-full text-sm font-medium text-medical-700 shadow-sm"
                         >
-                          <span>{servicoObj?.label}</span>
+                          <span>{displayLabel}</span>
                           <button
                             type="button"
                             onClick={() => {
                               const newServicos = formData.servicos?.filter(s => s !== servicoValue) || [];
                               setFormData({...formData, servicos: newServicos});
-                              if (servicoValue === 'outro') {
-                                setFormData({...formData, servicos: newServicos, servico_outro: ''});
-                              }
                             }}
                             className="text-red-500 hover:text-red-700 font-bold text-lg leading-none"
                           >
@@ -1354,36 +1399,13 @@ const BriefingOdonto = () => {
                       );
                     })}
                   </div>
-                  <p className={`text-xs font-semibold mt-2 ${
-                    (formData.servicos?.length || 0) < 3 ? 'text-red-600' :
-                    (formData.servicos?.length || 0) > 6 ? 'text-red-600' :
-                    'text-medical-600'
-                  }`}>
-                    {formData.servicos?.length || 0} de 3-6 serviços
+                  <p className="text-xs font-semibold mt-2 text-medical-600">
+                    {formData.servicos?.length || 0} serviço(s) selecionado(s)
                   </p>
                 </div>
               )}
 
               {errors.servicos && <p className="text-red-500 text-sm mt-2">{errors.servicos}</p>}
-
-              {/* Campo "Outro" condicional */}
-              {formData.servicos?.includes('outro') && (
-                <div className="mt-4">
-                  <label className="block text-neutral-900 font-semibold mb-2">
-                    Qual outro serviço? *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.servico_outro || ''}
-                    onChange={(e) => setFormData({...formData, servico_outro: e.target.value})}
-                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                      errors.servico_outro ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                    } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                    placeholder="Digite o serviço"
-                  />
-                  {errors.servico_outro && <p className="text-red-500 text-sm mt-1">{errors.servico_outro}</p>}
-                </div>
-              )}
             </div>
 
             {/* Aceita Convênios */}
@@ -1476,12 +1498,27 @@ const BriefingOdonto = () => {
               <label className="block text-neutral-900 font-semibold mb-3 text-lg">
                 Quais são os principais diferenciais da sua clínica? (Opcional)
               </label>
-              <p className="text-sm text-medical-600/70 mb-3">
-                Selecione até 4 diferenciais:
+              <p className="text-sm text-medical-600/70 mb-4">
+                Selecione os diferenciais que você oferece:
               </p>
 
-              {/* Checkboxes Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              {/* Dropdown de Diferenciais */}
+              <select
+                value=""
+                onChange={(e) => {
+                  if (e.target.value) {
+                    const current = formData.diferenciais || [];
+                    if (e.target.value === 'outro') {
+                      return;
+                    }
+                    if (!current.includes(e.target.value)) {
+                      setFormData({...formData, diferenciais: [...current, e.target.value]});
+                    }
+                  }
+                }}
+                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all mb-4"
+              >
+                <option value="">Selecione um diferencial para adicionar</option>
                 {[
                   { value: 'emergencia_24h', label: 'Atendimento 24 horas' },
                   { value: 'tecnologia', label: 'Tecnologia de ponta' },
@@ -1490,41 +1527,67 @@ const BriefingOdonto = () => {
                   { value: 'acessibilidade', label: 'Acessibilidade' },
                   { value: 'atendimento_rapido', label: 'Atendimento rápido' },
                   { value: 'wifi_gratis', label: 'Wi-Fi grátis' },
-                  { value: 'ambiente_kids', label: 'Ambiente kids' }
-                ].map((diferencial) => (
-                  <label
-                    key={diferencial.value}
-                    className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                      formData.diferenciais?.includes(diferencial.value)
-                        ? 'border-medical-500 bg-medical-50'
-                        : 'border-medical-200 hover:border-medical-400 bg-white'
-                    } ${
-                      !formData.diferenciais?.includes(diferencial.value) && (formData.diferenciais?.length || 0) >= 4
-                        ? 'opacity-50 cursor-not-allowed'
-                        : ''
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={formData.diferenciais?.includes(diferencial.value) || false}
-                      onChange={(e) => {
-                        const current = formData.diferenciais || [];
-                        if (e.target.checked) {
-                          if (current.length < 4) {
-                            setFormData({...formData, diferenciais: [...current, diferencial.value]});
-                          }
-                        } else {
-                          setFormData({...formData, diferenciais: current.filter(d => d !== diferencial.value)});
-                        }
-                      }}
-                      disabled={!formData.diferenciais?.includes(diferencial.value) && (formData.diferenciais?.length || 0) >= 4}
-                      className="mr-3 accent-medical-600 w-5 h-5"
-                    />
-                    <span className="text-neutral-900 font-medium">
+                  { value: 'ambiente_kids', label: 'Ambiente kids' },
+                  { value: 'outro', label: 'Outro (descreva)' }
+                ]
+                  .filter(diferencial => diferencial.value === 'outro' || !formData.diferenciais?.includes(diferencial.value))
+                  .map((diferencial) => (
+                    <option key={diferencial.value} value={diferencial.value}>
                       {diferencial.label}
-                    </span>
-                  </label>
-                ))}
+                    </option>
+                  ))
+                }
+              </select>
+
+              {/* Campo "Outro" diferencial - sempre disponível */}
+              <div className="mb-4">
+                <label className="block text-neutral-900 font-semibold mb-2">
+                  Outro diferencial (personalizado)
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={formData.diferencial_outro_temp || ''}
+                    onChange={(e) => setFormData({...formData, diferencial_outro_temp: e.target.value})}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const valor = formData.diferencial_outro_temp?.trim();
+                        if (valor) {
+                          const current = formData.diferenciais || [];
+                          setFormData({
+                            ...formData,
+                            diferenciais: [...current, `outro:${valor}`],
+                            diferencial_outro_temp: ''
+                          });
+                        }
+                      }
+                    }}
+                    className="flex-1 px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all"
+                    placeholder="Digite o diferencial e pressione Enter ou clique em Adicionar"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const valor = formData.diferencial_outro_temp?.trim();
+                      if (valor) {
+                        const current = formData.diferenciais || [];
+                        setFormData({
+                          ...formData,
+                          diferenciais: [...current, `outro:${valor}`],
+                          diferencial_outro_temp: ''
+                        });
+                      }
+                    }}
+                    disabled={!formData.diferencial_outro_temp?.trim()}
+                    className="px-6 py-3 bg-medical-600 text-white rounded-xl font-semibold hover:bg-medical-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Adicionar
+                  </button>
+                </div>
+                <p className="text-xs text-medical-600/60 mt-1">
+                  Digite o nome do diferencial e clique em "Adicionar" para incluir
+                </p>
               </div>
 
               {/* Caixa de Tags dos Selecionados */}
@@ -1532,24 +1595,28 @@ const BriefingOdonto = () => {
                 <div className="p-4 bg-medical-50 border-2 border-medical-200 rounded-xl">
                   <p className="text-xs font-semibold text-medical-700 mb-2">DIFERENCIAIS SELECIONADOS:</p>
                   <div className="flex flex-wrap gap-2">
-                    {formData.diferenciais?.map((diferencialValue) => {
-                      const diferencialObj = [
-                        { value: 'emergencia_24h', label: 'Atendimento 24h' },
-                        { value: 'tecnologia', label: 'Tecnologia de ponta' },
-                        { value: 'sem_dor', label: 'Tratamento sem dor' },
-                        { value: 'estacionamento', label: 'Estacionamento' },
-                        { value: 'acessibilidade', label: 'Acessibilidade' },
-                        { value: 'atendimento_rapido', label: 'Atendimento rápido' },
-                        { value: 'wifi_gratis', label: 'Wi-Fi grátis' },
-                        { value: 'ambiente_kids', label: 'Ambiente kids' }
-                      ].find(d => d.value === diferencialValue);
+                    {formData.diferenciais?.map((diferencialValue, index) => {
+                      // Verifica se é um diferencial personalizado (formato "outro:Nome")
+                      const isCustom = diferencialValue.startsWith('outro:');
+                      const displayLabel = isCustom
+                        ? diferencialValue.replace('outro:', '')
+                        : [
+                            { value: 'emergencia_24h', label: 'Atendimento 24h' },
+                            { value: 'tecnologia', label: 'Tecnologia de ponta' },
+                            { value: 'sem_dor', label: 'Tratamento sem dor' },
+                            { value: 'estacionamento', label: 'Estacionamento' },
+                            { value: 'acessibilidade', label: 'Acessibilidade' },
+                            { value: 'atendimento_rapido', label: 'Atendimento rápido' },
+                            { value: 'wifi_gratis', label: 'Wi-Fi grátis' },
+                            { value: 'ambiente_kids', label: 'Ambiente kids' }
+                          ].find(d => d.value === diferencialValue)?.label || diferencialValue;
 
                       return (
                         <span
-                          key={diferencialValue}
+                          key={`${diferencialValue}-${index}`}
                           className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border-2 border-medical-400 rounded-full text-sm font-medium text-medical-700 shadow-sm"
                         >
-                          <span>{diferencialObj?.label}</span>
+                          <span>{displayLabel}</span>
                           <button
                             type="button"
                             onClick={() => {
@@ -1564,8 +1631,8 @@ const BriefingOdonto = () => {
                       );
                     })}
                   </div>
-                  <p className="text-xs font-semibold text-purple-600 mt-2">
-                    {formData.diferenciais?.length || 0} de 4 diferenciais
+                  <p className="text-xs font-semibold text-medical-600 mt-2">
+                    {formData.diferenciais?.length || 0} diferencial(is) selecionado(s)
                   </p>
                 </div>
               )}
