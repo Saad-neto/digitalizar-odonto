@@ -407,7 +407,14 @@ const BriefingOdonto = () => {
         if (!formData.cidade) newErrors.cidade = 'Cidade é obrigatória';
         if (!formData.estado) newErrors.estado = 'Estado é obrigatório';
         if (!formData.tem_estacionamento) newErrors.tem_estacionamento = 'Informe sobre estacionamento';
-        if (!formData.horario_padrao) newErrors.horario_padrao = 'Selecione um horário de atendimento';
+
+        // Validar horários de atendimento
+        const horarios = formData.horarios_atendimento || {};
+        const diasAbertos = Object.values(horarios).filter((dia: any) => dia?.aberto);
+        if (diasAbertos.length === 0) {
+          newErrors.horario_padrao = 'Marque pelo menos um dia de atendimento';
+        }
+
         if (!formData.exibir_mapa) newErrors.exibir_mapa = 'Informe se quer exibir o mapa';
         // Validação condicional do link do mapa
         if (formData.exibir_mapa === 'sim' && !formData.link_mapa_embed) {
@@ -1931,40 +1938,98 @@ const BriefingOdonto = () => {
               <label className="block text-neutral-900 font-semibold mb-4 text-lg">
                 Horários de atendimento *
               </label>
-              <select
-                value={formData.horario_padrao || ''}
-                onChange={(e) => updateFormData('horario_padrao', e.target.value)}
-                className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                  errors.horario_padrao ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                }`}
-              >
-                <option value="">Escolha um padrão de horário</option>
-                <option value="seg_sex_8_18_sab_8_12">Segunda a Sexta: 8h-18h | Sábado: 8h-12h</option>
-                <option value="seg_sex_9_19_sab_fechado">Segunda a Sexta: 9h-19h | Sábado: Fechado</option>
-                <option value="seg_sex_8_17_sab_8_12">Segunda a Sexta: 8h-17h | Sábado: 8h-12h</option>
-                <option value="seg_sex_8_18_sab_fechado">Segunda a Sexta: 8h-18h | Sábado: Fechado</option>
-                <option value="seg_sab_8_18">Segunda a Sábado: 8h-18h</option>
-                <option value="seg_sex_14_22">Segunda a Sexta: 14h-22h (Noturno)</option>
-                <option value="custom">Personalizado (especificar abaixo)</option>
-              </select>
+              <p className="text-sm text-medical-600/70 mb-4">
+                Defina os horários de funcionamento para cada dia da semana
+              </p>
 
-              {formData.horario_padrao === 'custom' && (
-                <div className="mt-4">
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Descreva seus horários personalizados
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ex: Segunda, Quarta e Sexta: 8h-12h e 14h-18h"
-                    value={formData.horario_customizado || ''}
-                    onChange={(e) => updateFormData('horario_customizado', e.target.value)}
-                    className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
-                  />
-                </div>
-              )}
+              <div className="space-y-3">
+                {[
+                  { dia: 'segunda', label: 'Segunda-feira' },
+                  { dia: 'terca', label: 'Terça-feira' },
+                  { dia: 'quarta', label: 'Quarta-feira' },
+                  { dia: 'quinta', label: 'Quinta-feira' },
+                  { dia: 'sexta', label: 'Sexta-feira' },
+                  { dia: 'sabado', label: 'Sábado' },
+                  { dia: 'domingo', label: 'Domingo' }
+                ].map(({ dia, label }) => {
+                  const horarios = formData.horarios_atendimento || {};
+                  const diaData = horarios[dia] || { aberto: true, inicio: '08:00', fim: '18:00' };
+
+                  return (
+                    <div key={dia} className="bg-white border-2 border-medical-200 rounded-xl p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                        {/* Nome do dia + Toggle Aberto/Fechado */}
+                        <div className="flex items-center gap-3 min-w-[180px]">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={diaData.aberto}
+                              onChange={(e) => {
+                                const novosHorarios = {
+                                  ...horarios,
+                                  [dia]: { ...diaData, aberto: e.target.checked }
+                                };
+                                setFormData({...formData, horarios_atendimento: novosHorarios});
+                              }}
+                              className="w-5 h-5 text-medical-600 border-medical-300 rounded focus:ring-medical-500"
+                            />
+                            <span className={`font-semibold ${diaData.aberto ? 'text-neutral-900' : 'text-neutral-400'}`}>
+                              {label}
+                            </span>
+                          </label>
+                        </div>
+
+                        {/* Horários (só aparece se aberto) */}
+                        {diaData.aberto && (
+                          <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 flex-1">
+                            <div className="flex items-center gap-2 w-full xs:w-auto">
+                              <input
+                                type="time"
+                                value={diaData.inicio || '08:00'}
+                                onChange={(e) => {
+                                  const novosHorarios = {
+                                    ...horarios,
+                                    [dia]: { ...diaData, inicio: e.target.value }
+                                  };
+                                  setFormData({...formData, horarios_atendimento: novosHorarios});
+                                }}
+                                className="flex-1 px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
+                              />
+                              <span className="text-neutral-600">às</span>
+                              <input
+                                type="time"
+                                value={diaData.fim || '18:00'}
+                                onChange={(e) => {
+                                  const novosHorarios = {
+                                    ...horarios,
+                                    [dia]: { ...diaData, fim: e.target.value }
+                                  };
+                                  setFormData({...formData, horarios_atendimento: novosHorarios});
+                                }}
+                                className="flex-1 px-3 py-2 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-medical-200"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Label "Fechado" quando não está aberto */}
+                        {!diaData.aberto && (
+                          <span className="text-neutral-400 italic">Fechado</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-xl">
+                <p className="text-sm text-blue-800">
+                  💡 <strong>Dica:</strong> Marque apenas os dias que você atende.
+                  Para horários com intervalo (ex: 8h-12h e 14h-18h), escolha o horário contínuo mais próximo.
+                </p>
+              </div>
 
               {errors.horario_padrao && <p className="text-red-500 text-sm mt-2">{errors.horario_padrao}</p>}
-              <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Escolha o padrão que mais se aproxima do seu horário</p>
             </div>
 
             {/* Quer exibir o mapa do Google Maps? */}
