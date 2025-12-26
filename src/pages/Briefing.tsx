@@ -1274,8 +1274,25 @@ const BriefingOdonto = () => {
                 Selecione de 3 a 6 serviços principais:
               </p>
 
-              {/* Lista Simplificada */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              {/* Dropdown de Serviços */}
+              <select
+                value=""
+                onChange={(e) => {
+                  if (e.target.value) {
+                    const current = formData.servicos || [];
+                    if (!current.includes(e.target.value) && current.length < 6) {
+                      setFormData({...formData, servicos: [...current, e.target.value]});
+                    }
+                  }
+                }}
+                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200 transition-all mb-4"
+                disabled={(formData.servicos?.length || 0) >= 6}
+              >
+                <option value="">
+                  {(formData.servicos?.length || 0) >= 6
+                    ? 'Máximo de 6 serviços atingido'
+                    : 'Selecione um serviço para adicionar'}
+                </option>
                 {[
                   { value: 'clinica_geral', label: 'Clínica geral' },
                   { value: 'ortodontia', label: 'Ortodontia' },
@@ -1286,42 +1303,15 @@ const BriefingOdonto = () => {
                   { value: 'periodontia', label: 'Periodontia' },
                   { value: 'endodontia', label: 'Endodontia (canal)' },
                   { value: 'outro', label: 'Outro (descreva)' }
-                ].map((servico) => (
-                  <label
-                    key={servico.value}
-                    className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                      formData.servicos?.includes(servico.value)
-                        ? 'border-medical-500 bg-medical-50'
-                        : 'border-gray-200 hover:border-medical-300 bg-white'
-                    } ${
-                      !formData.servicos?.includes(servico.value) && (formData.servicos?.length || 0) >= 6
-                        ? 'opacity-50 cursor-not-allowed'
-                        : ''
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={formData.servicos?.includes(servico.value) || false}
-                      onChange={(e) => {
-                        const current = formData.servicos || [];
-                        if (e.target.checked) {
-                          if (current.length < 6) {
-                            setFormData({...formData, servicos: [...current, servico.value]});
-                          }
-                        } else {
-                          setFormData({...formData, servicos: current.filter(s => s !== servico.value)});
-                          if (servico.value === 'outro') {
-                            setFormData({...formData, servicos: current.filter(s => s !== servico.value), servico_outro: ''});
-                          }
-                        }
-                      }}
-                      disabled={!formData.servicos?.includes(servico.value) && (formData.servicos?.length || 0) >= 6}
-                      className="mr-3 accent-medical-600 w-4 h-4"
-                    />
-                    <span className="text-sm font-medium">{servico.label}</span>
-                  </label>
-                ))}
-              </div>
+                ]
+                  .filter(servico => !formData.servicos?.includes(servico.value))
+                  .map((servico) => (
+                    <option key={servico.value} value={servico.value}>
+                      {servico.label}
+                    </option>
+                  ))
+                }
+              </select>
 
               {/* Caixa de Tags dos Selecionados */}
               {(formData.servicos?.length || 0) > 0 && (
