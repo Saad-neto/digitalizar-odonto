@@ -51,6 +51,14 @@ const projects: PortfolioProject[] = [
   }
 ];
 
+// Função para gerar URL de screenshot usando serviço gratuito
+const getScreenshotUrl = (url: string) => {
+  // Remove protocolo para o serviço de screenshot
+  const cleanUrl = url.replace(/^https?:\/\//, '');
+  // Usar serviço de screenshot gratuito com parâmetros otimizados
+  return `https://image.thum.io/get/width/800/crop/600/noanimate/${url}`;
+};
+
 export function PortfolioSection() {
   return (
     <section className="py-20 bg-gradient-to-b from-white via-purple-50/30 to-white">
@@ -77,10 +85,22 @@ export function PortfolioSection() {
               key={project.id}
               className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:-translate-y-2"
             >
-              {/* Preview do Site - Gradiente Placeholder */}
+              {/* Preview do Site - Screenshot Real */}
               <div className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-                {/* Gradiente de Identidade Visual */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${project.corPrimaria} opacity-20 group-hover:opacity-30 transition-opacity`}></div>
+                {/* Screenshot Real do Site */}
+                <img
+                  src={getScreenshotUrl(project.url)}
+                  alt={`Screenshot do site ${project.nome}`}
+                  className="absolute inset-0 w-full h-full object-cover object-top"
+                  loading="lazy"
+                  onError={(e) => {
+                    // Fallback: mostrar gradiente se screenshot falhar
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
+                {/* Gradiente de Identidade Visual (Overlay sutil) */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${project.corPrimaria} opacity-10 group-hover:opacity-20 transition-opacity`}></div>
 
                 {/* Badge de Destaque */}
                 {project.destaque && (
