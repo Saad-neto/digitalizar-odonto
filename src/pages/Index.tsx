@@ -4,7 +4,7 @@ import FooterNew from '../components/redesign/FooterNew';
 import HeroSectionNew from '../components/redesign/sections/HeroSectionNew';
 import ProblemsSectionNew from '../components/redesign/sections/ProblemsSectionNew';
 import SolutionSectionNew from '../components/redesign/sections/SolutionSectionNew';
-import ExamplesSectionNew from '../components/redesign/sections/ExamplesSectionNew';
+import { PortfolioSection } from '../components/sections/PortfolioSection';
 import HowItWorksSectionNew from '../components/redesign/sections/HowItWorksSectionNew';
 import TestimonialsSectionNew from '../components/redesign/sections/TestimonialsSectionNew';
 import OffersSectionNew from '../components/redesign/sections/OffersSectionNew';
@@ -25,7 +25,7 @@ const Index: React.FC = () => {
         <SolutionSectionNew />
 
         <div id="exemplos">
-          <ExamplesSectionNew />
+          <PortfolioSection />
         </div>
 
         <div id="como-funciona">
