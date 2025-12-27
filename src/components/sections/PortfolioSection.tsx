@@ -8,6 +8,7 @@ interface PortfolioProject {
   cidade?: string;
   estado?: string;
   url: string;
+  screenshot: string; // Caminho local do screenshot
   estilo: string;
   tags: string[];
   descricao: string;
@@ -23,6 +24,7 @@ const projects: PortfolioProject[] = [
     cidade: "João Pessoa",
     estado: "PB",
     url: "https://kalinacarvalho.digitalizar.space/",
+    screenshot: "/portfolio/kalina-carvalho.png",
     estilo: "Acolhedor & Profissional",
     tags: ["Infantil", "Família", "Agendamento Online"],
     descricao: "Site especializado em odontopediatria com design acolhedor e informativo para pais e crianças.",
@@ -34,6 +36,7 @@ const projects: PortfolioProject[] = [
     nome: "Dr. Mauro Lino",
     especialidade: "Reabilitação Orofacial",
     url: "https://sites-odonto-demo4.digitalizar.space/",
+    screenshot: "/portfolio/mauro-lino.png",
     estilo: "Moderno & Técnico",
     tags: ["Reabilitação", "Prótese", "Alta Complexidade"],
     descricao: "Portal profissional focado em reabilitação orofacial e tratamentos especializados.",
@@ -44,20 +47,13 @@ const projects: PortfolioProject[] = [
     nome: "Seja Mais Odontologia",
     especialidade: "Clínica Geral & Tecnologia",
     url: "https://sites-odonto-demo6.digitalizar.space/",
+    screenshot: "/portfolio/seja-mais.png",
     estilo: "Sofisticado & Inovador",
     tags: ["Tecnologia de Ponta", "Digital", "Inovação"],
     descricao: "Clínica moderna destacando uso de tecnologia avançada e atendimento diferenciado.",
     corPrimaria: "from-emerald-500 to-teal-600"
   }
 ];
-
-// Função para gerar URL de screenshot usando serviço gratuito
-const getScreenshotUrl = (url: string) => {
-  // Remove protocolo para o serviço de screenshot
-  const cleanUrl = url.replace(/^https?:\/\//, '');
-  // Usar serviço de screenshot gratuito com parâmetros otimizados
-  return `https://image.thum.io/get/width/800/crop/600/noanimate/${url}`;
-};
 
 export function PortfolioSection() {
   return (
@@ -87,9 +83,9 @@ export function PortfolioSection() {
             >
               {/* Preview do Site - Screenshot Real */}
               <div className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-                {/* Screenshot Real do Site */}
+                {/* Screenshot Real do Site (Local) */}
                 <img
-                  src={getScreenshotUrl(project.url)}
+                  src={project.screenshot}
                   alt={`Screenshot do site ${project.nome}`}
                   className="absolute inset-0 w-full h-full object-cover object-top"
                   loading="lazy"
