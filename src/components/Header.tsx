@@ -80,12 +80,13 @@ const Header: React.FC = () => {
             >
               FAQ
             </button>
-            <Link
+            {/* Blog temporariamente oculto */}
+            {/* <Link
               to="/blog"
               className="text-text-primary hover:text-primary transition-colors story-link"
             >
               Blog
-            </Link>
+            </Link> */}
           </nav>
 
           {/* CTA Buttons */}
@@ -148,13 +149,14 @@ const Header: React.FC = () => {
               >
                 FAQ
               </button>
-              <Link
+              {/* Blog temporariamente oculto */}
+              {/* <Link
                 to="/blog"
                 className="block w-full text-left px-4 py-2 text-text-primary hover:bg-gray-50 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Blog
-              </Link>
+              </Link> */}
               <div className="px-4 py-2 space-y-2">
                 <Link 
                   to="/briefing"
