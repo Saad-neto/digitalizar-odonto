@@ -378,16 +378,76 @@ Admin routes are currently NOT protected by PrivateRoute. To enable:
 
 ## Deployment
 
-**Primary Platform:** Netlify (though no netlify.toml currently in repo)
-- Auto-deploy on git push to main
-- Netlify Functions for serverless backend
-- Environment variables set in Netlify dashboard
-- Stripe webhook URL: `https://[domain]/.netlify/functions/stripe-webhook`
+**Platform:** Docker Swarm + Traefik (Reverse Proxy)
 
-**Build Settings:**
-- Build command: `npm run build`
-- Publish directory: `dist`
-- Functions directory: `netlify/functions`
+**Server:** VPS - 95.217.158.112
+
+**Deployment Method:** Automated script
+
+### Quick Deploy
+
+```bash
+cd /root/projetos/sites/sites-odonto/projeto-principal/swift-dent-studio-16
+git pull origin main    # Update code (if needed)
+./deploy.sh             # Run automated deploy
+```
+
+### What the deploy script does:
+
+1. **Build frontend**: `npm run build` (~25s)
+   - Compiles React + Vite + TypeScript
+   - Outputs to `dist/`
+
+2. **Build Docker image**: `docker build -t digitalizar-odonto:latest .`
+   - Multi-stage build (Node 20 + Nginx Alpine)
+   - Embeds build into Nginx container
+
+3. **Update service**: Updates or deploys to Docker Swarm
+   - Zero-downtime deployment
+   - Service: `digitalizar-odonto_digitalizar-odonto`
+
+4. **Verify**: Shows service status
+
+### Manual Deploy (if script fails)
+
+```bash
+# 1. Build application
+npm run build
+
+# 2. Build Docker image
+docker build -t digitalizar-odonto:latest .
+
+# 3. Update service (if exists)
+docker service update --image digitalizar-odonto:latest --force digitalizar-odonto_digitalizar-odonto
+
+# OR deploy new stack
+docker stack deploy -c docker-compose.yml digitalizar-odonto
+```
+
+### Important Notes
+
+- **Environment Variables**: `VITE_*` variables are embedded during build
+  - To change: edit `.env`, rebuild (`npm run build`), rebuild Docker, update service
+- **Netlify Functions**: Still exist in repo for Stripe webhooks, but not actively used in Docker deployment
+- **Domains**: Multiple domains configured via Traefik labels in `docker-compose.yml`
+  - sites-odonto.digitalizar.space (main)
+  - clinicanaweb.digitalizarmkt.com.br
+  - sites-odonto.digitalizarmkt.com.br
+  - odonto.digitalizarmkt.com.br
+- **SSL/TLS**: Auto-provisioned by Traefik using Let's Encrypt
+- **Logs**: `docker service logs digitalizar-odonto_digitalizar-odonto -f`
+
+### Troubleshooting
+
+**Site not updating after deploy?**
+- Clear browser cache (Ctrl+Shift+R / Cmd+Shift+R)
+- Verify new image is running: `docker service ps digitalizar-odonto_digitalizar-odonto`
+- Force rebuild: `docker build --no-cache -t digitalizar-odonto:latest .`
+
+**Deploy fails?**
+- Check build errors: `npm run build`
+- View service logs: `docker service logs digitalizar-odonto_digitalizar-odonto`
+- See full documentation: `DEPLOY.md`
 
 ## Current Status
 
