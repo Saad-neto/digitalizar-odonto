@@ -337,107 +337,83 @@ const Payment = () => {
           </div>
 
           {/* Descrição */}
-          <div className="bg-medical-50 border border-medical-100 rounded-lg p-6 mb-8">
+          <div className="bg-medical-50 border border-medical-100 rounded-lg p-6 mb-6">
             <p className="text-neutral-700 text-center leading-relaxed">
               Para iniciarmos a criação do seu{' '}
               <span className="font-semibold">site profissional</span>, escolha a forma de pagamento:
             </p>
-            <p className="text-sm text-neutral-600 text-center mt-3">
-              ✨ Seu site entra no ar logo após a confirmação do pagamento!
-            </p>
           </div>
 
-          {/* Card de Valor */}
-          <div className="bg-gradient-to-br from-medical-500 to-medical-700 rounded-xl p-8 mb-6 text-white text-center shadow-lg">
-            <p className="text-sm uppercase tracking-wider opacity-90 mb-2">
-              Investimento - Plano Único
-            </p>
-            {/* Destaque: Parcelado */}
-            <div className="mb-4">
-              <div className="text-5xl md:text-6xl font-bold mb-1">
-                {numeroParcelas}x de {formatCurrency(valorParcela)}
-              </div>
-              <p className="text-sm opacity-90">
-                Total: {formatCurrency(valorParcela * numeroParcelas)}
-              </p>
-            </div>
-            {/* Divider */}
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/30"></div>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-medical-600 px-2 text-white/90">ou</span>
-              </div>
-            </div>
-            {/* Alternativa: À vista */}
-            <div>
-              <p className="text-lg font-semibold">
-                {formatCurrency(valorTotal)} à vista
-              </p>
-              <p className="text-xs opacity-75 mt-1">
-                Economize {formatCurrency((valorParcela * numeroParcelas) - valorTotal)}
-              </p>
-            </div>
-            {/* Info adicional */}
-            <div className="mt-6 pt-6 border-t border-white/20">
-              <p className="text-xs opacity-90">
-                + R$ 97/mês de manutenção a partir do 2º ano
-              </p>
-              <p className="text-xs opacity-75 mt-1">
-                (hospedagem + domínio + suporte)
-              </p>
-            </div>
-          </div>
-
-          {/* Seleção de Método de Pagamento */}
-          <div className="mb-6">
-            <p className="text-sm font-medium text-neutral-700 mb-3">Escolha a forma de pagamento:</p>
+          {/* ⭐ SELEÇÃO DE MÉTODO DE PAGAMENTO - DESTAQUE NO TOPO */}
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold text-neutral-900 mb-4 text-center">Escolha a forma de pagamento:</h2>
             <div className="grid grid-cols-2 gap-4">
               {/* PIX */}
               <button
                 onClick={() => setPaymentMethod('PIX')}
-                className={`p-5 rounded-xl border-2 transition-all ${
+                className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
                   paymentMethod === 'PIX'
-                    ? 'border-medical-500 bg-medical-50'
+                    ? 'border-medical-500 bg-medical-50 shadow-md'
                     : 'border-neutral-200 hover:border-medical-300'
                 }`}
               >
-                <QrCode className={`w-10 h-10 mx-auto mb-2 ${paymentMethod === 'PIX' ? 'text-medical-600' : 'text-neutral-400'}`} />
-                <p className={`text-base font-semibold ${paymentMethod === 'PIX' ? 'text-medical-700' : 'text-neutral-600'}`}>PIX</p>
-                <p className="text-sm text-neutral-500">Aprovação instantânea</p>
+                <QrCode className={`w-12 h-12 mx-auto mb-3 ${paymentMethod === 'PIX' ? 'text-medical-600' : 'text-neutral-400'}`} />
+                <p className={`text-lg font-semibold mb-1 ${paymentMethod === 'PIX' ? 'text-medical-700' : 'text-neutral-600'}`}>PIX</p>
+                <p className={`text-sm ${paymentMethod === 'PIX' ? 'text-medical-600' : 'text-neutral-500'}`}>Aprovação instantânea</p>
               </button>
 
               {/* Cartão */}
               <button
                 onClick={() => setPaymentMethod('CREDIT_CARD')}
-                className={`p-5 rounded-xl border-2 transition-all ${
+                className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
                   paymentMethod === 'CREDIT_CARD'
-                    ? 'border-medical-500 bg-medical-50'
+                    ? 'border-medical-500 bg-medical-50 shadow-md'
                     : 'border-neutral-200 hover:border-medical-300'
                 }`}
               >
-                <CreditCard className={`w-10 h-10 mx-auto mb-2 ${paymentMethod === 'CREDIT_CARD' ? 'text-medical-600' : 'text-neutral-400'}`} />
-                <p className={`text-base font-semibold ${paymentMethod === 'CREDIT_CARD' ? 'text-medical-700' : 'text-neutral-600'}`}>Cartão</p>
-                <p className="text-sm text-neutral-500">Até 12x sem juros</p>
+                <CreditCard className={`w-12 h-12 mx-auto mb-3 ${paymentMethod === 'CREDIT_CARD' ? 'text-medical-600' : 'text-neutral-400'}`} />
+                <p className={`text-lg font-semibold mb-1 ${paymentMethod === 'CREDIT_CARD' ? 'text-medical-700' : 'text-neutral-600'}`}>Cartão</p>
+                <p className={`text-sm ${paymentMethod === 'CREDIT_CARD' ? 'text-medical-600' : 'text-neutral-500'}`}>Até 12x sem juros</p>
               </button>
             </div>
           </div>
 
-          {/* Benefícios */}
-          <div className="space-y-3 mb-8">
-            {[
-              { icon: '✓', text: 'Site entregue em até 7 dias' },
-              { icon: '✓', text: '2 rodadas de ajustes incluídas' },
-              { icon: '✓', text: 'Hospedagem + domínio grátis no 1º ano' },
-              { icon: '✓', text: 'Suporte técnico por 1 ano' },
-              { icon: '✓', text: 'Garantia de 7 dias ou seu dinheiro de volta' },
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-center text-neutral-700">
-                <span className="text-mint-600 font-bold text-xl mr-3">{item.icon}</span>
-                <span className="text-base">{item.text}</span>
-              </div>
-            ))}
+          {/* Benefícios Incluídos */}
+          <div className="bg-neutral-50 border border-neutral-200 rounded-xl p-6 mb-6">
+            <h3 className="text-base font-semibold text-neutral-900 mb-4 text-center">✨ O que está incluído:</h3>
+            <div className="space-y-3">
+              {[
+                { icon: '✓', text: 'Site entregue em até 7 dias' },
+                { icon: '✓', text: '2 rodadas de ajustes incluídas' },
+                { icon: '✓', text: 'Hospedagem + domínio grátis no 1º ano' },
+                { icon: '✓', text: 'Suporte técnico por 1 ano' },
+                { icon: '✓', text: 'Garantia de 7 dias ou seu dinheiro de volta' },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center text-neutral-700">
+                  <span className="text-mint-600 font-bold text-xl mr-3">{item.icon}</span>
+                  <span className="text-sm">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Resumo de Valores */}
+          <div className="bg-gradient-to-br from-medical-500 to-medical-700 rounded-xl p-6 mb-6 text-white text-center shadow-lg">
+            <p className="text-xs uppercase tracking-wider opacity-90 mb-3">Investimento</p>
+            <div className="text-3xl font-bold mb-2">
+              {numeroParcelas}x de {formatCurrency(valorParcela)}
+            </div>
+            <p className="text-sm opacity-75 mb-3">
+              Total: {formatCurrency(valorParcela * numeroParcelas)}
+            </p>
+            <div className="border-t border-white/20 pt-3">
+              <p className="text-sm">
+                Ou {formatCurrency(valorTotal)} à vista <span className="text-xs opacity-75">(economize {formatCurrency((valorParcela * numeroParcelas) - valorTotal)})</span>
+              </p>
+              <p className="text-xs opacity-75 mt-3">
+                + R$ 97/mês de manutenção a partir do 2º ano
+              </p>
+            </div>
           </div>
 
           {/* Botão de Pagamento */}
