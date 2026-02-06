@@ -340,7 +340,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             {formData.sobre_texto && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Texto Sobre a Clínica</label>
-                <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(formData.sobre_texto)}</p>
+                <p className="text-gray-900 mt-1 whitespace-pre-wrap break-words overflow-wrap-anywhere">{renderValue(formData.sobre_texto)}</p>
               </div>
             )}
             {formData.redes_sociais && formData.redes_sociais.length > 0 && (
@@ -449,7 +449,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                     {prof.descricao && (
                       <div>
                         <label className="text-sm font-medium text-gray-500">Descrição</label>
-                        <p className="text-gray-900 mt-1 whitespace-pre-wrap">{renderValue(prof.descricao)}</p>
+                        <p className="text-gray-900 mt-1 whitespace-pre-wrap break-words overflow-wrap-anywhere">{renderValue(prof.descricao)}</p>
                       </div>
                     )}
                     {prof.foto && (
