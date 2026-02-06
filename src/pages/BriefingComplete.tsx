@@ -151,7 +151,7 @@ const BriefingComplete = () => {
                   </div>
                   <div>
                     <p className="font-semibold text-neutral-900">Receba para aprovação</p>
-                    <p className="text-sm text-neutral-600">Em até 7 dias, você recebe o link do preview</p>
+                    <p className="text-sm text-neutral-600">Em até 3 dias, você recebe o link do preview</p>
                   </div>
                 </div>
 
@@ -161,7 +161,7 @@ const BriefingComplete = () => {
                   </div>
                   <div>
                     <p className="font-semibold text-neutral-900">Seu site no ar!</p>
-                    <p className="text-sm text-neutral-600">Após aprovação, publicamos seu site</p>
+                    <p className="text-sm text-neutral-600">Em até 7 dias, seu site estará publicado</p>
                   </div>
                 </div>
               </div>
