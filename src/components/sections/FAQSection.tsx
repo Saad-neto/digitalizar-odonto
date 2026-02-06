@@ -23,7 +23,7 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "Quanto tempo leva REALMENTE?",
-      answer: "De 3 a 7 dias úteis após você preencher o briefing e enviar os materiais (logo, fotos, textos). Se você já tiver tudo pronto, conseguimos entregar em 3 dias úteis. Se precisar da nossa ajuda para criar logo, selecionar imagens ou escrever textos, leva até 7 dias úteis. E temos garantia: se não entregarmos no prazo, você recebe reembolso total."
+      answer: "De 3 a 7 dias após você preencher o briefing e enviar os materiais (logo, fotos, textos). Se você já tiver tudo pronto, conseguimos entregar em 3 dias. Se precisar da nossa ajuda para criar logo, selecionar imagens ou escrever textos, leva até 7 dias. E temos garantia: se não entregarmos no prazo, você recebe reembolso total."
     },
     {
       question: "Vou ter que pagar mensalidade?",
@@ -31,7 +31,7 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "Como garanto que vão entregar?",
-      answer: "Temos três garantias sólidas: 1) Você só paga após aprovar o layout (então vê o resultado antes de pagar); 2) Garantia de prazo - se não entregarmos em 7 dias úteis, reembolso total; 3) Garantia de satisfação - 7 dias após o site no ar para pedir reembolso se não estiver satisfeito. Além disso, já entregamos 500+ sites sem nenhuma reclamação no Reclame Aqui. Todo o risco é nosso."
+      answer: "Temos três garantias sólidas: 1) Você só paga após aprovar o layout (então vê o resultado antes de pagar); 2) Garantia de prazo - se não entregarmos em 7 dias, reembolso total; 3) Garantia de satisfação - 7 dias após o site no ar para pedir reembolso se não estiver satisfeito. Além disso, já entregamos 500+ sites sem nenhuma reclamação no Reclame Aqui. Todo o risco é nosso."
     },
     {
       question: "Posso fazer alterações depois?",

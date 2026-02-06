@@ -14,13 +14,23 @@ interface UploadedFile {
   data: string;
 }
 
+interface HotmartVenda {
+  id: string;
+  cliente_nome: string;
+  cliente_email: string;
+  cliente_telefone: string | null;
+  plano: string;
+}
+
 interface ReviewStepProps {
   formData: FormData;
   uploadedFiles: { [key: string]: UploadedFile[] };
   onEdit: (sectionIndex: number) => void;
+  hotmartVenda?: HotmartVenda | null;
+  isFromHotmart?: boolean;
 }
 
-const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit }) => {
+const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit, hotmartVenda, isFromHotmart }) => {
   const [observacoes, setObservacoes] = useState(formData.observacoes_revisao || '');
 
   const formatFileSize = (bytes: number) => {
@@ -141,28 +151,56 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            <div className="md:col-span-2">
               <label className="text-sm font-medium text-gray-500">Nome do Consultório/Clínica</label>
               <p className="text-gray-900 mt-1">{renderValue(formData.nome_consultorio)}</p>
             </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Seu Nome</label>
-              <p className="text-gray-900 mt-1">{renderValue(formData.nome)}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500 flex items-center gap-1">
-                <Phone className="w-4 h-4" />
-                WhatsApp
-              </label>
-              <p className="text-gray-900 mt-1">{renderValue(formData.whatsapp)}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500 flex items-center gap-1">
-                <Mail className="w-4 h-4" />
-                E-mail
-              </label>
-              <p className="text-gray-900 mt-1">{renderValue(formData.email)}</p>
-            </div>
+
+            {/* Dados de contato - Hotmart ou Formulário */}
+            {isFromHotmart && hotmartVenda ? (
+              <>
+                <div className="md:col-span-2 bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+                  <p className="text-sm text-blue-700 font-medium mb-2">📋 Dados de contato (Hotmart)</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-xs text-blue-600">Nome</label>
+                      <p className="text-gray-900 text-sm">{hotmartVenda.cliente_nome}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs text-blue-600">E-mail</label>
+                      <p className="text-gray-900 text-sm truncate">{hotmartVenda.cliente_email}</p>
+                    </div>
+                    {hotmartVenda.cliente_telefone && (
+                      <div>
+                        <label className="text-xs text-blue-600">Telefone</label>
+                        <p className="text-gray-900 text-sm">{hotmartVenda.cliente_telefone}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Seu Nome</label>
+                  <p className="text-gray-900 mt-1">{renderValue(formData.nome)}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500 flex items-center gap-1">
+                    <Phone className="w-4 h-4" />
+                    WhatsApp
+                  </label>
+                  <p className="text-gray-900 mt-1">{renderValue(formData.whatsapp)}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500 flex items-center gap-1">
+                    <Mail className="w-4 h-4" />
+                    E-mail
+                  </label>
+                  <p className="text-gray-900 mt-1">{renderValue(formData.email)}</p>
+                </div>
+              </>
+            )}
             {formData.especialidade_principal && (
               <div className="md:col-span-2">
                 <label className="text-sm font-medium text-gray-500">Especialidade Principal</label>
@@ -242,6 +280,27 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                       <p className="text-xs text-gray-600 mt-1">{formData.widget4_label}</p>
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Imagem do Banner */}
+            {uploadedFiles.hero_imagem && uploadedFiles.hero_imagem.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-500 block mb-2">Imagem do Banner</label>
+                <div className="flex flex-wrap gap-2">
+                  {uploadedFiles.hero_imagem.map((file, idx) => (
+                    <div key={idx} className="relative">
+                      <img
+                        src={file.data}
+                        alt={file.name}
+                        className="w-48 h-32 object-cover rounded-lg border-2 border-gray-200"
+                      />
+                      <div className="mt-1 text-xs text-gray-500">
+                        {file.name} ({formatFileSize(file.size)})
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -366,7 +425,22 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                         <p className="text-gray-900 mt-1">{renderValue(prof.registro)}</p>
                       </div>
                     )}
-                    {prof.especialidade && (
+                    {(prof.especialidades && prof.especialidades.length > 0) ? (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Especialidades</label>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {prof.especialidades.map((esp: string, espIdx: number) => {
+                            const isCustom = esp.startsWith('outro:');
+                            const displayName = isCustom ? esp.replace('outro:', '') : esp;
+                            return (
+                              <span key={espIdx} className="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                                {displayName}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : prof.especialidade && (
                       <div>
                         <label className="text-sm font-medium text-gray-500">Especialidade</label>
                         <p className="text-gray-900 mt-1">{renderValue(prof.especialidade)}</p>
@@ -383,7 +457,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                         <label className="text-sm font-medium text-gray-500 block mb-2">Foto do Profissional</label>
                         <div className="w-48 h-48 overflow-hidden rounded-lg border-2 border-purple-200 bg-gray-100 flex items-center justify-center">
                           <img
-                            src={prof.foto}
+                            src={typeof prof.foto === 'string' ? prof.foto : prof.foto?.data}
                             alt={prof.nome || 'Profissional'}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -397,7 +471,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                           />
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          Tamanho: {prof.foto ? Math.round(prof.foto.length / 1024) : 0} KB
+                          {prof.foto?.name || 'Foto'} ({prof.foto?.size ? formatFileSize(prof.foto.size) : 'N/A'})
                         </p>
                       </div>
                     )}
@@ -459,6 +533,35 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
                 {formData.diferencial_outro && (
                   <p className="text-gray-600 mt-1 text-sm">Personalizado: {formData.diferencial_outro}</p>
                 )}
+              </div>
+            )}
+
+            {/* Fotos de Antes/Depois */}
+            {uploadedFiles.fotos_antes_depois && uploadedFiles.fotos_antes_depois.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-gray-500 block mb-2">
+                  📸 Fotos de Antes/Depois ({uploadedFiles.fotos_antes_depois.length} foto{uploadedFiles.fotos_antes_depois.length > 1 ? 's' : ''})
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {uploadedFiles.fotos_antes_depois.map((file, idx) => (
+                    <div key={idx} className="relative group">
+                      <img
+                        src={file.data}
+                        alt={file.name}
+                        className="w-full h-32 object-cover rounded-lg border-2 border-purple-200 hover:border-purple-400 transition-all"
+                      />
+                      <div className="mt-1 text-xs text-gray-500 truncate" title={file.name}>
+                        {file.name}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {formatFileSize(file.size)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-green-600 mt-2">
+                  ✓ {uploadedFiles.fotos_antes_depois.length} foto{uploadedFiles.fotos_antes_depois.length > 1 ? 's' : ''} será{uploadedFiles.fotos_antes_depois.length > 1 ? 'ão' : ''} incluída{uploadedFiles.fotos_antes_depois.length > 1 ? 's' : ''} no site
+                </p>
               </div>
             )}
           </div>
@@ -598,23 +701,54 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
           </div>
 
           <div className="space-y-4">
-            {/* Depoimentos */}
-            {formData.estrategia_depoimentos && (
-              <div className="mb-6">
-                <label className="text-sm font-medium text-gray-500">Estratégia de Depoimentos</label>
-                <p className="text-gray-900 mt-1">
-                  {formData.estrategia_depoimentos === 'google' && '⭐ Usar avaliações do Google (automático)'}
-                  {formData.estrategia_depoimentos === 'texto' && '💬 Vou enviar depoimentos que já tenho'}
-                  {formData.estrategia_depoimentos === 'nao' && '⏭️ Não quero seção de depoimentos por enquanto'}
-                </p>
-                {formData.estrategia_depoimentos === 'google' && formData.link_google_maps && (
-                  <p className="text-gray-600 mt-1 text-sm">Link: {formData.link_google_maps}</p>
-                )}
-                {formData.estrategia_depoimentos === 'texto' && formData.depoimentos_texto && (
-                  <div className="mt-2 bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500 mb-1">Depoimentos:</p>
-                    <p className="text-gray-700 text-sm whitespace-pre-wrap">{formData.depoimentos_texto}</p>
+            {/* Contatos do Site */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <p className="text-sm text-green-700 font-medium mb-3">📞 Contatos para o Site</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs text-green-600 flex items-center gap-1">
+                    <Phone className="w-3 h-3" />
+                    WhatsApp do Site
+                  </label>
+                  <p className="text-gray-900 text-sm mt-1">{renderValue(formData.whatsapp_site)}</p>
+                </div>
+                {formData.telefone_site && (
+                  <div>
+                    <label className="text-xs text-green-600">Telefone Fixo</label>
+                    <p className="text-gray-900 text-sm mt-1">{formData.telefone_site}</p>
                   </div>
+                )}
+                {formData.email_site && (
+                  <div>
+                    <label className="text-xs text-green-600 flex items-center gap-1">
+                      <Mail className="w-3 h-3" />
+                      E-mail da Clínica
+                    </label>
+                    <p className="text-gray-900 text-sm mt-1 truncate">{formData.email_site}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Google Meu Negócio */}
+            {formData.link_google_maps && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Google Meu Negócio</label>
+                <p className="text-gray-900 mt-1">✓ Link configurado</p>
+                <p className="text-gray-600 mt-1 text-sm break-all">{formData.link_google_maps}</p>
+              </div>
+            )}
+
+            {/* Método de Endereço */}
+            {formData.metodo_endereco && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">Método de Informação do Endereço</label>
+                <p className="text-gray-900 mt-1">
+                  {formData.metodo_endereco === 'google' && '⚡ Usando Google Meu Negócio (automático)'}
+                  {formData.metodo_endereco === 'manual' && '✍️ Endereço preenchido manualmente'}
+                </p>
+                {formData.metodo_endereco === 'google' && formData.exibir_mapa === 'sim' && (
+                  <p className="text-green-600 mt-1 text-sm">🗺️ Mapa interativo será exibido no site</p>
                 )}
               </div>
             )}
@@ -640,13 +774,10 @@ const ReviewStep: React.FC<ReviewStepProps> = ({ formData, uploadedFiles, onEdit
             </div>
 
             {/* Facilidades */}
-            {(formData.tem_estacionamento || formData.tem_acessibilidade) && (
+            {formData.tem_acessibilidade && (
               <div>
                 <label className="text-sm font-medium text-gray-500">Facilidades</label>
                 <div className="mt-2 space-y-1">
-                  {formData.tem_estacionamento === 'sim' && (
-                    <p className="text-gray-900">✓ Estacionamento disponível</p>
-                  )}
                   {formData.tem_acessibilidade === 'sim' && (
                     <p className="text-gray-900">✓ Acessibilidade para cadeirantes</p>
                   )}

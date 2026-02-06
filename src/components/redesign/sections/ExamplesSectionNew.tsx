@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink, Sparkles, Palette, Zap, Crown } from 'lucide-react';
+import LazyImage from '@/components/LazyImage';
 
 const ExamplesSectionNew: React.FC = () => {
   const demos = [
@@ -80,7 +81,7 @@ const ExamplesSectionNew: React.FC = () => {
               >
                 {/* Screenshot Preview */}
                 <div className="h-64 relative overflow-hidden bg-gray-100">
-                  <img
+                  <LazyImage
                     src={demo.screenshot}
                     alt={`${demo.title} - Preview`}
                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
@@ -160,8 +161,8 @@ const ExamplesSectionNew: React.FC = () => {
               Começar Meu Site Agora
               <ExternalLink size={20} />
             </a>
-            <p className="text-body-sm text-neutral-500 mt-4">
-              Pronto em até 7 dias úteis • Sem compromisso
+            <p className="text-body-sm text-neutral-500 mt-4 text-center">
+              Pronto em até 7 dias • Sem compromisso
             </p>
           </div>
         </div>

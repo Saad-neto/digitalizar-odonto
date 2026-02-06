@@ -1,145 +1,149 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Palette, CheckSquare, CreditCard, Rocket, ArrowRight } from 'lucide-react';
+import { FileText, Palette, Rocket, Shield, ArrowRight, Check } from 'lucide-react';
 
 const HowItWorksSectionNew: React.FC = () => {
   const steps = [
     {
       number: 1,
       icon: FileText,
-      title: "Preencha o Briefing",
-      description: "Responda um formulário rápido sobre sua clínica, especialidades, diferenciais e o que você quer destacar no site.",
-      duration: "5-10 minutos",
+      title: "Você Responde",
+      duration: "10 minutos",
+      description: "Preencha um formulário simples com as informações da sua clínica, serviços, fotos e preferências.",
+      benefits: ["100% grátis", "Sem compromisso"],
       color: "medical"
     },
     {
       number: 2,
       icon: Palette,
-      title: "Receba o Layout para Aprovação",
-      description: "Em até 3 dias úteis, criamos o design personalizado do seu site. Você revisa, pede ajustes se necessário, e aprova quando estiver 100% satisfeito.",
-      duration: "2-3 dias úteis",
+      title: "Nós Criamos",
+      duration: "3-5 dias",
+      description: "Nossa equipe desenvolve seu site personalizado, otimizado para Google e perfeito no celular.",
+      benefits: ["Acompanhe por email", "Ajustes incluídos"],
       color: "mint"
     },
     {
       number: 3,
-      icon: CheckSquare,
-      title: "Aprove o Layout",
-      description: "Gostou do design? Perfeito! Não gostou? Fazemos ajustes até você aprovar. Sem burocracia.",
-      duration: "Sua escolha",
-      color: "medical"
-    },
-    {
-      number: 4,
-      icon: CreditCard,
-      title: "Efetue o Pagamento",
-      description: "Somente APÓS aprovar o layout, você paga os R$ 497 (ou 12x de R$ 49,70 no cartão). Zero risco. Não gostou? Não paga.",
-      duration: "Instantâneo",
-      color: "mint"
-    },
-    {
-      number: 5,
       icon: Rocket,
-      title: "Seu Site Entra no Ar",
-      description: "Finalizamos os detalhes técnicos, configuramos hospedagem, SEO básico e colocamos seu site no ar. Pronto para receber pacientes!",
-      duration: "Até 7 dias úteis",
+      title: "Site no Ar",
+      duration: "até 7 dias",
+      description: "Você revisa, aprova, escolhe o domínio e publicamos. Pronto para receber pacientes!",
+      benefits: ["Hospedagem grátis 1 ano", "Suporte por 30 dias"],
       color: "medical"
     }
   ];
 
   return (
-    <section className="py-section-lg bg-white">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+    <section className="py-20 lg:py-28 bg-white">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="font-heading text-title-xl text-neutral-900 mb-6">
-            Como Funciona:{' '}
-            <span className="text-medical-600">Simples, Rápido e Sem Risco</span>
+          <h2 className="text-3xl lg:text-4xl font-bold text-neutral-900 mb-4">
+            Seu Site Profissional em{' '}
+            <span className="text-medical-600">3 Passos Simples</span>
           </h2>
-
-          <p className="text-body-lg text-neutral-600 leading-relaxed">
-            Do briefing ao site no ar em até 7 dias úteis. Processo transparente,
-            sem surpresas, sem pegadinhas. Veja como é fácil:
+          <p className="text-lg text-neutral-600">
+            Do briefing ao ar em até 7 dias úteis
           </p>
         </div>
 
-        {/* Timeline Steps */}
-        <div className="relative">
-          {/* Vertical line (desktop) */}
-          <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-neutral-200 -translate-x-1/2" />
-
-          <div className="space-y-12">
-            {steps.map((step, index) => {
-              const isEven = index % 2 === 0;
-              const colorClass = step.color === 'medical' ? 'medical' : 'mint';
-
-              return (
-                <div
-                  key={index}
-                  className={`relative grid lg:grid-cols-2 gap-8 items-center ${
-                    isEven ? '' : 'lg:flex-row-reverse'
-                  }`}
-                >
-                  {/* Content */}
-                  <div className={`${isEven ? 'lg:text-right lg:pr-12' : 'lg:col-start-2 lg:pl-12'}`}>
-                    <div className="inline-block mb-4">
-                      <div className={`inline-flex items-center gap-3 px-4 py-2 bg-${colorClass}-50 text-${colorClass}-700 rounded-full text-body-sm font-medium`}>
-                        <step.icon size={20} />
-                        Passo {step.number}
-                      </div>
-                    </div>
-
-                    <h3 className="font-heading text-title-lg text-neutral-900 mb-4">
-                      {step.title}
-                    </h3>
-
-                    <p className="text-body-md text-neutral-600 leading-relaxed mb-4">
-                      {step.description}
-                    </p>
-
-                    <p className="text-body-sm font-semibold text-neutral-500">
-                      ⏱️ {step.duration}
-                    </p>
-                  </div>
-
-                  {/* Circle Number (Center on desktop) */}
-                  <div className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <div className={`w-16 h-16 rounded-full bg-${colorClass}-500 text-white flex items-center justify-center font-bold text-xl shadow-lg border-4 border-white`}>
-                      {step.number}
-                    </div>
-                  </div>
-
-                  {/* Visual placeholder on opposite side */}
-                  <div className={`hidden lg:block ${isEven ? 'lg:col-start-2' : 'lg:col-start-1'}`} />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-medical-50 to-mint-50 rounded-2xl p-8 lg:p-12 border border-medical-100">
-            <h3 className="font-heading text-title-lg text-neutral-900 mb-4">
-              Pronto para Começar?
-            </h3>
-            <p className="text-body-lg text-neutral-600 mb-8 max-w-2xl mx-auto">
-              Preencha o briefing agora e receba seu layout em até 3 dias úteis.
-              Sem compromisso até você aprovar o design.
-            </p>
-
-            <Link
-              to="/briefing"
-              className="inline-flex items-center justify-center gap-2 px-10 py-5 bg-medical-500 text-white text-body-lg font-semibold rounded-lg hover:bg-medical-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+        {/* Steps Grid */}
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-12">
+          {steps.map((step, index) => (
+            <div
+              key={index}
+              className="relative bg-neutral-50 rounded-2xl p-8 border border-neutral-100 hover:border-medical-200 hover:shadow-lg transition-all duration-300"
             >
-              Preencher Briefing Agora
-              <ArrowRight size={22} />
-            </Link>
+              {/* Step Number Badge */}
+              <div className={`absolute -top-4 left-8 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                step.color === 'medical' ? 'bg-medical-500' : 'bg-mint-500'
+              }`}>
+                {step.number}
+              </div>
 
-            <p className="text-body-sm text-neutral-500 mt-4">
-              Leva apenas 5-10 minutos. Nenhum pagamento necessário agora.
-            </p>
+              {/* Icon */}
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${
+                step.color === 'medical' ? 'bg-medical-100 text-medical-600' : 'bg-mint-100 text-mint-600'
+              }`}>
+                <step.icon size={28} />
+              </div>
+
+              {/* Content */}
+              <h3 className="text-xl font-bold text-neutral-900 mb-2">
+                {step.title}
+              </h3>
+
+              <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${
+                step.color === 'medical' ? 'bg-medical-100 text-medical-700' : 'bg-mint-100 text-mint-700'
+              }`}>
+                {step.duration}
+              </div>
+
+              <p className="text-neutral-600 mb-6 leading-relaxed">
+                {step.description}
+              </p>
+
+              {/* Benefits */}
+              <ul className="space-y-2">
+                {step.benefits.map((benefit, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-neutral-700">
+                    <Check size={16} className="text-green-500 flex-shrink-0" />
+                    {benefit}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Arrow connector (desktop only) */}
+              {index < steps.length - 1 && (
+                <div className="hidden md:block absolute top-1/2 -right-4 lg:-right-5 transform -translate-y-1/2 z-10">
+                  <ArrowRight size={24} className="text-neutral-300" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Guarantee Box */}
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-8 lg:p-10 mb-12">
+          <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
+            <div className="flex-shrink-0">
+              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center">
+                <Shield size={32} className="text-amber-600" />
+              </div>
+            </div>
+            <div className="text-center lg:text-left">
+              <h3 className="text-xl lg:text-2xl font-bold text-neutral-900 mb-2">
+                Garantia Incondicional de 7 Dias
+              </h3>
+              <p className="text-neutral-700 lg:text-lg">
+                Você paga após o briefing, mas está <strong>100% protegido</strong>.
+                Não ficou satisfeito? Devolvemos todo o seu dinheiro. Sem perguntas, sem burocracia.
+              </p>
+            </div>
           </div>
         </div>
+
+        {/* CTA */}
+        <div className="text-center">
+          <Link
+            to="/briefing"
+            className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-medical-500 text-white text-lg font-semibold rounded-xl hover:bg-medical-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+          >
+            Começar Meu Site Agora
+            <ArrowRight size={22} />
+          </Link>
+
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-neutral-500">
+            <span>R$ 997 à vista ou 12x de R$ 99,70</span>
+            <span className="hidden sm:block">•</span>
+            <span className="flex items-center gap-1">
+              <Shield size={14} className="text-amber-500" />
+              Garantia de 7 dias
+            </span>
+          </div>
+        </div>
+
       </div>
     </section>
   );

@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Menu, X } from 'lucide-react';
+import { useOptimizedScroll } from '@/hooks/useOptimizedScroll';
 
 const HeaderNew: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+  // Optimized scroll handler with throttling
+  const handleScroll = useCallback((scrollY: number) => {
+    setIsScrolled(scrollY > 20);
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
+  useOptimizedScroll(handleScroll, 100);
+
+  // Memoize scroll function to prevent recreation on every render
+  const scrollToSection = useCallback((sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setIsMobileMenuOpen(false);
     }
-  };
+  }, []);
 
   return (
     <header
@@ -31,68 +31,76 @@ const HeaderNew: React.FC = () => {
           : 'bg-transparent py-6'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             <img
-              src="/logo-new.png"
-              alt="Sites Odonto 24H"
-              className="w-12 h-12 object-contain"
+              src="/logo-header.png"
+              alt="clinicanaweb.com - Soluções para Clínicas e Consultórios"
+              className="w-10 h-10 object-contain"
             />
             <div>
-              <div className="font-heading font-bold text-neutral-900 text-lg leading-tight">
-                Sites Odonto
+              <div className="font-heading font-bold text-neutral-900 text-base leading-tight">
+                clinicanaweb.com
               </div>
-              <div className="text-medical-600 text-xs font-medium">
-                24 Horas
+              <div className="text-medical-600 text-xs font-medium leading-tight">
+                Soluções para Clínicas e Consultórios
               </div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-8 h-full">
             <button
               onClick={() => scrollToSection('como-funciona')}
-              className="text-body-md text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium"
+              className="h-full flex items-center text-sm leading-none text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium whitespace-nowrap"
             >
               Como Funciona
             </button>
             <button
               onClick={() => scrollToSection('depoimentos')}
-              className="text-body-md text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium"
+              className="h-full flex items-center text-sm leading-none text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium whitespace-nowrap"
             >
               Depoimentos
             </button>
             <button
               onClick={() => scrollToSection('garantias')}
-              className="text-body-md text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium"
+              className="h-full flex items-center text-sm leading-none text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium whitespace-nowrap"
             >
               Garantias
             </button>
             <button
               onClick={() => scrollToSection('faq')}
-              className="text-body-md text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium"
+              className="h-full flex items-center text-sm leading-none text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium whitespace-nowrap"
             >
               FAQ
             </button>
+            {/* Temporariamente removido
+            <Link
+              to="/blog"
+              className="h-full flex items-center text-sm leading-none text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium whitespace-nowrap"
+            >
+              Blog
+            </Link>
+            */}
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4 h-full">
             <a
               href="https://wa.me/5511963256658"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-body-md text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium"
+              className="flex items-center gap-2 text-sm leading-none text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium whitespace-nowrap"
             >
-              <Phone size={18} />
+              <Phone size={16} className="flex-shrink-0" />
               (11) 96325-6658
             </a>
 
             <Link
               to="/briefing"
-              className="px-6 py-3 bg-medical-500 text-white text-body-md font-semibold rounded-lg hover:bg-medical-600 transition-all duration-300 shadow-sm hover:shadow-md"
+              className="flex items-center justify-center px-6 py-3 bg-medical-500 text-white text-sm leading-none font-semibold rounded-lg hover:bg-medical-600 transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap"
             >
               Começar Agora
             </Link>
@@ -135,6 +143,15 @@ const HeaderNew: React.FC = () => {
               >
                 FAQ
               </button>
+              {/* Temporariamente removido
+              <Link
+                to="/blog"
+                className="text-body-md text-neutral-700 hover:text-medical-600 transition-colors duration-300 font-medium text-left"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
+              */}
 
               <a
                 href="https://wa.me/5511963256658"

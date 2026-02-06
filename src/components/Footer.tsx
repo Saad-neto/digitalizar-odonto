@@ -11,18 +11,18 @@ const Footer: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
               <img
-                src="/logo.png"
-                alt="Sites Odonto"
+                src="/logo-footer.png"
+                alt="clinicanaweb.com"
                 className="h-14 w-auto object-contain"
               />
               <div>
-                <h3 className="text-2xl font-bold">Sites Odonto</h3>
-                <p className="text-white/70">Especialistas em Sites Odontológicos</p>
+                <h3 className="text-2xl font-bold">clinicanaweb.com</h3>
+                <p className="text-white/70">Soluções para Clínicas e Consultórios</p>
               </div>
             </div>
             
             <p className="text-white/90 mb-6 max-w-md">
-              Há 5 anos transformando a presença digital de dentistas em todo o Brasil. 
+              Há 5 anos transformando a presença digital de clínicas e consultórios odontológicos em todo o Brasil.
               Mais de 500 profissionais já confiam em nosso trabalho especializado.
             </p>
 
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <Award size={20} className="text-success-light" />
-                <span className="text-white/80">Sites Odonto</span>
+                <span className="text-white/80">clinicanaweb.com</span>
               </div>
               <div className="flex items-center gap-3">
                 <Shield size={20} className="text-success-light" />
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="border-t border-white/20 pt-8 text-center text-white/70">
           <p className="mb-4">
-            © 2024 Sites Odonto. Todos os direitos reservados.
+            © 2024 clinicanaweb.com. Todos os direitos reservados.
           </p>
           
           <div className="flex flex-wrap justify-center gap-6 text-sm">
@@ -118,7 +118,7 @@ const Footer: React.FC = () => {
           </div>
           
           <p className="mt-6 text-xs text-white/50">
-            Sites profissionais para dentistas | Criação de sites odontológicos | Marketing digital odontológico
+            Soluções digitais para clínicas e consultórios odontológicos | Marketing digital especializado | Presença online profissional
           </p>
         </div>
       </div>

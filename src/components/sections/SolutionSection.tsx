@@ -8,7 +8,7 @@ const SolutionSection: React.FC = () => {
     {
       icon: Zap,
       title: "AGILIDADE QUE SALVA SUA RECEITA",
-      description: "Seu site no ar em 7 dias úteis (não 60-90 dias de agências). Cada semana de atraso = R$ 3-8 mil em pacientes perdidos para concorrentes",
+      description: "Seu site no ar em 7 dias (não 60-90 dias de agências). Cada semana de atraso = R$ 3-8 mil em pacientes perdidos para concorrentes",
       color: "text-yellow-highlight"
     },
     {

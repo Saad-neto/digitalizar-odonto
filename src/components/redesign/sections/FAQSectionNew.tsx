@@ -8,15 +8,15 @@ const FAQSectionNew: React.FC = () => {
   const faqs = [
     {
       question: "Como funciona o processo? Quanto tempo demora?",
-      answer: "É simples: (1) Você preenche o briefing online (10-15 minutos). (2) Em até 3 dias úteis criamos o layout do seu site. (3) Você revisa e aprova (ou pede ajustes). (4) Após aprovar, você efetua o pagamento. (5) Finalizamos e colocamos no ar em até 7 dias úteis. Total: cerca de 7-10 dias do início ao fim."
+      answer: "É simples: (1) Você preenche o briefing online (10-15 minutos). (2) Em até 7 dias criamos o layout completo do seu site. (3) Você revisa e aprova (ou pede ajustes). (4) Após aprovar, você efetua o pagamento. (5) Finalizamos os detalhes e colocamos no ar. Total: cerca de 7 dias do início ao fim."
     },
     {
       question: "Eu realmente só pago depois de aprovar o layout?",
       answer: "SIM! Essa é nossa garantia número 1. Criamos todo o design do site, você recebe para revisar, pede ajustes se quiser, e só quando aprovar é que você paga. Não gostou do resultado? Não paga. Simples assim. Zero risco para você."
     },
     {
-      question: "O que está incluso no pacote de R$ 497?",
-      answer: "TUDO que você precisa: design 100% personalizado, site responsivo, SEO on-page, integração WhatsApp, reviews do Google e Google Maps integrados, hospedagem GRATUITA PARA SEMPRE, SSL, suporte por 30 dias, Google Analytics, Meta Pixel (opcional), e otimização de imagens. Sem custos ocultos. Valor real de mercado: R$ 2.000-5.000."
+      question: "Quais são os planos disponíveis e o que está incluído?",
+      answer: "Temos 3 planos: SITE PROFISSIONAL (R$ 997): design personalizado, site responsivo, SEO básico, integração WhatsApp, hospedagem gratuita para sempre, 2 rodadas de ajustes, suporte 30 dias. SITE + AGENDAMENTO (R$ 1.497): tudo do anterior + sistema de agendamento online, calendário integrado, confirmação automática via WhatsApp, SEO avançado, 4 rodadas de ajustes, suporte 90 dias. SITE COMPLETO (R$ 1.997): tudo dos planos anteriores + blog integrado com CMS, 10 posts premium otimizados para SEO, dashboard de métricas avançado, 5 rodadas de ajustes, suporte 120 dias e prioridade no atendimento."
     },
     {
       question: "Vocês fazem sites genéricos ou personalizados?",
@@ -40,15 +40,15 @@ const FAQSectionNew: React.FC = () => {
     },
     {
       question: "Posso ver exemplos de sites que vocês fizeram?",
-      answer: "Estamos começando agora, então ainda não temos um portfólio extenso de clientes. Podemos mostrar layouts de demonstração e explicar nossa tecnologia (React, Supabase, Netlify - stack profissional usado por empresas grandes). Por isso mesmo oferecemos: (1) Preço de fundador 50% menor, (2) Você só paga após aprovar o layout, (3) Garantia de 30 dias."
+      answer: "Sim! Temos exemplos reais de sites que criamos. Veja na seção 'Portfólio Real' acima. Usamos tecnologia profissional (React, Supabase, Cloudflare - stack usado por empresas grandes). Garantimos: (1) Você só paga após aprovar o layout, (2) Garantia de 7 dias ou reembolso total, (3) Design 100% personalizado para sua especialidade."
     },
     {
       question: "Qual é a diferença entre vocês e outras agências?",
-      answer: "Somos HONESTOS sobre sermos novos no mercado. Vantagens: (1) Você só paga depois de aprovar o layout (zero risco), (2) Preço de fundador: R$ 497 vs R$ 2.000-5.000 de agências, (3) Atenção 100% exclusiva (você não será 'mais um'), (4) Tecnologia moderna (React/TypeScript, não WordPress), (5) Garantia absoluta de 30 dias. Desvantagem: não temos centenas de cases ainda. Mas isso será vantagem para quem entrar agora."
+      answer: "Vantagens: (1) Você só paga depois de aprovar o layout (zero risco), (2) Preço justo: a partir de R$ 997 vs R$ 2.500-8.000 de agências tradicionais, (3) Atenção personalizada (você não será 'mais um'), (4) Tecnologia moderna (React/TypeScript, não WordPress), (5) Garantia de 7 dias ou reembolso total, (6) Hospedagem gratuita para sempre. Oferecemos qualidade profissional com preço acessível e transparência total."
     },
     {
-      question: "Por que o preço é tão mais barato que outras agências?",
-      answer: "Porque é nosso PREÇO DE LANÇAMENTO. Precisamos dos primeiros clientes para construir portfólio e depoimentos. Após os primeiros 10 clientes, o preço sobe para R$ 997 (valor real de mercado). Estamos oferecendo 50% de desconto em troca de: feedback honesto, permissão para usar seu site como exemplo (se ficar satisfeito), e paciência com nosso processo. É uma troca justa."
+      question: "Por que o preço é mais acessível que outras agências?",
+      answer: "Porque otimizamos nosso processo de criação e usamos tecnologia moderna que nos torna mais eficientes. Não temos custos com escritório físico luxuoso ou grandes equipes. Focamos em qualidade e eficiência, repassando essa economia para você. A partir de R$ 997 é um preço justo pelo valor entregue: design personalizado, hospedagem vitalícia, SEO otimizado e suporte completo."
     },
     {
       question: "Posso conversar com alguém antes de decidir?",
@@ -66,12 +66,13 @@ const FAQSectionNew: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-neutral-900 mb-6 leading-tight">
-            Perguntas Frequentes:{' '}
-            <span className="text-medical-600">Tire Todas as Suas Dúvidas</span>
+            Dúvidas Sobre Seu{' '}
+            <span className="text-medical-600">Site Odontológico?</span>
           </h2>
 
           <p className="text-base md:text-lg text-neutral-600 leading-relaxed">
-            Respondemos com total honestidade. Se tiver outras dúvidas, fale conosco no WhatsApp.
+            Respondemos com total transparência as principais dúvidas sobre nosso serviço.<br/>
+            Não encontrou sua pergunta? Fale conosco no WhatsApp.
           </p>
         </div>
 

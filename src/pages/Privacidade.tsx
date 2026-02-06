@@ -40,7 +40,7 @@ const Privacidade: React.FC = () => {
             <section>
               <h2 className="font-heading text-2xl text-neutral-900 mb-4">1. Introdução</h2>
               <p className="text-neutral-700 leading-relaxed">
-                A <strong>Sites Odonto 24H</strong> ("nós", "nosso" ou "empresa") está comprometida em proteger
+                A <strong>clinicanaweb.com</strong> ("nós", "nosso" ou "empresa") está comprometida em proteger
                 sua privacidade. Esta Política de Privacidade explica como coletamos, usamos, armazenamos e
                 protegemos suas informações pessoais quando você utiliza nosso site e serviços.
               </p>
@@ -173,7 +173,7 @@ const Privacidade: React.FC = () => {
                 Para exercer seus direitos ou esclarecer dúvidas sobre esta Política de Privacidade:
               </p>
               <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-6 space-y-2">
-                <p className="text-neutral-900 font-semibold">Sites Odonto 24H</p>
+                <p className="text-neutral-900 font-semibold">clinicanaweb.com</p>
                 <p className="text-neutral-700">E-mail: contato@briefingodontologico.com.br</p>
                 <p className="text-neutral-700">WhatsApp: (18) 3175-1052</p>
               </div>

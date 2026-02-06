@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Shield, Sparkles, ArrowRight } from 'lucide-react';
+import CountdownTimer from '../CountdownTimer';
 
 const OffersSectionNew: React.FC = () => {
   const included = [
@@ -49,6 +50,11 @@ const OffersSectionNew: React.FC = () => {
             Site profissional completo, sem mensalidades abusivas, sem surpresas.
             Pagamento único de R$ 497 (ou 12x no cartão) e pronto.
           </p>
+        </div>
+
+        {/* NOVO: Countdown Timer de Urgência */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <CountdownTimer daysFromNow={7} />
         </div>
 
         {/* Main Offer Card */}
@@ -158,7 +164,7 @@ const OffersSectionNew: React.FC = () => {
               </Link>
 
               <p className="text-xs md:text-sm text-neutral-500 mt-4">
-                Prazo de entrega: até 7 dias úteis após aprovação do layout
+                Prazo de entrega: até 7 dias após aprovação do layout
               </p>
             </div>
           </div>

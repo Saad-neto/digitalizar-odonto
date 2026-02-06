@@ -40,7 +40,7 @@ const Termos: React.FC = () => {
             <section>
               <h2 className="font-heading text-2xl text-neutral-900 mb-4">1. Aceitação dos Termos</h2>
               <p className="text-neutral-700 leading-relaxed">
-                Ao utilizar os serviços da <strong>Sites Odonto 24H</strong>, você concorda com estes
+                Ao utilizar os serviços da <strong>clinicanaweb.com</strong>, você concorda com estes
                 Termos de Uso. Se não concordar, por favor, não utilize nossos serviços.
               </p>
             </section>
@@ -48,7 +48,7 @@ const Termos: React.FC = () => {
             <section>
               <h2 className="font-heading text-2xl text-neutral-900 mb-4">2. Descrição do Serviço</h2>
               <p className="text-neutral-700 leading-relaxed mb-4">
-                A Sites Odonto 24H oferece o serviço de criação de sites profissionais para consultórios
+                A clinicanaweb.com oferece o serviço de criação de sites profissionais para consultórios
                 e clínicas odontológicas, incluindo:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-neutral-700">
@@ -87,11 +87,11 @@ const Termos: React.FC = () => {
               </p>
               <ol className="list-decimal pl-6 space-y-2 text-neutral-700 mt-3">
                 <li>Cliente preenche o briefing (sem pagamento)</li>
-                <li>Criamos o layout em até 3 dias úteis</li>
+                <li>Criamos o layout em até 3 dias</li>
                 <li>Cliente recebe o layout para aprovação</li>
                 <li>Cliente pode solicitar ajustes (incluído no serviço)</li>
                 <li>Após aprovação final, cliente efetua o pagamento</li>
-                <li>Finalizamos e colocamos o site no ar em até 7 dias úteis</li>
+                <li>Finalizamos e colocamos o site no ar em até 7 dias</li>
               </ol>
 
               <h3 className="font-heading text-xl text-neutral-900 mt-6 mb-3">3.4. Custos Adicionais</h3>
@@ -109,7 +109,7 @@ const Termos: React.FC = () => {
             <section>
               <h2 className="font-heading text-2xl text-neutral-900 mb-4">4. Prazo de Entrega</h2>
               <p className="text-neutral-700 leading-relaxed">
-                Nos comprometemos a entregar o site completo em <strong>até 7 dias úteis</strong> após
+                Nos comprometemos a entregar o site completo em <strong>até 7 dias</strong> após
                 aprovação do layout pelo cliente. Este prazo não inclui o tempo de aprovação do layout
                 pelo cliente.
               </p>
@@ -156,7 +156,7 @@ const Termos: React.FC = () => {
               <h3 className="font-heading text-xl text-neutral-900 mt-6 mb-3">6.2. Reembolso Após Pagamento</h3>
               <p className="text-neutral-700 leading-relaxed">
                 O cliente pode solicitar reembolso total em até 30 dias após a entrega, por qualquer motivo,
-                sem necessidade de justificativa. Processamento em até 7 dias úteis.
+                sem necessidade de justificativa. Processamento em até 7 dias.
               </p>
 
               <h3 className="font-heading text-xl text-neutral-900 mt-6 mb-3">6.3. Exceções</h3>
@@ -180,7 +180,7 @@ const Termos: React.FC = () => {
                 <li>Fornecer textos, fotos e materiais necessários para criação do site</li>
                 <li>Garantir que possui direitos sobre textos, imagens e conteúdos fornecidos</li>
                 <li>Aprovar o layout em tempo hábil (sugerimos até 7 dias)</li>
-                <li>Responder comunicações em até 48 horas úteis</li>
+                <li>Responder comunicações em até 48 horas</li>
                 <li>Renovar hospedagem após 12 meses, se desejar manter o site online</li>
               </ul>
             </section>
@@ -208,7 +208,7 @@ const Termos: React.FC = () => {
             <section>
               <h2 className="font-heading text-2xl text-neutral-900 mb-4">9. Limitações de Responsabilidade</h2>
               <p className="text-neutral-700 leading-relaxed mb-4">
-                A Sites Odonto 24H NÃO se responsabiliza por:
+                A clinicanaweb.com NÃO se responsabiliza por:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-neutral-700">
                 <li>Conteúdos fornecidos pelo cliente (textos, imagens, depoimentos)</li>
@@ -251,7 +251,7 @@ const Termos: React.FC = () => {
                 Para dúvidas sobre estes Termos de Uso:
               </p>
               <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-6 space-y-2">
-                <p className="text-neutral-900 font-semibold">Sites Odonto 24H</p>
+                <p className="text-neutral-900 font-semibold">clinicanaweb.com</p>
                 <p className="text-neutral-700">E-mail: contato@briefingodontologico.com.br</p>
                 <p className="text-neutral-700">WhatsApp: (18) 3175-1052</p>
               </div>

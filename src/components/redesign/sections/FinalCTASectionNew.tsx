@@ -6,10 +6,9 @@ import Counter from '../../ui/counter';
 const FinalCTASectionNew: React.FC = () => {
   const finalReasons = [
     "Pagamento SOMENTE após você aprovar o layout (zero risco)",
-    "Entrega profissional em até 7 dias úteis (não meses)",
+    "Entrega profissional em até 7 dias (não meses)",
     "Design 100% personalizado para sua especialidade (não template)",
-    "98.7% de aprovação na primeira entrega (500+ dentistas satisfeitos)",
-    "Investimento único de R$ 497 (sem mensalidades abusivas)",
+    "Investimento único de R$ 997 (sem mensalidades abusivas)",
     "Garantia de satisfação ou reembolso total"
   ];
 
@@ -31,7 +30,7 @@ const FinalCTASectionNew: React.FC = () => {
         {/* Reasons Grid */}
         <div className="bg-white/10 backdrop-blur rounded-2xl p-8 lg:p-12 mb-12">
           <h3 className="font-heading text-title-lg text-center mb-8">
-            Por que escolher Sites Odonto 24H:
+            Por que escolher clinicanaweb.com:
           </h3>
 
           <div className="grid md:grid-cols-2 gap-4 mb-8">
@@ -43,13 +42,6 @@ const FinalCTASectionNew: React.FC = () => {
             ))}
           </div>
 
-          {/* Urgency - Subtle */}
-          <div className="flex items-center justify-center gap-3 text-mint-300 text-body-md font-medium">
-            <Clock size={20} />
-            <span>
-              Restam apenas <Counter targetNumber={7} duration={800} /> vagas neste mês com 50% OFF
-            </span>
-          </div>
         </div>
 
         {/* Main CTA */}

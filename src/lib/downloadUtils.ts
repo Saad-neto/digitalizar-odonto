@@ -33,7 +33,7 @@ export async function downloadBriefingPDF(lead: Lead) {
   // Título
   pdf.setFontSize(20);
   pdf.setFont('helvetica', 'bold');
-  pdf.text('Briefing - Sites Odonto 24H', pageWidth / 2, yPos, { align: 'center' });
+  pdf.text('Briefing - clinicanaweb.com 24H', pageWidth / 2, yPos, { align: 'center' });
   yPos += 15;
 
   // Linha separadora
@@ -206,7 +206,7 @@ export async function downloadBriefingPDF(lead: Lead) {
     pdf.setFont('helvetica', 'normal');
     pdf.setTextColor(128);
     pdf.text(
-      `Sites Odonto 24H - Briefing ID: ${lead.id.substring(0, 8)}`,
+      `clinicanaweb.com 24H - Briefing ID: ${lead.id.substring(0, 8)}`,
       pageWidth / 2,
       pdf.internal.pageSize.getHeight() - 10,
       { align: 'center' }

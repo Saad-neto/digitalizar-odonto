@@ -14,7 +14,7 @@ const GuaranteesSection: React.FC = () => {
     {
       icon: Clock,
       title: "Prazo ou Reembolso",
-      description: "Se não entregarmos em 7 dias úteis após sua aprovação, devolvemos 100% do valor.",
+      description: "Se não entregarmos em 7 dias após sua aprovação, devolvemos 100% do valor.",
       badge: "7 Dias Úteis",
       color: "bg-orange-warning"
     },

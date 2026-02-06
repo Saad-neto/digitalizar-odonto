@@ -1,30 +1,70 @@
 import { BrowserRouter, HashRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Index from "../pages/Index";
-import IndexNew from "../pages/IndexNew";
-import Briefing from "../pages/Briefing";
-import Payment from "../pages/Payment";
-import ThankYou from "../pages/ThankYou";
-import Agendar from "../pages/Agendar";
-import Privacidade from "../pages/Privacidade";
-import Termos from "../pages/Termos";
-import NotFound from "../pages/NotFound";
-import Blog from "../pages/Blog";
-import BlogPost from "../pages/BlogPost";
-import Login from "../pages/admin/Login";
-import DashboardOverview from "../pages/admin/DashboardOverview";
-import Clientes from "../pages/admin/Clientes";
-import LeadsParciais from "../pages/admin/LeadsParciais";
-import LeadDetails from "../pages/admin/LeadDetails";
-import Reports from "../pages/admin/Reports";
-import Agendamentos from "../pages/admin/Agendamentos";
-import Configuracoes from "../pages/admin/Configuracoes";
-import BlogPosts from "../pages/admin/BlogPosts";
-import BlogPostEditor from "../pages/admin/BlogPostEditor";
-import BlogCategories from "../pages/admin/BlogCategories";
-import BlogTags from "../pages/admin/BlogTags";
-import PrivateRoute from "../components/admin/PrivateRoute";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { getRouterType } from "../utils/router";
+
+// Loading component for lazy routes
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  </div>
+);
+
+// Eager load: Critical public pages (landing pages)
+import VendaB from "../pages/VendaB";
+import NotFound from "../pages/NotFound";
+
+// Lazy load: Public pages (less critical)
+const Index = lazy(() => import("../pages/Index"));
+const IndexNew = lazy(() => import("../pages/IndexNew"));
+const OfertaDeLancamento = lazy(() => import("../pages/OfertaDeLancamento"));
+const VendaA = lazy(() => import("../pages/VendaA"));
+const VendaC = lazy(() => import("../pages/VendaC"));
+const Privacidade = lazy(() => import("../pages/Privacidade"));
+const Termos = lazy(() => import("../pages/Termos"));
+const Page1 = lazy(() => import("../pages/Page1"));
+const Page2 = lazy(() => import("../pages/Page2"));
+const Afiliados = lazy(() => import("../pages/Afiliados"));
+const NovaVenda = lazy(() => import("../pages/NovaVenda"));
+
+// Lazy load: Blog public (separate chunk)
+const Blog = lazy(() => import("../pages/Blog"));
+const BlogPost = lazy(() => import("../pages/BlogPost"));
+
+// Lazy load: Conversion funnel (separate chunk for briefing/payment)
+const Briefing = lazy(() => import("../pages/Briefing"));
+const BriefingComplete = lazy(() => import("../pages/BriefingComplete"));
+const Payment = lazy(() => import("../pages/Payment"));
+const ThankYou = lazy(() => import("../pages/ThankYou"));
+const Agendar = lazy(() => import("../pages/Agendar"));
+
+// Lazy load: Admin pages (separate chunk with admin dependencies)
+const Login = lazy(() => import("../pages/admin/Login"));
+const DashboardOverview = lazy(() => import("../pages/admin/DashboardOverview"));
+const Clientes = lazy(() => import("../pages/admin/Clientes"));
+const LeadsParciais = lazy(() => import("../pages/admin/LeadsParciais"));
+const LeadDetails = lazy(() => import("../pages/admin/LeadDetails"));
+const Reports = lazy(() => import("../pages/admin/Reports"));
+const Agendamentos = lazy(() => import("../pages/admin/Agendamentos"));
+const Configuracoes = lazy(() => import("../pages/admin/Configuracoes"));
+const VendasHotmart = lazy(() => import("../pages/admin/VendasHotmart"));
+const AffiliadosAdmin = lazy(() => import("../pages/admin/AffiliadosAdmin"));
+
+// Lazy load: Blog admin (separate chunk with Tiptap editor)
+const BlogPosts = lazy(() => import("../pages/admin/BlogPosts"));
+const BlogPostEditor = lazy(() => import("../pages/admin/BlogPostEditor"));
+const BlogCategories = lazy(() => import("../pages/admin/BlogCategories"));
+const BlogTags = lazy(() => import("../pages/admin/BlogTags"));
+
+// Lazy load: Demo pages (interactive demo for prospects)
+const DemoLayout = lazy(() => import("../components/demo/DemoLayout"));
+const DemoDashboard = lazy(() => import("../pages/demo/DemoDashboard"));
+const DemoPacientes = lazy(() => import("../pages/demo/DemoPacientes"));
+const DemoAgendamentos = lazy(() => import("../pages/demo/DemoAgendamentos"));
+const DemoFinanceiro = lazy(() => import("../pages/demo/DemoFinanceiro"));
+const DemoBlog = lazy(() => import("../pages/demo/DemoBlog"));
+
+// Lazy load: PrivateRoute component
+const PrivateRoute = lazy(() => import("../components/admin/PrivateRoute"));
 
 // Redirect component for routes with params
 const LeadRedirect = () => {
@@ -53,49 +93,79 @@ const RouterProvider = () => {
   }
 
   const routes = (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/novo" element={<IndexNew />} />
-      <Route path="/briefing" element={<Briefing />} />
-      <Route path="/pagamento" element={<Payment />} />
-      <Route path="/obrigado" element={<ThankYou />} />
-      <Route path="/agendar" element={<Agendar />} />
-      <Route path="/privacidade" element={<Privacidade />} />
-      <Route path="/termos" element={<Termos />} />
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/" element={<NovaVenda />} />
+        <Route path="/home-antiga" element={<Index />} />
+        <Route path="/novo" element={<IndexNew />} />
+        <Route path="/oferta-de-lancamento" element={<OfertaDeLancamento />} />
+        <Route path="/briefing" element={<Briefing />} />
+        <Route path="/briefing-completo" element={<BriefingComplete />} />
+        <Route path="/pagamento" element={<Payment />} />
+        <Route path="/obrigado" element={<ThankYou />} />
+        <Route path="/agendar" element={<Agendar />} />
+        <Route path="/privacidade" element={<Privacidade />} />
+        <Route path="/termos" element={<Termos />} />
+        <Route path="/page1" element={<Page1 />} />
+        <Route path="/page2" element={<Page2 />} />
 
-      {/* Blog Public Routes */}
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/blog/:slug" element={<BlogPost />} />
+        {/* Blog Public Routes */}
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
 
-      {/* Admin Routes */}
-      <Route path="/admin/login" element={<Login />} />
-      <Route path="/admin/dashboard" element={<DashboardOverview />} />
-      <Route path="/admin/leads" element={<LeadsParciais />} />
-      <Route path="/admin/clientes" element={<Clientes />} />
-      <Route path="/admin/leads/:id" element={<LeadDetails />} />
-      <Route path="/admin/clientes/:id" element={<LeadDetails />} />
-      <Route path="/admin/agendamentos" element={<Agendamentos />} />
-      <Route path="/admin/reports" element={<Reports />} />
-      <Route path="/admin/configuracoes" element={<Configuracoes />} />
+        {/* Hotmart Sales Pages - A/B/C Test */}
+        <Route path="/venda-a" element={<VendaA />} />
+        <Route path="/venda-b" element={<VendaB />} />
+        <Route path="/venda-c" element={<VendaC />} />
+        <Route path="/venda" element={<VendaB />} /> {/* Default to version B (current home) */}
 
-      {/* Blog Admin Routes */}
-      <Route path="/admin/blog" element={<BlogPosts />} />
-      <Route path="/admin/blog/novo" element={<BlogPostEditor />} />
-      <Route path="/admin/blog/editar/:id" element={<BlogPostEditor />} />
-      <Route path="/admin/blog/categorias" element={<BlogCategories />} />
-      <Route path="/admin/blog/tags" element={<BlogTags />} />
+        {/* Nova página de vendas (sistema único) */}
+        <Route path="/nova-venda" element={<NovaVenda />} />
 
-      {/* Redirect old routes without /admin prefix to /admin/* */}
-      <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
-      <Route path="/leads" element={<Navigate to="/admin/leads" replace />} />
-      <Route path="/leads/:id" element={<LeadRedirect />} />
-      <Route path="/agendamentos" element={<Navigate to="/admin/agendamentos" replace />} />
-      <Route path="/reports" element={<Navigate to="/admin/reports" replace />} />
-      <Route path="/configuracoes" element={<Navigate to="/admin/configuracoes" replace />} />
+        {/* Affiliates Public Page */}
+        <Route path="/afiliados" element={<Afiliados />} />
 
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* Demo Routes (interactive prospect demo — no backend) */}
+        <Route path="/demo" element={<DemoLayout />}>
+          <Route index element={<DemoDashboard />} />
+          <Route path="pacientes" element={<DemoPacientes />} />
+          <Route path="agendamentos" element={<DemoAgendamentos />} />
+          <Route path="financeiro" element={<DemoFinanceiro />} />
+          <Route path="blog" element={<DemoBlog />} />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<Login />} />
+        <Route path="/admin/dashboard" element={<DashboardOverview />} />
+        <Route path="/admin/leads" element={<LeadsParciais />} />
+        <Route path="/admin/vendas-hotmart" element={<VendasHotmart />} />
+        <Route path="/admin/afiliados" element={<AffiliadosAdmin />} />
+        <Route path="/admin/clientes" element={<Clientes />} />
+        <Route path="/admin/leads/:id" element={<LeadDetails />} />
+        <Route path="/admin/clientes/:id" element={<LeadDetails />} />
+        <Route path="/admin/agendamentos" element={<Agendamentos />} />
+        <Route path="/admin/reports" element={<Reports />} />
+        <Route path="/admin/configuracoes" element={<Configuracoes />} />
+
+        {/* Blog Admin Routes */}
+        <Route path="/admin/blog" element={<BlogPosts />} />
+        <Route path="/admin/blog/novo" element={<BlogPostEditor />} />
+        <Route path="/admin/blog/editar/:id" element={<BlogPostEditor />} />
+        <Route path="/admin/blog/categorias" element={<BlogCategories />} />
+        <Route path="/admin/blog/tags" element={<BlogTags />} />
+
+        {/* Redirect old routes without /admin prefix to /admin/* */}
+        <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/leads" element={<Navigate to="/admin/leads" replace />} />
+        <Route path="/leads/:id" element={<LeadRedirect />} />
+        <Route path="/agendamentos" element={<Navigate to="/admin/agendamentos" replace />} />
+        <Route path="/reports" element={<Navigate to="/admin/reports" replace />} />
+        <Route path="/configuracoes" element={<Navigate to="/admin/configuracoes" replace />} />
+
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 
   // Use HashRouter as fallback if BrowserRouter doesn't work

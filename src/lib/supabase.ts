@@ -47,6 +47,18 @@ export interface Lead {
   mercadopago_payment_id?: string;
   mercadopago_payment_url?: string;
 
+  // IDs de pagamento Asaas (principal)
+  asaas_customer_id?: string;
+  asaas_payment_id?: string;
+  asaas_invoice_url?: string;
+  asaas_billing_type?: 'PIX' | 'BOLETO' | 'CREDIT_CARD' | 'UNDEFINED';
+
+  // Cupons e Afiliados
+  cupom_usado?: string;
+  cupom_desconto?: number;
+  afiliado_ref?: string;
+  origem_pagamento?: 'asaas' | 'hotmart';
+
   // URLs
   preview_url?: string;
   site_final_url?: string;
@@ -128,38 +140,56 @@ export async function createPartialLead(data: {
   whatsapp: string;
   nome_consultorio: string;
 }) {
+  console.log('🔄 [createPartialLead] Iniciando criação de lead parcial...');
+  console.log('📝 [createPartialLead] Dados recebidos:', {
+    nome: data.nome,
+    email: data.email,
+    whatsapp: data.whatsapp,
+    nome_consultorio: data.nome_consultorio
+  });
+
   try {
+    const leadData = {
+      nome: data.nome,
+      email: data.email,
+      whatsapp: data.whatsapp,
+      briefing_data: {
+        nome_consultorio: data.nome_consultorio,
+        nome: data.nome,
+        email: data.email,
+        whatsapp: data.whatsapp,
+        capturado_em: new Date().toISOString(),
+      },
+      valor_total: 49700,
+      valor_entrada: 24850,
+      valor_saldo: 24850,
+      status: 'lead_parcial',
+    };
+
+    console.log('📤 [createPartialLead] Enviando para Supabase:', leadData);
+
     const { data: lead, error } = await supabase
       .from('leads')
-      .insert([
-        {
-          nome: data.nome,
-          email: data.email,
-          whatsapp: data.whatsapp,
-          briefing_data: {
-            nome_consultorio: data.nome_consultorio,
-            nome: data.nome,
-            email: data.email,
-            whatsapp: data.whatsapp,
-            capturado_em: new Date().toISOString(),
-          },
-          valor_total: 49700,
-          valor_entrada: 24850,
-          valor_saldo: 24850,
-          status: 'lead_parcial',
-        },
-      ])
+      .insert([leadData])
       .select()
       .single();
 
     if (error) {
-      console.error('Erro ao criar lead parcial:', error);
+      console.error('❌ [createPartialLead] Erro ao criar lead parcial:', error);
+      console.error('❌ [createPartialLead] Detalhes do erro:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
       return null;
     }
 
+    console.log('✅ [createPartialLead] Lead parcial criado com sucesso!');
+    console.log('✅ [createPartialLead] ID do lead:', lead.id);
     return lead;
   } catch (error) {
-    console.error('Erro ao criar lead parcial:', error);
+    console.error('❌ [createPartialLead] Erro inesperado ao criar lead parcial:', error);
     return null;
   }
 }
@@ -607,7 +637,12 @@ export async function listarHorariosDisponiveis(data: string): Promise<string[]>
     throw error;
   }
 
-  return horarios.map((h: HorarioDisponivel) => h.horario);
+  // Formatar horários para HH:MM (remover segundos)
+  return horarios.map((h: HorarioDisponivel) => {
+    const horario = h.horario;
+    // Se vier como HH:MM:SS, cortar para HH:MM
+    return horario.length > 5 ? horario.substring(0, 5) : horario;
+  });
 }
 
 /**
@@ -949,6 +984,37 @@ export async function getRelatedPosts(postId: string, limit = 3) {
   if (error) {
     console.error('Erro ao buscar posts relacionados:', error);
     throw error;
+  }
+
+  return data || [];
+}
+
+/**
+ * Buscar posts mais lidos (ordenados por view_count)
+ */
+export async function getMostViewedPosts(limit = 5) {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select(
+      `
+      id,
+      title,
+      slug,
+      excerpt,
+      featured_image,
+      view_count,
+      published_at,
+      category:blog_categories(name, slug)
+    `
+    )
+    .eq('status', 'published')
+    .not('published_at', 'is', null)
+    .order('view_count', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Erro ao buscar posts mais lidos:', error);
+    return [];
   }
 
   return data || [];
@@ -1387,4 +1453,696 @@ export async function getBlogStats() {
   }
 
   return data && data.length > 0 ? data[0] : null;
+}
+
+// =============================================
+// FUNÇÕES DE VENDAS HOTMART
+// =============================================
+
+export interface HotmartVenda {
+  id: string;
+  transaction_id: string;
+  status: string;
+  plano: string;
+  valor: number;
+  cliente_nome: string;
+  cliente_email: string;
+  cliente_telefone: string | null;
+  cliente_documento: string | null;
+  produto_id: string | null;
+  produto_nome: string | null;
+  oferta_codigo: string | null;
+  pagamento_tipo: string | null;
+  pagamento_parcelas: number;
+  data_aprovacao: string | null;
+  lead_id: string | null;
+  payload_completo: any;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Buscar venda Hotmart aprovada pelo email do cliente
+ * Retorna apenas vendas sem briefing vinculado (lead_id = null)
+ */
+export async function getHotmartVendaByEmail(email: string): Promise<HotmartVenda | null> {
+  try {
+    const { data, error } = await supabase
+      .from('hotmart_vendas')
+      .select('*')
+      .eq('cliente_email', email.toLowerCase())
+      .eq('status', 'aprovado')
+      .is('lead_id', null)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Erro ao buscar venda Hotmart:', error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Erro ao buscar venda Hotmart:', error);
+    return null;
+  }
+}
+
+/**
+ * Vincular venda Hotmart com lead após briefing completo
+ */
+export async function vincularHotmartVendaComLead(vendaId: string, leadId: string): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('hotmart_vendas')
+      .update({
+        lead_id: leadId,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', vendaId);
+
+    if (error) {
+      console.error('Erro ao vincular venda com lead:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Erro ao vincular venda com lead:', error);
+    return false;
+  }
+}
+
+/**
+ * Listar todas as vendas Hotmart (para admin)
+ */
+export async function listarVendasHotmart(filtros?: {
+  status?: string;
+  plano?: string;
+  comBriefing?: boolean;
+}): Promise<HotmartVenda[]> {
+  try {
+    let query = supabase
+      .from('hotmart_vendas')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (filtros?.status && filtros.status !== 'todos') {
+      query = query.eq('status', filtros.status);
+    }
+
+    if (filtros?.plano && filtros.plano !== 'todos') {
+      query = query.eq('plano', filtros.plano);
+    }
+
+    if (filtros?.comBriefing === true) {
+      query = query.not('lead_id', 'is', null);
+    } else if (filtros?.comBriefing === false) {
+      query = query.is('lead_id', null);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Erro ao listar vendas Hotmart:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Erro ao listar vendas Hotmart:', error);
+    return [];
+  }
+}
+
+/**
+ * Buscar venda Hotmart por ID
+ */
+export async function getHotmartVendaById(id: string): Promise<HotmartVenda | null> {
+  try {
+    const { data, error } = await supabase
+      .from('hotmart_vendas')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Erro ao buscar venda Hotmart:', error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Erro ao buscar venda Hotmart:', error);
+    return null;
+  }
+}
+
+/**
+ * Contar vendas por status (para dashboard)
+ */
+export async function contarVendasHotmart(): Promise<{
+  total: number;
+  aprovadas: number;
+  aguardandoBriefing: number;
+  comBriefing: number;
+}> {
+  try {
+    const { data, error } = await supabase
+      .from('hotmart_vendas')
+      .select('id, status, lead_id');
+
+    if (error) {
+      console.error('Erro ao contar vendas:', error);
+      return { total: 0, aprovadas: 0, aguardandoBriefing: 0, comBriefing: 0 };
+    }
+
+    const total = data?.length || 0;
+    const aprovadas = data?.filter(v => v.status === 'aprovado').length || 0;
+    const aguardandoBriefing = data?.filter(v => v.status === 'aprovado' && !v.lead_id).length || 0;
+    const comBriefing = data?.filter(v => v.status === 'aprovado' && v.lead_id).length || 0;
+
+    return { total, aprovadas, aguardandoBriefing, comBriefing };
+  } catch (error) {
+    console.error('Erro ao contar vendas:', error);
+    return { total: 0, aprovadas: 0, aguardandoBriefing: 0, comBriefing: 0 };
+  }
+}
+
+// =====================================================
+// FUNÇÕES PARA AFILIADOS
+// =====================================================
+
+/**
+ * Interface para leads de afiliados
+ */
+export interface AfiliadoLead {
+  id: string;
+  nome: string;
+  email: string;
+  whatsapp: string;
+  instagram: string | null;
+  autoriza_uso_conteudo: boolean;
+  interesse_collab: boolean;
+  aceita_termos: boolean;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  status: 'novo' | 'contatado' | 'ativo' | 'inativo' | 'site_criado';
+  site_criado: boolean;
+  site_url: string | null;
+  notas: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Criar novo lead de afiliado (formulário público)
+ */
+export async function createAfiliadoLead(data: {
+  nome: string;
+  email: string;
+  whatsapp: string;
+  instagram?: string;
+  autoriza_uso_conteudo: boolean;
+  interesse_collab: boolean;
+  aceita_termos: boolean;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+}): Promise<AfiliadoLead | null> {
+  try {
+    const { data: afiliado, error } = await supabase
+      .from('afiliados_leads')
+      .insert([{
+        nome: data.nome,
+        email: data.email.toLowerCase(),
+        whatsapp: data.whatsapp,
+        instagram: data.instagram || null,
+        autoriza_uso_conteudo: data.autoriza_uso_conteudo,
+        interesse_collab: data.interesse_collab,
+        aceita_termos: data.aceita_termos,
+        utm_source: data.utm_source || null,
+        utm_medium: data.utm_medium || null,
+        utm_campaign: data.utm_campaign || null,
+        status: 'novo'
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erro ao criar lead de afiliado:', error);
+      return null;
+    }
+
+    return afiliado;
+  } catch (error) {
+    console.error('Erro ao criar lead de afiliado:', error);
+    return null;
+  }
+}
+
+/**
+ * Listar todos os leads de afiliados (admin)
+ */
+export async function listarAfiliadosLeads(filtros?: {
+  status?: string;
+  interesse_collab?: boolean;
+}): Promise<AfiliadoLead[]> {
+  try {
+    let query = supabase
+      .from('afiliados_leads')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (filtros?.status && filtros.status !== 'todos') {
+      query = query.eq('status', filtros.status);
+    }
+
+    if (filtros?.interesse_collab !== undefined) {
+      query = query.eq('interesse_collab', filtros.interesse_collab);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Erro ao listar afiliados:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Erro ao listar afiliados:', error);
+    return [];
+  }
+}
+
+/**
+ * Buscar afiliado por ID
+ */
+export async function getAfiliadoById(id: string): Promise<AfiliadoLead | null> {
+  try {
+    const { data, error } = await supabase
+      .from('afiliados_leads')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Erro ao buscar afiliado:', error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Erro ao buscar afiliado:', error);
+    return null;
+  }
+}
+
+/**
+ * Atualizar status do afiliado
+ */
+export async function updateAfiliadoStatus(
+  id: string,
+  status: AfiliadoLead['status']
+): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('afiliados_leads')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao atualizar status do afiliado:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Erro ao atualizar status do afiliado:', error);
+    return false;
+  }
+}
+
+/**
+ * Atualizar afiliado (admin)
+ */
+export async function updateAfiliado(
+  id: string,
+  data: Partial<{
+    status: AfiliadoLead['status'];
+    site_criado: boolean;
+    site_url: string;
+    notas: string;
+  }>
+): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('afiliados_leads')
+      .update(data)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao atualizar afiliado:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Erro ao atualizar afiliado:', error);
+    return false;
+  }
+}
+
+/**
+ * Contar afiliados por status (para dashboard)
+ */
+export async function contarAfiliados(): Promise<{
+  total: number;
+  novos: number;
+  contatados: number;
+  ativos: number;
+  comCollab: number;
+  sitesCriados: number;
+}> {
+  try {
+    const { data, error } = await supabase
+      .from('afiliados_leads')
+      .select('id, status, interesse_collab, site_criado');
+
+    if (error) {
+      console.error('Erro ao contar afiliados:', error);
+      return { total: 0, novos: 0, contatados: 0, ativos: 0, comCollab: 0, sitesCriados: 0 };
+    }
+
+    const total = data?.length || 0;
+    const novos = data?.filter(a => a.status === 'novo').length || 0;
+    const contatados = data?.filter(a => a.status === 'contatado').length || 0;
+    const ativos = data?.filter(a => a.status === 'ativo').length || 0;
+    const comCollab = data?.filter(a => a.interesse_collab).length || 0;
+    const sitesCriados = data?.filter(a => a.site_criado).length || 0;
+
+    return { total, novos, contatados, ativos, comCollab, sitesCriados };
+  } catch (error) {
+    console.error('Erro ao contar afiliados:', error);
+    return { total: 0, novos: 0, contatados: 0, ativos: 0, comCollab: 0, sitesCriados: 0 };
+  }
+}
+
+// ====================================
+// SISTEMA DE CUPONS E DESCONTOS
+// ====================================
+
+export interface Cupom {
+  id: string;
+  codigo: string;
+  descricao?: string;
+  tipo: 'percentual' | 'fixo';
+  valor: number;
+  ativo: boolean;
+  data_inicio?: string;
+  data_fim?: string;
+  usos_maximos?: number;
+  usos_atuais: number;
+  afiliado_nome?: string;
+  afiliado_email?: string;
+  afiliado_comissao?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CupomUso {
+  id: string;
+  cupom_id: string;
+  lead_id: string;
+  codigo_usado: string;
+  desconto_aplicado: number;
+  valor_original: number;
+  valor_final: number;
+  usado_em: string;
+}
+
+/**
+ * Validar e obter informações de um cupom
+ */
+export async function validarCupom(codigo: string): Promise<{
+  valido: boolean;
+  cupom?: Cupom;
+  desconto?: number;
+  mensagem?: string;
+}> {
+  try {
+    const { data: cupom, error } = await supabase
+      .from('cupons')
+      .select('*')
+      .eq('codigo', codigo.toUpperCase())
+      .single();
+
+    if (error || !cupom) {
+      return {
+        valido: false,
+        mensagem: 'Cupom não encontrado',
+      };
+    }
+
+    // Verificar se está ativo
+    if (!cupom.ativo) {
+      return {
+        valido: false,
+        mensagem: 'Este cupom não está mais ativo',
+      };
+    }
+
+    // Verificar data de início
+    if (cupom.data_inicio && new Date(cupom.data_inicio) > new Date()) {
+      return {
+        valido: false,
+        mensagem: 'Este cupom ainda não está disponível',
+      };
+    }
+
+    // Verificar data de fim
+    if (cupom.data_fim && new Date(cupom.data_fim) < new Date()) {
+      return {
+        valido: false,
+        mensagem: 'Este cupom expirou',
+      };
+    }
+
+    // Verificar usos máximos
+    if (cupom.usos_maximos && cupom.usos_atuais >= cupom.usos_maximos) {
+      return {
+        valido: false,
+        mensagem: 'Este cupom atingiu o limite de usos',
+      };
+    }
+
+    return {
+      valido: true,
+      cupom: cupom as Cupom,
+      desconto: cupom.valor,
+      mensagem: `Cupom "${codigo}" aplicado com sucesso!`,
+    };
+
+  } catch (error) {
+    console.error('Erro ao validar cupom:', error);
+    return {
+      valido: false,
+      mensagem: 'Erro ao validar cupom',
+    };
+  }
+}
+
+/**
+ * Calcular desconto com base no cupom
+ */
+export function calcularDesconto(valorOriginal: number, cupom: Cupom): {
+  desconto: number;
+  valorFinal: number;
+} {
+  let desconto = 0;
+
+  if (cupom.tipo === 'percentual') {
+    // Desconto percentual
+    desconto = (valorOriginal * cupom.valor) / 100;
+  } else {
+    // Desconto fixo
+    desconto = cupom.valor;
+  }
+
+  // Garantir que o desconto não seja maior que o valor original
+  desconto = Math.min(desconto, valorOriginal);
+
+  const valorFinal = valorOriginal - desconto;
+
+  return {
+    desconto: Math.round(desconto * 100) / 100, // Arredondar para 2 casas
+    valorFinal: Math.round(valorFinal * 100) / 100,
+  };
+}
+
+/**
+ * Registrar uso de cupom
+ */
+export async function registrarUsoCupom(data: {
+  cupomId: string;
+  leadId: string;
+  codigoUsado: string;
+  descontoAplicado: number;
+  valorOriginal: number;
+  valorFinal: number;
+}): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('cupons_uso')
+      .insert({
+        cupom_id: data.cupomId,
+        lead_id: data.leadId,
+        codigo_usado: data.codigoUsado,
+        desconto_aplicado: data.descontoAplicado,
+        valor_original: data.valorOriginal,
+        valor_final: data.valorFinal,
+      });
+
+    if (error) {
+      console.error('Erro ao registrar uso de cupom:', error);
+      return false;
+    }
+
+    // Atualizar lead com informações do cupom
+    await supabase
+      .from('leads')
+      .update({
+        cupom_usado: data.codigoUsado,
+        cupom_desconto: data.descontoAplicado,
+      })
+      .eq('id', data.leadId);
+
+    return true;
+  } catch (error) {
+    console.error('Erro ao registrar uso de cupom:', error);
+    return false;
+  }
+}
+
+/**
+ * Listar todos os cupons (para admin)
+ */
+export async function listarCupons(): Promise<Cupom[]> {
+  try {
+    const { data, error } = await supabase
+      .from('cupons')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao listar cupons:', error);
+      return [];
+    }
+
+    return data as Cupom[];
+  } catch (error) {
+    console.error('Erro ao listar cupons:', error);
+    return [];
+  }
+}
+
+/**
+ * Criar novo cupom (admin)
+ */
+export async function criarCupom(cupom: Partial<Cupom>): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('cupons')
+      .insert({
+        codigo: cupom.codigo?.toUpperCase(),
+        descricao: cupom.descricao,
+        tipo: cupom.tipo,
+        valor: cupom.valor,
+        ativo: cupom.ativo ?? true,
+        data_inicio: cupom.data_inicio,
+        data_fim: cupom.data_fim,
+        usos_maximos: cupom.usos_maximos,
+        afiliado_nome: cupom.afiliado_nome,
+        afiliado_email: cupom.afiliado_email,
+        afiliado_comissao: cupom.afiliado_comissao,
+      });
+
+    if (error) {
+      console.error('Erro ao criar cupom:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Erro ao criar cupom:', error);
+    return false;
+  }
+}
+
+/**
+ * Atualizar cupom (admin)
+ */
+export async function atualizarCupom(id: string, updates: Partial<Cupom>): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('cupons')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erro ao atualizar cupom:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Erro ao atualizar cupom:', error);
+    return false;
+  }
+}
+
+/**
+ * Desativar cupom (admin)
+ */
+export async function desativarCupom(id: string): Promise<boolean> {
+  return atualizarCupom(id, { ativo: false });
+}
+
+/**
+ * Obter estatísticas de uso de um cupom
+ */
+export async function estatisticasCupom(cupomId: string): Promise<{
+  totalUsos: number;
+  totalDesconto: number;
+  totalArrecadado: number;
+}> {
+  try {
+    const { data, error } = await supabase
+      .from('cupons_uso')
+      .select('desconto_aplicado, valor_final')
+      .eq('cupom_id', cupomId);
+
+    if (error || !data) {
+      return { totalUsos: 0, totalDesconto: 0, totalArrecadado: 0 };
+    }
+
+    const totalUsos = data.length;
+    const totalDesconto = data.reduce((sum, uso) => sum + uso.desconto_aplicado, 0);
+    const totalArrecadado = data.reduce((sum, uso) => sum + uso.valor_final, 0);
+
+    return {
+      totalUsos,
+      totalDesconto: Math.round(totalDesconto * 100) / 100,
+      totalArrecadado: Math.round(totalArrecadado * 100) / 100,
+    };
+  } catch (error) {
+    console.error('Erro ao obter estatísticas do cupom:', error);
+    return { totalUsos: 0, totalDesconto: 0, totalArrecadado: 0 };
+  }
 }

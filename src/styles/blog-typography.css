@@ -1,0 +1,188 @@
+/**
+ * ESTILOS DE TIPOGRAFIA DO BLOG - DESIGN MINIMALISTA FOCCO
+ * Espaçamentos generosos, tipografia limpa e profissional
+ * Usa !important para garantir aplicação
+ */
+
+/* H1 - Título principal (usado no conteúdo) */
+.blog-post-content h1,
+.blog-post-content .ProseMirror h1 {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  margin-top: 3rem !important;
+  margin-bottom: 1.5rem !important;
+  line-height: 1.4 !important;
+}
+
+/* H2 - Seções principais (16px - mais discreto) */
+.blog-post-content h2,
+.blog-post-content .ProseMirror h2 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  margin-top: 3rem !important;
+  margin-bottom: 1.25rem !important;
+  line-height: 1.5 !important;
+}
+
+/* H3 - Subseções (15px bold) */
+.blog-post-content h3,
+.blog-post-content .ProseMirror h3 {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  margin-top: 2.5rem !important;
+  margin-bottom: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+/* Parágrafos - texto base (16px com MUITO espaçamento) */
+.blog-post-content p,
+.blog-post-content .ProseMirror p {
+  font-size: 16px !important;
+  color: #4B5563 !important;
+  line-height: 1.8 !important;
+  margin-bottom: 1.5rem !important;
+  font-weight: 400 !important;
+}
+
+/* Listas */
+.blog-post-content ul,
+.blog-post-content .ProseMirror ul,
+.blog-post-content ol,
+.blog-post-content .ProseMirror ol {
+  font-size: 16px !important;
+  color: #374151 !important;
+  line-height: 1.75 !important;
+  margin-bottom: 1rem !important;
+  padding-left: 1.5rem !important;
+  list-style-position: outside !important;
+}
+
+.blog-post-content ul {
+  list-style-type: disc !important;
+}
+
+.blog-post-content ol {
+  list-style-type: decimal !important;
+}
+
+.blog-post-content li,
+.blog-post-content .ProseMirror li {
+  margin-bottom: 0.5rem !important;
+  color: #374151 !important;
+  font-size: 16px !important;
+}
+
+/* Links */
+.blog-post-content a,
+.blog-post-content .ProseMirror a {
+  color: #14B8A6 !important;
+  text-decoration: underline !important;
+  transition: color 0.2s !important;
+}
+
+.blog-post-content a:hover,
+.blog-post-content .ProseMirror a:hover {
+  color: #0F766E !important;
+}
+
+/* Strong/Bold */
+.blog-post-content strong,
+.blog-post-content .ProseMirror strong {
+  font-weight: 700 !important;
+  color: #111827 !important;
+}
+
+/* Italic */
+.blog-post-content em,
+.blog-post-content .ProseMirror em {
+  font-style: italic !important;
+  color: #374151 !important;
+}
+
+/* Blockquotes */
+.blog-post-content blockquote,
+.blog-post-content .ProseMirror blockquote {
+  border-left: 4px solid rgba(20, 184, 166, 0.5) !important;
+  padding-left: 1rem !important;
+  font-style: italic !important;
+  color: #4B5563 !important;
+  margin: 1.5rem 0 !important;
+  font-size: 16px !important;
+}
+
+/* Código inline */
+.blog-post-content code,
+.blog-post-content .ProseMirror code {
+  background-color: #F3F4F6 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  color: #1F2937 !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+/* Blocos de código */
+.blog-post-content pre,
+.blog-post-content .ProseMirror pre {
+  background-color: #F3F4F6 !important;
+  padding: 1rem !important;
+  border-radius: 8px !important;
+  overflow-x: auto !important;
+  margin: 1.5rem 0 !important;
+}
+
+.blog-post-content pre code,
+.blog-post-content .ProseMirror pre code {
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+/* Imagens */
+.blog-post-content img,
+.blog-post-content .ProseMirror img {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  margin: 1.5rem 0 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+
+/* Remover estilos padrão do ProseMirror */
+.blog-post-content .ProseMirror {
+  outline: none !important;
+}
+
+.blog-post-content .ProseMirror > * + * {
+  margin-top: 0 !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .blog-post-content h1,
+  .blog-post-content .ProseMirror h1 {
+    font-size: 18px !important;
+  }
+
+  .blog-post-content h2,
+  .blog-post-content .ProseMirror h2 {
+    font-size: 17px !important;
+  }
+
+  .blog-post-content h3,
+  .blog-post-content .ProseMirror h3 {
+    font-size: 15px !important;
+  }
+
+  .blog-post-content p,
+  .blog-post-content .ProseMirror p,
+  .blog-post-content ul,
+  .blog-post-content .ProseMirror ul,
+  .blog-post-content ol,
+  .blog-post-content .ProseMirror ol {
+    font-size: 15px !important;
+  }
+}

@@ -23,7 +23,7 @@ const HeroSection: React.FC = () => {
 
             {/* Subheadline */}
             <p className="text-xl text-white/90 mb-8 max-w-2xl leading-relaxed">
-              Pare de perder pacientes particulares para concorrentes com presença digital. <strong className="text-success-light">Site profissional em até 7 dias úteis</strong> que atrai pacientes de alto valor
+              Pare de perder pacientes particulares para concorrentes com presença digital. <strong className="text-success-light">Site profissional em até 7 dias</strong> que atrai pacientes de alto valor
               e posiciona você como autoridade. <strong>Só paga depois de aprovar o layout - zero risco.</strong>
             </p>
 
@@ -85,7 +85,7 @@ const HeroSection: React.FC = () => {
                       Dias 4-7: Site Completo no Ar
                     </h4>
                     <p className="text-white/80 text-sm">
-                      Após aprovação e pagamento, finalizamos tudo e colocamos seu site online em até 7 dias úteis.
+                      Após aprovação e pagamento, finalizamos tudo e colocamos seu site online em até 7 dias.
                       Pronto para receber pacientes!
                     </p>
                   </div>
@@ -209,7 +209,7 @@ const HeroSection: React.FC = () => {
 
                 <p className="text-text-light text-xs mt-4">
                   <Calendar size={12} className="inline mr-1" />
-                  Prazo de entrega: até 7 dias úteis após aprovação do layout
+                  Prazo de entrega: até 7 dias após aprovação do layout
                 </p>
               </div>
             </div>

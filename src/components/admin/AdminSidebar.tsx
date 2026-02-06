@@ -10,6 +10,8 @@ import {
   LogOut,
   Home,
   BookOpen,
+  ShoppingCart,
+  UsersRound,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
@@ -40,6 +42,16 @@ const AdminSidebar = () => {
       icon: Users,
       label: 'Leads',
       path: '/admin/leads',
+    },
+    {
+      icon: ShoppingCart,
+      label: 'Vendas Hotmart',
+      path: '/admin/vendas-hotmart',
+    },
+    {
+      icon: UsersRound,
+      label: 'Afiliados',
+      path: '/admin/afiliados',
     },
     {
       icon: UserCheck,
@@ -84,7 +96,7 @@ const AdminSidebar = () => {
             <span className="text-2xl">🦷</span>
           </div>
           <div>
-            <h1 className="font-bold text-lg">Sites Odonto</h1>
+            <h1 className="font-bold text-lg">clinicanaweb.com</h1>
             <p className="text-xs text-medical-200">Painel Admin</p>
           </div>
         </div>

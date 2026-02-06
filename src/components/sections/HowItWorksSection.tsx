@@ -120,7 +120,7 @@ const HowItWorksSection: React.FC = () => {
           </div>
 
           <p className="text-xl text-text-primary font-semibold">
-            3-7 dias úteis (dependendo da sua velocidade de aprovação)
+            3-7 dias (dependendo da sua velocidade de aprovação)
           </p>
         </div>
 

@@ -1,11 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import './styles/mobile-enhancements.css';
+@import './styles/blog-typography.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Mobile-First Enhancements */
-@import './styles/mobile-enhancements.css';
 
 /* MEDICAL TECH PREMIUM DESIGN SYSTEM - ODONTOLÓGICO 24H */
 
@@ -158,6 +157,8 @@
     letter-spacing: -0.025em;
   }
 
+  /* h2 and h3 global styles disabled - using specific .blog-post-content styles instead */
+  /*
   h2 {
     font-size: var(--h2-size);
     font-weight: 700;
@@ -172,6 +173,7 @@
     line-height: 1.3;
     color: hsl(var(--text-primary));
   }
+  */
 
   h4 {
     font-size: var(--h4-size);

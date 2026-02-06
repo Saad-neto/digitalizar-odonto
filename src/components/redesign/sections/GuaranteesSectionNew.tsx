@@ -12,14 +12,14 @@ const GuaranteesSectionNew: React.FC = () => {
     },
     {
       icon: CheckCircle2,
-      title: "30 Dias de Garantia ou Reembolso",
-      description: "Após a entrega, você tem 30 dias para testar o site. Se por qualquer motivo não ficar satisfeito, devolvemos 100% do valor. Sem burocracia, sem perguntas complicadas.",
+      title: "7 Dias de Garantia Incondicional",
+      description: "Após a entrega, você tem 7 dias para avaliar seu site. Não ficou 100% satisfeito? Devolvemos todo o valor investido. Sem perguntas, sem burocracia.",
       highlight: "Garantia #2 - Satisfação Total"
     },
     {
       icon: Clock,
       title: "Entrega em Até 7 Dias Úteis",
-      description: "Comprometemo-nos a entregar seu site profissional em até 7 dias úteis após aprovação do layout. Faremos tudo ao nosso alcance para cumprir este prazo.",
+      description: "Comprometemo-nos a entregar seu site profissional em até 7 dias após aprovação do layout. Faremos tudo ao nosso alcance para cumprir este prazo.",
       highlight: "Garantia #3 - Prazo Compromissado"
     },
     {

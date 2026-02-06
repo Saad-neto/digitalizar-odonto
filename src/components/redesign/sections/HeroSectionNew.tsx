@@ -9,12 +9,6 @@ const HeroSectionNew: React.FC = () => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Column - Content */}
           <div className="space-y-6 md:space-y-8">
-            {/* Badge de programa beta */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-medical-50 text-medical-700 rounded-full text-sm md:text-base font-medium">
-              <Sparkles size={16} className="text-medical-500" />
-              Programa Beta - Primeiras 10 Vagas
-            </div>
-
             {/* Headline - Mobile-First, Grande, Clara */}
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl text-neutral-900 leading-tight">
               Site Profissional para Dentistas{' '}
@@ -25,9 +19,8 @@ const HeroSectionNew: React.FC = () => {
 
             {/* Subheadline - Benefício claro */}
             <p className="text-lg md:text-xl text-neutral-700 leading-relaxed max-w-2xl">
-              <strong className="text-medical-600">Programa de Lançamento:</strong> Primeiros 10 clientes
-              pagam R$ 497 (valor normal: R$ 997).{' '}
               <strong className="text-neutral-900">Só paga depois de aprovar o layout.</strong> Zero risco.
+              Design personalizado, hospedagem grátis para sempre e SEO otimizado.
             </p>
 
             {/* CTA Principal */}
@@ -51,16 +44,7 @@ const HeroSectionNew: React.FC = () => {
             {/* Trust Badge */}
             <div className="flex items-center gap-3 text-neutral-600 text-sm md:text-base">
               <Shield size={20} className="text-mint-500 flex-shrink-0" />
-              <span>Garantia de 30 dias ou reembolso total</span>
-            </div>
-
-            {/* Honestidade sobre ser novo */}
-            <div className="pt-6 border-t border-neutral-200">
-              <p className="text-sm md:text-base text-neutral-600 leading-relaxed">
-                <strong className="text-neutral-900">Somos uma empresa nova.</strong> Por isso oferecemos
-                preço de fundador (R$ 497) e garantia absoluta. Você recebe atenção 100% exclusiva
-                e só paga se aprovar o layout.
-              </p>
+              <span>Garantia de 7 dias ou reembolso total</span>
             </div>
           </div>
 
@@ -68,39 +52,18 @@ const HeroSectionNew: React.FC = () => {
           <div className="relative">
             {/* Card de Preço Destacado */}
             <div className="relative bg-white border-2 border-medical-200 rounded-2xl p-6 md:p-8 shadow-xl">
-              {/* Badge Desconto */}
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-medical-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md">
-                  50% OFF - LANÇAMENTO
-                </div>
-              </div>
-
-              <div className="text-center space-y-4 md:space-y-6 pt-4">
+              <div className="text-center space-y-4 md:space-y-6">
                 <h3 className="text-xl md:text-2xl font-heading text-neutral-900">
-                  Oferta de Lançamento
+                  Investimento
                 </h3>
-
-                {/* Preço riscado */}
-                <div className="text-neutral-400 text-2xl md:text-3xl line-through">
-                  R$ 997
-                </div>
-
-                {/* Seta */}
-                <div className="flex justify-center">
-                  <div className="w-12 h-12 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-mint-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
-                  </div>
-                </div>
 
                 {/* Preço destaque - GIGANTE no mobile */}
                 <div>
                   <div className="text-6xl md:text-7xl lg:text-[5rem] font-bold text-medical-600 leading-none">
-                    R$ 497
+                    R$ 997
                   </div>
                   <p className="text-base md:text-lg text-neutral-600 mt-2">
-                    ou 12x de R$ 49,70 no cartão
+                    ou 12x de R$ 99,70 no cartão
                   </p>
                 </div>
 
@@ -142,7 +105,7 @@ const HeroSectionNew: React.FC = () => {
                 </Link>
 
                 <p className="text-xs md:text-sm text-neutral-500">
-                  Prazo de entrega: até 7 dias úteis após aprovação do layout
+                  Prazo de entrega: até 7 dias após aprovação do layout
                 </p>
               </div>
             </div>

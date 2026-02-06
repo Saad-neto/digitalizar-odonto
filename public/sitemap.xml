@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Landing Page - Página Principal -->
+  <url>
+    <loc>https://sites-odonto.digitalizar.space/</loc>
+    <lastmod>2025-12-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Formulário de Briefing -->
+  <url>
+    <loc>https://sites-odonto.digitalizar.space/briefing</loc>
+    <lastmod>2025-12-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Blog - Listagem -->
+  <url>
+    <loc>https://sites-odonto.digitalizar.space/blog</loc>
+    <lastmod>2025-12-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Página de Agendamento -->
+  <url>
+    <loc>https://sites-odonto.digitalizar.space/agendar</loc>
+    <lastmod>2025-12-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Página de Obrigado -->
+  <url>
+    <loc>https://sites-odonto.digitalizar.space/obrigado</loc>
+    <lastmod>2025-12-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!--
+    NOTA: Posts do blog devem ser adicionados dinamicamente.
+    Para gerar sitemap dinâmico com posts do blog, considere:
+    1. Criar um endpoint /api/sitemap.xml
+    2. Ou usar um script de build que consulta o Supabase
+    3. Ou usar plugin do Vite para gerar sitemap automaticamente
+  -->
+
+</urlset>

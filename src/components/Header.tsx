@@ -37,13 +37,13 @@ const Header: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-3">
               <img
-                src="/logo.png"
-                alt="Sites Odonto"
+                src="/logo-header.png"
+                alt="clinicanaweb.com"
                 className="h-12 w-auto object-contain"
               />
               <div>
-                <h2 className="text-xl font-bold text-primary">Sites Odonto</h2>
-                <p className="text-xs text-text-secondary">Sites Profissionais</p>
+                <h2 className="text-xl font-bold text-primary">clinicanaweb.com</h2>
+                <p className="text-xs text-text-secondary">Soluções para Clínicas e Consultórios</p>
               </div>
             </Link>
           </div>

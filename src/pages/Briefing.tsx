@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle, Plus, Trash2 } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, Upload, X, Check, AlertCircle, Plus, Trash2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { compressImage, getPayloadSize, formatFileSize } from '@/utils/imageCompression';
-import { createLead, createPartialLead, updateLeadToComplete } from '@/lib/supabase';
+import { createLead, createPartialLead, updateLeadToComplete, getHotmartVendaByEmail, vincularHotmartVendaComLead, HotmartVenda } from '@/lib/supabase';
 import ReviewStep from '@/components/ReviewStep';
 import ProfessionalForm from '@/components/ProfessionalForm';
 import HeaderNew from '@/components/redesign/HeaderNew';
 import FooterNew from '@/components/redesign/FooterNew';
+import { trackBriefingStart, trackLead } from '@/lib/analytics';
 
 interface FormData {
   [key: string]: any;
@@ -22,6 +23,7 @@ interface UploadedFile {
 
 const BriefingOdonto = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [currentSection, setCurrentSection] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     profissionais: [{
@@ -38,11 +40,67 @@ const BriefingOdonto = () => {
   const [loadingCep, setLoadingCep] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Estados para integração Hotmart
+  const [hotmartVenda, setHotmartVenda] = useState<HotmartVenda | null>(null);
+  const [isFromHotmart, setIsFromHotmart] = useState(false);
+  const [loadingHotmart, setLoadingHotmart] = useState(false);
+
+  // Rastrear início do briefing (apenas uma vez quando componente monta)
+  useEffect(() => {
+    trackBriefingStart();
+  }, []);
+
+  // Detectar se veio do Hotmart (source=hotmart na URL)
+  useEffect(() => {
+    const source = searchParams.get('source');
+    if (source === 'hotmart') {
+      setIsFromHotmart(true);
+      console.log('🔥 Briefing acessado via Hotmart');
+    }
+  }, [searchParams]);
+
+  // Função para buscar venda Hotmart pelo email
+  const handleEmailBlur = async () => {
+    const email = formData.email;
+    if (!email || !validateEmail(email)) return;
+
+    // Se não veio do Hotmart, não buscar
+    // Mas vamos buscar mesmo assim para caso o cliente acesse direto
+    setLoadingHotmart(true);
+
+    try {
+      const venda = await getHotmartVendaByEmail(email);
+      if (venda) {
+        console.log('✅ Venda Hotmart encontrada:', venda.transaction_id);
+        setHotmartVenda(venda);
+        setIsFromHotmart(true);
+
+        // Pré-preencher outros campos se estiverem vazios
+        if (!formData.nome && venda.cliente_nome) {
+          setFormData(prev => ({
+            ...prev,
+            nome: venda.cliente_nome,
+          }));
+        }
+        if (!formData.whatsapp && venda.cliente_telefone) {
+          setFormData(prev => ({
+            ...prev,
+            whatsapp: formatWhatsApp(venda.cliente_telefone),
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao buscar venda Hotmart:', error);
+    } finally {
+      setLoadingHotmart(false);
+    }
+  };
+
   const sections = [
     { id: 'informacoes-essenciais', title: 'Informações Essenciais', subtitle: 'Vamos começar! Informações Básicas', required: true },
     { id: 'hero-banner', title: 'Hero / Banner Principal', subtitle: 'Vamos criar o banner principal do seu site', required: true },
     { id: 'sobre-clinica', title: 'Sobre a Clínica', subtitle: 'Apresente sua clínica', required: true },
-    { id: 'profissionais', title: 'Equipe', subtitle: 'Apresente os profissionais', required: true },
+    { id: 'profissionais', title: 'Equipe (Opcional)', subtitle: 'Apresente os profissionais', required: false },
     { id: 'servicos-diferenciais', title: 'Serviços e Diferenciais', subtitle: 'O que você oferece e o que te torna único', required: true },
     { id: 'identidade-visual', title: 'Identidade Visual', subtitle: 'Referências, logo e estilo que você quer para o site', required: true },
     { id: 'localizacao-contato', title: 'Depoimentos, Localização e Contato', subtitle: 'Depoimentos, onde você está e como te encontrar', required: true },
@@ -183,10 +241,10 @@ const BriefingOdonto = () => {
     }
   };
 
-  const handleFileUpload = async (fieldName: string, files: FileList | null) => {
+  const handleFileUpload = async (fieldName: string, files: FileList | null, maxFiles: number = 10) => {
     if (!files) return;
 
-    const fileArray: UploadedFile[] = [];
+    const newFiles: UploadedFile[] = [];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -194,7 +252,7 @@ const BriefingOdonto = () => {
       try {
         const compressedDataUrl = await compressImage(file);
 
-        fileArray.push({
+        newFiles.push({
           name: file.name,
           type: file.type,
           size: file.size,
@@ -205,12 +263,25 @@ const BriefingOdonto = () => {
       }
     }
 
-    setUploadedFiles(prev => ({
-      ...prev,
-      [fieldName]: fileArray
-    }));
+    setUploadedFiles(prev => {
+      // Acumula os arquivos existentes com os novos, respeitando o limite máximo
+      const existingFiles = prev[fieldName] || [];
+      const combinedFiles = [...existingFiles, ...newFiles].slice(0, maxFiles);
+      return {
+        ...prev,
+        [fieldName]: combinedFiles
+      };
+    });
 
-    updateFormData(fieldName, fileArray);
+    // Também atualiza o formData de forma acumulativa
+    setFormData((prev: any) => {
+      const existingFiles = prev[fieldName] || [];
+      const combinedFiles = [...existingFiles, ...newFiles].slice(0, maxFiles);
+      return {
+        ...prev,
+        [fieldName]: combinedFiles
+      };
+    });
   };
 
   // Funções para gerenciar array de profissionais
@@ -342,44 +413,57 @@ const BriefingOdonto = () => {
         if (!formData.nome_consultorio || formData.nome_consultorio.length < 3) {
           newErrors.nome_consultorio = 'Nome do consultório é obrigatório (mín. 3 caracteres)';
         }
-        if (!formData.nome || formData.nome.length < 3) {
-          newErrors.nome = 'Seu nome é obrigatório (mín. 3 caracteres)';
-        }
-        if (!formData.whatsapp || !validateWhatsApp(formData.whatsapp)) {
-          newErrors.whatsapp = 'WhatsApp inválido (deve ter 11 dígitos)';
-        }
-        if (!formData.email || !validateEmail(formData.email)) {
-          newErrors.email = 'E-mail inválido';
+        // Validação depende se veio do Hotmart e se já encontrou a venda
+        if (isFromHotmart) {
+          // Se veio do Hotmart mas ainda não encontrou a venda, exigir email
+          if (!hotmartVenda) {
+            if (!formData.email || !validateEmail(formData.email)) {
+              newErrors.email = 'Digite o e-mail usado na compra';
+            }
+          }
+          // Se já tem hotmartVenda, não precisa validar nada mais
+        } else {
+          // Se NÃO veio do Hotmart, validar todos os campos de contato
+          if (!formData.nome || formData.nome.length < 3) {
+            newErrors.nome = 'Seu nome é obrigatório (mín. 3 caracteres)';
+          }
+          if (!formData.whatsapp || !validateWhatsApp(formData.whatsapp)) {
+            newErrors.whatsapp = 'WhatsApp inválido (deve ter 11 dígitos)';
+          }
+          if (!formData.email || !validateEmail(formData.email)) {
+            newErrors.email = 'E-mail inválido';
+          }
         }
         break;
 
       case 1: // Hero / Banner Principal
-        // Validações opcionais
+        if (!formData.hero_titulo || formData.hero_titulo.trim() === '') {
+          newErrors.hero_titulo = 'Título principal é obrigatório';
+        } else if (formData.hero_titulo_tipo === 'custom' && formData.hero_titulo.trim().length < 5) {
+          newErrors.hero_titulo = 'Título personalizado deve ter pelo menos 5 caracteres';
+        }
+
+        if (!formData.hero_subtitulo || formData.hero_subtitulo.trim() === '') {
+          newErrors.hero_subtitulo = 'Subtítulo é obrigatório';
+        } else if (formData.hero_subtitulo_tipo === 'custom' && formData.hero_subtitulo.trim().length < 10) {
+          newErrors.hero_subtitulo = 'Subtítulo personalizado deve ter pelo menos 10 caracteres';
+        }
+
+        if (!formData.hero_cta_texto || formData.hero_cta_texto.trim() === '') {
+          newErrors.hero_cta_texto = 'Texto do botão é obrigatório';
+        } else if (formData.hero_cta_tipo === 'custom' && formData.hero_cta_texto.trim().length < 3) {
+          newErrors.hero_cta_texto = 'Texto personalizado do botão deve ter pelo menos 3 caracteres';
+        }
         break;
 
       case 2: // Sobre a Clínica
-        // Validações opcionais
+        if (!formData.sobre_texto || formData.sobre_texto.trim().length < 50) {
+          newErrors.sobre_texto = 'Texto institucional é obrigatório (mínimo 50 caracteres)';
+        }
         break;
 
-      case 3: // Equipe
-        // Validar array de profissionais
-        if (!formData.profissionais || formData.profissionais.length === 0) {
-          newErrors.profissionais = 'Adicione pelo menos um profissional';
-        } else {
-          formData.profissionais.forEach((prof: any, index: number) => {
-            if (!prof.nome?.trim()) {
-              newErrors[`profissional_${index}_nome`] = 'Digite o nome do profissional';
-            }
-            if (!prof.registro?.trim()) {
-              newErrors[`profissional_${index}_registro`] = 'Digite o número do CRO';
-            }
-            if (!prof.descricao?.trim()) {
-              newErrors[`profissional_${index}_descricao`] = 'Escreva uma mini biografia';
-            } else if (prof.descricao.trim().length < 50) {
-              newErrors[`profissional_${index}_descricao`] = 'A biografia deve ter pelo menos 50 caracteres';
-            }
-          });
-        }
+      case 3: // Equipe (Opcional)
+        // Seção opcional - sem validações obrigatórias
         break;
 
       case 4: // Serviços e Diferenciais
@@ -399,27 +483,38 @@ const BriefingOdonto = () => {
         break;
 
       case 6: // Depoimentos, Localização e Contato
-        // Validações de Localização
-        if (!formData.cep) newErrors.cep = 'CEP é obrigatório';
-        if (!formData.rua) newErrors.rua = 'Rua é obrigatória';
-        if (!formData.numero) newErrors.numero = 'Número é obrigatório';
-        if (!formData.bairro) newErrors.bairro = 'Bairro é obrigatório';
-        if (!formData.cidade) newErrors.cidade = 'Cidade é obrigatória';
-        if (!formData.estado) newErrors.estado = 'Estado é obrigatório';
-        if (!formData.tem_estacionamento) newErrors.tem_estacionamento = 'Informe sobre estacionamento';
-
-        // Validar horários de atendimento
-        const horariosArray = formData.horarios_atendimento_array || [];
-        if (horariosArray.length === 0) {
-          newErrors.horario_padrao = 'Adicione pelo menos um horário de atendimento';
+        // Validar WhatsApp do site (obrigatório)
+        if (!formData.whatsapp_site || !validateWhatsApp(formData.whatsapp_site)) {
+          newErrors.whatsapp_site = 'WhatsApp do site é obrigatório (deve ter 11 dígitos)';
         }
 
-        if (!formData.exibir_mapa) newErrors.exibir_mapa = 'Informe se quer exibir o mapa';
-        // Validação condicional do link do mapa
-        if (formData.exibir_mapa === 'sim' && !formData.link_mapa_embed) {
-          newErrors.link_mapa_embed = 'Link do Google Maps é obrigatório quando você escolhe exibir o mapa';
+        // Validar e-mail do site se preenchido
+        if (formData.email_site && !validateEmail(formData.email_site)) {
+          newErrors.email_site = 'E-mail inválido';
         }
-        // Depoimentos do Google é opcional
+
+        // Validar escolha do método
+        if (!formData.metodo_endereco) {
+          newErrors.metodo_endereco = 'Escolha como prefere informar seu endereço';
+        }
+
+        // Validações condicionais baseadas no método escolhido
+        if (formData.metodo_endereco === 'google') {
+          // Se escolheu Google, precisa ter o link
+          if (!formData.link_google_maps || formData.link_google_maps.trim() === '') {
+            newErrors.link_google_maps = 'Cole o link do Google Meu Negócio acima';
+          }
+        } else if (formData.metodo_endereco === 'manual') {
+          // Se escolheu manual, precisa preencher todos os campos de endereço
+          if (!formData.cep) newErrors.cep = 'CEP é obrigatório';
+          if (!formData.rua) newErrors.rua = 'Rua é obrigatória';
+          if (!formData.numero) newErrors.numero = 'Número é obrigatório';
+          if (!formData.bairro) newErrors.bairro = 'Bairro é obrigatório';
+          if (!formData.cidade) newErrors.cidade = 'Cidade é obrigatória';
+          if (!formData.estado) newErrors.estado = 'Estado é obrigatório';
+        }
+
+        // Nota: horários de atendimento e exibir_mapa agora são opcionais (checkbox), não precisa validar
         break;
 
       case 7: // Rastreamento e Integrações - Opcional
@@ -435,8 +530,13 @@ const BriefingOdonto = () => {
   };
 
   const handleNext = async () => {
+    console.log('🔄 [handleNext] Iniciando navegação para próxima seção...');
+    console.log('📍 [handleNext] Seção atual:', currentSection);
+    console.log('📝 [handleNext] isFromHotmart:', isFromHotmart);
+
     // Validar seção atual antes de avançar
     if (!validateCurrentSection()) {
+      console.log('❌ [handleNext] Validação falhou, não avançando');
       // Scroll para o primeiro erro
       const firstError = document.querySelector('.border-red-500');
       if (firstError) {
@@ -445,12 +545,25 @@ const BriefingOdonto = () => {
       return;
     }
 
-    // Captura automática de lead após página 1 (seção 0)
-    if (currentSection === 0) {
+    console.log('✅ [handleNext] Validação passou');
+
+    // Captura automática de lead após página 1 (seção 0) - apenas se NÃO veio do Hotmart
+    if (currentSection === 0 && !isFromHotmart) {
+      console.log('📊 [handleNext] Tentando capturar lead parcial...');
+
       // Verificar se já existe um lead parcial salvo
       const existingLeadId = localStorage.getItem('partial_lead_id');
+      console.log('🔍 [handleNext] Lead ID existente no localStorage:', existingLeadId);
 
       if (!existingLeadId) {
+        console.log('📝 [handleNext] Criando novo lead parcial...');
+        console.log('📝 [handleNext] Dados do formulário:', {
+          nome: formData.nome,
+          email: formData.email,
+          whatsapp: formData.whatsapp,
+          nome_consultorio: formData.nome_consultorio
+        });
+
         // Criar lead parcial silenciosamente
         const partialLead = await createPartialLead({
           nome: formData.nome,
@@ -462,16 +575,28 @@ const BriefingOdonto = () => {
         if (partialLead) {
           // Salvar leadId no localStorage
           localStorage.setItem('partial_lead_id', partialLead.id);
-          console.log('✅ Lead parcial capturado:', partialLead.id);
+          console.log('✅ [handleNext] Lead parcial capturado e salvo no localStorage:', partialLead.id);
+        } else {
+          console.error('❌ [handleNext] Falha ao criar lead parcial (retornou null)');
         }
+      } else {
+        console.log('ℹ️ [handleNext] Lead parcial já existe, não criando novo');
+      }
+    } else {
+      if (currentSection === 0) {
+        console.log('ℹ️ [handleNext] Na seção 0, mas veio do Hotmart - não capturando lead parcial');
+      } else {
+        console.log('ℹ️ [handleNext] Não é a seção 0, pulando captura de lead parcial');
       }
     }
 
     if (currentSection < sections.length - 1) {
+      console.log('➡️ [handleNext] Avançando para próxima seção');
       setCurrentSection(prev => prev + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      console.log('ℹ️ [handleNext] Já está na última seção');
     }
-    // }
   };
 
   const handlePrevious = () => {
@@ -495,23 +620,35 @@ const BriefingOdonto = () => {
       console.log('📋 Dados do formulário:', formData);
       console.log('📁 Arquivos:', uploadedFiles);
 
+      // Determinar dados de contato (Hotmart ou formulário)
+      const nomeContato = isFromHotmart && hotmartVenda ? hotmartVenda.cliente_nome : formData.nome;
+      const emailContato = isFromHotmart && hotmartVenda ? hotmartVenda.cliente_email : formData.email;
+      const whatsappContato = isFromHotmart && hotmartVenda ? (hotmartVenda.cliente_telefone || formData.whatsapp_site) : formData.whatsapp;
+
       // Preparar dados para salvar
       const briefingCompleto = {
         ...formData,
         // Incluir arquivos no briefing_data
         arquivos: uploadedFiles,
+        // Dados de contato (para referência)
+        _contato: {
+          nome: nomeContato,
+          email: emailContato,
+          whatsapp: whatsappContato,
+          origem: isFromHotmart ? 'hotmart' : 'formulario'
+        }
       };
 
       // Verificar se existe lead parcial
       const existingLeadId = localStorage.getItem('partial_lead_id');
       let lead;
 
-      if (existingLeadId) {
-        // Atualizar lead parcial para completo
+      if (existingLeadId && !isFromHotmart) {
+        // Atualizar lead parcial para completo (apenas se não veio do Hotmart)
         lead = await updateLeadToComplete(existingLeadId, {
-          nome: formData.nome,
-          email: formData.email,
-          whatsapp: formData.whatsapp,
+          nome: nomeContato,
+          email: emailContato,
+          whatsapp: whatsappContato,
           briefing_data: briefingCompleto,
         });
         console.log('✅ Lead parcial atualizado para completo:', lead);
@@ -520,17 +657,41 @@ const BriefingOdonto = () => {
       } else {
         // Criar novo lead
         lead = await createLead({
-          nome: formData.nome,
-          email: formData.email,
-          whatsapp: formData.whatsapp,
+          nome: nomeContato,
+          email: emailContato,
+          whatsapp: whatsappContato,
           briefing_data: briefingCompleto,
         });
         console.log('✅ Lead criado com sucesso:', lead);
       }
 
-      // Redirecionar para página de obrigado
-      alert('Briefing enviado com sucesso! 🎉\n\nAgora vamos produzir seu site. Em até 7 dias você receberá o link para aprovação.');
-      navigate('/obrigado');
+      // Rastrear conversão de lead
+      if (lead?.id) {
+        trackLead(lead.id, hotmartVenda?.valor || 497);
+
+        // Vincular venda Hotmart com o lead (se existir)
+        if (hotmartVenda) {
+          const vinculado = await vincularHotmartVendaComLead(hotmartVenda.id, lead.id);
+          if (vinculado) {
+            console.log('✅ Venda Hotmart vinculada ao lead:', hotmartVenda.transaction_id);
+          } else {
+            console.warn('⚠️ Não foi possível vincular venda Hotmart ao lead');
+          }
+        }
+      }
+
+      // Redirecionar baseado na origem do lead
+      const plano = hotmartVenda?.plano || 'site';
+
+      // Se NÃO veio do Hotmart, redirecionar para página de briefing completo
+      if (!isFromHotmart && lead?.id) {
+        console.log('📍 Redirecionando para página de briefing completo:', lead.id);
+        navigate(`/briefing-completo?leadId=${lead.id}`);
+      } else {
+        // Se veio do Hotmart, já pagou - vai direto para obrigado
+        alert('Briefing enviado com sucesso! 🎉\n\nEm até 24 horas nossa equipe entrará em contato. Em até 3 dias você receberá o link do site para aprovação.');
+        navigate(`/obrigado?plano=${plano}`);
+      }
 
     } catch (error: any) {
       console.error('❌ Erro ao enviar briefing:', error);
@@ -556,6 +717,26 @@ const BriefingOdonto = () => {
       case 0: // PÁGINA 1: Informações Essenciais
         return (
           <div className="space-y-8">
+            {/* Banner de boas-vindas para clientes Hotmart */}
+            {isFromHotmart && hotmartVenda && (
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 sm:p-6 mb-6">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="text-green-600 flex-shrink-0 mt-0.5" size={24} />
+                  <div>
+                    <p className="text-green-800 font-semibold text-lg">
+                      Pagamento confirmado!
+                    </p>
+                    <p className="text-green-700 mt-1">
+                      Complete seu briefing para iniciarmos a produção do seu site.
+                    </p>
+                    <p className="text-green-600 text-sm mt-2">
+                      Plano: <strong>{hotmartVenda.plano === 'site_blog' ? 'Site + Blog SEO' : 'Site Profissional'}</strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="text-center mb-10">
               <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-3">
                 {sections[0].title}
@@ -564,6 +745,73 @@ const BriefingOdonto = () => {
             </div>
 
             <div className="space-y-6">
+              {/* Dados do cliente vindos do Hotmart (read-only) */}
+              {isFromHotmart && hotmartVenda && (
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-5 space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <CheckCircle className="text-blue-600" size={20} />
+                    <h3 className="font-semibold text-blue-800">Seus dados de cadastro</h3>
+                  </div>
+                  <p className="text-blue-700 text-sm mb-4">
+                    Informações obtidas do seu cadastro na Hotmart. Usaremos para entrar em contato durante o projeto.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-blue-700 mb-1">Nome</label>
+                      <div className="px-3 py-2 bg-white border border-blue-200 rounded-lg text-neutral-700">
+                        {hotmartVenda.cliente_nome || '-'}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-blue-700 mb-1">E-mail</label>
+                      <div className="px-3 py-2 bg-white border border-blue-200 rounded-lg text-neutral-700 truncate">
+                        {hotmartVenda.cliente_email || '-'}
+                      </div>
+                    </div>
+                    {hotmartVenda.cliente_telefone && (
+                      <div>
+                        <label className="block text-sm font-medium text-blue-700 mb-1">Telefone</label>
+                        <div className="px-3 py-2 bg-white border border-blue-200 rounded-lg text-neutral-700">
+                          {hotmartVenda.cliente_telefone}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Quando veio do Hotmart mas ainda não encontrou a venda - pedir email */}
+              {isFromHotmart && !hotmartVenda && (
+                <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <AlertCircle className="text-amber-600" size={20} />
+                    <h3 className="font-semibold text-amber-800">Confirme seu e-mail</h3>
+                  </div>
+                  <p className="text-amber-700 text-sm mb-4">
+                    Digite o e-mail usado na compra para buscarmos seus dados automaticamente.
+                  </p>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      placeholder="Digite o e-mail usado na compra"
+                      value={formData.email || ''}
+                      onChange={(e) => updateFormData('email', e.target.value)}
+                      onBlur={handleEmailBlur}
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-amber-100 transition-all ${
+                        errors.email ? 'border-red-400' : 'border-amber-300 focus:border-amber-500'
+                      }`}
+                    />
+                    {loadingHotmart && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <div className="animate-spin h-5 w-5 border-2 border-amber-500 border-t-transparent rounded-full"></div>
+                      </div>
+                    )}
+                  </div>
+                  {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
+                </div>
+              )}
+
               {/* Nome do Consultório */}
               <div>
                 <label className="block text-sm font-semibold text-neutral-900 mb-3">
@@ -581,63 +829,76 @@ const BriefingOdonto = () => {
                 {errors.nome_consultorio && <p className="text-red-500 text-sm mt-2">{errors.nome_consultorio}</p>}
               </div>
 
-              {/* Seu Nome */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                  Como você se chama? *
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ex: Dr. Carlos Eduardo Silva"
-                  value={formData.nome || ''}
-                  onChange={(e) => updateFormData('nome', e.target.value)}
-                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                    errors.nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                  }`}
-                />
-                {errors.nome && <p className="text-red-500 text-sm mt-2">{errors.nome}</p>}
-                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Nome completo para nossa comunicação durante o projeto</p>
-              </div>
+              {/* Campos de contato - apenas se NÃO veio do Hotmart */}
+              {!isFromHotmart && (
+                <>
+                  {/* Seu Nome */}
+                  <div>
+                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                      Como você se chama? *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ex: Dr. Carlos Eduardo Silva"
+                      value={formData.nome || ''}
+                      onChange={(e) => updateFormData('nome', e.target.value)}
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors.nome ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    {errors.nome && <p className="text-red-500 text-sm mt-2">{errors.nome}</p>}
+                    <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Nome completo para nossa comunicação durante o projeto</p>
+                  </div>
 
-              {/* WhatsApp */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                  Qual seu WhatsApp para agendamentos? *
-                </label>
-                <input
-                  type="tel"
-                  placeholder="(11) 99999-9999"
-                  value={formData.whatsapp || ''}
-                  onChange={(e) => {
-                    const formatted = formatWhatsApp(e.target.value);
-                    updateFormData('whatsapp', formatted);
-                  }}
-                  maxLength={15}
-                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                    errors.whatsapp ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                  }`}
-                />
-                {errors.whatsapp && <p className="text-red-500 text-sm mt-2">{errors.whatsapp}</p>}
-                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Este número aparecerá no site para os pacientes agendarem consultas</p>
-              </div>
+                  {/* WhatsApp */}
+                  <div>
+                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                      Qual o seu WhatsApp para contato? *
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="(11) 99999-9999"
+                      value={formData.whatsapp || ''}
+                      onChange={(e) => {
+                        const formatted = formatWhatsApp(e.target.value);
+                        updateFormData('whatsapp', formatted);
+                      }}
+                      maxLength={15}
+                      className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                        errors.whatsapp ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                      }`}
+                    />
+                    {errors.whatsapp && <p className="text-red-500 text-sm mt-2">{errors.whatsapp}</p>}
+                    <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Usaremos para entrar em contato durante o projeto</p>
+                  </div>
 
-              {/* E-mail */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral-900 mb-3">
-                  Seu melhor e-mail *
-                </label>
-                <input
-                  type="email"
-                  placeholder="contato@clinica.com.br"
-                  value={formData.email || ''}
-                  onChange={(e) => updateFormData('email', e.target.value)}
-                  className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
-                    errors.email ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
-                  }`}
-                />
-                {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
-                <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Enviaremos o site pronto neste e-mail em até 24 horas</p>
-              </div>
+                  {/* E-mail */}
+                  <div>
+                    <label className="block text-sm font-semibold text-neutral-900 mb-3">
+                      Seu melhor e-mail *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        placeholder="seuemail@exemplo.com"
+                        value={formData.email || ''}
+                        onChange={(e) => updateFormData('email', e.target.value)}
+                        onBlur={handleEmailBlur}
+                        className={`w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all ${
+                          errors.email ? 'border-red-400' : 'border-medical-200 focus:border-medical-400'
+                        }`}
+                      />
+                      {loadingHotmart && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <div className="animate-spin h-5 w-5 border-2 border-medical-500 border-t-transparent rounded-full"></div>
+                        </div>
+                      )}
+                    </div>
+                    {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
+                    <p className="text-medical-600/70 text-xs sm:text-sm mt-2">Enviaremos o site pronto neste e-mail</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         );
@@ -1058,22 +1319,54 @@ const BriefingOdonto = () => {
                 <p className="text-medical-600/60 text-sm mb-3">
                   Envie de 1 a 4 fotos da sua clínica (fachada, recepção, consultórios, etc.)
                 </p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => handleFileUpload('sobre_fotos', e.target.files)}
-                  className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
-                />
+                {(!uploadedFiles.sobre_fotos || uploadedFiles.sobre_fotos.length < 4) && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      handleFileUpload('sobre_fotos', e.target.files, 4);
+                      // Limpa o input para permitir selecionar o mesmo arquivo novamente
+                      e.target.value = '';
+                    }}
+                    className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 transition-all"
+                  />
+                )}
                 {uploadedFiles.sobre_fotos && uploadedFiles.sobre_fotos.length > 0 && (
                   <div className="mt-3 space-y-2">
-                    {uploadedFiles.sobre_fotos.map((file: File, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2 text-green-600">
-                        <Check className="w-4 h-4" />
-                        <span className="text-sm">Foto {idx + 1}: {file.name}</span>
+                    <p className="text-sm font-medium text-medical-700">
+                      {uploadedFiles.sobre_fotos.length}/4 fotos adicionadas
+                    </p>
+                    {uploadedFiles.sobre_fotos.map((file: any, idx: number) => (
+                      <div key={idx} className="flex items-center justify-between gap-2 bg-green-50 p-2 rounded-lg">
+                        <div className="flex items-center gap-2 text-green-600">
+                          <Check className="w-4 h-4" />
+                          <span className="text-sm">Foto {idx + 1}: {file.name}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUploadedFiles(prev => ({
+                              ...prev,
+                              sobre_fotos: prev.sobre_fotos.filter((_: any, i: number) => i !== idx)
+                            }));
+                            setFormData((prev: any) => ({
+                              ...prev,
+                              sobre_fotos: (prev.sobre_fotos || []).filter((_: any, i: number) => i !== idx)
+                            }));
+                          }}
+                          className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                        >
+                          Remover
+                        </button>
                       </div>
                     ))}
                   </div>
+                )}
+                {uploadedFiles.sobre_fotos && uploadedFiles.sobre_fotos.length >= 4 && (
+                  <p className="text-amber-600 text-sm mt-2">
+                    ✓ Limite de 4 fotos atingido. Remova alguma para adicionar outra.
+                  </p>
                 )}
                 <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
                   💡 Recomendado: fotos profissionais, bem iluminadas, em alta resolução (máx. 5MB cada)
@@ -1200,7 +1493,7 @@ const BriefingOdonto = () => {
                   {/* Nome */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Nome completo *
+                      Nome completo
                     </label>
                     <input
                       type="text"
@@ -1219,7 +1512,7 @@ const BriefingOdonto = () => {
                   {/* Registro CRO */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Número do registro (CRO) *
+                      Número do registro (CRO)
                     </label>
                     <input
                       type="text"
@@ -1235,48 +1528,139 @@ const BriefingOdonto = () => {
                     )}
                   </div>
 
-                  {/* Especialidade */}
+                  {/* Especialidades */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Especialidade principal
+                      Especialidades
                     </label>
+                    <p className="text-sm text-medical-600/70 mb-3">
+                      Selecione uma ou mais especialidades:
+                    </p>
+
+                    {/* Dropdown de Especialidades */}
                     <select
-                      value={profissional.especialidade_tipo || ''}
+                      value=""
                       onChange={(e) => {
-                        updateProfissional(index, 'especialidade_tipo', e.target.value);
-                        if (e.target.value !== 'custom') {
-                          updateProfissional(index, 'especialidade', e.target.value);
-                        } else {
-                          updateProfissional(index, 'especialidade', '');
+                        const value = e.target.value;
+                        if (value === 'custom') {
+                          updateProfissional(index, 'especialidade_customizando', true);
+                        } else if (value) {
+                          const current = profissional.especialidades || [];
+                          if (!current.includes(value)) {
+                            updateProfissional(index, 'especialidades', [...current, value]);
+                          }
                         }
                       }}
                       className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
                     >
-                      <option value="">Selecione a especialidade ou customize</option>
-                      <option value="Clínico Geral">Clínico Geral</option>
-                      <option value="Ortodontia">Ortodontia</option>
-                      <option value="Implantodontia">Implantodontia</option>
-                      <option value="Endodontia">Endodontia (Tratamento de Canal)</option>
-                      <option value="Periodontia">Periodontia (Gengiva)</option>
-                      <option value="Odontopediatria">Odontopediatria (Crianças)</option>
-                      <option value="Prótese Dentária">Prótese Dentária</option>
-                      <option value="Estética/Harmonização">Estética/Harmonização Orofacial</option>
-                      <option value="Cirurgia Bucomaxilofacial">Cirurgia Bucomaxilofacial</option>
-                      <option value="Radiologia">Radiologia Odontológica</option>
+                      <option value="">Selecione uma especialidade para adicionar</option>
+                      {[
+                        { value: 'Clínico Geral', label: 'Clínico Geral' },
+                        { value: 'Ortodontia', label: 'Ortodontia' },
+                        { value: 'Implantodontia', label: 'Implantodontia' },
+                        { value: 'Endodontia', label: 'Endodontia (Tratamento de Canal)' },
+                        { value: 'Periodontia', label: 'Periodontia (Gengiva)' },
+                        { value: 'Odontopediatria', label: 'Odontopediatria (Crianças)' },
+                        { value: 'Prótese Dentária', label: 'Prótese Dentária' },
+                        { value: 'Estética/Harmonização', label: 'Estética/Harmonização Orofacial' },
+                        { value: 'Cirurgia Bucomaxilofacial', label: 'Cirurgia Bucomaxilofacial' },
+                        { value: 'Radiologia', label: 'Radiologia Odontológica' },
+                      ]
+                        .filter(esp => !(profissional.especialidades || []).includes(esp.value))
+                        .map((esp) => (
+                          <option key={esp.value} value={esp.value}>
+                            {esp.label}
+                          </option>
+                        ))
+                      }
                       <option value="custom">✏️ Personalizar especialidade</option>
                     </select>
 
-                    {profissional.especialidade_tipo === 'custom' && (
+                    {/* Campo Personalizado */}
+                    {profissional.especialidade_customizando && (
                       <div className="mt-3">
-                        <input
-                          type="text"
-                          placeholder="Digite a especialidade personalizada"
-                          value={profissional.especialidade || ''}
-                          onChange={(e) => updateProfissional(index, 'especialidade', e.target.value)}
-                          maxLength={60}
-                          className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
-                        />
-                        <p className="text-medical-600/70 text-xs sm:text-sm mt-2">{(profissional.especialidade || '').length}/60 caracteres</p>
+                        <div className="flex flex-col xs:flex-row gap-2">
+                          <div className="flex-1">
+                            <input
+                              type="text"
+                              value={profissional.especialidade_temp || ''}
+                              onChange={(e) => updateProfissional(index, 'especialidade_temp', e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  const valor = profissional.especialidade_temp?.trim();
+                                  if (valor) {
+                                    const current = profissional.especialidades || [];
+                                    updateProfissional(index, 'especialidades', [...current, `outro:${valor}`]);
+                                    updateProfissional(index, 'especialidade_temp', '');
+                                    updateProfissional(index, 'especialidade_customizando', false);
+                                  }
+                                }
+                              }}
+                              maxLength={60}
+                              className="w-full px-3 py-3 sm:px-4 min-h-[44px] border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-medical-100 focus:border-medical-400 transition-all"
+                              placeholder="Digite a especialidade personalizada"
+                            />
+                            <p className="text-medical-600/70 text-xs sm:text-sm mt-2">
+                              {(profissional.especialidade_temp || '').length}/60 caracteres
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const valor = profissional.especialidade_temp?.trim();
+                                if (valor) {
+                                  const current = profissional.especialidades || [];
+                                  updateProfissional(index, 'especialidades', [...current, `outro:${valor}`]);
+                                  updateProfissional(index, 'especialidade_temp', '');
+                                  updateProfissional(index, 'especialidade_customizando', false);
+                                }
+                              }}
+                              className="px-4 py-2 bg-medical-600 text-white rounded-lg hover:bg-medical-700 transition-colors whitespace-nowrap"
+                            >
+                              Adicionar
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                updateProfissional(index, 'especialidade_temp', '');
+                                updateProfissional(index, 'especialidade_customizando', false);
+                              }}
+                              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Lista de especialidades selecionadas */}
+                    {(profissional.especialidades || []).length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {(profissional.especialidades || []).map((esp: string, espIdx: number) => {
+                          const isCustom = esp.startsWith('outro:');
+                          const displayName = isCustom ? esp.replace('outro:', '') : esp;
+                          return (
+                            <span
+                              key={espIdx}
+                              className="inline-flex items-center gap-2 px-3 py-2 bg-medical-100 text-medical-800 rounded-full text-sm"
+                            >
+                              {displayName}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const current = profissional.especialidades || [];
+                                  updateProfissional(index, 'especialidades', current.filter((_: any, i: number) => i !== espIdx));
+                                }}
+                                className="text-medical-600 hover:text-red-500 font-bold"
+                              >
+                                ×
+                              </button>
+                            </span>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -1284,7 +1668,7 @@ const BriefingOdonto = () => {
                   {/* Mini biografia */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Mini biografia (2-3 linhas) *
+                      Mini biografia (2-3 linhas) (Opcional)
                     </label>
                     <textarea
                       rows={4}
@@ -1738,6 +2122,99 @@ const BriefingOdonto = () => {
                 </div>
               )}
             </div>
+
+            {/* Separador Visual */}
+            <div className="border-t-4 border-medical-100 my-8"></div>
+
+            {/* Fotos Antes/Depois */}
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl">📸</span>
+                <div>
+                  <h3 className="text-xl font-bold text-neutral-900">Fotos de Antes/Depois (Opcional)</h3>
+                  <p className="text-sm text-medical-600/70">Mostre os resultados incríveis dos seus tratamentos!</p>
+                </div>
+              </div>
+
+              <div className="bg-white/70 border-2 border-purple-200 rounded-xl p-4 mb-4">
+                <p className="text-sm text-purple-900 mb-2">
+                  💡 <strong>Por que incluir fotos de antes/depois?</strong>
+                </p>
+                <ul className="text-sm text-purple-800 space-y-1 list-disc list-inside">
+                  <li>Aumenta a confiança dos visitantes</li>
+                  <li>Comprova a qualidade dos seus tratamentos</li>
+                  <li>Converte visitantes em pacientes</li>
+                  <li>Destaca seus melhores resultados</li>
+                </ul>
+              </div>
+
+              <div>
+                <label className="block text-neutral-900 font-semibold mb-3">
+                  Upload de Fotos
+                </label>
+                <p className="text-sm text-medical-600/70 mb-3">
+                  Envie de 3 a 12 fotos mostrando os resultados dos seus tratamentos (clareamento, implantes, ortodontia, etc.)
+                </p>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    handleFileUpload('fotos_antes_depois', e.target.files, 12);
+                    e.target.value = '';
+                  }}
+                  className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer transition-all"
+                />
+
+                {/* Visualização das fotos enviadas */}
+                {uploadedFiles.fotos_antes_depois && uploadedFiles.fotos_antes_depois.length > 0 && (
+                  <div className="mt-4 p-4 bg-white border-2 border-green-200 rounded-xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Check className="w-5 h-5 text-green-600" />
+                      <p className="font-semibold text-green-700">
+                        {uploadedFiles.fotos_antes_depois.length}/12 foto(s) enviada(s)
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      {uploadedFiles.fotos_antes_depois.map((file: any, index: number) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-green-50 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-green-700">📷</span>
+                            <span className="text-sm text-green-800">{file.name}</span>
+                            <span className="text-xs text-green-600">({formatFileSize(file.size)})</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUploadedFiles(prev => ({
+                                ...prev,
+                                fotos_antes_depois: prev.fotos_antes_depois.filter((_: any, i: number) => i !== index)
+                              }));
+                              setFormData((prev: any) => ({
+                                ...prev,
+                                fotos_antes_depois: (prev.fotos_antes_depois || []).filter((_: any, i: number) => i !== index)
+                              }));
+                            }}
+                            className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-100 transition-colors"
+                            title="Remover foto"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <p className="text-xs text-medical-600/70 mt-3">
+                  ✓ Formatos aceitos: JPG, PNG, WEBP<br/>
+                  ✓ As imagens serão comprimidas automaticamente<br/>
+                  ✓ Recomendado: 3 a 12 fotos (5-6 pares de antes/depois)
+                </p>
+              </div>
+            </div>
+
           </div>
         );
 
@@ -1752,16 +2229,91 @@ const BriefingOdonto = () => {
               <p className="text-medical-600/70 text-lg">{sections[6].subtitle}</p>
             </div>
 
-            {/* Depoimentos do Google Review */}
+            {/* Contatos para o Site */}
+            <div className="border-2 border-green-300 rounded-2xl p-6 bg-gradient-to-br from-green-50 to-emerald-50">
+              <h3 className="text-xl font-bold text-neutral-900 mb-2">📞 Contatos para o Site</h3>
+              <p className="text-sm text-green-700 mb-6">
+                Esses são os contatos que aparecerão no seu site para os pacientes entrarem em contato.
+              </p>
+
+              <div className="space-y-5">
+                {/* WhatsApp do Site */}
+                <div>
+                  <label className="block text-neutral-900 font-semibold mb-2">
+                    WhatsApp para o site *
+                  </label>
+                  <p className="text-sm text-green-600/80 mb-2">
+                    Este número aparecerá no botão do WhatsApp do site
+                  </p>
+                  <input
+                    type="tel"
+                    value={formData.whatsapp_site || ''}
+                    onChange={(e) => {
+                      const formatted = formatWhatsApp(e.target.value);
+                      updateFormData('whatsapp_site', formatted);
+                    }}
+                    maxLength={15}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 ${
+                      errors.whatsapp_site ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-200' : 'border-green-200 focus:border-green-500 focus:ring-green-200'
+                    }`}
+                    placeholder="(11) 99999-9999"
+                  />
+                  {errors.whatsapp_site && <p className="text-red-500 text-sm mt-2">{errors.whatsapp_site}</p>}
+                </div>
+
+                {/* Telefone da Clínica (opcional) */}
+                <div>
+                  <label className="block text-neutral-900 font-semibold mb-2">
+                    Telefone fixo da clínica (opcional)
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.telefone_site || ''}
+                    onChange={(e) => {
+                      const formatted = formatTelefone(e.target.value);
+                      updateFormData('telefone_site', formatted);
+                    }}
+                    maxLength={14}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-green-200 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-200"
+                    placeholder="(11) 3333-4444"
+                  />
+                </div>
+
+                {/* E-mail da Clínica (opcional) */}
+                <div>
+                  <label className="block text-neutral-900 font-semibold mb-2">
+                    E-mail da clínica (opcional)
+                  </label>
+                  <p className="text-sm text-green-600/80 mb-2">
+                    E-mail que aparecerá no site para contato
+                  </p>
+                  <input
+                    type="email"
+                    value={formData.email_site || ''}
+                    onChange={(e) => updateFormData('email_site', e.target.value)}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 ${
+                      errors.email_site ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-200' : 'border-green-200 focus:border-green-500 focus:ring-green-200'
+                    }`}
+                    placeholder="contato@clinica.com.br"
+                  />
+                  {errors.email_site && <p className="text-red-500 text-sm mt-2">{errors.email_site}</p>}
+                </div>
+              </div>
+            </div>
+
+            {/* Separador */}
+            <div className="border-t-4 border-medical-100 my-4"></div>
+
+            {/* Google Meu Negócio - Bloco Único */}
             <div className="border-2 border-medical-300 rounded-2xl p-6 bg-gradient-to-br from-blue-50 to-purple-50">
-              <h3 className="text-xl font-bold text-neutral-900 mb-4">⭐ Depoimentos do Google</h3>
+              <h3 className="text-xl font-bold text-neutral-900 mb-4">🏢 Google Meu Negócio</h3>
               <p className="text-sm text-medical-600/70 mb-4">
-                Cole o link do seu Google Meu Negócio para exibirmos suas avaliações automaticamente no site.
+                Cole o link do seu Google Meu Negócio. Com ele obtemos seu endereço, avaliações e mapa automaticamente.
               </p>
 
               <div>
                 <label className="block text-neutral-900 font-semibold mb-2">
-                  Link do Google Meu Negócio (Opcional)
+                  Link do Google Meu Negócio (Recomendado)
                 </label>
                 <p className="text-sm text-medical-600/70 mb-3">
                   Para encontrar: acesse google.com/maps, pesquise seu consultório e copie o link da barra de endereços.
@@ -1770,12 +2322,18 @@ const BriefingOdonto = () => {
                   type="url"
                   value={formData.link_google_maps || ''}
                   onChange={(e) => setFormData({...formData, link_google_maps: e.target.value})}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 ${
+                    errors.link_google_maps ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-200' : 'border-medical-200 focus:border-medical-500 focus:ring-medical-200'
+                  }`}
                   placeholder="https://maps.google.com/..."
                 />
+                {errors.link_google_maps && <p className="text-red-500 text-sm mt-2">{errors.link_google_maps}</p>}
                 <div className="mt-3 p-3 bg-white/70 rounded-lg border border-medical-200">
                   <p className="text-sm text-medical-700">
-                    💡 <strong>Dica:</strong> Suas avaliações do Google aparecerão automaticamente no site com estrelas e comentários dos pacientes. Se não tiver Google Meu Negócio, deixe em branco.
+                    💡 <strong>Com esse link obtemos:</strong><br/>
+                    ✓ Seu endereço completo<br/>
+                    ✓ Suas avaliações (estrelas e comentários)<br/>
+                    ✓ Mapa interativo da sua localização
                   </p>
                 </div>
               </div>
@@ -1784,168 +2342,202 @@ const BriefingOdonto = () => {
             {/* Separador Visual */}
             <div className="border-t-4 border-medical-100 my-8"></div>
 
-            <h3 className="text-2xl font-bold text-neutral-900 mb-6">📍 Localização e Contato</h3>
-
-            {/* CEP */}
+            {/* Escolha do método de endereço */}
             <div>
-              <label className="block text-neutral-900 font-semibold mb-2">
-                CEP *
-              </label>
-              <input
-                type="text"
-                value={formData.cep || ''}
-                onChange={handleCepChange}
-                maxLength={9}
-                className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                  errors.cep ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                placeholder="00000-000"
-              />
-              {errors.cep && <p className="text-red-500 text-sm mt-1">{errors.cep}</p>}
-            </div>
-
-            {/* Rua/Logradouro */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-2">
-                Rua/Logradouro *
-              </label>
-              <input
-                type="text"
-                value={formData.rua || ''}
-                onChange={(e) => setFormData({...formData, rua: e.target.value})}
-                className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                  errors.rua ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                placeholder="Rua das Flores"
-              />
-              {errors.rua && <p className="text-red-500 text-sm mt-1">{errors.rua}</p>}
-            </div>
-
-            {/* Número e Bairro (2 colunas) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-neutral-900 font-semibold mb-2">
-                  Número *
-                </label>
-                <input
-                  type="text"
-                  value={formData.numero || ''}
-                  onChange={(e) => setFormData({...formData, numero: e.target.value})}
-                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.numero ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                  placeholder="123"
-                />
-                {errors.numero && <p className="text-red-500 text-sm mt-1">{errors.numero}</p>}
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-neutral-900 font-semibold mb-2">
-                  Bairro *
-                </label>
-                <input
-                  type="text"
-                  value={formData.bairro || ''}
-                  onChange={(e) => setFormData({...formData, bairro: e.target.value})}
-                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.bairro ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                  placeholder="Centro"
-                />
-                {errors.bairro && <p className="text-red-500 text-sm mt-1">{errors.bairro}</p>}
-              </div>
-            </div>
-
-            {/* Cidade e UF (2 colunas) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-neutral-900 font-semibold mb-2">
-                  Cidade *
-                </label>
-                <input
-                  type="text"
-                  value={formData.cidade || ''}
-                  onChange={(e) => setFormData({...formData, cidade: e.target.value})}
-                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.cidade ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                  placeholder="São Paulo"
-                />
-                {errors.cidade && <p className="text-red-500 text-sm mt-1">{errors.cidade}</p>}
-              </div>
-
-              <div>
-                <label className="block text-neutral-900 font-semibold mb-2">
-                  UF *
-                </label>
-                <input
-                  type="text"
-                  value={formData.estado || ''}
-                  onChange={(e) => setFormData({...formData, estado: e.target.value.toUpperCase()})}
-                  maxLength={2}
-                  className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                    errors.estado ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                  } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                  placeholder="SP"
-                />
-                {errors.estado && <p className="text-red-500 text-sm mt-1">{errors.estado}</p>}
-              </div>
-            </div>
-
-            {/* Complemento (opcional) */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-2">
-                Complemento (opcional)
-              </label>
-              <input
-                type="text"
-                value={formData.complemento || ''}
-                onChange={(e) => setFormData({...formData, complemento: e.target.value})}
-                className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
-                placeholder="Sala 12, 2º andar"
-              />
-            </div>
-
-            {/* Tem estacionamento? */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Tem estacionamento? *
-              </label>
+              <h3 className="text-2xl font-bold text-neutral-900 mb-4">📍 Como prefere informar seu endereço?</h3>
               <div className="space-y-3">
                 <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
-                    name="tem_estacionamento"
-                    value="sim_gratuito"
-                    checked={formData.tem_estacionamento === 'sim_gratuito'}
-                    onChange={(e) => setFormData({...formData, tem_estacionamento: e.target.value})}
+                    name="metodo_endereco"
+                    value="google"
+                    checked={formData.metodo_endereco === 'google'}
+                    onChange={(e) => setFormData({...formData, metodo_endereco: e.target.value})}
                     className="mt-1 mr-3 accent-medical-600"
                   />
-                  <div className="font-semibold text-neutral-900">✅ Sim, temos estacionamento</div>
+                  <div>
+                    <div className="font-semibold text-neutral-900">⚡ Usar Google Meu Negócio (Recomendado - Mais Rápido)</div>
+                    <p className="text-sm text-medical-600/70 mt-1">Usaremos o link que você colou acima para obter todas as informações</p>
+                  </div>
                 </label>
 
                 <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
                   <input
                     type="radio"
-                    name="tem_estacionamento"
-                    value="nao_conveniado"
-                    checked={formData.tem_estacionamento === 'nao_conveniado'}
-                    onChange={(e) => setFormData({...formData, tem_estacionamento: e.target.value})}
+                    name="metodo_endereco"
+                    value="manual"
+                    checked={formData.metodo_endereco === 'manual'}
+                    onChange={(e) => setFormData({...formData, metodo_endereco: e.target.value})}
                     className="mt-1 mr-3 accent-medical-600"
                   />
-                  <div className="font-semibold text-neutral-900">❌ Não temos estacionamento</div>
+                  <div>
+                    <div className="font-semibold text-neutral-900">✍️ Digitar endereço manualmente</div>
+                    <p className="text-sm text-medical-600/70 mt-1">Preencha os campos de endereço abaixo</p>
+                  </div>
                 </label>
               </div>
-              {errors.tem_estacionamento && <p className="text-red-500 text-sm mt-2">{errors.tem_estacionamento}</p>}
+              {errors.metodo_endereco && <p className="text-red-500 text-sm mt-2">{errors.metodo_endereco}</p>}
             </div>
+
+            {/* Campos condicionais baseados na escolha */}
+            {formData.metodo_endereco === 'google' && (
+              <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+                <h4 className="font-semibold text-neutral-900 mb-3">✅ Ótimo! Usaremos o Google Meu Negócio</h4>
+                <p className="text-sm text-medical-600/70 mb-4">
+                  Certifique-se de que o link acima está preenchido corretamente. Vamos extrair automaticamente seu endereço e avaliações.
+                </p>
+
+                {/* Checkbox para exibir mapa */}
+                <label className="flex items-start p-4 rounded-xl border-2 border-blue-300 bg-white cursor-pointer hover:bg-blue-50 transition-all">
+                  <input
+                    type="checkbox"
+                    checked={formData.exibir_mapa === 'sim'}
+                    onChange={(e) => setFormData({...formData, exibir_mapa: e.target.checked ? 'sim' : 'nao'})}
+                    className="mt-1 mr-3 accent-medical-600"
+                  />
+                  <div>
+                    <div className="font-semibold text-neutral-900">🗺️ Exibir mapa interativo no site</div>
+                    <p className="text-sm text-medical-600/70 mt-1">
+                      O mapa do Google aparecerá no rodapé, permitindo que pacientes vejam sua localização e obtenham rotas.
+                    </p>
+                  </div>
+                </label>
+              </div>
+            )}
+
+            {formData.metodo_endereco === 'manual' && (
+              <div className="space-y-6 bg-orange-50 border-2 border-orange-200 rounded-xl p-6">
+                <h4 className="font-semibold text-neutral-900 mb-4">📝 Preencha seu endereço</h4>
+
+                {/* CEP */}
+                <div>
+                  <label className="block text-neutral-900 font-semibold mb-2">
+                    CEP *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.cep || ''}
+                    onChange={handleCepChange}
+                    maxLength={9}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                      errors.cep ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                    } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    placeholder="00000-000"
+                  />
+                  {errors.cep && <p className="text-red-500 text-sm mt-1">{errors.cep}</p>}
+                </div>
+
+                {/* Rua/Logradouro */}
+                <div>
+                  <label className="block text-neutral-900 font-semibold mb-2">
+                    Rua/Logradouro *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.rua || ''}
+                    onChange={(e) => setFormData({...formData, rua: e.target.value})}
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                      errors.rua ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                    } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                    placeholder="Rua das Flores"
+                  />
+                  {errors.rua && <p className="text-red-500 text-sm mt-1">{errors.rua}</p>}
+                </div>
+
+                {/* Número e Bairro (2 colunas) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-neutral-900 font-semibold mb-2">
+                      Número *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.numero || ''}
+                      onChange={(e) => setFormData({...formData, numero: e.target.value})}
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                        errors.numero ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                      } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                      placeholder="123"
+                    />
+                    {errors.numero && <p className="text-red-500 text-sm mt-1">{errors.numero}</p>}
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-neutral-900 font-semibold mb-2">
+                      Bairro *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.bairro || ''}
+                      onChange={(e) => setFormData({...formData, bairro: e.target.value})}
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                        errors.bairro ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                      } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                      placeholder="Centro"
+                    />
+                    {errors.bairro && <p className="text-red-500 text-sm mt-1">{errors.bairro}</p>}
+                  </div>
+                </div>
+
+                {/* Cidade e UF (2 colunas) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-neutral-900 font-semibold mb-2">
+                      Cidade *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.cidade || ''}
+                      onChange={(e) => setFormData({...formData, cidade: e.target.value})}
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                        errors.cidade ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                      } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                      placeholder="São Paulo"
+                    />
+                    {errors.cidade && <p className="text-red-500 text-sm mt-1">{errors.cidade}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-neutral-900 font-semibold mb-2">
+                      UF *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.estado || ''}
+                      onChange={(e) => setFormData({...formData, estado: e.target.value.toUpperCase()})}
+                      maxLength={2}
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
+                        errors.estado ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
+                      } focus:outline-none focus:ring-2 focus:ring-medical-200`}
+                      placeholder="SP"
+                    />
+                    {errors.estado && <p className="text-red-500 text-sm mt-1">{errors.estado}</p>}
+                  </div>
+                </div>
+
+                {/* Complemento (opcional) */}
+                <div>
+                  <label className="block text-neutral-900 font-semibold mb-2">
+                    Complemento (opcional)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.complemento || ''}
+                    onChange={(e) => setFormData({...formData, complemento: e.target.value})}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-medical-200 focus:border-medical-500 focus:outline-none focus:ring-2 focus:ring-medical-200"
+                    placeholder="Sala 12, 2º andar"
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Horários de Atendimento */}
             <div>
               <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Horários de atendimento *
+                Horários de atendimento
               </label>
               <p className="text-sm text-medical-600/70 mb-4">
-                Adicione os dias e horários de funcionamento
+                Adicione os dias e horários de funcionamento (opcional)
               </p>
 
               <div className="space-y-3">
@@ -2058,67 +2650,6 @@ const BriefingOdonto = () => {
               </div>
 
               {errors.horario_padrao && <p className="text-red-500 text-sm mt-2">{errors.horario_padrao}</p>}
-            </div>
-
-            {/* Quer exibir o mapa do Google Maps? */}
-            <div>
-              <label className="block text-neutral-900 font-semibold mb-4 text-lg">
-                Quer exibir o mapa do Google no site? *
-              </label>
-              <div className="space-y-3">
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="exibir_mapa"
-                    value="sim"
-                    checked={formData.exibir_mapa === 'sim'}
-                    onChange={(e) => setFormData({...formData, exibir_mapa: e.target.value})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div className="font-semibold text-neutral-900">✅ Sim, quero mostrar minha localização no mapa</div>
-                </label>
-
-                <label className="flex items-start p-4 rounded-xl border-2 border-medical-200 hover:border-medical-400 transition-all cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="exibir_mapa"
-                    value="nao"
-                    checked={formData.exibir_mapa === 'nao'}
-                    onChange={(e) => setFormData({...formData, exibir_mapa: e.target.value, link_mapa_embed: ''})}
-                    className="mt-1 mr-3 accent-medical-600"
-                  />
-                  <div className="font-semibold text-neutral-900">❌ Não, apenas o endereço de texto</div>
-                </label>
-              </div>
-              {errors.exibir_mapa && <p className="text-red-500 text-sm mt-2">{errors.exibir_mapa}</p>}
-
-              {/* Campo condicional: Link do Google Maps para Embed */}
-              {formData.exibir_mapa === 'sim' && (
-                <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
-                  <label className="block text-neutral-900 font-semibold mb-2">
-                    Link do Google Maps *
-                  </label>
-                  <p className="text-sm text-medical-600/70 mb-3">
-                    Cole o link do seu Google Maps aqui. Para obter: pesquise sua clínica no Google Maps, clique em "Compartilhar" e copie o link.
-                  </p>
-                  <input
-                    type="url"
-                    value={formData.link_mapa_embed || ''}
-                    onChange={(e) => setFormData({...formData, link_mapa_embed: e.target.value})}
-                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${
-                      errors.link_mapa_embed ? 'border-red-400 bg-red-50' : 'border-medical-200 focus:border-medical-500'
-                    } focus:outline-none focus:ring-2 focus:ring-medical-200`}
-                    placeholder="https://maps.google.com/..."
-                  />
-                  {errors.link_mapa_embed && <p className="text-red-500 text-sm mt-1">{errors.link_mapa_embed}</p>}
-
-                  <div className="mt-3 p-3 bg-white rounded-lg border border-blue-200">
-                    <p className="text-sm text-blue-700">
-                      💡 <strong>Dica:</strong> O mapa interativo do Google aparecerá no rodapé do seu site, permitindo que pacientes vejam sua localização e obtenham rotas facilmente.
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
 
           </div>
@@ -2458,11 +2989,24 @@ const BriefingOdonto = () => {
                             className="w-full px-3 py-3 min-h-[44px] border-2 border-medical-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
                           >
                             <option value="">Selecione o tipo</option>
-                            <option value="primaria">Cor Primária</option>
-                            <option value="secundaria">Cor Secundária</option>
-                            <option value="texto">Cor de Texto</option>
-                            <option value="fundo">Cor de Fundo</option>
-                            <option value="destaque">Cor de Destaque/Accent</option>
+                            {[
+                              { value: 'primaria', label: 'Cor Primária' },
+                              { value: 'secundaria', label: 'Cor Secundária' },
+                              { value: 'texto', label: 'Cor de Texto' },
+                              { value: 'fundo', label: 'Cor de Fundo' },
+                              { value: 'destaque', label: 'Cor de Destaque/Accent' },
+                            ]
+                              .filter(tipo => {
+                                // Mostra se é o tipo atual OU se não foi usado em outra cor
+                                const tiposUsados = (formData.cores_personalizadas || [])
+                                  .map((c: any, i: number) => i !== index ? c.tipo : null)
+                                  .filter(Boolean);
+                                return cor.tipo === tipo.value || !tiposUsados.includes(tipo.value);
+                              })
+                              .map(tipo => (
+                                <option key={tipo.value} value={tipo.value}>{tipo.label}</option>
+                              ))
+                            }
                           </select>
                           <p className="text-xs text-neutral-600 mt-1">
                             {cor.tipo === 'primaria' && 'Cor principal da marca, usada em botões e elementos importantes'}
@@ -2643,6 +3187,8 @@ const BriefingOdonto = () => {
               setCurrentSection(sectionIndex);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
+            hotmartVenda={hotmartVenda}
+            isFromHotmart={isFromHotmart}
           />
         );
 

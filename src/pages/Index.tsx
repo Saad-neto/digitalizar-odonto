@@ -20,7 +20,7 @@ const Index: React.FC = () => {
     <div className="min-h-screen bg-white">
       {/* SEO Meta Tags */}
       <SEO
-        title="Sites Odonto - 3 Planos: Site Profissional, Site + Agendamento ou Site Completo | A partir de R$ 997"
+        title="clinicanaweb.com - 3 Planos: Site Profissional, Site + Agendamento ou Site Completo | A partir de R$ 997"
         description="Escolha seu plano: Site Profissional (R$ 997), Site + Agendamento (R$ 1.497) ou Site Completo (R$ 1.997). Design personalizado, hospedagem grátis, SEO otimizado. Só paga depois de aprovar."
         keywords="site para dentista, criação de site odontológico, marketing digital odontologia, site para clínica odontológica, site dentista preço, site responsivo dentista, sites para dentistas, agendamento online odontologia"
         canonicalUrl="https://sites-odonto.digitalizar.space"

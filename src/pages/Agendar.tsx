@@ -183,13 +183,13 @@ const Agendar = () => {
     }
   };
 
-  // Desabilitar datas passadas e finais de semana
+  // Desabilitar datas passadas e domingo
   const isDateDisabled = (date: Date) => {
     const today = startOfDay(new Date());
     if (isBefore(date, today)) return true;
 
     const dayOfWeek = getDay(date);
-    return dayOfWeek === 0 || dayOfWeek === 6; // Domingo ou Sábado
+    return dayOfWeek === 0; // Apenas Domingo
   };
 
   const renderStep = () => {
@@ -212,13 +212,13 @@ const Agendar = () => {
                 Nome Completo *
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 text-medical-400" size={20} />
+                <User className="absolute left-4 top-3.5 text-medical-400" size={20} />
                 <input
                   type="text"
                   placeholder="Ex: Dr. João Silva"
                   value={formData.nome}
                   onChange={(e) => updateFormData('nome', e.target.value)}
-                  className={`w-full pl-11 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                  className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
                     errors.nome ? 'border-red-400' : 'border-medical-200 focus:border-purple-400'
                   }`}
                 />
@@ -232,13 +232,13 @@ const Agendar = () => {
                 E-mail *
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 text-medical-400" size={20} />
+                <Mail className="absolute left-4 top-3.5 text-medical-400" size={20} />
                 <input
                   type="email"
                   placeholder="seu@email.com"
                   value={formData.email}
                   onChange={(e) => updateFormData('email', e.target.value)}
-                  className={`w-full pl-11 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                  className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
                     errors.email ? 'border-red-400' : 'border-medical-200 focus:border-purple-400'
                   }`}
                 />
@@ -252,7 +252,7 @@ const Agendar = () => {
                 WhatsApp *
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3 text-medical-400" size={20} />
+                <Phone className="absolute left-4 top-3.5 text-medical-400" size={20} />
                 <input
                   type="tel"
                   placeholder="(11) 99999-9999"
@@ -260,7 +260,7 @@ const Agendar = () => {
                   onChange={(e) =>
                     updateFormData('whatsapp', formatWhatsApp(e.target.value))
                   }
-                  className={`w-full pl-11 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
+                  className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all ${
                     errors.whatsapp
                       ? 'border-red-400'
                       : 'border-medical-200 focus:border-purple-400'
@@ -276,13 +276,13 @@ const Agendar = () => {
                 Nome do Consultório/Clínica (opcional)
               </label>
               <div className="relative">
-                <Building2 className="absolute left-3 top-3 text-medical-400" size={20} />
+                <Building2 className="absolute left-4 top-3.5 text-medical-400" size={20} />
                 <input
                   type="text"
                   placeholder="Ex: Clínica Odontológica Dr. Silva"
                   value={formData.empresa}
                   onChange={(e) => updateFormData('empresa', e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all"
                 />
               </div>
             </div>
@@ -312,13 +312,13 @@ const Agendar = () => {
                 Observações (opcional)
               </label>
               <div className="relative">
-                <FileText className="absolute left-3 top-3 text-medical-400" size={20} />
+                <FileText className="absolute left-4 top-3.5 text-medical-400" size={20} />
                 <textarea
                   placeholder="Alguma informação adicional que queira compartilhar..."
                   value={formData.observacoes}
                   onChange={(e) => updateFormData('observacoes', e.target.value)}
                   rows={4}
-                  className="w-full pl-11 pr-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all resize-none"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-medical-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all resize-none"
                 />
               </div>
             </div>
@@ -358,9 +358,8 @@ const Agendar = () => {
             <div className="bg-neutral-50 border-2 border-medical-200 rounded-xl p-4">
               <h4 className="font-semibold text-neutral-900 mb-2">Horário de atendimento:</h4>
               <ul className="text-sm text-medical-600 space-y-1">
-                <li>• Segunda a Quinta: 9h às 12h e 14h às 18h</li>
-                <li>• Sexta: 9h às 12h e 14h às 17h</li>
-                <li>• Sábado e Domingo: Não atendemos</li>
+                <li>• Segunda a Sábado: 9h às 20h (horário contínuo)</li>
+                <li>• Domingo: Não atendemos</li>
               </ul>
             </div>
           </div>

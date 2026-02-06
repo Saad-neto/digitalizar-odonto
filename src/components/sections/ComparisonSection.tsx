@@ -31,10 +31,10 @@ const ComparisonSection: React.FC = () => {
       highlight: false
     },
     {
-      title: "Sites Odonto (LANÇAMENTO)",
+      title: "clinicanaweb.com (LANÇAMENTO)",
       emoji: "⚡",
       items: [
-        { label: "Prazo", value: "3-7 dias úteis", negative: false },
+        { label: "Prazo", value: "3-7 dias", negative: false },
         { label: "Investimento", value: "R$ 497 (50% OFF)", negative: false },
         { label: "Pagamento", value: "SÓ após aprovar", negative: false },
         { label: "Processo", value: "Simples e rápido", negative: false },
@@ -140,7 +140,7 @@ const ComparisonSection: React.FC = () => {
             to="/briefing"
             className="btn-hero text-xl px-12 py-5 inline-block"
           >
-            🚀 Quero a Melhor Opção: Sites Odonto
+            🚀 Quero a Melhor Opção: clinicanaweb.com
           </Link>
         </div>
       </div>

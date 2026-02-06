@@ -41,9 +41,9 @@ const Login = () => {
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-medical-600 to-medical-800 bg-clip-text text-transparent mb-2">
-            Sites Odonto 24H
+            clinicanaweb.com
           </h1>
-          <p className="text-gray-600">Painel Administrativo</p>
+          <p className="text-gray-600">Especialistas em Odonto | Painel Administrativo</p>
         </div>
 
         {/* Card de Login */}

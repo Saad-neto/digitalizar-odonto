@@ -15,28 +15,28 @@ const FooterNew: React.FC = () => {
   return (
     <footer className="bg-neutral-900 text-neutral-300">
       {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div>
             <div className="flex items-center gap-3 mb-4">
               <img
-                src="/logo-new.png"
-                alt="Sites Odonto 24H"
+                src="/logo-footer.png"
+                alt="clinicanaweb.com - Soluções para Clínicas e Consultórios"
                 className="w-12 h-12 object-contain"
               />
               <div>
                 <div className="font-heading font-bold text-white text-lg leading-tight">
-                  Sites Odonto
+                  clinicanaweb.com
                 </div>
                 <div className="text-medical-400 text-xs font-medium">
-                  24 Horas
+                  Soluções para Clínicas e Consultórios
                 </div>
               </div>
             </div>
 
             <p className="text-body-sm text-neutral-400 leading-relaxed mb-6">
-              Sites profissionais para dentistas que querem atrair mais pacientes particulares
+              Soluções digitais completas para clínicas e consultórios odontológicos que querem atrair mais pacientes particulares
               e crescer de forma sustentável.
             </p>
 
@@ -171,10 +171,10 @@ const FooterNew: React.FC = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-neutral-800">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-body-sm text-neutral-500">
-              © {currentYear} Sites Odonto 24H. Todos os direitos reservados.
+              © {currentYear} clinicanaweb.com. Todos os direitos reservados.
             </p>
 
             <div className="flex items-center gap-6 text-body-sm text-neutral-500">

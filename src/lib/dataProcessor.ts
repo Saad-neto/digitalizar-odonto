@@ -6,7 +6,7 @@
  * Transforma dados brutos do formulário em dados estruturados
  * prontos para gerar sites odontológicos.
  *
- * @author Sites Odonto
+ * @author clinicanaweb.com
  * @date 2025-12-07
  */
 

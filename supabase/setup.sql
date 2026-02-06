@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS leads (
 
   -- Status do lead
   status TEXT NOT NULL DEFAULT 'novo'
-    CHECK (status IN ('novo', 'pago_50', 'em_producao', 'em_aprovacao', 'pago_100', 'concluido')),
+    CHECK (status IN ('novo', 'lead_parcial', 'pago_50', 'em_producao', 'em_aprovacao', 'em_ajustes', 'aguardando_aprovacao', 'aprovado_pagamento', 'aprovacao_final', 'pago_100', 'no_ar', 'concluido')),
 
   -- Informações pessoais/contato
   nome TEXT NOT NULL,

@@ -89,15 +89,12 @@ docker service update --image digitalizar-odonto:latest --force digitalizar-odon
 
 ## 🕐 Horários Configurados
 
-**Segunda a Quinta:**
-- Manhã: 9h às 12h (slots de 30 min)
-- Tarde: 14h às 18h (slots de 30 min)
+**Segunda a Sábado:**
+- 9h às 20h (horário contínuo, sem intervalo)
+- Slots de 1 hora (60 minutos)
+- 11 horários disponíveis por dia
 
-**Sexta:**
-- Manhã: 9h às 12h
-- Tarde: 14h às 17h
-
-**Sábado e Domingo:** Não atende
+**Domingo:** Não atende
 
 ---
 
